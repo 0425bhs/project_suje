@@ -21,7 +21,7 @@
                 
                     <img src="${list.image_l}" alt="${list.name}"/>
 
-                    <h3><a href="product_detail.do?id=${list.id}">${list.name}</a></h3>
+                    <h3><a href="product_detail.do?product_id=${list.product_id}">${list.name}</a></h3>
 
                     <p>${list.price}원</p>
                     <p>${list.sale_price}원</p>
