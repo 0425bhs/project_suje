@@ -29,7 +29,7 @@
                     <p>${list.delivery_fee}원</p>
                     
 
-                    <input type="button" value="장바구니 담기" onclick="location.href='cart_insert.do?product_id=${list.id}'"/>
+                    <input type="button" value="장바구니 담기" onclick="location.href='cart_insert.do?product_id=${list.product_id}'"/>
 
                 </div>
             </c:forEach>

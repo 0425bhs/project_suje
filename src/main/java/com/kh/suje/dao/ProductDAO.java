@@ -1,7 +1,6 @@
 package com.kh.suje.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import com.kh.suje.vo.ProductVO;
 
@@ -11,6 +10,7 @@ public interface ProductDAO {
     
     ProductVO product_one(Long product_id);
 
-    Map<String,Object> seller_product_insert(ProductVO vo);
-    
+    int seller_product_insert(ProductVO vo);
+
+    int seller_product_modify(ProductVO vo);
 }

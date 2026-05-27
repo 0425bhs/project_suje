@@ -6,22 +6,17 @@
 
     <head>
         <script>
-            function send() {
-            const form = document.getElementById("productForm");
-            const formData = new FormData(form);
+            function send(f) {
+            let formData = new FormData(f);
 
-            fetch("seller_product_insert.do",{method:"POST",body: formData}).then(response => response.json()).then(data => {
-                if (data.result = 0) {
-                    alert("상품이 등록되었습니다.");
+            fetch("/seller_product_insert.do",{method: "post",body: formData}).then(res => res.json()).then(data => {
+                if (data.result == 1) {
+                    alert("상품 등록 성공");
                     location.href = "/product/list.do";
                 } else {
-                    alert("상품 등록에 실패했습니다.");
+                    alert("상품 등록 실패");
                 }
             })
-            .catch(error => {
-                console.log(error);
-                alert("등록 중 오류가 발생했습니다.");
-            });
         }
         </script>
     </head>
@@ -31,7 +26,9 @@
 
             <h2>판매자 상품 등록</h2>
 
-            <form id="productForm" method="post">
+            <form method="post" enctype="multipart/form-data">
+                <!-- 테스트용 판매자 번호,삭제예정 -->
+                <input type="hidden" name="seller_id" value="1"/>
 
                 <input type="hidden" name="seller_id" value="1">
 
@@ -42,9 +39,12 @@
                         <th>카테고리</th>
                         <td>
                             <select name="category_id">
-                                <option value="1">캔들</option>
-                                <option value="2">비누</option>
-                                <option value="3">키링</option>
+                                <option value="1">패션/주얼리</option>
+                                <option value="2">홈리빙</option>
+                                <option value="3">뷰티</option>
+                                <option value="4">식품</option>
+                                <option value="5">공예</option>
+                                <option value="6">반려동물</option>
                             </select>
                         </td>
                     </tr>
@@ -94,21 +94,21 @@
                     <tr>
                         <th>대표 이미지</th>
                         <td>
-                            <input type="file" name="image_l">
+                            <input type="file" name="image_l_file">
                         </td>
                     </tr>
 
                     <tr>
                         <th>상세 이미지</th>
                         <td>
-                            <input type="file" name="image_s">
+                            <input type="file" name="image_s_file">
                         </td>
                     </tr>
                 </table>
 
                 <div class="btn-box">
                     <input type="button" value="등록" onclick="send()">
-                    <input type="button" value="목록" onclick="location.href='/product/list.do'">
+                    <input type="button" value="취소" onclick="location.href='/product/list.do'">
                 </div>
 
             </form>
