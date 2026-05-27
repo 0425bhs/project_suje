@@ -10,6 +10,7 @@
                 let image_l_div = document.getElementById("image_l_div");
                 let ori_image_l = document.getElementById("ori_image_l");
 
+                
                 ori_image_l.value = "no_file";
                 image_l_div.style.display = "none";
             }
