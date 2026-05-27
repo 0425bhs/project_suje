@@ -5,8 +5,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.kh.suje.dao.ProductDAO">
 	
     <select id="product_list" resultType="product">
-        SELECT id,seller_id,category_id,name,description,price,stock,delivery_fee,status,image_l,image_s,created_at,updated_at
-        FROM products WHERE status='APPROVED'
+        SELECT * FROM products WHERE status='APPROVED'
     </select>
+
+    <select id="product_one" parameterType="long" resultType="product">
+        SELECT * FROM products WHERE id=#{id}
+    </select>
+
+    <insert id="seller_product_insert" parameterType="product">
+        insert into products (product_id,seller_id,category_id,name,description,price,stock,delivery_fee,status,image_l,image_s,created_at,updated_at)
+        VALUES (#{seller_id},#{category_id},#{name},#{description},#{price},#{stock},#{delivery_fee},'PENDING', #{image_l},#{image_s})
+    </insert>
 		
 </mapper>
