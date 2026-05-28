@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kh.suje.dao.PaymentDAO">
+
+    <!-- 주문번호로 결제 정보 조회 -->
+    <select id="selectPaymentByOrderId" parameterType="long" resultType="PaymentVO">
+        SELECT
+            payment_id,
+            order_id,
+            payment_method,
+            amount,
+            status,
+            transaction_id,
+            created_at
+        FROM payments
+        WHERE order_id = #{value}
+    </select>
+
+    <!-- 결제 대기 데이터 생성 
+         useGeneratedKeys="true"	DB가 자동 생성한 키 값을 받아오겠다
+         keyProperty="payment_id"	받아온 값을 PaymentVO.payment_id 변수에 넣겠다
+         keyColumn="payment_id"	DB에서 자동 생성되는 컬럼 이름은 payment_id다-->
+    <insert id="insertPayment" parameterType="PaymentVO"
+            useGeneratedKeys="true" 
+            keyProperty="payment_id"
+            keyColumn="payment_id">
+        INSERT INTO payments (
+            order_id,
+            payment_method,
+            amount,
+            status,
+            transaction_id
+        )
+        VALUES (
+            #{order_id},
+            #{payment_method},
+            #{amount},
+            'READY',
+            #{transaction_id}
+        )
+    </insert>
+
+    <!-- 결제 성공 처리 -->
+    <update id="updatePaymentSuccess" parameterType="PaymentVO">
+        UPDATE payments
+        SET
+            status = 'SUCCESS',
+            transaction_id = #{transaction_id}
+        WHERE order_id = #{order_id}
+    </update>
+
+    <!-- 결제 실패 처리 -->
+    <update id="updatePaymentFail" parameterType="PaymentVO">
+        UPDATE payments
+        SET status = 'FAIL'
+        WHERE order_id = #{order_id}
+    </update>
+
+</mapper>

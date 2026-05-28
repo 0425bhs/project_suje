@@ -1,0 +1,1186 @@
+/* =========================================================
+   주문/결제 공통 CSS
+   사용 JSP:
+   - order_form.jsp
+   - my_order_list.jsp
+   - order_detail.jsp
+   - order_complete.jsp
+   - delivery_status.jsp
+   - payment_ready.jsp
+   - payment_fail.jsp
+========================================================= */
+
+
+/* =========================================================
+   1. 전체 기본 설정
+   - 모든 태그 기본 크기 계산 방식 통일
+   - body 기본 폰트, 배경, 글자색 설정
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", Arial, sans-serif;
+    background: #fff;
+    color: #2b2b2b;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select {
+    font-family: inherit;
+}
+
+
+/* =========================================================
+   2. Header 영역
+   JSP 위치:
+   - 각 JSP 상단 <header class="site-header">
+   역할:
+   - 로고, 메뉴, 주문내역/장바구니 링크 영역
+========================================================= */
+
+.site-header {
+    border-bottom: 1px solid #f0e5dc;
+    background: #fff;
+}
+
+/* 헤더 내부 최대 너비와 가로 정렬 */
+.header-inner {
+    max-width: 1280px;
+    height: 74px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* HANDMADE 로고 */
+.brand {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: #2b2b2b;
+}
+
+/* 로고에서 MADE 부분 포인트 컬러 */
+.brand span {
+    color: #ff6f4f;
+}
+
+/* 중앙 메뉴 */
+.main-nav {
+    display: flex;
+    gap: 28px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #4b4b4b;
+}
+
+/* 메뉴 hover 효과 */
+.main-nav a:hover,
+.header-actions a:hover {
+    color: #ff6f4f;
+}
+
+/* 오른쪽 메뉴 영역 */
+.header-actions {
+    display: flex;
+    gap: 18px;
+    color: #777;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   3. Hero 영역
+   JSP 위치:
+   - my_order_list.jsp 상단 안내 영역
+   클래스:
+   - hero-order
+   - hero-inner
+   - hero-copy
+   - hero-card
+   역할:
+   - 주문/결제 흐름 안내 배너
+========================================================= */
+
+.hero-order {
+    background: linear-gradient(90deg, #fffaf7 0%, #ffffff 55%, #fff5ef 100%);
+    border-bottom: 1px solid #f5e3d7;
+    padding: 46px 0;
+}
+
+/* Hero 내부를 왼쪽 문구 / 오른쪽 진행 흐름 카드로 배치 */
+.hero-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 42px;
+    align-items: center;
+}
+
+/* Hero 왼쪽 문구 영역 */
+.hero-copy {
+    max-width: 640px;
+}
+
+/* CREATOR MARKET ORDER 작은 라벨 */
+.hero-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #ff6f4f;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+}
+
+/* Hero 큰 제목 */
+.hero-order h1 {
+    margin: 0 0 14px;
+    font-size: 32px;
+    line-height: 1.28;
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    color: #2b2b2b;
+}
+
+/* Hero 설명 문구 */
+.hero-order p {
+    max-width: 560px;
+    margin: 0;
+    color: #7a6255;
+    font-size: 15px;
+    line-height: 1.75;
+}
+
+/* 주문 확인 / 결제 진행 / 배송 조회 태그 영역 */
+.hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+}
+
+/* Hero 태그 디자인 */
+.hero-tags span {
+    display: inline-flex;
+    align-items: center;
+    height: 34px;
+    padding: 0 14px;
+    border: 1px solid #f0d6c7;
+    background: #fff;
+    color: #8a5a44;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* Hero 오른쪽 주문 진행 흐름 카드 */
+.hero-card {
+    width: 340px;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #f0e5dc;
+}
+
+.hero-card strong {
+    display: block;
+    margin-bottom: 18px;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+/* 주문 진행 흐름 목록 */
+.hero-flow {
+    display: grid;
+    gap: 12px;
+}
+
+.hero-flow div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f5e3d7;
+}
+
+.hero-flow div:last-child {
+    border-bottom: none;
+}
+
+/* 01, 02, 03 번호 원형 표시 */
+.hero-flow span {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 34px;
+    height: 34px;
+    background: #fff3eb;
+    color: #ff6f4f;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.hero-flow p {
+    margin: 0;
+    color: #5f4636;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   4. 공통 페이지 레이아웃
+   JSP 위치:
+   - 각 JSP의 main section 영역
+   클래스:
+   - page-block
+   - block-inner
+   - page-title-row
+   역할:
+   - 페이지 전체 여백, 최대 너비, 제목 영역 통일
+========================================================= */
+
+/* 각 페이지 큰 섹션 여백 */
+.page-block {
+    padding: 58px 0;
+}
+
+/* 아이보리 배경 섹션 */
+.page-block.soft {
+    background: #fff8f3;
+    border-top: 1px solid #f5e3d7;
+    border-bottom: 1px solid #f5e3d7;
+}
+
+/* 실제 콘텐츠 최대 너비 */
+.block-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+/* 페이지 제목 줄 */
+.page-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+/* 작은 영문 라벨 */
+.page-title-row span {
+    display: block;
+    margin-bottom: 8px;
+    color: #ff6f4f;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+}
+
+/* 페이지 제목 */
+.page-title-row h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+}
+
+/* 제목 오른쪽 설명 문구 */
+.page-title-row p {
+    margin: 0;
+    color: #777;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   5. Panel / 2단 레이아웃
+   JSP 위치:
+   - order_form.jsp
+   - payment_ready.jsp
+   - order_detail.jsp
+   역할:
+   - 왼쪽 주문 정보 / 오른쪽 결제 요약 구조
+========================================================= */
+
+/* 흰색 박스 공통 */
+.panel {
+    background: #fff;
+    border: 1px solid #f0e5dc;
+    padding: 28px;
+}
+
+/* 박스 제목 */
+.panel-title {
+    margin: 0 0 22px;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+/* 기본 2단 레이아웃 */
+.order-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 36px;
+    align-items: start;
+}
+
+/* 오른쪽 결제 요약 박스 */
+.side-panel {
+    position: sticky;
+    top: 24px;
+}
+
+
+/* =========================================================
+   6. 주문 상품 아이템
+   JSP 위치:
+   - order_form.jsp
+   - payment_ready.jsp
+   - order_detail.jsp
+   클래스:
+   - order-item
+   - item-info
+   - item-price
+   역할:
+   - 상품 이미지 / 상품명 / 가격 / 수량 / 소계 표시
+========================================================= */
+
+.order-item {
+    display: grid;
+    grid-template-columns: 112px 1fr auto;
+    gap: 20px;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #f0e5dc;
+}
+
+.order-item:first-of-type {
+    padding-top: 0;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+/* 상품 이미지 */
+.order-item img {
+    width: 112px;
+    height: 112px;
+    object-fit: cover;
+    background: #f6f6f6;
+    border: 1px solid #f0e5dc;
+}
+
+/* 상품명 */
+.item-info strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+/* 가격, 수량 설명 */
+.item-info p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* 작가 상품 라벨 */
+.creator-line {
+    margin-bottom: 6px;
+    color: #ff6f4f;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+/* 상품별 소계 금액 */
+.item-price {
+    font-size: 17px;
+    font-weight: 900;
+    color: #2b2b2b;
+}
+
+
+/* =========================================================
+   7. 결제 요약 영역
+   JSP 위치:
+   - order_form.jsp 오른쪽 결제 요약
+   - payment_ready.jsp 오른쪽 결제 요약
+   - order_detail.jsp 오른쪽 결제 정보
+========================================================= */
+
+/* 결제수단, 결제상태, 거래번호 같은 한 줄 정보 */
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 15px 0;
+    color: #555;
+}
+
+.summary-line strong {
+    color: #222;
+}
+
+/* 총 결제금액 영역 */
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #f0e5dc;
+}
+
+.summary-total span {
+    font-weight: 800;
+}
+
+/* 총 결제금액 숫자 */
+.summary-total strong {
+    font-size: 24px;
+    font-weight: 900;
+    color: #ff6f4f;
+}
+
+
+/* =========================================================
+   8. 버튼
+   JSP 위치:
+   - 모든 주문/결제 JSP
+   클래스:
+   - btn
+   - btn primary
+   - btn light
+   - btn full
+========================================================= */
+
+/* 버튼 줄 */
+.btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 26px;
+}
+
+/* 버튼 기본 디자인 */
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 52px;
+    padding: 0 22px;
+    border: 0;
+    font-size: 15px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+/* 버튼을 부모 너비 100%로 만들 때 사용 */
+.btn.full {
+    width: 100%;
+}
+
+/* 메인 버튼 */
+.btn.primary {
+    background: #ff6f4f;
+    color: #fff;
+}
+
+.btn.primary:hover {
+    background: #f05c3d;
+}
+
+/* 검정 버튼이 필요할 때 사용 */
+.btn.dark {
+    background: #2b2b2b;
+    color: #fff;
+}
+
+.btn.dark:hover {
+    background: #111;
+}
+
+/* 보조 버튼 */
+.btn.light {
+    background: #fff3eb;
+    color: #9b4b33;
+    border: 1px solid #f0d6c7;
+}
+
+.btn.light:hover {
+    background: #ffe8dc;
+}
+
+
+/* =========================================================
+   9. 상태 배지
+   JSP 위치:
+   - my_order_list.jsp 주문상태
+   - order_detail.jsp 주문상태/결제상태
+   - order_complete.jsp 주문상태/결제상태
+   - delivery_status.jsp 현재상태
+   역할:
+   - DB 상태값을 한글 텍스트와 함께 색상 배지로 표시
+========================================================= */
+
+/* 배지 공통 */
+.badge {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 82px;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 900;
+    border-radius: 999px;
+}
+
+/* 주문 상태: 주문 접수 */
+.badge.PENDING {
+    background: #fff0e7;
+    color: #d85b35;
+}
+
+/* 주문 상태: 결제 완료 */
+.badge.PAID {
+    background: #e9f8ef;
+    color: #087443;
+}
+
+/* 주문 상태: 제작/배송 준비중 */
+.badge.PREPARING {
+    background: #fff0e7;
+    color: #d85b35;
+}
+
+/* 주문 상태: 배송중 */
+.badge.SHIPPING {
+    background: #eef4ff;
+    color: #2563eb;
+}
+
+/* 주문 상태: 배송 완료 */
+.badge.DELIVERED {
+    background: #e9f8ef;
+    color: #087443;
+}
+
+/* 주문 상태: 주문 취소 */
+.badge.CANCELLED {
+    background: #fdecec;
+    color: #b91c1c;
+}
+
+/* 결제 상태: 결제 대기 */
+.badge.READY {
+    background: #fff0e7;
+    color: #d85b35;
+}
+
+/* 결제 상태: 결제 완료 */
+.badge.SUCCESS {
+    background: #e9f8ef;
+    color: #087443;
+}
+
+/* 결제 상태: 결제 실패 */
+.badge.FAIL {
+    background: #fdecec;
+    color: #b91c1c;
+}
+
+/* 예전 소문자 class를 사용했을 때도 깨지지 않도록 남겨둔 예비 스타일 */
+.badge.success {
+    background: #e9f8ef;
+    color: #087443;
+}
+
+.badge.ready {
+    background: #fff0e7;
+    color: #d85b35;
+}
+
+.badge.shipping {
+    background: #eef4ff;
+    color: #2563eb;
+}
+
+.badge.fail {
+    background: #fdecec;
+    color: #b91c1c;
+}
+
+
+/* =========================================================
+   10. 정보 박스
+   JSP 위치:
+   - order_detail.jsp 기존 상단 주문번호/주문일/상태
+   - delivery_status.jsp 주문번호/주문일/현재상태
+   클래스:
+   - info-box
+========================================================= */
+
+.info-box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.info-box div {
+    padding: 18px;
+    background: #fffaf7;
+    border: 1px solid #f0e5dc;
+}
+
+.info-box span {
+    display: block;
+    margin-bottom: 8px;
+    color: #8a6b5a;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.info-box strong {
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   11. 주문 목록 테이블
+   JSP 위치:
+   - my_order_list.jsp
+   클래스:
+   - table-wrap
+   - order-table
+   역할:
+   - 내 주문 내역 목록 테이블
+========================================================= */
+
+/* 테이블 위쪽 굵은 선과 흰 배경 */
+.table-wrap {
+    border-top: 2px solid #2b2b2b;
+    background: #fff;
+}
+
+/* 주문 목록 테이블 */
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.order-table th,
+.order-table td {
+    padding: 16px 14px;
+    border-bottom: 1px solid #f0e5dc;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* 테이블 헤더 */
+.order-table th {
+    background: #fff8f3;
+    font-weight: 900;
+    color: #4b3b32;
+}
+
+/* 테이블 행 hover */
+.order-table tbody tr:hover td {
+    background: #fffaf7;
+}
+
+/* 상세보기 / 배송조회 링크 */
+.order-table a {
+    font-weight: 900;
+    color: #9b4b33;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.order-table td:last-child a {
+    display: inline-block;
+    margin: 0 4px;
+}
+
+/* 상품정보 컬럼이 들어갈 때 왼쪽 정렬용 */
+.table-product {
+    text-align: left !important;
+}
+
+.table-product strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.table-product span {
+    color: #8a6b5a;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   12. 주문 목록 필터 버튼
+   JSP 위치:
+   - my_order_list.jsp
+   클래스:
+   - order-filter
+========================================================= */
+
+.order-filter {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.order-filter button {
+    height: 38px;
+    padding: 0 18px;
+    border: 1px solid #f0d6c7;
+    background: #fff;
+    color: #8a6b5a;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.order-filter button.active {
+    background: #ff6f4f;
+    color: #fff;
+    border-color: #ff6f4f;
+}
+
+
+/* =========================================================
+   13. 주문 완료 / 결제 실패 공통 박스
+   JSP 위치:
+   - order_complete.jsp
+   - payment_fail.jsp
+   클래스:
+   - complete-box
+   - complete-icon
+   - complete-detail
+========================================================= */
+
+/* 가운데 완료/실패 안내 박스 */
+.complete-box {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 54px 40px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #f0e5dc;
+}
+
+/* 체크 표시 또는 느낌표 아이콘 원형 */
+.complete-icon {
+    width: 78px;
+    height: 78px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ff6f4f;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 38px;
+    font-weight: 900;
+}
+
+.complete-box h2 {
+    margin: 0 0 12px;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.complete-box > p {
+    margin: 0 0 34px;
+    color: #777;
+}
+
+/* 주문번호/결제상태 같은 상세 정보 표 */
+.complete-detail {
+    border-top: 1px solid #2b2b2b;
+    border-bottom: 1px solid #f0e5dc;
+    text-align: left;
+}
+
+.complete-detail div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 4px;
+    border-bottom: 1px solid #f0e5dc;
+}
+
+.complete-detail div:last-child {
+    border-bottom: none;
+}
+
+.complete-detail span {
+    color: #777;
+}
+
+/* 완료/실패 화면 안내 문구 박스 */
+.order-guide {
+    margin-top: 22px;
+    padding: 20px;
+    background: #fffaf7;
+    border: 1px solid #f0e5dc;
+    color: #6b4a3a;
+}
+
+
+/* =========================================================
+   14. 상세 정보 보조 박스
+   JSP 위치:
+   - order_form.jsp 작가 안내, 배송 정보
+   - payment_ready.jsp 작가 안내
+   - order_detail.jsp 배송 정보
+   클래스:
+   - artist-note
+   - delivery-info-card
+========================================================= */
+
+.artist-note,
+.delivery-info-card {
+    margin-top: 22px;
+    padding: 20px;
+    background: #fffaf7;
+    border: 1px solid #f0e5dc;
+    color: #6b4a3a;
+}
+
+.artist-note strong,
+.delivery-info-card h4 {
+    display: block;
+    margin: 0 0 8px;
+    font-size: 16px;
+}
+
+.artist-note p,
+.delivery-info-card p {
+    margin: 6px 0;
+}
+
+/* 배송 정보 안쪽 제목 폭 */
+.delivery-info-card strong {
+    display: inline-block;
+    width: 90px;
+    color: #4b3b32;
+}
+
+
+/* =========================================================
+   15. 배송 상태 확인 화면
+   JSP 위치:
+   - delivery_status.jsp
+   클래스:
+   - delivery-box
+   - delivery-steps
+   - delivery-step
+   역할:
+   - 주문 접수 → 결제 완료 → 상품 준비중 → 배송중 → 배송 완료 단계 표시
+========================================================= */
+
+.delivery-box {
+    background: #fff;
+    border: 1px solid #f0e5dc;
+    padding: 34px;
+}
+
+/* 배송 단계 5칸 */
+.delivery-steps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+}
+
+/* 배송 단계 카드 */
+.delivery-step {
+    padding: 24px 12px;
+    border: 1px solid #f0e5dc;
+    text-align: center;
+    background: #fffaf7;
+}
+
+/* 배송 단계 숫자 */
+.delivery-step .num {
+    width: 38px;
+    height: 38px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1ded1;
+    color: #9b4b33;
+    border-radius: 50%;
+    font-weight: 900;
+}
+
+.delivery-step strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.delivery-step span {
+    color: #8a6b5a;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* 완료된 배송 단계 */
+.delivery-step.done .num,
+.delivery-step.current .num {
+    background: #ff6f4f;
+    color: #fff;
+}
+
+/* 현재 배송 단계 */
+.delivery-step.current {
+    border-color: #ff6f4f;
+    background: #fff3eb;
+}
+
+/* 배송 상태 안내 문구 */
+.notice-box {
+    margin-top: 24px;
+    padding: 20px;
+    background: #fff8f3;
+    border: 1px solid #f0e5dc;
+    color: #6b4a3a;
+}
+
+
+/* =========================================================
+   16. 주문 상세 전용 정렬
+   JSP 위치:
+   - order_detail.jsp
+   클래스:
+   - order-detail-grid
+   - order-main-column
+   - order-side-column
+   - order-summary-box
+   - order-status-card
+   역할:
+   - 왼쪽: 주문번호/주문일 + 주문상품
+   - 오른쪽: 주문상태 + 결제정보
+========================================================= */
+
+/* 주문 상세 전체 2단 구조 */
+.order-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 36px;
+    align-items: start;
+}
+
+/* 왼쪽/오른쪽 세로 간격 */
+.order-main-column,
+.order-side-column {
+    display: grid;
+    gap: 20px;
+}
+
+/* 주문번호/주문일 2칸 */
+.order-summary-box {
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 0;
+}
+
+/* 오른쪽 주문상태 카드 */
+.order-status-card {
+    min-height: 96px;
+    padding: 18px;
+    background: #fffaf7;
+    border: 1px solid #f0e5dc;
+}
+
+.order-status-card > span {
+    display: block;
+    margin-bottom: 8px;
+    color: #8a6b5a;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.order-status-card > strong {
+    display: block;
+}
+
+/* 주문 상세에서는 결제정보 박스를 sticky로 고정하지 않음 */
+.order-detail-grid .side-panel {
+    position: static;
+}
+
+
+/* =========================================================
+   17. Footer
+   JSP 위치:
+   - 모든 주문/결제 JSP 하단
+========================================================= */
+
+.site-footer {
+    border-top: 1px solid #f0e5dc;
+    padding: 34px 0;
+    background: #fff8f3;
+}
+
+.footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+.footer-inner strong {
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.footer-inner p {
+    margin: 8px 0 0;
+    color: #8a6b5a;
+}
+
+
+/* =========================================================
+   18. 반응형 - 태블릿 이하
+   기준:
+   - 화면 너비 900px 이하
+   역할:
+   - 2단 레이아웃을 1단으로 변경
+   - 테이블 가로 스크롤 처리
+========================================================= */
+
+@media (max-width: 900px) {
+    .main-nav {
+        display: none;
+    }
+
+    .hero-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hero-card {
+        width: 100%;
+    }
+
+    .hero-order h1 {
+        font-size: 28px;
+    }
+
+    .order-layout,
+    .order-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .side-panel {
+        position: static;
+    }
+
+    .info-box,
+    .delivery-steps,
+    .order-summary-box {
+        grid-template-columns: 1fr;
+    }
+
+    .order-item {
+        grid-template-columns: 90px 1fr;
+    }
+
+    .item-price {
+        grid-column: 1 / -1;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    .order-table {
+        min-width: 760px;
+    }
+
+    .order-filter {
+        overflow-x: auto;
+    }
+
+    .order-filter button {
+        white-space: nowrap;
+    }
+}
+
+
+/* =========================================================
+   19. 반응형 - 모바일
+   기준:
+   - 화면 너비 640px 이하
+   역할:
+   - 헤더 세로 정렬
+   - 상품 카드 1단 정렬
+   - 버튼 세로 정렬
+========================================================= */
+
+@media (max-width: 640px) {
+    .header-inner {
+        height: auto;
+        padding: 18px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .header-actions {
+        gap: 14px;
+    }
+
+    .block-inner {
+        padding: 0 18px;
+    }
+
+    .page-block {
+        padding: 48px 0;
+    }
+
+    .page-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-title-row h2 {
+        font-size: 26px;
+    }
+
+    .order-item {
+        grid-template-columns: 1fr;
+    }
+
+    .order-item img {
+        width: 100%;
+        height: 220px;
+    }
+
+    .complete-box {
+        padding: 40px 24px;
+    }
+
+    .btn-row {
+        flex-direction: column;
+    }
+}
