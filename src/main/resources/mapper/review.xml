@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.ReviewDAO">
+	<insert id="addReview"
+            parameterType="review">
+        INSERT INTO reviews (user_id, product_id, order_item_id, rating, content)
+        VALUES (#{userId}, #{productId}, 1, #{rating}, #{content})
+    </insert>
+
+    <select id="getMyReviewList"
+            parameterType="int"
+            resultType="review">
+        SELECT *
+        FROM reviews
+        WHERE user_id = #{id}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="getLiveReviewList"
+            parameterType="int"
+            resultType="review">
+        SELECT *
+        FROM reviews
+        ORDER BY created_at DESC
+        LIMIT 10
+    </select>
+</mapper>
