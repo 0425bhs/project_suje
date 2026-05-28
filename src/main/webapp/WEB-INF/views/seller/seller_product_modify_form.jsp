@@ -88,7 +88,7 @@
     </head>
 
     <body>
-        <div >
+        <div>
 
             <form method="post" enctype="multipart/form-data">
 
@@ -100,24 +100,23 @@
                 <input type="hidden" name="del_image_l" value="${vo.image_l}">
                 <input type="hidden" name="del_image_s" value="${vo.image_s}">
 
-                <table border="1" align="center">
-                    
-                <span>상품 수정</span>
                 <div>
-                <span>카테고리</span>
                     
-                    <select name="category_id" value="${vo.category_id}">
-                        <option value="1" ${vo.category_id==1 ? 'selected' : ''}>패션/주얼리</option>
-                        <option value="2" ${vo.category_id==2 ? 'selected' : ''}>홈리빙</option>
-                        <option value="3" ${vo.category_id==3 ? 'selected' : ''}>뷰티</option>
-                        <option value="4" ${vo.category_id==4 ? 'selected' : ''}>식품</option>
-                        <option value="5" ${vo.category_id==5 ? 'selected' : ''}>공예</option>
-                        <option value="6" ${vo.category_id==6 ? 'selected' : ''}>반려동물</option>
-                    </select>
-                </div>
+                    <span>상품 수정</span>
+                    <div>
+                        <span>카테고리</span>
                         
-                    
-
+                        <select name="category_id" value="${vo.category_id}">
+                            <option value="1" ${vo.category_id==1 ? 'selected' : ''}>패션/주얼리</option>
+                            <option value="2" ${vo.category_id==2 ? 'selected' : ''}>홈리빙</option>
+                            <option value="3" ${vo.category_id==3 ? 'selected' : ''}>뷰티</option>
+                            <option value="4" ${vo.category_id==4 ? 'selected' : ''}>식품</option>
+                            <option value="5" ${vo.category_id==5 ? 'selected' : ''}>공예</option>
+                            <option value="6" ${vo.category_id==6 ? 'selected' : ''}>반려동물</option>
+                        </select>
+                    </div>    
+                </div>
+                   
                 <div>
                     <span>상품명</span>
                     <input name="name" value="${vo.name}"/>
@@ -125,84 +124,68 @@
 
                 <div>
                     <th>상품 설명</th>
-                        <textarea name="description"  placeholder="상품 설명을 입력하세요">${vo.description}</textarea>
+                    <textarea name="description"  placeholder="상품 설명을 입력하세요">${vo.description}</textarea>
                 </div>
 
-                <tr>
-                    <th>판매 가격</th>
-                    <td>
-                        <input type="number" name="price" value="${vo.price}"/>
-                    </td>
-                </tr>
+                <div>
+                    <div>판매 가격</div>
+                    <input type="number" name="price" value="${vo.price}"/>
+                </div>
 
-                <tr>
-                    <th>세일 가격</th>
-                    <td>
-                        <input type="number" name="sale_price" value="${vo.sale_price}"/>
-                    </td>
-                </tr>
+                <div>
+                    <div>세일 가격</div>
+                    <input type="number" name="sale_price" value="${vo.sale_price}"/>
+                </div>
 
-                <tr>
-                    <th>재고</th>
-                    <td>
-                        <input type="number" name="stock" value="${vo.stock}"/>
-                    </td>
-                </tr>
+                <div>
+                    <div>재고</div>
+                    <input type="number" name="stock" value="${vo.stock}"/>
+                </div>
 
-                <tr>
+                <div>
                     <th>배송비</th>
-                    <td>
-                        <input type="number" name="delivery_fee" value="${vo.delivery_fee}"/>
-                    </td>
-                </tr>
+                    <input type="number" name="delivery_fee" value="${vo.delivery_fee}"/>
+                </div>
 
-                <tr>
-                    <th>무료배송 기준 금액</th>
-                    <td>
-                        <input type="text" name="free_shipping" id="free_shipping" value="${vo.free_shipping}" placeholder="무료배송 기준 금액"/>
-                        <c:if test="${vo.free_shipping>0}">
-                        <p><span><fmt:formatNumber value="${vo.free_shipping}" pattern="#,###" /></span>원 이상 구매 시 무료배송으로 설정됩니다.</p>
-                        </c:if>
-                        <c:if test="${free_shipping==0}">
-                        <p>무료배송으로 설정됩니다.</p>
-                        </c:if>
-                    </td>
-                </tr>
+                <div>
+                    <div>무료배송 기준 금액</div>
+                    <input type="text" name="free_shipping" id="free_shipping" value="${vo.free_shipping}" placeholder="무료배송 기준 금액"/>
+                    <c:if test="${vo.free_shipping>0}">
+                    <p><span><fmt:formatNumber value="${vo.free_shipping}" pattern="#,###" /></span>원 이상 구매 시 무료배송으로 설정됩니다.</p>
+                    </c:if>
+                    <c:if test="${free_shipping==0}">
+                    <p>무료배송으로 설정됩니다.</p>
+                    </c:if>
+                </div>
 
-                <tr>
-                    <th>대표 이미지</th>
-                    <td>
-                        <c:if test="${vo.image_l ne 'no_file'}">
-                            <div id="image_l_div">
-                                <img src="${vo.image_l}"/>
-                                <input type="button" value="X" onclick="delImgL()"/>
-                            </div>
-                        </c:if>
+                <div>
+                    <div>대표 이미지</div>
+                    <c:if test="${vo.image_l ne 'no_file'}">
+                        <div id="image_l_div">
+                            <img src="${vo.image_l}"/>
+                            <input type="button" value="X" onclick="delImgL()"/>
+                        </div>
+                    </c:if>
                     
-                        <input type="file" name="image_l_file">
-                    </td>
-                </tr>
+                    <input type="file" name="image_l_file">
+                </div>
 
-                <tr>
-                    <th>상세 이미지</th>
-                    <td>
-                        <c:if test="${vo.image_s ne 'no_file'}">
-                            <div id="image_s_div">
-                                <img src="${vo.image_s}" width="100"/>
-                                <input type="button" value="X" onclick="delImgS()"/>
-                            </div>
-                        </c:if>
+                <div>
+                    <div>상세 이미지</div>
+                    <c:if test="${vo.image_s ne 'no_file'}">
+                        <div id="image_s_div">
+                            <img src="${vo.image_s}" width="100"/>
+                            <input type="button" value="X" onclick="delImgS()"/>
+                        </div>
+                    </c:if>
 
-                        <input type="file" name="image_s_file">
-                    </td>
-                </tr>
+                    <input type="file" name="image_s_file">
+                </div>
 
-                <tr>
-                    <td colspan="2">
-                        <input type="button" value="수정" onclick="send(this.form)">
-                        <input type="button" value="취소" onclick="location.href='/'">
-                    </td>
-                </tr>
+                <div>
+                    <input type="button" value="수정" onclick="send(this.form)">
+                    <input type="button" value="취소" onclick="location.href='/'">
+                </div>
             </form>
         </div>
     </body>
