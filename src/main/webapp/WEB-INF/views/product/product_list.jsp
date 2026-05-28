@@ -34,6 +34,10 @@
                 </div>
             </c:forEach>
 
+            <div>
+                ${pageMenu}
+            </div>
+
         </div>
 
     </body>

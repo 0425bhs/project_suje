@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ProductVO;
 
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,32 @@ public class ProductController {
 
     private final ProductDAO productdao;
 
-    @GetMapping(value = {"/","/product/list.do"})
-    public String productList(Model model) {
-        List<ProductVO> list=productdao.product_list();
+    @GetMapping(value={"/","/product/list.do"})
+    public String productList(Model model,Integer page){
+       
+        int nowPage = 1;
+
+        if (page != null) {
+            nowPage=page;
+        }
+
+        int blockList=10; //한 페이지에 보여줄 상품 수
+        int blockPage=5; //페이지 번호 개수
+
+        int rowTotal = productdao.product_cnt();
+        int start=(nowPage - 1)*blockList;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("start",start);
+        map.put("blockList",blockList);
+
+        List<ProductVO> list=productdao.product_list(map);
+
+        String pageMenu=Paging.getPaging("/product/list.do",nowPage,rowTotal,blockList,blockPage);
+
         model.addAttribute("list",list);
+        model.addAttribute("pageMenu",pageMenu);
+
         return "product/product_list";
     }
 
@@ -74,7 +97,7 @@ public class ProductController {
                 savFile=new File(savePath,filename_s);
             }
 
-            image_L.transferTo(savFile);
+            image_S.transferTo(savFile);
         }
 
         vo.setImage_l("/upload/"+filename_l);
@@ -148,7 +171,6 @@ public class ProductController {
 
         int res = productdao.seller_product_modify(vo);
 
-        // 업데이트 성공 후 기존 이미지 삭제
         if (res == 1) {
             if (del_image_l != null && !del_image_l.equals("no_file")) {
                 File delFile = new File(savePath, del_image_l.replace("/upload/", ""));
@@ -183,7 +205,7 @@ public class ProductController {
     public String product_detail_form(Long product_id,Model model){
         ProductVO vo=productdao.product_one(product_id);
         model.addAttribute("vo",vo);
-        return "/product/product_detail_form";
+        return "/product/product_detail";
     }    
 
 
