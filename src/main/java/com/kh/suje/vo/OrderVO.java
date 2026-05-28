@@ -1,14 +1,21 @@
 package com.kh.suje.vo;
 
+import org.apache.ibatis.type.Alias;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Alias("order")
 public class OrderVO {
     
-    private Long order_id; // 주문 번호
-    private Long user_id; // 주문한 회원 번호
+    private int order_id; // 주문 번호
+    private int user_id; // 주문한 회원 번호
     private int total_amount; // 주문 전체 금액
-    private Long address_id; // 배송지 번호
+    private int address_id; // 배송지 번호
     private String status; // 주문 상태
     private String created_at; // 주문 생성일
     private String updated_at; // 주문 수정일 / 주문 상태 변경일

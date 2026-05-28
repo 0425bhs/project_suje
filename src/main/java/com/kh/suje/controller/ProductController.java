@@ -55,7 +55,7 @@ public class ProductController {
 
     @GetMapping("/seller_product_insert.do")
     public String seller_product_insert_form(){
-        return "/product/seller_product_insert_form";
+        return "/seller/seller_product_insert_form";
     }
 
     @PostMapping("/seller_product_insert.do")
@@ -100,8 +100,17 @@ public class ProductController {
             image_S.transferTo(savFile);
         }
 
-        vo.setImage_l("/upload/"+filename_l);
-        vo.setImage_s("/upload/"+filename_s);
+        if (filename_l.equals("no_file")) {
+            vo.setImage_l("no_file");
+        } else {
+            vo.setImage_l("/upload/" + filename_l);
+        }
+
+        if (filename_s.equals("no_file")) {
+            vo.setImage_s("no_file");
+        } else {
+            vo.setImage_s("/upload/" + filename_s);
+        }
 
         vo.setStatus("APPROVED");//테스트용 삭제 예정
 
@@ -114,10 +123,10 @@ public class ProductController {
     }
 
     @GetMapping("/seller_product_modify.do")
-    public String seller_product_modify_form(Long product_id, Model model){
+    public String seller_product_modify_form(int product_id, Model model){
         ProductVO vo = productdao.product_one(product_id);
         model.addAttribute("vo", vo);
-        return "product/seller_product_modify_form";
+        return "seller/seller_product_modify_form";
     }
 
     @PostMapping("/seller_product_modify.do")
@@ -202,7 +211,7 @@ public class ProductController {
 
 
     @GetMapping("/product_detail.do")
-    public String product_detail_form(Long product_id,Model model){
+    public String product_detail_form(int product_id,Model model){
         ProductVO vo=productdao.product_one(product_id);
         model.addAttribute("vo",vo);
         return "/product/product_detail";

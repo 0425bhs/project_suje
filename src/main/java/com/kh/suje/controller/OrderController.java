@@ -31,7 +31,7 @@ public class OrderController {
     public String myOrderList(Model model) {
 
         // 로그인 기능 붙기 전 테스트용 회원 번호
-        Long user_id = 1L;
+        int user_id = 1;
 
         List<OrderVO> orderList = orderDAO.selectOrderListByUserId(user_id);
 
@@ -46,7 +46,7 @@ public class OrderController {
     public String orderForm(Model model) {
 
         // 상품 상세 페이지가 아직 없으니까 테스트용 상품 정보
-        model.addAttribute("product_id", 1L);
+        model.addAttribute("product_id", 1);
         model.addAttribute("productName", "핸드메이드 실버 반지");
         model.addAttribute("imageS", "test_ring_small.jpg");
         model.addAttribute("price", 15000);
@@ -60,14 +60,14 @@ public class OrderController {
     // 주문서 작성 → 결제 대기로 이동
     @PostMapping("/order/create")
     public String createOrder(
-            @RequestParam("product_id") Long product_id,
+            @RequestParam("product_id") int product_id,
             @RequestParam("price") int price,
             @RequestParam("quantity") int quantity,
             @RequestParam("payment_method") String payment_method
     ) {
         // 로그인 붙기 전 테스트용 회원/배송지
-        Long user_id = 1L;
-        Long address_id = 1L;
+        int user_id = 1;
+        int address_id = 1;
 
         int total_amount = price * quantity;
 
@@ -107,7 +107,7 @@ public class OrderController {
     // 주소: /order/complete?order_id=1
     @GetMapping("/order/complete")
     public String orderComplete(
-            @RequestParam("order_id") Long order_id,
+            @RequestParam("order_id") int order_id,
             Model model
     ) {
         OrderVO order = orderDAO.selectOrderById(order_id);
@@ -125,7 +125,7 @@ public class OrderController {
     // 주소: /order/detail?order_id=1
     @GetMapping("/order/detail")
     public String orderDetail(
-            @RequestParam("order_id") Long order_id,
+            @RequestParam("order_id") int order_id,
             Model model
     ) {
         OrderVO order = orderDAO.selectOrderById(order_id);
@@ -143,7 +143,7 @@ public class OrderController {
     // 주소: /order/delivery?order_id=1
     @GetMapping("/order/delivery")
     public String deliveryStatus(
-            @RequestParam("order_id") Long order_id,
+            @RequestParam("order_id") int order_id,
             Model model
     ) {
         OrderVO order = orderDAO.selectOrderById(order_id);

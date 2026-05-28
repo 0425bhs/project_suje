@@ -28,7 +28,7 @@ public class PaymentController {
     // 주소: /payment/ready?order_id=1
     @GetMapping("/payment/ready")
     public String paymentReady(
-            @RequestParam("order_id") Long order_id,
+            @RequestParam("order_id") int order_id,
             Model model
     ) {
         OrderVO order = orderDAO.selectOrderById(order_id);
@@ -45,7 +45,7 @@ public class PaymentController {
     // 결제 성공 처리
     // 주소: /payment/success?order_id=1
     @GetMapping("/payment/success")
-    public String paymentSuccess(@RequestParam("order_id") Long order_id) {
+    public String paymentSuccess(@RequestParam("order_id") int order_id) {
 
         // 1. payments 상태 SUCCESS로 변경
         PaymentVO paymentVO = new PaymentVO();
@@ -69,7 +69,7 @@ public class PaymentController {
     // 주소: /payment/fail?order_id=1
     @GetMapping("/payment/fail")
     public String paymentFail(
-            @RequestParam("order_id") Long order_id,
+            @RequestParam("order_id") int order_id,
             Model model
     ) {
         PaymentVO paymentVO = new PaymentVO();
