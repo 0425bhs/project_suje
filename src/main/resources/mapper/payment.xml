@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.kh.suje.dao.PaymentDAO">
 
     <!-- 주문번호로 결제 정보 조회 -->
-    <select id="selectPaymentByOrderId" parameterType="long" resultType="PaymentVO">
+    <select id="selectPaymentByOrderId" parameterType="int" resultType="payment">
         SELECT
             payment_id,
             order_id,
@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          useGeneratedKeys="true"	DB가 자동 생성한 키 값을 받아오겠다
          keyProperty="payment_id"	받아온 값을 PaymentVO.payment_id 변수에 넣겠다
          keyColumn="payment_id"	DB에서 자동 생성되는 컬럼 이름은 payment_id다-->
-    <insert id="insertPayment" parameterType="PaymentVO"
+    <insert id="insertPayment" parameterType="payment"
             useGeneratedKeys="true" 
             keyProperty="payment_id"
             keyColumn="payment_id">
@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <!-- 결제 성공 처리 -->
-    <update id="updatePaymentSuccess" parameterType="PaymentVO">
+    <update id="updatePaymentSuccess" parameterType="payment">
         UPDATE payments
         SET
             status = 'SUCCESS',
@@ -53,7 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <!-- 결제 실패 처리 -->
-    <update id="updatePaymentFail" parameterType="PaymentVO">
+    <update id="updatePaymentFail" parameterType="payment">
         UPDATE payments
         SET status = 'FAIL'
         WHERE order_id = #{order_id}

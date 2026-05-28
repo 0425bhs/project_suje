@@ -9,7 +9,7 @@ public interface ProductDAO {
 
     List<ProductVO> product_list(Map<String, Object> map);
     
-    ProductVO product_one(Long product_id);
+    ProductVO product_one(int product_id);
 
     int seller_product_insert(ProductVO vo);
 

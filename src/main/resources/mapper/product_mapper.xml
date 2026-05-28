@@ -8,22 +8,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select * FROM products WHERE status='APPROVED' limit #{start},#{blockList}
     </select>
 
-    <select id="product_one" parameterType="long" resultType="product">
+    <select id="product_one" parameterType="int" resultType="product">
         select * from products where product_id = #{product_id}
     </select>
 
     <insert id="seller_product_insert" parameterType="product">
-        insert into products (seller_id,category_id,name,description,price,sale_price,stock,delivery_fee,status,image_l,image_s) 
-        values (#{seller_id},#{category_id},#{name},#{description},#{price},#{sale_price},#{stock},#{delivery_fee},'PENDING', #{image_l},#{image_s})
+        insert into products (seller_id,category_id,name,description,price,sale_price,stock,delivery_fee,free_shipping,status,image_l,image_s) 
+        values (#{seller_id},#{category_id},#{name},#{description},#{price},#{sale_price},#{stock},#{delivery_fee},#{free_shipping},#{status}, #{image_l},#{image_s})
+        <!-- #{status}는 'PENDING'로 처치할 예정 -->
     </insert>
 		
      <update id="seller_product_modify" parameterType="product">
-        update products set category_id = #{category_id},name = #{name},description = #{description},price = #{price},sale_price = #{sale_price},stock = #{stock},delivery_fee = #{delivery_fee},status = #{status},
-            image_l = #{image_l},image_s = #{image_s},updated_at = CURRENT_TIMESTAMP where product_id=#{product_id}
+        update products set category_id=#{category_id}, name=#{name}, description=#{description}, price=#{price}, sale_price=#{sale_price}, stock=#{stock}, delivery_fee=#{delivery_fee},
+        free_shipping=#{free_shipping}, status=#{status}, image_l=#{image_l}, image_s=#{image_s}, updated_at=CURRENT_TIMESTAMP where product_id=#{product_id}
     </update>
 
     <select id="product_cnt" resultType="int">
-        select count(*) from products where status = 'APPROVED'
+        select count(*) from products where status='APPROVED'
     </select>
 
 </mapper>
