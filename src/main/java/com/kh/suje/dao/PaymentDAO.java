@@ -8,7 +8,7 @@ import com.kh.suje.vo.payment.PaymentVO;
 public interface PaymentDAO {
     
     //주문번호로 결제 정보 조회
-    PaymentVO selectPaymentByOrderId(long orderId);
+    PaymentVO selectPaymentByOrderId(int orderId);
 
     //결제 대기
     int insertPayment(PaymentVO vo);

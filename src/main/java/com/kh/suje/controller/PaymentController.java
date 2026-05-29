@@ -43,7 +43,7 @@ public class PaymentController {
     // 주소: /payment/ready?order_id=1
     @GetMapping("/payment/ready")
     public String paymentReady(
-            @RequestParam("order_id") Long order_id,
+            @RequestParam("order_id") int order_id,
             Model model
     ) {
         OrderVO order = orderDAO.selectOrderById(order_id);
@@ -95,7 +95,7 @@ public class PaymentController {
             return "payment/payment_fail";
         }
 
-        Long order_id = Long.parseLong(tossOrderId.replace("ORDER_", ""));
+        int order_id = Integer.parseInt(tossOrderId.replace("ORDER_", ""));
 
         PaymentVO dbPayment = paymentDAO.selectPaymentByOrderId(order_id);
 

@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.kh.suje.dao.OrderDAO">
 
     <!-- 내 주문 내역 조회 -->
-    <select id="selectOrderListByUserId" parameterType="long" resultType="OrderVO">
+    <select id="selectOrderListByUserId" parameterType="int" resultType="order">
         SELECT
             order_id,
             user_id,
@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <!-- 주문 1건 조회 -->
-    <select id="selectOrderById" parameterType="long" resultType="OrderVO">
+    <select id="selectOrderById" parameterType="int" resultType="order">
         SELECT
             order_id,
             user_id,
@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <!-- 주문 생성 -->
-    <insert id="insertOrder" parameterType="OrderVO"
+    <insert id="insertOrder" parameterType="order"
             useGeneratedKeys="true"
             keyProperty="order_id"
             keyColumn="order_id">
@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <!-- 주문 상품 생성 -->
-    <insert id="insertOrderItem" parameterType="OrderItemVO"
+    <insert id="insertOrderItem" parameterType="orderitem"
             useGeneratedKeys="true"
             keyProperty="order_item_id"
             keyColumn="order_item_id">
@@ -73,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <!-- 주문 상품 목록 조회 -->
-    <select id="selectOrderItemList" parameterType="long" resultType="OrderItemVO">
+    <select id="selectOrderItemList" parameterType="int" resultType="orderitem">
         SELECT
             oi.order_item_id,
             oi.order_id,
@@ -89,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <!-- 주문 상태 변경 -->
-    <update id="updateOrderStatus" parameterType="OrderVO">
+    <update id="updateOrderStatus" parameterType="order">
         UPDATE orders
         SET status = #{status}
         WHERE order_id = #{order_id}
