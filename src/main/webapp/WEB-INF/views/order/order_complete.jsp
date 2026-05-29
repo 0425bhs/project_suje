@@ -8,7 +8,7 @@
         <title>주문 완료</title>
         <link rel="stylesheet" href="/css/order-payment.css">
     </head>
-    
+
     <body>
 
     <header class="site-header">
@@ -16,17 +16,17 @@
             <div class="brand">HAND<span>MADE</span></div>
 
             <nav class="main-nav">
+                <a href="/product/list.do">상품보기</a>
                 <a href="#">선물추천</a>
                 <a href="#">베스트</a>
                 <a href="#">취향발견</a>
                 <a href="#">최신작품</a>
                 <a href="#">작가</a>
-                <a href="#">커뮤니티</a>
             </nav>
 
             <div class="header-actions">
-                <a href="/order/form">주문서 작성</a>
                 <a href="/order/my">주문내역</a>
+                <a href="#">관심</a>
                 <a href="#">장바구니</a>
             </div>
         </div>

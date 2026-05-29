@@ -1,0 +1,955 @@
+/* =========================================================
+   product.css
+   사용 JSP:
+   - product_list.jsp
+   - product_detail.jsp
+
+   목적:
+   - 핸드메이드 쇼핑몰 메인 홈
+   - 상품 상세 화면
+   - 아이디어스 느낌 참고
+========================================================= */
+
+
+/* =========================================================
+   1. 기본 설정
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", Arial, sans-serif;
+    background: #ffffff;
+    color: #333;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+.disabled {
+    opacity: 0.55;
+    cursor: default !important;
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   2. Header - 유틸 메뉴
+========================================================= */
+
+.product-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.product-util {
+    height: 30px;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+}
+
+.product-util-inner {
+    max-width: 1440px;
+    height: 30px;
+    margin: 0 auto;
+    padding: 0 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #777;
+    font-size: 13px;
+}
+
+.product-util-menu {
+    display: flex;
+    gap: 18px;
+}
+
+.product-util a:hover {
+    color: #ff6f4f;
+}
+
+
+/* =========================================================
+   3. Header - 로고 / 검색 / 액션
+========================================================= */
+
+.product-header-inner {
+    max-width: 1440px;
+    height: 82px;
+    margin: 0 auto;
+    padding: 0 44px;
+    display: grid;
+    grid-template-columns: 190px minmax(320px, 560px) 1fr;
+    align-items: center;
+    gap: 34px;
+}
+
+.product-brand {
+    font-size: 31px;
+    font-weight: 950;
+    letter-spacing: -0.08em;
+    color: #222;
+}
+
+.product-brand span {
+    color: #ff6f4f;
+}
+
+.product-search-box {
+    height: 46px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid #ff7b58;
+    background: #fff;
+    color: #999;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.product-search-box::after {
+    content: "⌕";
+    color: #555;
+    font-size: 25px;
+    line-height: 1;
+}
+
+.product-header-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 22px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.product-header-actions a {
+    white-space: nowrap;
+}
+
+.product-header-actions a:hover {
+    color: #ff6f4f;
+}
+
+
+/* =========================================================
+   4. Header - 이모티콘 메뉴 바
+========================================================= */
+
+.product-nav-bar {
+    height: 56px;
+    border-top: 1px solid #f2f2f2;
+    background: #fff;
+}
+
+.product-nav-inner {
+    max-width: 1440px;
+    height: 56px;
+    margin: 0 auto;
+    padding: 0 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 56px;
+    color: #333;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.product-nav-inner a {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.product-nav-inner a:hover {
+    color: #ff6f4f;
+}
+
+.product-nav-inner a:not(.disabled)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 3px;
+    background: #ff6f4f;
+    transition: 0.18s ease;
+}
+
+.product-nav-inner a:not(.disabled):hover::after {
+    width: 100%;
+}
+
+
+/* =========================================================
+   5. 메인 비주얼 영역
+========================================================= */
+
+.home-visual {
+    padding: 32px 0 28px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.home-visual-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 44px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 20px;
+}
+
+.home-main-banner {
+    min-height: 270px;
+    padding: 42px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background:
+        linear-gradient(90deg, rgba(255, 246, 238, 0.96), rgba(255, 255, 255, 0.55)),
+        radial-gradient(circle at 88% 30%, rgba(255, 126, 84, 0.24), transparent 32%);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.banner-label {
+    width: fit-content;
+    height: 32px;
+    padding: 0 14px;
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    color: #ff6f4f;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 950;
+    letter-spacing: 0.12em;
+}
+
+.home-main-banner h1 {
+    margin: 0 0 18px;
+    color: #222;
+    font-size: 42px;
+    line-height: 1.22;
+    letter-spacing: -0.06em;
+    font-weight: 950;
+}
+
+.home-main-banner p {
+    width: 620px;
+    margin: 0;
+    color: #68564f;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.home-side-banners {
+    display: grid;
+    gap: 16px;
+}
+
+.side-banner {
+    min-height: 127px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.side-banner.peach {
+    background: #fff0e6;
+}
+
+.side-banner.yellow {
+    background: #fff7cb;
+}
+
+.side-banner span {
+    color: #ff6f4f;
+    font-size: 13px;
+    font-weight: 950;
+}
+
+.side-banner strong {
+    color: #222;
+    font-size: 23px;
+    line-height: 1.35;
+    font-weight: 950;
+    letter-spacing: -0.05em;
+}
+
+
+/* =========================================================
+   6. 빠른 메뉴 칩
+========================================================= */
+
+.quick-menu-wrap {
+    background: #fff;
+    padding: 24px 0 8px;
+}
+
+.quick-menu-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 44px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.quick-menu-inner button {
+    height: 42px;
+    padding: 0 22px;
+    border: 1px solid #e6e6e6;
+    background: #fff;
+    border-radius: 999px;
+    color: #444;
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+
+/* =========================================================
+   7. 홈 공통 섹션
+========================================================= */
+
+.product-home {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 34px 44px 80px;
+}
+
+.home-section {
+    margin-top: 58px;
+}
+
+.home-section:first-child {
+    margin-top: 20px;
+}
+
+.section-title-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+
+.section-title-row span {
+    display: block;
+    margin-bottom: 8px;
+    color: #ff6f4f;
+    font-size: 12px;
+    font-weight: 950;
+    letter-spacing: 0.1em;
+}
+
+.section-title-row h2 {
+    margin: 0;
+    color: #333;
+    font-size: 32px;
+    font-weight: 950;
+    letter-spacing: -0.05em;
+}
+
+.section-title-row p {
+    margin: 0;
+    color: #777;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   8. 카테고리 탭
+========================================================= */
+
+.category-tabs,
+.rank-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.category-tabs button,
+.rank-tabs button {
+    height: 40px;
+    padding: 0 20px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    color: #555;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 850;
+}
+
+.category-tabs button.active,
+.rank-tabs button.active {
+    background: #222;
+    color: #fff;
+    border-color: #222;
+}
+
+
+/* =========================================================
+   9. 상품 카드 - 기본 목록
+========================================================= */
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 32px 22px;
+}
+
+.product-grid.compact .product-card {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+
+.product-card {
+    overflow: hidden;
+    transition: 0.15s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+}
+
+.product-image-link {
+    display: block;
+    width: 100%;
+    height: 210px;
+    overflow: hidden;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: 0.2s ease;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.04);
+}
+
+.product-info {
+    padding: 12px 0 0;
+}
+
+.product-label {
+    display: inline-flex;
+    height: 23px;
+    padding: 0 9px;
+    margin-bottom: 8px;
+    align-items: center;
+    background: #fff0e8;
+    color: #ff6f4f;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.product-info h3 {
+    height: 45px;
+    margin: 0 0 7px;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.45;
+    font-weight: 750;
+    overflow: hidden;
+}
+
+.product-info h3 a:hover {
+    color: #ff6f4f;
+}
+
+.product-desc {
+    height: 38px;
+    margin: 0 0 9px;
+    color: #888;
+    font-size: 13px;
+    line-height: 1.45;
+    overflow: hidden;
+}
+
+.product-price {
+    margin-bottom: 10px;
+}
+
+.product-price span {
+    display: block;
+    margin-bottom: 2px;
+    color: #aaa;
+    font-size: 13px;
+    text-decoration: line-through;
+}
+
+.product-price strong {
+    display: block;
+    color: #222;
+    font-size: 19px;
+    font-weight: 950;
+    letter-spacing: -0.03em;
+}
+
+.product-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: #777;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   10. 페이징
+========================================================= */
+
+.product-page-menu {
+    margin-top: 34px;
+    text-align: center;
+    color: #333;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.product-page-menu a {
+    display: inline-flex;
+    min-width: 32px;
+    height: 32px;
+    margin: 0 3px;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.product-page-menu a:hover {
+    color: #fff;
+    background: #ff6f4f;
+    border-color: #ff6f4f;
+}
+
+
+/* =========================================================
+   11. 후기 인기 상품 카드
+========================================================= */
+
+.review-best-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 28px 22px;
+}
+
+.review-card {
+    display: block;
+}
+
+.review-card img {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    background: #f5f5f5;
+}
+
+.review-card div {
+    position: relative;
+    padding-top: 12px;
+}
+
+.review-card span {
+    position: absolute;
+    top: -200px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.review-card p {
+    height: 44px;
+    margin: 0 0 6px;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.4;
+    overflow: hidden;
+}
+
+.review-card strong {
+    color: #222;
+    font-size: 18px;
+    font-weight: 950;
+}
+
+
+/* =========================================================
+   12. 카테고리 베스트 랭킹
+========================================================= */
+
+.rank-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px 20px;
+}
+
+.rank-card {
+    position: relative;
+    display: block;
+}
+
+.rank-number {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    width: 42px;
+    height: 38px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ff6f4f;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 950;
+    border-radius: 8px 0 8px 0;
+}
+
+.rank-card img {
+    width: 100%;
+    height: 190px;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f5f5f5;
+}
+
+.rank-card p {
+    height: 42px;
+    margin: 10px 0 6px;
+    color: #333;
+    font-size: 15px;
+    line-height: 1.4;
+    overflow: hidden;
+}
+
+.rank-card strong {
+    color: #222;
+    font-size: 17px;
+    font-weight: 950;
+}
+
+
+/* =========================================================
+   13. 넓은 추천 카드
+========================================================= */
+
+.wide-recommend-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+}
+
+.wide-card {
+    display: block;
+}
+
+.wide-card img {
+    width: 100%;
+    height: 240px;
+    display: block;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #f5f5f5;
+}
+
+.wide-card div {
+    padding-top: 12px;
+}
+
+.wide-card span {
+    display: block;
+    margin-bottom: 5px;
+    color: #999;
+    font-size: 13px;
+}
+
+.wide-card p {
+    margin: 0;
+    color: #333;
+    font-size: 17px;
+    line-height: 1.45;
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   14. 상품 상세 페이지
+========================================================= */
+
+.product-detail-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 58px 32px 74px;
+}
+
+.product-detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 38px;
+    align-items: start;
+}
+
+.product-detail-panel {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 30px;
+}
+
+.product-detail-title {
+    margin: 0 0 24px;
+    font-size: 25px;
+    font-weight: 950;
+    letter-spacing: -0.04em;
+}
+
+.product-detail-main {
+    display: grid;
+    grid-template-columns: 430px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.product-detail-img {
+    width: 100%;
+    height: 430px;
+    object-fit: cover;
+    background: #f5f5f5;
+    border: 1px solid #eee;
+}
+
+.product-detail-info h3 {
+    margin: 0 0 18px;
+    font-size: 29px;
+    font-weight: 950;
+    line-height: 1.35;
+    letter-spacing: -0.045em;
+}
+
+.product-detail-info p {
+    margin: 10px 0;
+    color: #62554f;
+    font-size: 15px;
+}
+
+.product-detail-desc {
+    margin-top: 28px;
+    padding: 24px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    color: #555;
+    line-height: 1.75;
+}
+
+.product-detail-desc strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 17px;
+    color: #222;
+}
+
+
+/* =========================================================
+   15. 상품 상세 주문 박스
+========================================================= */
+
+.product-order-box {
+    position: sticky;
+    top: 120px;
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 28px;
+}
+
+.product-order-box h3 {
+    margin: 0 0 22px;
+    font-size: 21px;
+    font-weight: 950;
+}
+
+.product-summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin: 16px 0;
+    color: #555;
+}
+
+.product-summary-line strong {
+    color: #222;
+}
+
+.product-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+}
+
+.product-summary-total span {
+    font-weight: 850;
+}
+
+.product-summary-total strong {
+    font-size: 25px;
+    font-weight: 950;
+    color: #ff6f4f;
+}
+
+.product-quantity {
+    width: 88px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    text-align: center;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   16. 버튼
+========================================================= */
+
+.product-btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.product-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 52px;
+    padding: 0 22px;
+    border: 0;
+    font-size: 15px;
+    font-weight: 950;
+    cursor: pointer;
+    transition: 0.16s ease;
+}
+
+.product-btn.full {
+    width: 100%;
+}
+
+.product-btn.primary {
+    background: #ff6f4f;
+    color: #fff;
+}
+
+.product-btn.primary:hover {
+    background: #f05c3d;
+}
+
+.product-btn.light {
+    background: #fff;
+    color: #9b4b33;
+    border: 1px solid #e6d2c6;
+}
+
+.product-btn.light:hover {
+    background: #fff5ef;
+}
+
+
+/* =========================================================
+   17. Footer
+========================================================= */
+
+.product-footer {
+    border-top: 1px solid #eee;
+    padding: 38px 0;
+    background: #fafafa;
+}
+
+.product-footer-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 44px;
+}
+
+.product-footer-inner strong {
+    color: #222;
+    font-size: 17px;
+    font-weight: 950;
+}
+
+.product-footer-inner p {
+    margin: 8px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.product-detail-price-box {
+    margin: 18px 0;
+}
+
+.product-detail-price-box .origin-price {
+    margin: 0 0 4px;
+    color: #aaa;
+    font-size: 15px;
+    text-decoration: line-through;
+}
+
+.product-detail-price-box .sale-price {
+    margin: 0;
+    color: #ff6f4f;
+    font-size: 28px;
+    font-weight: 950;
+    letter-spacing: -0.03em;
+}

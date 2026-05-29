@@ -20,4 +20,6 @@ public class ProductVO {
     
     private int price,sale_price,stock,delivery_fee;
 
+    private int free_shipping;
+
 }

@@ -7,8 +7,10 @@
         <meta charset="UTF-8">
         <title>결제 대기</title>
         <link rel="stylesheet" href="/css/order-payment.css">
+
+        <script src="https://js.tosspayments.com/v2/standard"></script>
     </head>
-    
+
     <body>
 
     <header class="site-header">
@@ -16,12 +18,12 @@
             <div class="brand">HAND<span>MADE</span></div>
 
             <nav class="main-nav">
+                <a href="/product/list.do">상품보기</a>
                 <a href="#">선물추천</a>
                 <a href="#">베스트</a>
                 <a href="#">취향발견</a>
                 <a href="#">최신작품</a>
                 <a href="#">작가</a>
-                <a href="#">커뮤니티</a>
             </nav>
 
             <div class="header-actions">
@@ -39,7 +41,7 @@
                     <span>PAYMENT</span>
                     <h2>결제 대기</h2>
                 </div>
-                <p>주문 정보를 확인한 뒤 결제를 진행합니다.</p>
+                <p>주문 정보를 확인한 뒤 결제창에서 결제를 진행합니다.</p>
             </div>
 
             <div class="order-layout">
@@ -48,7 +50,7 @@
 
                     <c:forEach var="item" items="${orderItemList}">
                         <div class="order-item">
-                            <img src="/images/${item.imageS}" alt="상품 이미지">
+                            <img src="${item.imageS}" alt="상품 이미지">
 
                             <div class="item-info">
                                 <div class="creator-line">작가 상품</div>
@@ -78,18 +80,6 @@
                     </div>
 
                     <div class="summary-line">
-                        <span>결제수단</span>
-                        <strong>
-                            <c:choose>
-                                <c:when test="${payment.payment_method eq 'CARD'}">카드</c:when>
-                                <c:when test="${payment.payment_method eq 'TOSS'}">토스페이</c:when>
-                                <c:when test="${payment.payment_method eq 'KAKAO'}">카카오페이</c:when>
-                                <c:otherwise>${payment.payment_method}</c:otherwise>
-                            </c:choose>
-                        </strong>
-                    </div>
-
-                    <div class="summary-line">
                         <span>결제상태</span>
                         <span class="badge ${payment.status}">
                             <c:choose>
@@ -106,12 +96,22 @@
                         <strong>${payment.amount}원</strong>
                     </div>
 
+                    <input type="hidden" id="tossClientKey" value="${tossClientKey}">
+                    <input type="hidden" id="customerKey" value="${customerKey}">
+                    <input type="hidden" id="payAmount" value="${payment.amount}">
+                    <input type="hidden" id="tossOrderId" value="${tossOrderId}">
+                    <input type="hidden" id="orderName" value="${orderName}">
+
                     <div class="btn-row">
-                        <a class="btn primary full" href="/payment/success?order_id=${order.order_id}">결제 진행하기</a>
+                        <button type="button" class="btn primary full" id="payment-button">
+                            결제 진행하기
+                        </button>
                     </div>
 
                     <div class="btn-row">
-                        <a class="btn light full" href="/payment/fail?order_id=${order.order_id}">주문 취소</a>
+                        <a class="btn light full" href="/order/my">
+                            주문내역으로
+                        </a>
                     </div>
                 </aside>
             </div>
@@ -121,9 +121,43 @@
     <footer class="site-footer">
         <div class="footer-inner">
             <strong>HANDMADE</strong>
-            <p>실제 결제 API 연동 전 테스트용 결제 화면입니다.</p>
+            <p>주문 정보를 확인한 뒤 결제창으로 이동합니다.</p>
         </div>
     </footer>
+
+    <script>
+        const clientKey = document.getElementById("tossClientKey").value;
+        const customerKey = document.getElementById("customerKey").value;
+        const payAmount = Number(document.getElementById("payAmount").value);
+        const tossOrderId = document.getElementById("tossOrderId").value;
+        const orderName = document.getElementById("orderName").value;
+
+        const tossPayments = TossPayments(clientKey);
+
+        const tossPayment = tossPayments.payment({
+            customerKey: customerKey
+        });
+
+        document.getElementById("payment-button").addEventListener("click", async function () {
+            try {
+                await tossPayment.requestPayment({
+                    method: "CARD",
+                    amount: {
+                        currency: "KRW",
+                        value: payAmount
+                    },
+                    orderId: tossOrderId,
+                    orderName: orderName,
+                    successUrl: window.location.origin + "/payment/toss/success",
+                    failUrl: window.location.origin + "/payment/toss/fail",
+                    customerName: "테스트회원"
+                });
+            } catch (error) {
+                alert("결제창을 여는 중 오류가 발생했습니다.");
+                console.log(error);
+            }
+        });
+    </script>
 
     </body>
 </html>

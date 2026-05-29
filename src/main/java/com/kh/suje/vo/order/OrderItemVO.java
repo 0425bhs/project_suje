@@ -1,4 +1,4 @@
-package com.kh.suje.vo;
+package com.kh.suje.vo.order;
 
 import lombok.Data;
 
