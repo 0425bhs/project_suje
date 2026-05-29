@@ -2,7 +2,7 @@ package com.kh.suje.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.kh.suje.vo.PaymentVO;
+import com.kh.suje.vo.payment.PaymentVO;
 
 @Mapper
 public interface PaymentDAO {

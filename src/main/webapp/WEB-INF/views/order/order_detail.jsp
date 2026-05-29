@@ -8,7 +8,7 @@
         <title>주문 상세</title>
         <link rel="stylesheet" href="/css/order-payment.css">
     </head>
-    
+
     <body>
 
     <header class="site-header">
@@ -16,12 +16,12 @@
             <div class="brand">HAND<span>MADE</span></div>
 
             <nav class="main-nav">
+                <a href="/product/list.do">상품보기</a>
                 <a href="#">선물추천</a>
                 <a href="#">베스트</a>
                 <a href="#">취향발견</a>
                 <a href="#">최신작품</a>
                 <a href="#">작가</a>
-                <a href="#">커뮤니티</a>
             </nav>
 
             <div class="header-actions">
@@ -43,9 +43,7 @@
             </div>
 
             <div class="order-detail-grid">
-
                 <div class="order-main-column">
-
                     <div class="info-box order-summary-box">
                         <div>
                             <span>주문번호</span>
@@ -63,7 +61,7 @@
 
                         <c:forEach var="item" items="${orderItemList}">
                             <div class="order-item">
-                                <img src="/images/${item.imageS}" alt="상품 이미지">
+                                <img src="${item.imageS}" alt="상품 이미지">
 
                                 <div class="item-info">
                                     <div class="creator-line">작가 상품</div>
@@ -84,11 +82,9 @@
                             <p>상세 배송지는 배송지 테이블 연동 후 표시 예정입니다.</p>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="order-side-column">
-
                     <div class="order-status-card">
                         <span>주문상태</span>
                         <strong>
@@ -113,9 +109,7 @@
                             <span>결제수단</span>
                             <strong>
                                 <c:choose>
-                                    <c:when test="${payment.payment_method eq 'CARD'}">카드</c:when>
-                                    <c:when test="${payment.payment_method eq 'TOSS'}">토스페이</c:when>
-                                    <c:when test="${payment.payment_method eq 'KAKAO'}">카카오페이</c:when>
+                                    <c:when test="${payment.payment_method eq 'TOSS'}">Toss Payments</c:when>
                                     <c:otherwise>${payment.payment_method}</c:otherwise>
                                 </c:choose>
                             </strong>
@@ -158,9 +152,7 @@
                             </a>
                         </div>
                     </aside>
-
                 </div>
-
             </div>
         </div>
     </section>

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.kh.suje.vo.OrderItemVO;
-import com.kh.suje.vo.OrderVO;
+import com.kh.suje.vo.order.OrderItemVO;
+import com.kh.suje.vo.order.OrderVO;
 
 @Mapper
 public interface OrderDAO {
