@@ -12,14 +12,28 @@ public class Paging {
             startPage/*시작페이지번호*/,
             endPage;/*마지막페이지번호*/
 
-		boolean  isPrevPage,isNextPage;
-		StringBuffer sb; //모든 상황을 판단하여 HTML코드를 저장할 곳
+		boolean isPrevPage,isNextPage;
+
+		StringBuffer sb = new StringBuffer(); //모든 상황을 판단하여 HTML코드를 저장할 곳
 		
-		
+		// -------------------------------------------------------
+        // [추가] pageURL에 이미 ?가 있으면 &page= 사용
+        // 예: /category_list.do?category_id=1&page=2
+        //
+        // pageURL에 ?가 없으면 ?page= 사용
+        // 예: /product/list.do?page=2
+        // -------------------------------------------------------
+        String pageParam = pageURL.contains("?") ? "&page=" : "?page=";
+
 		isPrevPage=isNextPage=false;
 		//입력된 전체 자원을 통해 전체 페이지 수를 구한다..
 		totalPage = (int)(rowTotal/blockList);
 		if(rowTotal%blockList!=0)totalPage++;
+
+		// 상품이 하나도 없으면 페이징 메뉴 안 만듦
+		if (totalPage == 0) {
+			return "";
+		}
 		
 
 		//만약 잘못된 연산과 움직임으로 인하여 현재 페이지 수가 전체 페이지 수를
@@ -44,7 +58,7 @@ public class Paging {
 		sb = new StringBuffer();
 //-----그룹페이지처리 이전 --------------------------------------------------------------------------------------------		
 		if(isPrevPage){
-			sb.append("<a href ='"+pageURL+"?page=");
+			sb.append("<a href ='"+pageURL+pageParam);
 			//sb.append(nowPage - blockPage);
 			sb.append( startPage-1 );
 			sb.append("'>◀</a>");
@@ -63,13 +77,13 @@ public class Paging {
 				sb.append("</font></b>");
 			}
 			else{//현재 페이지가 아니면
-				sb.append("&nbsp;<a href='"+pageURL+"?page=");
+				sb.append("&nbsp;<a href='"+pageURL+pageParam);
 				sb.append(i);
 				
-				//색상변경은 font태그에서 ↓↓
+				//색상변경은 font태그에서 ↓↓v
 				sb.append("'><font color='#aaf'>");
 				sb.append(i);
-				sb.append("</a></font>");
+				sb.append("</font></a>");
 			}
 		}// end for
 		
@@ -77,7 +91,7 @@ public class Paging {
 		
 //-----그룹페이지처리 다음 ----------------------------------------------------------------------------------------------
 		if(isNextPage){
-			sb.append("<a href='"+pageURL+"?page=");
+			sb.append("<a href='"+pageURL+pageParam);
 			
 			sb.append(endPage + 1);
 			/*if(nowPage+blockPage > totalPage)nowPage = totalPage;
