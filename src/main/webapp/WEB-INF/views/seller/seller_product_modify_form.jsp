@@ -6,86 +6,11 @@
 <html lang="ko">
 
     <head>
-        <script>
-            window.onload=function(){
-                const free_shipping=document.getElementById("free_shipping");
-                const free_shipping_text=document.getElementById("free_shipping_text");
 
-                if (free_shipping.value !== ""){
-                    let value = free_shipping.value.replace(/[^0-9]/g, "");
+        <script src="${pageContext.request.contextPath}/js/seller_product_modify.js"></script>
 
-                    if (value !== ""){
-                        let commaValue = Number(value).toLocaleString();
-                        free_shipping.value = commaValue;
-                        free_shipping_text.innerText = commaValue;
-                    }
-                }
-
-                free_shipping.addEventListener("input", function () {
-                    let value=this.value.replace(/[^0-9]/g, "");
-
-                    if (value===""){
-                        this.value="";
-                        free_shipping_text.innerText = "0";
-                        return;
-                    }
-
-                    let commaValue=Number(value).toLocaleString();
-
-                    this.value=commaValue;
-                    free_shipping_text.innerText=commaValue;
-                });
-            }
-
-            function delImgL(){
-                let image_l_div=document.getElementById("image_l_div");
-                let ori_image_l=document.getElementById("ori_image_l");
-
-                ori_image_l.value="no_file";
-                image_l_div.style.display="none";
-            }
-
-            function delImgS(){
-                let image_s_div=document.getElementById("image_s_div");
-                let ori_image_s=document.getElementById("ori_image_s");
-
-                ori_image_s.value="no_file";
-                image_s_div.style.display="none";
-            }
-
-            function send(f){
-                const imageL=f.image_l_file;
-                const imageS=f.image_s_file;
-
-                if (imageL.value==""){
-                    alert("대표 이미지를 등록해주세요.");
-                    imageL.focus();
-                    return;
-                }
-
-                if (imageS.value==""){
-                    alert("상세 이미지를 등록해주세요.");
-                    imageS.focus();
-                    return;
-                }
-
-                const free_shipping=document.getElementById("free_shipping");
-
-                free_shipping.value=free_shipping.value.replace(/,/g, "");
-
-                let formData=new FormData(f);
-
-                fetch("/seller_product_modify.do",{method:"post",body:formData}).then(res=>res.json()).then(data=>{
-                    if (data.result==1) {
-                        alert("상품을 수정하셨습니다.");
-                        location.href="/product_detail.do?product_id=" + data.product_id;
-                    } else {
-                        alert("상품 수정 적용이 실패하셨습니다. 관리자에게 문의 바랍니다.");
-                    }
-                })
-            }
-        </script>
     </head>
+
 
     <body>
         <div>
@@ -97,8 +22,6 @@
 
                 <input type="hidden" name="ori_image_l" id="ori_image_l" value="${vo.image_l}">
                 <input type="hidden" name="ori_image_s" id="ori_image_s" value="${vo.image_s}">
-                <input type="hidden" name="del_image_l" value="${vo.image_l}">
-                <input type="hidden" name="del_image_s" value="${vo.image_s}">
 
                 <div>
                     
@@ -123,7 +46,7 @@
                 </div>
 
                 <div>
-                    <th>상품 설명</th>
+                    <div>상품 설명</div>
                     <textarea name="description"  placeholder="상품 설명을 입력하세요">${vo.description}</textarea>
                 </div>
 
@@ -143,7 +66,7 @@
                 </div>
 
                 <div>
-                    <th>배송비</th>
+                    <div>배송비</div>
                     <input type="number" name="delivery_fee" value="${vo.delivery_fee}"/>
                 </div>
 
@@ -151,10 +74,10 @@
                     <div>무료배송 기준 금액</div>
                     <input type="text" name="free_shipping" id="free_shipping" value="${vo.free_shipping}" placeholder="무료배송 기준 금액"/>
                     <c:if test="${vo.free_shipping>0}">
-                    <p><span><fmt:formatNumber value="${vo.free_shipping}" pattern="#,###" /></span>원 이상 구매 시 무료배송으로 설정됩니다.</p>
+                        <p><span id="free_shipping_text"><fmt:formatNumber value="${vo.free_shipping}" pattern="#,###" /></span>원 이상 구매 시 무료배송으로 설정됩니다.</p>
                     </c:if>
-                    <c:if test="${free_shipping==0}">
-                    <p>무료배송으로 설정됩니다.</p>
+                    <c:if test="${vo.free_shipping==0}">
+                        <p>무료배송으로 설정됩니다.</p>
                     </c:if>
                 </div>
 
@@ -163,7 +86,6 @@
                     <c:if test="${vo.image_l ne 'no_file'}">
                         <div id="image_l_div">
                             <img src="${vo.image_l}"/>
-                            <input type="button" value="X" onclick="delImgL()"/>
                         </div>
                     </c:if>
                     
@@ -174,8 +96,7 @@
                     <div>상세 이미지</div>
                     <c:if test="${vo.image_s ne 'no_file'}">
                         <div id="image_s_div">
-                            <img src="${vo.image_s}" width="100"/>
-                            <input type="button" value="X" onclick="delImgS()"/>
+                            <img src="${vo.image_s}"/>
                         </div>
                     </c:if>
 
