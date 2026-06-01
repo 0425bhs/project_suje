@@ -39,6 +39,4 @@ public class ProductVO {
         return rate;
     }
 
-    private int free_shipping;
-
 }

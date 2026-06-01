@@ -17,7 +17,7 @@
 
     <div class="product-util">
         <div class="product-util-inner">
-            <a href="#" class="disabled">핸드메이드 앱 설치하기</a>
+            <span>작가의 손길이 담긴 핸드메이드 마켓</span>
 
             <div class="product-util-menu">
                 <a href="#" class="disabled">로그인</a>

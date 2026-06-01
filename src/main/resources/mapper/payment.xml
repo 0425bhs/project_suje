@@ -59,4 +59,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE order_id = #{order_id}
     </update>
 
+    <!-- 결제 취소 처리 -->
+    <update id="updatePaymentCancel" parameterType="payment">
+        update payments
+        set status = 'CANCELLED'
+        where order_id = #{order_id}
+             AND status = 'SUCCESS'
+    </update>
+
 </mapper>

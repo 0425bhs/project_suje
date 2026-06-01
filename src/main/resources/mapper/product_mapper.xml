@@ -14,7 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <!-- 상품 상세 조회 -->
-    <select id="product_one" parameterType="long" resultType="product">
+    <select id="product_one" parameterType="int" resultType="product">
         select *
         from products
         where product_id = #{product_id}
@@ -76,6 +76,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select count(*)
         from products
         where status = 'APPROVED'
+    </select>
+
+    <!-- 판매자 내 상품 목록-->
+    <select id="seller_product_list" parameterType="int" resultType="product">
+        select * from products
+        where seller_id = #{value}
     </select>
 
 </mapper>
