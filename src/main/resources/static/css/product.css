@@ -73,12 +73,22 @@ input {
     font-size: 13px;
 }
 
+.product-util-inner > span {
+    color: #8a6b5a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
 .product-util-menu {
     display: flex;
     gap: 18px;
 }
 
-.product-util a:hover {
+.product-util-menu a {
+    color: #777;
+}
+
+.product-util-menu a:hover {
     color: #ff6f4f;
 }
 

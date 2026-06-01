@@ -248,7 +248,7 @@ public class ProductController {
         model.addAttribute("smallCategoryList", categorydao.small_category_list(selectedBigCategoryId));
         return "seller/seller_product_modify_form";
     }
-
+ 
 
     @PostMapping("/seller_product_modify.do")
     @ResponseBody
@@ -272,6 +272,7 @@ public class ProductController {
                 saveFile=new File(savePath,image_l_name);
             }
 
+            
             vo.getImage_l_file().transferTo(saveFile);
 
         } else if(ori_image_l != null && !ori_image_l.equals("no_file")){
@@ -329,13 +330,18 @@ public class ProductController {
 
         return map;
     }
-
-
     
+    @GetMapping("/seller_product_list.do")
+    public String seller_product_list(Model model) {
 
+        // 로그인/판매자 기능 붙기 전까지 임시 seller_id
+        int seller_id = 1;
 
-    
+        List<ProductVO> list = productdao.seller_product_list(seller_id);
 
+        model.addAttribute("list", list);
 
-    
+        return "seller/seller_product_list";
+    }
+        
 }

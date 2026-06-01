@@ -3,6 +3,7 @@ package com.kh.suje.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
@@ -12,6 +13,12 @@ public interface OrderDAO {
 
     // 내 주문 내역 조회
     List<OrderVO> selectOrderListByUserId(int user_id);
+
+     // 내 주문 내역 상태별 조회
+    List<OrderVO> selectOrderListByUserIdAndStatus(
+            @Param("user_id") int user_id,
+            @Param("status") String status
+    );
 
     // 주문 1건 조회
     OrderVO selectOrderById(int order_id);
@@ -27,4 +34,6 @@ public interface OrderDAO {
 
     // 주문 상태 변경
     int updateOrderStatus(OrderVO vo);
+
+    
 }

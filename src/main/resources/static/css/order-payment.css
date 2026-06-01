@@ -935,3 +935,174 @@ select {
     margin: 8px 0 0;
     color: #8a6b5a;
 }
+
+/* =========================================================
+   18. 내 주문 내역 화면
+   JSP 위치:
+   - my_order_list.jsp
+   역할:
+   - 사용자 입장에서 주문 요약과 최근 주문 내역을 확인하는 화면
+========================================================= */
+
+.my-order-page {
+    padding-top: 64px;
+}
+
+.my-order-title {
+    margin-bottom: 28px;
+}
+
+.my-order-title span {
+    display: block;
+    margin-bottom: 8px;
+    color: #ff6f4f;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+}
+
+.my-order-title h2 {
+    margin: 0 0 10px;
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+}
+
+.my-order-title p {
+    margin: 0;
+    color: #777;
+    font-size: 15px;
+}
+
+.order-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.order-stat-card {
+    padding: 22px;
+    background: #fff;
+    border: 1px solid #f0e5dc;
+}
+
+.order-stat-card span {
+    display: block;
+    margin-bottom: 12px;
+    color: #8a6b5a;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.order-stat-card strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #2b2b2b;
+    font-size: 32px;
+    font-weight: 900;
+}
+
+.order-stat-card p {
+    margin: 0;
+    color: #888;
+    font-size: 13px;
+}
+
+.order-table-card {
+    background: #fff;
+    border: 1px solid #f0e5dc;
+    padding: 26px;
+}
+
+.order-table-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.order-table-head h3 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.order-table-head p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.order-table-card .order-filter {
+    margin-bottom: 0;
+}
+
+.order-table-card .table-wrap {
+    border-top: 2px solid #2b2b2b;
+}
+
+.order-number {
+    color: #2b2b2b;
+    font-weight: 900;
+}
+
+.order-amount {
+    color: #2b2b2b;
+    font-weight: 900;
+}
+
+.empty-order {
+    height: 120px;
+    text-align: center;
+    color: #888;
+    font-weight: 700;
+}
+
+.order-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.order-actions a {
+    color: #9b4b33;
+    font-weight: 900;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.order-actions a:hover {
+    color: #ff6f4f;
+}
+
+.order-table-head .order-filter button:not(.active) {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.order-stat-card:hover {
+    background: #fffaf7;
+}
+
+.inline-form {
+    display: inline;
+    margin: 0;
+}
+
+.link-button {
+    border: 0;
+    background: none;
+    padding: 0;
+    color: #9b4b33;
+    font-size: 14px;
+    font-weight: 900;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.link-button:hover {
+    color: #ff6f4f;
+}

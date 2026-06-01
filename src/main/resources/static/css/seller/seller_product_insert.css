@@ -1,0 +1,33 @@
+/* 상품 등록 페이지 전용 */
+
+.product-insert-box::before {
+    content: "상품 등록";
+    display: block;
+    margin-bottom: 8px;
+    color: #ff654f;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.product-insert-box::after {
+    content: "새 상품의 기본 정보, 가격, 배송 조건, 이미지를 입력해 등록합니다.";
+    display: block;
+    margin-bottom: 30px;
+    padding-bottom: 22px;
+    border-bottom: 2px solid #222;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.product-insert-form .form-section:nth-of-type(1)::before {
+    content: "기본 정보";
+}
+
+.product-insert-form .form-section:nth-of-type(2)::before {
+    content: "가격 / 배송 정보";
+}
+
+.product-insert-form .form-section:nth-of-type(3)::before {
+    content: "이미지 정보";
+}

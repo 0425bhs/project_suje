@@ -18,5 +18,8 @@ public interface PaymentDAO {
 
     //결제 실패
     int updatePaymentFail(PaymentVO vo);
+
+    //결제 취소
+    int updatePaymentCancel(PaymentVO vo);
     
 }

@@ -20,6 +20,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY order_id DESC
     </select>
 
+    <!-- 사용자 id 주문 상태 조회(결제취소)-->
+    <select id="selectOrderListByUserIdAndStatus" resultType="order">
+        select *
+        from orders
+        where user_id = #{user_id}
+        and status = #{status}
+        order by order_id desc
+    </select>
+
     <!-- 주문 1건 조회 -->
     <select id="selectOrderById" parameterType="int" resultType="order">
         SELECT
@@ -91,7 +100,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 주문 상태 변경 -->
     <update id="updateOrderStatus" parameterType="order">
         UPDATE orders
-        SET status = #{status}
+        SET status = #{status},
+            updated_at = CURRENT_TIMESTAMP
         WHERE order_id = #{order_id}
     </update>
 
