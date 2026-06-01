@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Alias("category")
 public class CategoryVO {
-    private Long category_id,parent_id;
+    private int category_id,parent_id;
 
     private String name;
 }

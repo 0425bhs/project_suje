@@ -8,7 +8,7 @@
         <title>배송 상태 확인</title>
         <link rel="stylesheet" href="/css/order-payment.css">
     </head>
-    
+
     <body>
 
     <header class="site-header">
@@ -16,17 +16,17 @@
             <div class="brand">HAND<span>MADE</span></div>
 
             <nav class="main-nav">
+                <a href="/product/list.do">상품보기</a>
                 <a href="#">선물추천</a>
                 <a href="#">베스트</a>
                 <a href="#">취향발견</a>
                 <a href="#">최신작품</a>
                 <a href="#">작가</a>
-                <a href="#">커뮤니티</a>
             </nav>
 
             <div class="header-actions">
-                <a href="/order/form">주문서 작성</a>
                 <a href="/order/my">주문내역</a>
+                <a href="#">관심</a>
                 <a href="#">장바구니</a>
             </div>
         </div>
@@ -73,31 +73,31 @@
 
             <div class="delivery-box">
                 <div class="delivery-steps">
-                    <div class="delivery-step ${order.status eq 'PENDING' || order.status eq 'PAID' || order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED' ? 'done' : ''}">
+                    <div class="delivery-step">
                         <div class="num">1</div>
                         <strong>주문 접수</strong>
-                        <span>주문 접수</span>
+                        <span>주문 확인</span>
                     </div>
 
-                    <div class="delivery-step ${order.status eq 'PAID' || order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED' ? 'done' : ''}">
+                    <div class="delivery-step">
                         <div class="num">2</div>
                         <strong>결제 완료</strong>
-                        <span>결제 완료</span>
+                        <span>결제 확인</span>
                     </div>
 
-                    <div class="delivery-step ${order.status eq 'PREPARING' ? 'current' : ''} ${order.status eq 'SHIPPING' || order.status eq 'DELIVERED' ? 'done' : ''}">
+                    <div class="delivery-step">
                         <div class="num">3</div>
                         <strong>상품 준비중</strong>
                         <span>제작/포장</span>
                     </div>
 
-                    <div class="delivery-step ${order.status eq 'SHIPPING' ? 'current' : ''} ${order.status eq 'DELIVERED' ? 'done' : ''}">
+                    <div class="delivery-step">
                         <div class="num">4</div>
                         <strong>배송중</strong>
                         <span>배송 이동</span>
                     </div>
 
-                    <div class="delivery-step ${order.status eq 'DELIVERED' ? 'current' : ''}">
+                    <div class="delivery-step">
                         <div class="num">5</div>
                         <strong>배송 완료</strong>
                         <span>수령 완료</span>

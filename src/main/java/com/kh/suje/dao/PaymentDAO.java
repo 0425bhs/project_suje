@@ -2,13 +2,13 @@ package com.kh.suje.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.kh.suje.vo.PaymentVO;
+import com.kh.suje.vo.payment.PaymentVO;
 
 @Mapper
 public interface PaymentDAO {
     
     //주문번호로 결제 정보 조회
-    PaymentVO selectPaymentByOrderId(long orderId);
+    PaymentVO selectPaymentByOrderId(int orderId);
 
     //결제 대기
     int insertPayment(PaymentVO vo);

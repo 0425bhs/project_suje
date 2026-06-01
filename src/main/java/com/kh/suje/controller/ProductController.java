@@ -53,10 +53,19 @@ public class ProductController {
         return "product/product_list";
     }
 
+    @GetMapping("/product_detail.do")
+    public String product_detail_form(int product_id,Model model){
+        ProductVO vo=productdao.product_one(product_id);
+        model.addAttribute("vo",vo);
+        return "/product/product_detail";
+    }   
+
+
     @GetMapping("/seller_product_insert.do")
     public String seller_product_insert_form(){
-        return "/product/seller_product_insert_form";
+        return "/seller/seller_product_insert_form";
     }
+
 
     @PostMapping("/seller_product_insert.do")
     @ResponseBody
@@ -100,8 +109,17 @@ public class ProductController {
             image_S.transferTo(savFile);
         }
 
-        vo.setImage_l("/upload/"+filename_l);
-        vo.setImage_s("/upload/"+filename_s);
+        if (filename_l.equals("no_file")) {
+            vo.setImage_l("no_file");
+        } else {
+            vo.setImage_l("/upload/" + filename_l);
+        }
+
+        if (filename_s.equals("no_file")) {
+            vo.setImage_s("no_file");
+        } else {
+            vo.setImage_s("/upload/" + filename_s);
+        }
 
         vo.setStatus("APPROVED");//테스트용 삭제 예정
 
@@ -113,12 +131,14 @@ public class ProductController {
         return map;
     }
 
+
     @GetMapping("/seller_product_modify.do")
-    public String seller_product_modify_form(Long product_id, Model model){
+    public String seller_product_modify_form(int product_id, Model model){
         ProductVO vo = productdao.product_one(product_id);
         model.addAttribute("vo", vo);
-        return "product/seller_product_modify_form";
+        return "seller/seller_product_modify_form";
     }
+
 
     @PostMapping("/seller_product_modify.do")
     @ResponseBody
@@ -201,12 +221,105 @@ public class ProductController {
     }
 
 
-    @GetMapping("/product_detail.do")
-    public String product_detail_form(Long product_id,Model model){
-        ProductVO vo=productdao.product_one(product_id);
-        model.addAttribute("vo",vo);
-        return "/product/product_detail";
-    }    
+    @GetMapping("/all_list.do")
+    String allProductList(Model model,Integer page){
+        
+        int nowPage = 1;
+
+        if (page != null) {
+            nowPage=page;
+        }
+
+        int blockList=10;
+        int blockPage=5;
+
+        int rowTotal = productdao.product_cnt();
+        int start=(nowPage - 1)*blockList;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("start",start);
+        map.put("blockList",blockList);
+
+        List<ProductVO> list=productdao.product_list(map);
+
+        String pageMenu=Paging.getPaging("/product/list.do",nowPage,rowTotal,blockList,blockPage);
+
+        model.addAttribute("list",list);
+        model.addAttribute("pageMenu",pageMenu);
+        return "product/product_all_list";
+    }
+
+
+    @GetMapping("/category_list.do")
+    public String product_category_list(Model model,Integer page,int category_id) {
+
+        int nowPage = 1;
+
+        if (page != null) {
+            nowPage = page;
+        }
+
+        int blockList = 10;
+        int blockPage = 5;
+
+        int start = (nowPage - 1) * blockList;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("category_id", category_id);
+        map.put("start", start);
+        map.put("blockList", blockList);
+
+        int rowTotal = productdao.product_category_cnt(map);
+
+        List<ProductVO> list = productdao.product_category_list(map);
+
+        String pageMenu = Paging.getPaging(
+            "/category_list.do?category_id=" + category_id,
+            nowPage,
+            rowTotal,
+            blockList,
+            blockPage
+        );
+
+        model.addAttribute("list", list);
+        model.addAttribute("pageMenu", pageMenu);
+        model.addAttribute("category_id", category_id);
+        return "product/product_list";
+    } 
+
+
+    @GetMapping("/product_sale.do")
+    public String product_sale_list(Model model,Integer page){
+        int nowPage = 1;
+
+        if (page != null) {
+            nowPage = page;
+        }
+
+        int blockList = 10;
+        int blockPage = 5;
+
+        int rowTotal = productdao.product_sale_cnt();
+        int start = (nowPage - 1) * blockList;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("start", start);
+        map.put("blockList", blockList);
+
+        List<ProductVO> list = productdao.product_sale_list(map);
+
+        String pageMenu = Paging.getPaging(
+            "/product/sale_list.do",
+            nowPage,
+            rowTotal,
+            blockList,
+            blockPage
+        );
+
+        model.addAttribute("list", list);
+        model.addAttribute("pageMenu", pageMenu);
+        return "product/product_sale_list";
+    }
 
 
     

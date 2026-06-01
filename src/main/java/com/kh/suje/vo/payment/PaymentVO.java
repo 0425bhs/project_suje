@@ -1,11 +1,19 @@
-package com.kh.suje.vo;
+package com.kh.suje.vo.payment;
 
+import org.apache.ibatis.type.Alias;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Alias("payment")
 public class PaymentVO {
-    private long payment_id; //결제번호
-    private long order_id; 
+    
+    private int payment_id; //결제번호
+    private int order_id; 
     private String payment_method; //결제 수단
     private int amount; //금액
     private String status; //결제상태

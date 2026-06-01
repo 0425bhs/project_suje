@@ -10,19 +10,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.PaymentDAO;
-import com.kh.suje.vo.OrderItemVO;
-import com.kh.suje.vo.OrderVO;
-import com.kh.suje.vo.PaymentVO;
+import com.kh.suje.vo.order.OrderItemVO;
+import com.kh.suje.vo.order.OrderVO;
+import com.kh.suje.vo.payment.PaymentVO;
+import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.vo.ProductVO;
 
 @Controller
 public class OrderController {
 
     private final OrderDAO orderDAO;
     private final PaymentDAO paymentDAO;
+    private final ProductDAO productDAO;
 
-    public OrderController(OrderDAO orderDAO, PaymentDAO paymentDAO) {
+    public OrderController(OrderDAO orderDAO, PaymentDAO paymentDAO, ProductDAO productDAO) {
         this.orderDAO = orderDAO;
         this.paymentDAO = paymentDAO;
+        this.productDAO = productDAO;
     }
 
     // 내 주문 내역
@@ -31,7 +35,7 @@ public class OrderController {
     public String myOrderList(Model model) {
 
         // 로그인 기능 붙기 전 테스트용 회원 번호
-        Long user_id = 1L;
+        int user_id = 1;
 
         List<OrderVO> orderList = orderDAO.selectOrderListByUserId(user_id);
 
@@ -43,15 +47,32 @@ public class OrderController {
     // 주문서 작성 화면
     // 주소: /order/form
     @GetMapping("/order/form")
-    public String orderForm(Model model) {
+    public String orderForm(
+            @RequestParam("product_id") int product_id,
+            @RequestParam(value = "quantity", defaultValue = "1") int quantity,
+            Model model
+    ) {
+        ProductVO product = productDAO.product_one(product_id);
 
-        // 상품 상세 페이지가 아직 없으니까 테스트용 상품 정보
-        model.addAttribute("product_id", 1L);
-        model.addAttribute("productName", "핸드메이드 실버 반지");
-        model.addAttribute("imageS", "test_ring_small.jpg");
-        model.addAttribute("price", 15000);
-        model.addAttribute("quantity", 2);
-        model.addAttribute("total_amount", 30000);
+        if (product == null) {
+            return "redirect:/product/list.do";
+        }
+
+        int price = product.getSale_price() > 0
+            ? product.getSale_price()
+            : product.getPrice();
+
+        int item_amount = price * quantity;
+        int delivery_fee = product.getDelivery_fee();
+        int total_amount = item_amount + delivery_fee;
+
+        model.addAttribute("product", product);
+        model.addAttribute("quantity", quantity);
+        model.addAttribute("price", price);
+        model.addAttribute("item_amount", item_amount);
+        model.addAttribute("delivery_fee", delivery_fee);
+        model.addAttribute("total_amount", total_amount);
+        
 
         return "order/order_form";
     }
@@ -60,18 +81,36 @@ public class OrderController {
     // 주문서 작성 → 결제 대기로 이동
     @PostMapping("/order/create")
     public String createOrder(
-            @RequestParam("product_id") Long product_id,
-            @RequestParam("price") int price,
-            @RequestParam("quantity") int quantity,
-            @RequestParam("payment_method") String payment_method
+            @RequestParam("product_id") int product_id,
+            @RequestParam("quantity") int quantity
     ) {
-        // 로그인 붙기 전 테스트용 회원/배송지
-        Long user_id = 1L;
-        Long address_id = 1L;
+        // 로그인/배송지 기능 붙기 전까지 임시 사용
+        int user_id = 1;
+        int address_id = 1;
 
-        int total_amount = price * quantity;
+        // product_id로 실제 상품 정보 조회
+        ProductVO product = productDAO.product_one(product_id);
 
-        // 1. orders insert
+        // 상품이 없으면 상품 목록으로 이동
+        if (product == null) {
+            return "redirect:/product/list.do";
+        }
+
+        // 할인 가격이 있으면 sale_price 사용, 없으면 price 사용
+        int price = product.getSale_price() > 0
+                ? product.getSale_price()
+                : product.getPrice();
+
+        // 상품 금액 = 상품 가격 * 수량
+        int item_amount = price * quantity;
+
+        // 배송비
+        int delivery_fee = product.getDelivery_fee();
+
+        // 최종 결제 금액 = 상품 금액 + 배송비
+        int total_amount = item_amount + delivery_fee;
+
+        // 1. orders 테이블에 주문 기본 정보 저장
         OrderVO orderVO = new OrderVO();
         orderVO.setUser_id(user_id);
         orderVO.setTotal_amount(total_amount);
@@ -80,7 +119,7 @@ public class OrderController {
 
         orderDAO.insertOrder(orderVO);
 
-        // 2. order_items insert
+        // 2. order_items 테이블에 주문 상품 정보 저장
         OrderItemVO itemVO = new OrderItemVO();
         itemVO.setOrder_id(orderVO.getOrder_id());
         itemVO.setProduct_id(product_id);
@@ -89,10 +128,10 @@ public class OrderController {
 
         orderDAO.insertOrderItem(itemVO);
 
-        // 3. payments insert
+        // 3. payments 테이블에 결제 대기 정보 저장
         PaymentVO paymentVO = new PaymentVO();
         paymentVO.setOrder_id(orderVO.getOrder_id());
-        paymentVO.setPayment_method(payment_method);
+        paymentVO.setPayment_method("TOSS");
         paymentVO.setAmount(total_amount);
         paymentVO.setStatus("READY");
         paymentVO.setTransaction_id(null);
@@ -107,7 +146,7 @@ public class OrderController {
     // 주소: /order/complete?order_id=1
     @GetMapping("/order/complete")
     public String orderComplete(
-            @RequestParam("order_id") Long order_id,
+            @RequestParam("order_id") int order_id,
             Model model
     ) {
         OrderVO order = orderDAO.selectOrderById(order_id);
@@ -125,7 +164,7 @@ public class OrderController {
     // 주소: /order/detail?order_id=1
     @GetMapping("/order/detail")
     public String orderDetail(
-            @RequestParam("order_id") Long order_id,
+            @RequestParam("order_id") int order_id,
             Model model
     ) {
         OrderVO order = orderDAO.selectOrderById(order_id);
@@ -143,7 +182,7 @@ public class OrderController {
     // 주소: /order/delivery?order_id=1
     @GetMapping("/order/delivery")
     public String deliveryStatus(
-            @RequestParam("order_id") Long order_id,
+            @RequestParam("order_id") int order_id,
             Model model
     ) {
         OrderVO order = orderDAO.selectOrderById(order_id);

@@ -12,12 +12,31 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Alias("product")
 public class ProductVO {
-    private Long product_id,seller_id,category_id;
+    private int product_id,seller_id,category_id;
 
-    private String name,description,status,image_l,image_s,created_at,updated_at;
+    private String name,description,status,image_l,image_s,created_at,updated_at,sale_price_updated_at;
 
     private MultipartFile image_l_file,image_s_file;
     
-    private int price,sale_price,stock,delivery_fee;
+    private int price,sale_price,stock,delivery_fee,free_shipping;
+
+    public int getSale_rate() {
+
+        if (price == 0) {
+            return 0;
+        }
+
+        if (sale_price == 0) {
+            return 0;
+        }
+
+        if (sale_price >= price) {
+            return 0;
+        }
+
+        int rate = (int)((price - sale_price)/(float) price * 100);
+
+        return rate;
+    }
 
 }
