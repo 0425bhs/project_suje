@@ -344,4 +344,19 @@ public class ProductController {
         return "seller/seller_product_list";
     }
         
+    @PostMapping("/seller_product_toggle.do")
+    @ResponseBody
+    public Map<String,Object> seller_product_toggle(ProductVO vo) {
+
+    Map<String,Object> map=new HashMap<>();
+
+    int result=productdao.seller_product_toggle(vo);
+
+    map.put("result", result);
+    map.put("status", vo.getStatus());
+
+    return map;
+    }
+
+
 }

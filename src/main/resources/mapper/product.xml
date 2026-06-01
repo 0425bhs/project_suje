@@ -158,4 +158,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY product_id DESC
     </select>
 
+    <update id="seller_product_toggle" parameterType="product">
+        update products set status=#{status} where product_id=#{product_id}
+    </update>
+
 </mapper>
