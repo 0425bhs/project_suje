@@ -23,18 +23,18 @@
                     <h2>판매자 상품 등록</h2>
                     <div>
                         <div>카테고리</div>
-                        <select name="category_id">
-                            <option value="">대분류 카테고리</option>
-                            
-
-                            <option value="1">패션/주얼리</option>
-                            <option value="2">홈리빙</option>
-                            <option value="3">뷰티</option>
-                            <option value="4">식품</option>
-                            <option value="5">공예</option>
-                            <option value="6">반려동물</option>
+                        <select id="big_category_id">
+                            <option value="">대분류 카테고리 선택</option>
+                            <c:forEach var="category" items="${bigCategoryList}">
+                                <option value="${category.category_id}">
+                                    ${category.name}
+                                </option>
+                            </c:forEach>
                         </select>
 
+                        <select id="category_id" name="category_id">
+                            <option value="">하위 카테고리 선택</option>
+                        </select>
 
                     </div>
 
@@ -80,12 +80,12 @@
                     </div>
 
                     <div>
-                        <th>대표 이미지</th>
+                        <div>대표 이미지</div>
                             <input type="file" name="image_l_file">
                     </div>
 
                     <div>
-                        <th>상세 이미지</th>
+                        <div>상세 이미지</div>
                             <input type="file" name="image_s_file">
                     </div>
 
