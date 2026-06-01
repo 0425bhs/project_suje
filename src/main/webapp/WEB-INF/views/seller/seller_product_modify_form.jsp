@@ -19,9 +19,13 @@
 
                 <input type="hidden" name="product_id" value="${vo.product_id}">
                 <input type="hidden" name="seller_id" value="${vo.seller_id}">
+                <input type="hidden" name="status" value="APPROVED"><!-- <input type="hidden" name="status" value="${vo.status}"> -->
+                
 
                 <input type="hidden" name="ori_image_l" id="ori_image_l" value="${vo.image_l}">
                 <input type="hidden" name="ori_image_s" id="ori_image_s" value="${vo.image_s}">
+                <input type="hidden" name="del_image_l" value="${vo.image_l}">
+                <input type="hidden" name="del_image_s" value="${vo.image_s}">
 
                 <div>
                     
@@ -29,13 +33,26 @@
                     <div>
                         <span>카테고리</span>
                         
-                        <select name="category_id" value="${vo.category_id}">
-                            <option value="1" ${vo.category_id==1 ? 'selected' : ''}>패션/주얼리</option>
-                            <option value="2" ${vo.category_id==2 ? 'selected' : ''}>홈리빙</option>
-                            <option value="3" ${vo.category_id==3 ? 'selected' : ''}>뷰티</option>
-                            <option value="4" ${vo.category_id==4 ? 'selected' : ''}>식품</option>
-                            <option value="5" ${vo.category_id==5 ? 'selected' : ''}>공예</option>
-                            <option value="6" ${vo.category_id==6 ? 'selected' : ''}>반려동물</option>
+                        <select id="big_category_id">
+                            <option value="">대분류 카테고리 선택</option>
+
+                            <c:forEach var="category" items="${bigCategoryList}">
+                                <option value="${category.category_id}"
+                                    <c:if test="${category.category_id eq selectedBigCategoryId}">selected</c:if>>
+                                    ${category.name}
+                                </option>
+                            </c:forEach>
+                        </select>
+
+                        <select id="category_id" name="category_id">
+                            <option value="">하위 카테고리 선택</option>
+
+                            <c:forEach var="category" items="${smallCategoryList}">
+                                <option value="${category.category_id}"
+                                    <c:if test="${category.category_id eq vo.category_id}">selected</c:if>>
+                                    ${category.name}
+                                </option>
+                            </c:forEach>
                         </select>
                     </div>    
                 </div>
@@ -72,13 +89,16 @@
 
                 <div>
                     <div>무료배송 기준 금액</div>
-                    <input type="text" name="free_shipping" id="free_shipping" value="${vo.free_shipping}" placeholder="무료배송 기준 금액"/>
-                    <c:if test="${vo.free_shipping>0}">
-                        <p><span id="free_shipping_text"><fmt:formatNumber value="${vo.free_shipping}" pattern="#,###" /></span>원 이상 구매 시 무료배송으로 설정됩니다.</p>
-                    </c:if>
-                    <c:if test="${vo.free_shipping==0}">
-                        <p>무료배송으로 설정됩니다.</p>
-                    </c:if>
+
+                    <!-- 화면에 보여줄 입력창 -->
+                    <input type="text" id="free_shipping_view"
+                        value="<fmt:formatNumber value='${vo.free_shipping}' pattern='#,###' />"
+                        placeholder="무료배송 기준 금액"/>
+
+                    <!-- 실제 서버로 넘어갈 값 -->
+                    <input type="hidden" name="free_shipping" id="free_shipping" value="${vo.free_shipping}"/>
+
+                    <p><span id="free_shipping_text"><fmt:formatNumber value="${vo.free_shipping}" pattern="#,###" /></span>원 이상 구매 시 무료배송으로 설정됩니다.</p>
                 </div>
 
                 <div>

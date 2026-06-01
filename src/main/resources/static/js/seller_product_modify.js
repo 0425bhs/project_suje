@@ -1,42 +1,70 @@
 window.onload=function(){
-    const free_shipping=document.getElementById("free_shipping");
-    const free_shipping_text=document.getElementById("free_shipping_text");
 
-    if (free_shipping.value !== ""){
-        let value = free_shipping.value.replace(/[^0-9]/g, "");
+    const bigCategory = document.getElementById("big_category_id");
+    const smallCategory = document.getElementById("category_id");
 
-        if (value !== ""){
-            let commaValue = Number(value).toLocaleString();
-            free_shipping.value = commaValue;
-            free_shipping_text.innerText = commaValue;
-        }
+    if (bigCategory != null && smallCategory != null){
+        bigCategory.addEventListener("change",function(){
+            let parentId = this.value;
+
+            smallCategory.innerHTML = "<option value=''>하위 카테고리 선택</option>";
+
+            if (parentId == "") {
+                return;
+            }
+
+            fetch("/sub.do?parent_id="+parentId).then(res=>res.json()).then(data=>{data.forEach(category=>{
+                    let option = document.createElement("option");
+
+                    option.value = category.category_id;
+                    option.innerText = category.name;
+
+                    smallCategory.appendChild(option);
+                });
+            });
+        });
     }
+    
+    const freeShippingView = document.getElementById("free_shipping_view");
+    const freeShipping = document.getElementById("free_shipping");
+    const freeShippingText = document.getElementById("free_shipping_text");
 
-    free_shipping.addEventListener("input", function(){
-        let value=this.value.replace(/[^0-9]/g,"");
+    if (freeShippingView != null && freeShipping != null && freeShippingText != null) {
+        freeShippingView.addEventListener("input", function(){
+            let value = this.value.replace(/[^0-9]/g, "");
 
-        if (value===""){
-            this.value="";
-            free_shipping_text.innerText = "0";
-            return;
-        }
+            if (value == ""){
+                this.value = "";
+                freeShipping.value = "0";
+                freeShippingText.innerText = "0";
+                return;
+            }
 
-        let commaValue=Number(value).toLocaleString();
+            freeShipping.value = value;
 
-        this.value=commaValue;
-        free_shipping_text.innerText=commaValue;
-    });
-}
+            let commaValue = Number(value).toLocaleString();
+
+            this.value = commaValue;
+            freeShippingText.innerText = commaValue;
+        });
+    }
+};
 
 function send(f){
 
+    const bigCategory = document.getElementById("big_category_id");
     const category_id=f.category_id;
     const name=f.name;
     const description=f.description;
-    const stock=Number(f.stock.value);
 
-    if (category_id.value=="") {
-        alert("카테고리를 선택해주세요.");
+    if (bigCategory.value == "") {
+        alert("대분류 카테고리를 선택하세요.");
+        bigCategory.focus();
+        return;
+    }
+
+    if (category_id.value == "") {
+        alert("하위 카테고리를 선택하세요.");
         category_id.focus();
         return;
     }
@@ -53,14 +81,21 @@ function send(f){
         return;
     }
 
-    if (stock>0) {
+    if (f.stock.value == "") {
         alert("재고 수량을 등록해주세요.");
-        stock.focus();
+        f.stock.focus();
         return;
     }
 
+    let stockValue = Number(f.stock.value);
 
-    let price = Number(f.price.value);
+    if (stockValue < 0) {
+        alert("올바른 재고 수량을 입력해주세요.");
+        f.stock.focus();
+        return;
+    }
+
+    let price = Number(f.price.value || 0);
     let salePrice = Number(f.sale_price.value || 0);
 
     if (price <= 0) {
@@ -69,14 +104,19 @@ function send(f){
         return;
     }
 
+    if (salePrice < 0) {
+        alert("세일 가격을 올바르게 입력해주세요.");
+        f.sale_price.focus();
+        return;
+    }
+
     if (salePrice > 0 && salePrice >= price) {
-        alert("세일가격은 상품 가격보다 낮아야 합니다.");
+        alert("세일 가격은 상품 가격보다 낮아야 합니다.");
         f.sale_price.focus();
         return;
     }
 
     let deliveryFee = Number(f.delivery_fee.value || 0);
-    let freeShippingValue = f.free_shipping.value.replace(/,/g, "");
 
     if (deliveryFee < 0) {
         alert("배송비는 0원 이상 입력해야 합니다.");
@@ -84,15 +124,24 @@ function send(f){
         return;
     }
 
-    if (freeShippingValue == "") {
-        freeShippingValue = "0";
+    const freeShippingView=document.getElementById("free_shipping_view");
+    const freeShipping=document.getElementById("free_shipping");
+
+    let freeShippingValue=freeShippingView.value.replace(/[^0-9]/g, "");
+
+    if (freeShippingValue==""){
+        freeShippingValue="0";
     }
 
-    // 서버로 보내기 전에 input 값 자체를 정리
-    f.price.value = String(price);
-    f.sale_price.value = String(salePrice);
-    f.delivery_fee.value = String(deliveryFee);
-    f.free_shipping.value = freeShippingValue;
+    if (deliveryFee == 0){
+        freeShippingValue="0";
+    }
+
+    f.price.value=String(price);
+    f.sale_price.value=String(salePrice);
+    f.stock.value=String(stockValue);
+    f.delivery_fee.value=String(deliveryFee);
+    f.free_shipping.value=freeShippingValue;
 
     let formData=new FormData(f);
 

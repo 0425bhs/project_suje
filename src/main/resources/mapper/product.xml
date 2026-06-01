@@ -89,13 +89,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 카테고리별 목록 -->
     <select id="product_category_list" parameterType="map" resultType="product">
-        select * from products where status = 'APPROVED' and category_id = #{category_id} order by product_id desc limit #{start}, #{blockList}
+        select * from products where status='APPROVED' and (category_id=#{category_id} or category_id in (select category_id from categories where parent_id=#{category_id})) order by product_id desc limit #{start},#{blockList}
     </select>
 
     <!-- 카테고리별 상품 개수 -->
-    <select id="product_category_cnt" resultType="int">
-        select count(*) from products where status = 'APPROVED' and category_id = #{category_id}
-    </select>
+    <select id="product_category_cnt" parameterType="map" resultType="int">
+    select count(*) from products where status='APPROVED' and (category_id=#{category_id} or category_id in (select category_id from categories where parent_id=#{category_id}))
+</select>
 
     <!-- 세일 상품 목록 -->
     <select id="product_sale_list" parameterType="map" resultType="product">
@@ -104,7 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 세일 상품 개수 -->
     <select id="product_sale_cnt" resultType="int"> 
-        select count(*) from products where status = 'APPROVED' and sale_price > 0
+        select count(*) from products where status='APPROVED' and sale_price>0
     </select>
 
 </mapper>
