@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kh.suje.dao.ProductDAO">
-	
+   
     <!-- 상품 목록 조회 -->
     <select id="product_list" parameterType="map" resultType="product">
         SELECT *
@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             END
         )
     </insert>
-		
+      
     <!-- 판매자 상품 수정 -->
     <update id="seller_product_modify" parameterType="product">
         UPDATE products

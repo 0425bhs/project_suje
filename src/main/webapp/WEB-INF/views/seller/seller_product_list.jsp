@@ -45,9 +45,8 @@
                 상품 등록
             </a>
 
-            <a href="#" class="menu-disabled" onclick="return false;">
+            <a href="/seller_product_insert.do" class="menu-disabled">
                 상품 삭제
-                <small>준비중</small>
             </a>
 
             <a href="#" class="menu-disabled" onclick="return false;">
