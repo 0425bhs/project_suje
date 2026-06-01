@@ -151,7 +151,7 @@
             </nav>
 
             <div class="sidebar-bottom">
-                <a href="/product/list.do">쇼핑몰로 이동</a>
+                <a href="/product/main.do">쇼핑몰로 이동</a>
             </div>
 
         </aside>
