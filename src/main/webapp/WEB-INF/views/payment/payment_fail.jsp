@@ -15,7 +15,7 @@
             <div class="brand">HAND<span>MADE</span></div>
 
             <nav class="main-nav">
-                <a href="/product/list.do">상품보기</a>
+                <a href="/product/main.do">상품보기</a>
                 <a href="#">선물추천</a>
                 <a href="#">베스트</a>
                 <a href="#">취향발견</a>
@@ -64,7 +64,7 @@
                         내 주문 내역으로 이동
                     </a>
 
-                    <a class="btn primary full" href="/product/list.do">
+                    <a class="btn primary full" href="/product/main.do">
                         상품 목록으로 이동
                     </a>
                 </div>

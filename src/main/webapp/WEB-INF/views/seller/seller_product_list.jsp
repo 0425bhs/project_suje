@@ -67,7 +67,7 @@
         </nav>
 
         <div class="sidebar-bottom">
-            <a href="/product/list.do">쇼핑몰로 이동</a>
+            <a href="/main.do">쇼핑몰로 이동</a>
         </div>
 
     </aside>
@@ -83,7 +83,7 @@
             </div>
 
             <div class="header-actions">
-                <a href="/product/list.do" class="btn btn-white">일반 상품 목록</a>
+                <a href="/product/main.do" class="btn btn-white">일반 상품 목록</a>
                 <a href="/seller_product_insert.do" class="btn btn-primary">상품 등록</a>
             </div>
         </header>
