@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ProductVO {
     private int product_id,seller_id,category_id;
 
-    private String name,description,status,image_l,image_s,created_at,updated_at;
+    private String name,description,status,image_l,image_s,created_at,updated_at,sale_price_updated_at;
 
     private MultipartFile image_l_file,image_s_file;
     

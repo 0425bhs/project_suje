@@ -28,7 +28,7 @@
     </div>
 
     <div class="product-header-inner">
-        <a class="product-brand" href="/product/list.do">
+        <a class="product-brand" href="/">
             HAND<span>MADE</span>
         </a>
 
@@ -47,12 +47,73 @@
     <nav class="product-nav-bar">
         <div class="product-nav-inner">
             <a href="#" class="disabled">☰ 전체 카테고리</a>
+            
+            <div class="category-group">
+                <a href="/category_list.do?category_id=1">패션/주얼리</a>
+                <div class="sub-category">
+                    <a href="/category_list.do?category_id=7">주얼리</a>
+                    <a href="/category_list.do?category_id=8">모자/스카프</a>
+                    <a href="/category_list.do?category_id=9">아이웨어</a>
+                    <a href="/category_list.do?category_id=10">기타</a>
+                </div>
+            </div>
+
+            <div class="category-group">
+                <a href="/category_list.do?category_id=2">홈리빙</a>
+                <div class="sub-category">
+                    <a href="/category_list.do?category_id=11">조명</a>
+                    <a href="/category_list.do?category_id=12">생활용품</a>
+                    <a href="/category_list.do?category_id=13">인테리어 소품</a>
+                    <a href="/category_list.do?category_id=14">가구</a>
+                </div>
+            </div>
+
+            <div class="category-group">
+                <a href="/category_list.do?category_id=3">뷰티</a>
+                <div class="sub-category">
+                    <a href="/category_list.do?category_id=15">틴트/립스틱</a>
+                    <a href="/category_list.do?category_id=16">베이스 메이크업</a>
+                    <a href="/category_list.do?category_id=17">아이 메이크업</a>
+                    <a href="/category_list.do?category_id=18">기타</a>
+                </div>
+            </div>
+
+            <div class="category-group">
+                <a href="/category_list.do?category_id=4">식품</a>
+                <div class="sub-category">
+                    <a href="/category_list.do?category_id=19">식단관리</a>
+                    <a href="/category_list.do?category_id=20">초콜릿/젤리/캔디</a>
+                    <a href="/category_list.do?category_id=21">간편식</a>
+                    <a href="/category_list.do?category_id=22">베이커리</a>
+                </div>
+            </div>
+
+            <div class="category-group">
+                <a href="/category_list.do?category_id=5">공예</a>
+                <div class="sub-category">
+                    <a href="/category_list.do?category_id=23">비누</a>
+                    <a href="/category_list.do?category_id=24">향수</a>
+                    <a href="/category_list.do?category_id=25">도자기</a>
+                    <a href="/category_list.do?category_id=26">키링</a>
+                </div>
+            </div>
+
+            <div class="category-group">
+                <a href="/category_list.do?category_id=6">반려동물</a>
+                <div class="sub-category">
+                    <a href="/category_list.do?category_id=27">의류/악세사리</a>
+                    <a href="/category_list.do?category_id=28">사료/간식</a>
+                    <a href="/category_list.do?category_id=29">산책용품</a>
+                    <a href="/category_list.do?category_id=30">장난감</a>
+                </div>
+            </div>
+
             <a href="#" class="disabled">🎁 선물추천</a>
-            <a href="#" class="disabled">🏷️ 할인</a>
+            <a href="/product_sale.do">🏷️ 할인</a>
             <a href="#" class="disabled">🏆 베스트</a>
             <a href="#" class="disabled">💛 취향발견</a>
-            <a href="#" class="disabled">🆕 최신작품</a>
-            <a href="#" class="disabled">💬 커뮤니티</a>
+            <a href="/all_list.do">🆕 최신작품</a>
+            <a href="#" class="disabled">💬 후기</a>
         </div>
     </nav>
 
@@ -87,14 +148,12 @@
 
 <section class="quick-menu-wrap">
     <div class="quick-menu-inner">
-        <button type="button" class="disabled">🌱 제철상품</button>
-        <button type="button" class="disabled">🎁 BEST선물</button>
-        <button type="button" class="disabled">🐾 반려소품</button>
-        <button type="button" class="disabled">🧼 생활용품</button>
-        <button type="button" class="disabled">💍 액세서리</button>
-        <button type="button" class="disabled">🍪 먹거리</button>
-        <button type="button" class="disabled">🧡 단독할인</button>
-        <button type="button" class="disabled">🆕 신규작품</button>
+        <!-- <button type="button" onclick="location.href='/category_list.do?category_id=1'">패션/악세사리</button>
+        <button type="button" onclick="location.href='/category_list.do?category_id=2'">홈리빙</button>
+        <button type="button" onclick="location.href='/category_list.do?category_id=3'">뷰티</button>
+        <button type="button" onclick="location.href='/category_list.do?category_id=4'">식품</button>
+        <button type="button" onclick="location.href='/category_list.do?category_id=5'">공예</button>
+        <button type="button" onclick="location.href='/category_list.do?category_id=6'">반려동물</button> -->
     </div>
 </section>
 

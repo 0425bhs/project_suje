@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Alias("category")
 public class CategoryVO {
-    private int category_id,parent_id;
-
+    private int category_id;
     private String name;
+    private Integer parent_id;//parent_id는 대분류일 때 NULL이라서 Integer
 }

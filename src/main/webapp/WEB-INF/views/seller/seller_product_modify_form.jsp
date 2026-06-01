@@ -99,6 +99,7 @@
         </script>
     </head>
 
+
     <body>
 
     <div class="seller-board">

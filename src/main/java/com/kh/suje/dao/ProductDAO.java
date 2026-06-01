@@ -8,6 +8,8 @@ import com.kh.suje.vo.ProductVO;
 public interface ProductDAO {
 
     List<ProductVO> product_list(Map<String, Object> map);
+
+    int product_cnt();
     
     ProductVO product_one(int product_id);
 
@@ -15,7 +17,20 @@ public interface ProductDAO {
 
     int seller_product_modify(ProductVO vo);
 
-    int product_cnt();
+    // 신제품 목록
+    List<ProductVO> new_product_list(Map<String, Object> map);
+
+    // 카테고리별 상품 목록
+    List<ProductVO> product_category_list(Map<String, Object> map);
+
+    // 카테고리별 상품 개수
+    int product_category_cnt(Map<String, Object> map);
+
+    // 세일 상품 목록
+    List<ProductVO> product_sale_list(Map<String, Object> map);
+
+    // 세일 상품 개수
+    int product_sale_cnt();
 
     //판매자 내 상품 목록
      List<ProductVO> seller_product_list(int seller_id);
