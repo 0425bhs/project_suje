@@ -71,7 +71,7 @@
 }
 
 .sub-category a:hover {
-    color: #000;
+    color: #ff7a00;
     font-weight: 700;
 }
 
@@ -150,4 +150,41 @@
 .delivery-text {
     font-size: 13px;
     color: #777;
+}
+
+/* 마우스 올리면 전체 링크 주황색 */
+.all-category-link:hover {
+    color: #ff6f4f;
+    font-weight: 700;
+}
+
+/* 마우스 올리면 대분류 글씨 주황색 */
+.category-title-btn:hover {
+    color: #ff6f4f;
+}
+
+/* 마우스 올리면 대분류 화살표도 주황색 */
+.category-title-btn:hover span {
+    color: #ff6f4f;
+}
+
+/* 마우스 올리면 소분류 글씨 주황색 */
+.sub-category a:hover {
+    color: #ff6f4f;
+    font-weight: 700;
+}
+
+/* 상품명도 마우스 올리면 주황색 */
+.product-name a:hover {
+    color: #ff6f4f;
+}
+
+.category-title-btn:hover {
+    color: #ff7a00;
+}
+
+/* 페이징 */
+.page-menu {
+    margin-top: 40px;
+    text-align: center;
 }
