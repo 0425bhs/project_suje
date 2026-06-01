@@ -26,7 +26,7 @@ public class ProductController {
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
    
-    @GetMapping(value={"/", "main.do"})
+    @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
     public String main() {
         return "main";
     }
@@ -79,7 +79,7 @@ public class ProductController {
 
         // 카테고리 페이지 왼쪽 메뉴용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
-        model.addAttribute("smallCategoryList", categorydao.small_category_list(selectedBigCategoryId));
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
         model.addAttribute("selectedBigCategoryId", selectedBigCategoryId);
 
         return "product/product_category_list";
