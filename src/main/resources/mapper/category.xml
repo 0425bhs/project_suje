@@ -22,4 +22,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             resultType="String">
         select name from categories where category_id=#{category_id}
     </select>
+    
 </mapper>
