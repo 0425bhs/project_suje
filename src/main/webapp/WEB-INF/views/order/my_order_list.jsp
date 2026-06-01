@@ -15,12 +15,12 @@
 
     <header class="site-header">
         <div class="header-inner">
-            <a class="brand" href="/product/list.do">
+            <a class="brand" href="/main.do">
                 HAND<span>MADE</span>
             </a>
 
             <nav class="main-nav">
-                <a href="/product/list.do">상품보기</a>
+                <a href="/product/main.do">상품보기</a>
                 <a href="#">선물추천</a>
                 <a href="#">베스트</a>
                 <a href="#">취향발견</a>
