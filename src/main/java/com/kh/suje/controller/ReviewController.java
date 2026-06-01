@@ -22,7 +22,7 @@ public class ReviewController {
 
     private final ReviewDAO reviewDAO;
 
-    @GetMapping("/")
+    @GetMapping("/review")
     private String main() {
         return "/main";
     }
@@ -37,14 +37,14 @@ public class ReviewController {
     @PostMapping("/review_form.do")
     private String reviewFormFin(ReviewVO review) {
         // UserVO user = session.getAttribute("user");
-        // int id = user.getId();
+        // Long id = user.getId();
 
-        Long userId = 1L;
+        int userId = 1;
         review.setUserId(userId);
 
         int res = reviewDAO.addReview(review);
 
-        return "/main";
+        return "redirect:/my_review_list.do";
     }
 
     @GetMapping("/my_review_list.do")
@@ -62,9 +62,6 @@ public class ReviewController {
 
     @GetMapping("/live_review_list.do")
     private String liveReviewList(Model model) {
-
-        int id = 1;
-
         List<ReviewVO> list = reviewDAO.getLiveReviewList();
         model.addAttribute("list", list);
 

@@ -16,7 +16,7 @@
                 return;
             }
 
-            f.action = "";
+            f.action = "qna_form.do";
             f.method = "post";
             f.submit();
         }
@@ -28,7 +28,7 @@
             <caption>문의 작성</caption>
             <tr>
                 <th>상품 번호</th>
-                <td>1</td>
+                <td>${productId}</td>
             </tr>
             <tr>
                 <th>제목</th>

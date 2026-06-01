@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.QnaDAO">
+    <insert id="addQna"
+            parameterType="qna">
+        INSERT INTO qnas (user_id, product_id, title, content)
+        VALUES (#{userId}, #{productId}, #{title}, #{content})
+    </insert>
+
+    <select id="getMyQnaList"
+            parameterType="int"
+            resultType="qna">
+        SELECT *
+        FROM qnas
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="getQnaById"
+            parameterType="int"
+            resultType="qna">
+        SELECT *
+        FROM qnas
+        WHERE qna_id = #{qnaId}
+    </select>
+    
+</mapper>

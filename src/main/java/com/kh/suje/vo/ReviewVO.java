@@ -13,10 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Alias("review")
 public class ReviewVO {
-    private Long id;
-    private Long userId;
-    private Long productId;
-    private Long orderItemId;
+    private int reviewId, userId, productId, orderItemId;
     private Integer rating;
     private String content;
     private LocalDateTime createdAt;

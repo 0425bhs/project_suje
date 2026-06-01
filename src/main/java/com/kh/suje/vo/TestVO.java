@@ -1,7 +1,5 @@
 package com.kh.suje.vo;
 
-import java.time.LocalDateTime;
-
 import org.apache.ibatis.type.Alias;
 
 import lombok.AllArgsConstructor;
@@ -11,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Alias("notice")
-public class NoticeVO {
-    private int noticeId;
-    private String title, content;
-    private LocalDateTime createdAt, updatedAt;
+@Alias("test")
+public class TestVO {
+    private int category_id, parent_id;
+    private String name;
 }

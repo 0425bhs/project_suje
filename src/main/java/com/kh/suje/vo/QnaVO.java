@@ -13,13 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Alias("qna")
 public class QnaVO {
-    private Long id;
-    private Long userId;
-    private Long productId;
-    private String title;
-    private String content;
-    private String answer;
-    private String status;
-    private LocalDateTime createdAt;
-    private LocalDateTime answeredAt;
+    private int qnaId, userId, productId;
+    private String title, content, answer, status;
+    private LocalDateTime createdAt, answeredAt;
 }

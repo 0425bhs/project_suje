@@ -13,11 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Alias("report")
 public class ReportVO {
-    private Long id;
-    private Long reporterId;
+    private int id, reporterId;
     private String targetType;
-    private Long targetId;
-    private String reason;
-    private String status;
+    private int targetId;
+    private String reason, status;
     private LocalDateTime createdAt;
 }
