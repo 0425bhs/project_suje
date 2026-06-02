@@ -7,8 +7,6 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.vo.ProductVO;
 
@@ -21,12 +19,12 @@ public class SellerController {
     private final ProductDAO productdao;
 
     @GetMapping("/seller_homepage.do")
-    public String seller_homepage_form(){
-    return "/seller/seller_homepage";
-    }
+    public String sellerHomepage(Model model,Integer seller_id,String sort) {
 
-    @PostMapping("/seller_homepage.do")
-    public String sellerHomepage(Model model,int seller_id,String sort) {
+    //테스트용으로 1번 판매자 사용
+    if (seller_id == null) {
+        seller_id = 1;
+    }    
 
     // 처음 들어왔을 때 sort가 없으면 기본값
     if (sort == null || sort.equals("")) {

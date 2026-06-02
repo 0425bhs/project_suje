@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @Alias("seller")
 public class SellerVO {
 
-    private int seller_id,user_id;
+    private int user_id;
+    private Integer seller_id;
     private String company_name,business_number,status,created_at;
 
 }
