@@ -8,7 +8,8 @@
 <head>
     <meta charset="UTF-8">
     <title>HANDMADE</title>
-    <link rel="stylesheet" href="/css/product/product.css">
+    <link rel="stylesheet" href="/css/product/product_main.css">
+    <script src="/js/product_main.js"></script>
 </head>
 
 <body>

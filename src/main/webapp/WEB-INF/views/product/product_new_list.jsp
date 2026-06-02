@@ -4,63 +4,52 @@
 
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        
-    </head>
+<head></head>
 
-    <body>  
+<body>
 
-        <section class="product-list-page">
+<h2>신제품</h2>
 
-            <div class="product-list-header">
-                <span>HANDMADE NEW</span>
-                <h1>새로 등록된 작가 상품</h1>
-                <p>최근 등록된 핸드메이드 작품을 만나보세요.</p>
-            </div>
+<c:forEach var="list" items="${list}">
+    <div>
+        <img src="${list.image_l}" alt="${list.name}"/>
 
-            <div class="product-grid">
+        <div>
+            <a href="/product_detail.do?product_id=${list.product_id}">
+                ${list.name}
+            </a>
+        </div>
 
-                <c:forEach var="product" items="${list}">
-                    <div class="product-card">
+        <c:if test="${list.sale_price==0}">
+            <p>
+                <fmt:formatNumber value="${list.price}" pattern="#,###"/>원
+            </p>
+        </c:if>
 
-                        <a href="/product_detail.do?product_id=${product.product_id}" class="product-img-link">
-                            <c:choose>
-                                <c:when test="${not empty product.image_l and product.image_l ne 'no_file'}">
-                                    <img src="${product.image_l}" class="product-img" alt="${product.name}">
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="no-image">이미지 없음</div>
-                                </c:otherwise>
-                            </c:choose>
-                        </a>
+        <c:if test="${list.sale_price>0}">
+            <p>
+                <span style="text-decoration: line-through; color: gray;">
+                    <fmt:formatNumber value="${list.price}" pattern="#,###"/>원
+                </span>
+            </p>
 
-                        <div class="product-info">
+            <p>
+                <strong>${list.sale_rate}% 할인</strong>
+                <fmt:formatNumber value="${list.sale_price}" pattern="#,###"/>원
+            </p>
+        </c:if>
 
-                            <a href="/product_detail.do?product_id=${product.product_id}" class="product-name">
-                                ${product.name}
-                            </a>
+        <c:if test="${list.free_shipping>0}">
+            <p>
+                <fmt:formatNumber value="${list.free_shipping}" pattern="#,###"/>원 이상 무료배송
+            </p>
+        </c:if>
 
-                            <p class="product-desc">
-                                ${product.description}
-                            </p>
+        <c:if test="${list.free_shipping==0}">
+            <p>무료배송</p>
+        </c:if>
+    </div>
+</c:forEach>
 
-                            <div class="product-price">
-                                <strong>
-                                    <fmt:formatNumber value="${product.sale_price > 0 ? product.sale_price : product.price}" pattern="#,###"/>원
-                                </strong>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </c:forEach>
-
-            </div>
-
-            <div class="page-menu">
-                ${pageMenu}
-            </div>
-
-        </section>
-    </body>
+</body>
 </html>
