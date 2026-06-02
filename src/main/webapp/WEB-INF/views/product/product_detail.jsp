@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 상세</title>
-    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/product/product_main.css">
 </head>
 
 <body>

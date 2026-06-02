@@ -30,7 +30,7 @@ public class ProductController {
     public String main() {
         return "main";
     }
-    
+        
     @GetMapping("/category_list.do")
     public String product_category_list(Model model, Integer page, Integer category_id) {
 
@@ -79,7 +79,7 @@ public class ProductController {
 
         // 카테고리 페이지 왼쪽 메뉴용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
-        model.addAttribute("smallCategoryList", categorydao.small_category_list(selectedBigCategoryId));
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
         model.addAttribute("selectedBigCategoryId", selectedBigCategoryId);
 
         return "product/product_category_list";
@@ -344,4 +344,19 @@ public class ProductController {
         return "seller/seller_product_list";
     }
         
+    @PostMapping("/seller_product_toggle.do")
+    @ResponseBody
+    public Map<String,Object> seller_product_toggle(ProductVO vo) {
+
+    Map<String,Object> map=new HashMap<>();
+
+    int result=productdao.seller_product_toggle(vo);
+
+    map.put("result", result);
+    map.put("status", vo.getStatus());
+
+    return map;
+    }
+
+
 }

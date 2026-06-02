@@ -1,20 +1,11 @@
 window.onload = function () {
+    const categoryButtons = document.querySelectorAll(".category-title-btn");
 
-    const sideTitles = document.querySelectorAll(".category-side-title");
+    categoryButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            const group = this.parentElement;
 
-    sideTitles.forEach(function (title) {
-        title.addEventListener("click", function () {
-
-            const group = this.closest(".category-side-group");
-            const sub = group.querySelector(".category-side-sub");
-
-            if (sub == null) {
-                return;
-            }
-
-            sub.classList.toggle("open");
-            this.classList.toggle("active");
+            group.classList.toggle("open");
         });
     });
-
 };

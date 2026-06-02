@@ -9,75 +9,7 @@
         <link rel="stylesheet" href="/css/seller/seller_form_common.css">
         <link rel="stylesheet" href="/css/seller/seller_product_insert.css">
 
-        <script>
-            window.onload = function () {
-                const freeShippingView = document.getElementById("free_shipping_view");
-                const freeShipping = document.getElementById("free_shipping");
-                const freeShippingText = document.getElementById("free_shipping_text");
-
-                freeShippingView.addEventListener("input", function () {
-                    let value = this.value.replace(/[^0-9]/g, "");
-
-                    if (value == "") {
-                        this.value = "";
-                        freeShipping.value = "0";
-                        freeShippingText.innerText = "0";
-                        return;
-                    }
-
-                    // 서버로 보낼 값: 콤마 없는 숫자
-                    freeShipping.value = value;
-
-                    // 화면에 보여줄 값: 콤마 있는 숫자
-                    let commaValue = Number(value).toLocaleString();
-
-                    this.value = commaValue;
-                    freeShippingText.innerText = commaValue;
-                });
-            }
-
-            function send(f) {
-                const imageL = f.image_l_file;
-                const imageS = f.image_s_file;
-
-                if (imageL.value == "") {
-                    alert("대표 이미지를 등록해주세요.");
-                    imageL.focus();
-                    return;
-                }
-
-                if (imageS.value == "") {
-                    alert("상세 이미지를 등록해주세요.");
-                    imageS.focus();
-                    return;
-                }
-
-                const freeShippingView = document.getElementById("free_shipping_view");
-                const freeShipping = document.getElementById("free_shipping");
-
-                freeShipping.value = freeShippingView.value.replace(/[^0-9]/g, "");
-
-                if (freeShipping.value == "") {
-                    freeShipping.value = "0";
-                }
-
-                let formData = new FormData(f);
-
-                fetch("/seller_product_insert.do", {
-                    method: "post",
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.result == 1) {
-                        alert("상품 등록이 되었습니다.");
-                        location.href = "/seller_product_list.do";
-                    } else {
-                        alert("상품 등록이 실패되어 관리자에게 문의바랍니다.");
-                    }
-                });
-            }
-        </script>
+        <script src="/js/seller_product_insert.js"></script>
     </head>
 
     <body>

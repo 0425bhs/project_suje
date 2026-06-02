@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>판매자 관리보드 - 내 상품 관리</title>
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
+    <script src="/js/seller_product_toggle.js"></script>
 </head>
 
 <body>
@@ -32,9 +33,8 @@
                 <small>준비중</small>
             </a>
 
-            <a href="#" class="menu-disabled" onclick="return false;">
+            <a href="/seller_homepage.do" class="menu-disabled">
                 판매자 홈페이지
-                <small>준비중</small>
             </a>
 
             <a href="/seller_product_list.do" class="menu-active">
@@ -44,12 +44,7 @@
             <a href="/seller_product_insert.do">
                 상품 등록
             </a>
-
-            <a href="#" class="menu-disabled" onclick="return false;">
-                상품 삭제
-                <small>준비중</small>
-            </a>
-
+            
             <a href="#" class="menu-disabled" onclick="return false;">
                 판매자 주문 관리
                 <small>준비중</small>
@@ -182,33 +177,59 @@
                                     </td>
 
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${vo.status eq 'PENDING'}">
-                                                <span class="status-badge status-pending">승인 대기</span>
-                                            </c:when>
+                                        <c:if test="${vo.status eq 'APPROVED'}">
+                                            <span id="statusBadge_${vo.product_id}" class="status-badge status-approved">
+                                                활성화
+                                            </span>
+                                        </c:if>
 
-                                            <c:when test="${vo.status eq 'APPROVED'}">
-                                                <span class="status-badge status-approved">승인 완료</span>
-                                            </c:when>
+                                        <c:if test="${vo.status eq 'HIDDEN'}">
+                                            <span id="statusBadge_${vo.product_id}" class="status-badge status-hidden">
+                                                비활성화
+                                            </span>
+                                        </c:if>
 
-                                            <c:when test="${vo.status eq 'REJECTED'}">
-                                                <span class="status-badge status-rejected">승인 거절</span>
-                                            </c:when>
+                                        <!-- 판매자가 직접 바꾸는 상태는 아니지만 화면 표시는 유지 -->
+                                        <c:if test="${vo.status eq 'PENDING'}">
+                                            <span class="status-badge status-pending">
+                                                승인 대기
+                                            </span>
+                                        </c:if>
 
-                                            <c:when test="${vo.status eq 'HIDDEN'}">
-                                                <span class="status-badge status-hidden">숨김</span>
-                                            </c:when>
-
-                                            <c:otherwise>
-                                                <span class="status-badge status-etc">${vo.status}</span>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <!-- 판매자가 직접 바꾸는 상태는 아니지만 화면 표시는 유지 -->
+                                        <c:if test="${vo.status eq 'REJECTED'}">
+                                            <span class="status-badge status-rejected">
+                                                승인 거절
+                                            </span>
+                                        </c:if>
                                     </td>
 
                                     <td>
                                         <a href="/seller_product_modify.do?product_id=${vo.product_id}" class="edit-btn">
                                             수정
                                         </a>
+
+                                        <c:if test="${vo.status eq 'APPROVED'}">
+                                            <button type="button"
+                                                    class="toggle-btn toggle-off-btn"
+                                                    onclick="productToggle('${vo.product_id}', 'HIDDEN')">
+                                                비활성화
+                                            </button>
+                                        </c:if>
+
+                                        <c:if test="${vo.status eq 'HIDDEN'}">
+                                            <button type="button"
+                                                    class="toggle-btn toggle-on-btn"
+                                                    onclick="productToggle('${vo.product_id}', 'APPROVED')">
+                                                활성화
+                                            </button>
+                                        </c:if>
+
+                                        <button type="button"
+                                                class="delete-btn"
+                                                onclick="productDelete('${vo.product_id}')">
+                                            삭제
+                                        </button>
                                     </td>
                                 </tr>
                             </c:forEach>

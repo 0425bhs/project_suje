@@ -46,65 +46,51 @@
 
     <nav class="product-nav-bar">
         <div class="product-nav-inner">
-            <a href="#" class="disabled">☰ 전체 카테고리</a>
-            
-            <div class="category-group">
-                <a href="/category_list.do?category_id=1">패션/주얼리</a>
-                <div class="sub-category">
-                    <a href="/category_list.do?category_id=7">주얼리</a>
-                    <a href="/category_list.do?category_id=8">모자/스카프</a>
-                    <a href="/category_list.do?category_id=9">아이웨어</a>
-                    <a href="/category_list.do?category_id=10">기타</a>
-                </div>
-            </div>
 
-            <div class="category-group">
-                <a href="/category_list.do?category_id=2">홈리빙</a>
-                <div class="sub-category">
-                    <a href="/category_list.do?category_id=11">조명</a>
-                    <a href="/category_list.do?category_id=12">생활용품</a>
-                    <a href="/category_list.do?category_id=13">인테리어 소품</a>
-                    <a href="/category_list.do?category_id=14">가구</a>
-                </div>
-            </div>
+            <!-- 전체 카테고리 버튼 영역 -->
+            <div class="all-category-wrap">
 
-            <div class="category-group">
-                <a href="/category_list.do?category_id=3">뷰티</a>
-                <div class="sub-category">
-                    <a href="/category_list.do?category_id=15">틴트/립스틱</a>
-                    <a href="/category_list.do?category_id=16">베이스 메이크업</a>
-                    <a href="/category_list.do?category_id=17">아이 메이크업</a>
-                    <a href="/category_list.do?category_id=18">기타</a>
-                </div>
-            </div>
+                <!-- 누르면 카테고리 박스 열림 -->
+                <button type="button" class="all-category-btn">
+                    ☰ 전체 카테고리
+                </button>
 
-            <div class="category-group">
-                <a href="/category_list.do?category_id=4">식품</a>
-                <div class="sub-category">
-                    <a href="/category_list.do?category_id=19">식단관리</a>
-                    <a href="/category_list.do?category_id=20">초콜릿/젤리/캔디</a>
-                    <a href="/category_list.do?category_id=21">간편식</a>
-                    <a href="/category_list.do?category_id=22">베이커리</a>
-                </div>
-            </div>
+                <!-- 펼쳐지는 전체 카테고리 박스 -->
+                <div class="all-category-panel">
 
-            <div class="category-group">
-                <a href="/category_list.do?category_id=5">공예</a>
-                <div class="sub-category">
-                    <a href="/category_list.do?category_id=23">비누</a>
-                    <a href="/category_list.do?category_id=24">향수</a>
-                    <a href="/category_list.do?category_id=25">도자기</a>
-                    <a href="/category_list.do?category_id=26">키링</a>
-                </div>
-            </div>
+                    <!-- 대분류 반복 -->
+                    <c:forEach var="big" items="${bigCategoryList}">
 
-            <div class="category-group">
-                <a href="/category_list.do?category_id=6">반려동물</a>
-                <div class="sub-category">
-                    <a href="/category_list.do?category_id=27">의류/악세사리</a>
-                    <a href="/category_list.do?category_id=28">사료/간식</a>
-                    <a href="/category_list.do?category_id=29">산책용품</a>
-                    <a href="/category_list.do?category_id=30">장난감</a>
+                        <div class="all-category-item">
+
+                            <!-- 대분류 이름 -->
+                            <a href="/category_list.do?category_id=${big.category_id}" class="all-category-big">
+                                ${big.name}
+                            </a>
+
+                            <!-- 소분류 영역 -->
+                            <div class="all-category-small-list">
+
+                                <!-- 대분류 전체 보기 -->
+                                <a href="/category_list.do?category_id=${big.category_id}">
+                                    전체
+                                </a>
+
+                                <!-- 소분류 반복 -->
+                                <c:forEach var="small" items="${smallCategoryList}">
+                                    <c:if test="${small.parent_id == big.category_id}">
+                                        <a href="/category_list.do?category_id=${small.category_id}">
+                                            ${small.name}
+                                        </a>
+                                    </c:if>
+                                </c:forEach>
+
+                            </div>
+
+                        </div>
+
+                    </c:forEach>
+
                 </div>
             </div>
 
@@ -114,6 +100,7 @@
             <a href="#" class="disabled">💛 취향발견</a>
             <a href="/all_list.do">🆕 최신작품</a>
             <a href="#" class="disabled">💬 후기</a>
+
         </div>
     </nav>
 

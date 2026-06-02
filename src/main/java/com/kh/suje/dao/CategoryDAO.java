@@ -13,4 +13,6 @@ public interface CategoryDAO {
     Integer find_parent_id(int category_id);
     
     String getCategroyNameById(int category_id);
+
+    List<CategoryVO> small_category_all_list();
 }
