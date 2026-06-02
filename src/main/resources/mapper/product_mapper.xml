@@ -11,7 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <!-- 상품 상세 조회 -->
-    <select id="product_one" parameterType="long" resultType="product">
+    <select id="product_one" parameterType="int" resultType="product">
         select * from products where product_id = #{product_id}
     </select>
 

@@ -23,16 +23,32 @@ public class NoticeController {
     private final NoticeDAO noticeDAO;
 
     @GetMapping("/notice_form.do")
-    private String reviewForm(Model model) {
+    private String noticeForm() {
 
         return "/notice/notice_form";
     }
 
     @PostMapping("/notice_form.do")
-    private String reviewFormFin(NoticeVO notice) {
+    private String noticeFormFin(NoticeVO notice) {
         int res = noticeDAO.addNotice(notice);
 
         return "redirect:/notice_list.do";
+    }
+
+    @GetMapping("/notice_update_form.do")
+    private String noticeUpdateForm(Model model, int notice_id) {
+        NoticeVO notice = noticeDAO.getNoticeById(notice_id);
+
+        model.addAttribute("notice", notice);
+
+        return "/notice/notice_update_form";
+    }
+
+    @PostMapping("/notice_update_form.do")
+    private String noticeUpdateFormFin(NoticeVO notice) {
+        int res = noticeDAO.updateNotice(notice);
+
+        return "redirect:/notice_detail.do?notice_id="+notice.getNotice_id();
     }
 
     @GetMapping("/notice_list.do")
@@ -45,11 +61,18 @@ public class NoticeController {
     }
 
     @GetMapping("/notice_detail.do")
-    private String noticeDetail(Model model, int noticeId) {
-        NoticeVO notice = noticeDAO.getNoticeById(noticeId);
+    private String noticeDetail(Model model, int notice_id) {
+        NoticeVO notice = noticeDAO.getNoticeById(notice_id);
         
         model.addAttribute("notice", notice);
 
         return "/notice/notice_detail";
+    }
+
+    @GetMapping("/notice_delete.do")
+    private String noticeDelete(Model model, int notice_id) {
+        int res = noticeDAO.deleteNotice(notice_id);
+        
+        return "redirect:/notice_list.do";
     }
 }

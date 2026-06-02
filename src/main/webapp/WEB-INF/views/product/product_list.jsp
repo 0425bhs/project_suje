@@ -48,9 +48,6 @@
             <a href="#" class="disabled">☰ 전체 카테고리</a>
             
                 <a href="/category_list.do?category_id=1">패션/악세사리</a>
-                    <!-- <c:if check="${category.parent_id eq 1}">
-                        <a href="/category_detail.do?category_id=${category_id}">${category.name}</a>
-                    </c:if> -->
                     <a href="/category_detail.do?category_id=7">주얼리</a>
                     <a href="/category_detail.do?category_id=2">모자/스카프</a>
                     <a href="/category_detail.do?category_id=3">아이웨어</a>

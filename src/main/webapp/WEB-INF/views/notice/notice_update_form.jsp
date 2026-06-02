@@ -8,18 +8,26 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Page Title</title>
     <script>
-        function del(notice_id) {
-            if (!confirm("삭제하시겠습니까?")) {
+        function send(f) {
+            let title = f.title.value.trim();
+
+            if (title == "") {
+                alert("제목을 작성해주세요.");
                 return;
             }
+
+            f.action = "notice_update_form.do";
+            f.method = "post";
+            f.submit();
         }
     </script>
 </head>
 
 <body>
     <form>
+        <input type="hidden" name="notice_id" value="${notice.notice_id}"/>
         <table border="1">
-            <caption>공지사항 상세</caption>
+            <caption>공지사항 작성</caption>
             <tr>
                 <th>제목</th>
                 <td>
@@ -33,21 +41,9 @@
                 </td>
             </tr>
             <tr>
-                <th>작성일</th>
-                <td>
-                    <input value="${notice.created_at}"/>
-                </td>
-            </tr>
-            <tr>
-                <th>수정일</th>
-                <td>
-                    <input value="${notice.updated_at}"/>
-                </td>
-            </tr>
-            <tr>
                 <td colspan="2">
-                    <input type="button" value="수정" onclick="location.href='notice_update_form.do?notice_id=${notice.notice_id}'"/>
-                    <input type="button" value="삭제" onclick="del('${notice.notice_id}')"/>
+                    <input type="button" value="수정" onclick="send(this.form)"/>
+                    <input type="button" value="취소" onclick="history.back()"/>
                 </td>
             </tr>
         </table>

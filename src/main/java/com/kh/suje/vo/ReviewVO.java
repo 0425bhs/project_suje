@@ -13,8 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Alias("review")
 public class ReviewVO {
-    private int reviewId, userId, productId, orderItemId;
+    private int review_id, user_id, product_id, order_item_id;
     private Integer rating;
     private String content;
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
+
+    //product_id    
+    private String product_name, image_s;
 }

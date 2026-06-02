@@ -15,7 +15,6 @@
             <tr>
                 <th>번호</th>
                 <th>제목</th>
-                <th>내용</th>
                 <th>작성일</th>
                 <th>수정일</th>
             </tr>
@@ -24,15 +23,18 @@
 
         <c:forEach var="notice" items="#{list}">
             <tr>
-                <td>${notice.noticeId}</td>
+                <td>${notice.notice_id}</td>
                 <td>
-                    <a href="/notice_detail.do?noticeId=${notice.noticeId}">${notice.title}</a></td>
-                <td>${notice.content}</td>
-                <td>${notice.createdAt}</td>
-                <td>${notice.updatedAt}</td>
+                    <a href="/notice_detail.do?notice_id=${notice.notice_id}">${notice.title}</a></td>
+                <td>${notice.created_at}</td>
+                <td>${notice.updated_at}</td>
             </tr>
         </c:forEach>
-
+            <tr>
+                <td colspan="4">
+                    <input type="button" value="공지사항 작성" onclick="location.href='notice_form.do'">
+                </td>
+            </tr>
         </tbody>
     </table>
 </body>

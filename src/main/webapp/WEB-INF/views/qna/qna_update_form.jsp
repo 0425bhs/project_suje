@@ -16,7 +16,7 @@
                 return;
             }
 
-            f.action = "qna_form.do";
+            f.action = "qna_update_form.do";
             f.method = "post";
             f.submit();
         }
@@ -24,28 +24,28 @@
 </head>
 <body>
     <form>
-        <input type="hidden" name="product_id" value="${product.product_id}"/>
+        <input type="hidden" name="qna_id" value="${qna.qna_id}"/>
         <table border="1">
             <caption>문의 작성</caption>
             <tr>
                 <th>상품 이미지</th>
-                <td><img src="${product.image_l}" /></td>
+                <td><img src="${qna.image_s}" /></td>
             </tr>
             <tr>
                 <th>상품 이름</th>
-                <td>${product.name}</td>
+                <td>${qna.product_name}</td>
             </tr>
             <tr>
                 <th>제목</th>
-                <td><input name="title"/></td>
+                <td><input name="title" value="${qna.title}"/></td>
             </tr>
             <tr>
                 <th>내용</th>
-                <td><textarea name="content"></textarea></td>
+                <td><textarea name="content">${qna.content}</textarea></td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="button" value="작성" onclick="send(this.form)">
+                    <input type="button" value="수정" onclick="send(this.form)">
                     <input type="button" value="취소" onclick="history.back()">
                 </td>    
             </tr>

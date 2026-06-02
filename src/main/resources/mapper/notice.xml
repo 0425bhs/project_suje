@@ -24,4 +24,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         VALUES (#{title}, #{content})
     </insert>
 
+    <insert id="updateNotice"
+            parameterType="notice">
+        UPDATE notices
+        SET title = #{title}, content = #{content}
+        WHERE notice_id = #{notice_id}
+    </insert>
 </mapper>

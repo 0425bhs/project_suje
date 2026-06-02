@@ -7,43 +7,56 @@
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Page Title</title>
+    <script>
+        function del(qna_id) {
+            if (!confirm("삭제하시겠습니까?")) {
+                return;
+            }
+
+            location.href="qna_delete.do?qna_id=" + qna_id;
+        }
+    </script>
 </head>
 <body>
     <form>
         <table border="1">
-            <caption>문의 작성</caption>
+            <caption>문의 정보</caption>
             <tr>
-                <th>상품 번호</th>
-                <td>${productId}</td>
+                <th>상품 이미지</th>
+                <td><img src="${qna.image_s}" /></td>
+            </tr>
+            <tr>
+                <th>상품 이름</th>
+                <td>${qna.product_name}</td>
             </tr>
             <tr>
                 <th>제목</th>
-                <td><input name="title" value="${qna.title}"/></td>
+                <td>${qna.title}</td>
             </tr>
             <tr>
                 <th>내용</th>
-                <td><textarea name="content">${qna.content}</textarea></td>
-            </tr>
-            <tr>
-                <th>답변</th>
-                <td><input name="content" value="${qna.answer}"/></td>
+                <td>${qna.content}</td>
             </tr>
             <tr>
                 <th>상태</th>
-                <td><input name="content" value="${qna.status}"/></td>
+                <td>${qna.status}</td>
             </tr>
             <tr>
-                <th>등록일</th>
-                <td><input name="content" value="${qna.createdAt}"/></td>
+                <th>작성일</th>
+                <td>${qna.created_at}</td>
+            </tr>
+            <tr>
+                <th>답변</th>
+                <td>${qna.answer}</td>
             </tr>
             <tr>
                 <th>답변일</th>
-                <td><input name="answeredAt" value="${qna.answeredAt}"/></td>
+                <td>${qna.answered_at}</td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="button" value="작성" onclick="send(this.form)">
-                    <input type="button" value="취소" onclick="history.back()">
+                    <input type="button" value="수정" onclick="location.href='qna_update_form.do?qna_id=${qna.qna_id}'">
+                    <input type="button" value="삭제" onclick="del('${qna.qna_id}')">
                 </td>    
             </tr>
         </table>

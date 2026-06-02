@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Alias("notice")
 public class NoticeVO {
-    private int noticeId;
+    private int notice_id;
     private String title, content;
-    private LocalDateTime createdAt, updatedAt;
+    private LocalDateTime created_at, updated_at;
 }

@@ -6,23 +6,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="addQna"
             parameterType="qna">
         INSERT INTO qnas (user_id, product_id, title, content)
-        VALUES (#{userId}, #{productId}, #{title}, #{content})
+        VALUES (#{user_id}, #{product_id}, #{title}, #{content})
     </insert>
 
     <select id="getMyQnaList"
             parameterType="int"
             resultType="qna">
-        SELECT *
-        FROM qnas
-        WHERE user_id = #{userId}
+        SELECT q.*, p.name product_name, p.image_s
+        FROM qnas q
+        JOIN products p
+        ON q.product_id = p.product_id
+        WHERE user_id = #{user_id}
     </select>
 
     <select id="getQnaById"
             parameterType="int"
             resultType="qna">
-        SELECT *
-        FROM qnas
-        WHERE qna_id = #{qnaId}
+        SELECT q.*, p.name product_name, p.image_s
+        FROM qnas q
+        JOIN products p
+        ON q.product_id = p.product_id
+        WHERE qna_id = #{qna_id}
     </select>
     
+    <update id="updateQna"
+            parameterType="qna">
+        UPDATE qnas
+        SET title = #{title}, content = #{content}
+        WHERE qna_id = #{qna_id}
+    </update>
+
+    <delete id="deleteQna"
+            parameterType="int">
+        DELETE FROM QNAS
+        WHERE qna_id = #{qna_id}
+    </delete>
 </mapper>

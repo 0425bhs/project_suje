@@ -9,17 +9,18 @@
     <title>Page Title</title>
 </head>
 <body>
-    <input type="button" value="리뷰 작성(1번 상품)" onclick="location.href='review_form.do?productId=1'">
-    <input type="button" value="내 리뷰 목록" onclick="location.href='my_review_list.do'">
-    <input type="button" value="실시간 리뷰" onclick="location.href='live_review_list.do'">
+    <input type="button" value="후기 작성(1번 상품)" onclick="location.href='review_form.do?product_id=1'">
+    <input type="button" value="내 후기 목록" onclick="location.href='my_review_list.do'">
+    <input type="button" value="실시간 후기" onclick="location.href='live_review_list.do'">
     <hr>
-    <input type="button" value="상품 문의 작성(1번 상품)" onclick="location.href='qna_form.do?productId=1'">
+    <input type="button" value="상품 문의 작성(1번 상품)" onclick="location.href='qna_form.do?product_id=1'">
     <input type="button" value="내가 쓴 문의" onclick="location.href='my_qna_list.do'">
     <hr>
-    <input type="button" value="공지사항 작성" onclick="location.href='notice_form.do'">
     <input type="button" value="공지사항 목록" onclick="location.href='notice_list.do'">
     <hr>
-    <input type="button" value="상품/후기/문의 신고 작성" onclick="location.href='report_form.do'">
+    <input type="button" value="상품 신고" onclick="location.href='report_form.do?target_type=PRODUCT&target_id=1'">
+    <input type="button" value="후기 신고" onclick="location.href='report_form.do?target_type=REVIEW&target_id=1'">
+    <input type="button" value="문의 신고" onclick="location.href='report_form.do?target_type=QNA&target_id=1'">
     <hr>
     <input type="button" value="간편 로그인" onclick="location.href='login.do'">
     <hr>

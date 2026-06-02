@@ -8,6 +8,12 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Page Title</title>
     <script>
+        window.onload = () => {
+            let rating = document.getElementById("rating");
+            console.log(rating);
+            rating.value = '${review.rating}';
+        }
+
         function send(f) {
             let content = f.content.value.trim();
 
@@ -16,8 +22,9 @@
                 return;
             }
 
-            f.action = "review_form.do";
+            f.action = "/review_update_form.do";
             f.method = "post";
+
             f.submit();    
         }
     </script>
@@ -25,27 +32,27 @@
 
 <body>
     <form>
-        <input type="hidden" name="product_id" value="${product.product_id}"/>
+        <input type="hidden" name="review_id" value="${review.review_id}"/>
         <table border="1">
             <caption>리뷰 작성</caption>
             <tr>
                 <th>상품 이미지</th>
-                <td><img src="${product.image_s}" /></td>
+                <td><img src="${review.image_s}" /></td>
             </tr>
             <tr>
                 <th>상품 이름</th>
-                <td>${product.name}</td>
+                <td>${review.product_name}</td>
             </tr>
             <tr>
                 <th>리뷰 내용</th>
                 <td>
-                    <textarea name="content" placeholder="리뷰 내용을 작성해주세요."></textarea>
+                    <textarea name="content" placeholder="리뷰 내용을 작성해주세요.">${review.content}</textarea>
                 </td>
             </tr>
             <tr>
                 <th>별점</th>
                 <td>
-                    <select name="rating">
+                    <select id="rating" name="rating">
                         <option value="">별점</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
