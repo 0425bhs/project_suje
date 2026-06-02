@@ -162,4 +162,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update products set status=#{status} where product_id=#{product_id}
     </update>
 
+    <select id="sellerHomepageProductList" parameterType="map" resultType="com.kh.suje.vo.ProductVO">
+        SELECT * FROM products WHERE seller_id = #{seller_id} AND status = 'APPROVED'
+        <choose>
+            <!-- 랭킹순: 지금은 임시로 최신 상품 기준 -->
+            <when test="sort == 'rank'">
+                ORDER BY product_id DESC
+            </when>
+
+            <!-- 낮은가격순 -->
+            <when test="sort == 'lowPrice'">
+                ORDER BY 
+                CASE 
+                    WHEN sale_price IS NOT NULL AND sale_price > 0 
+                    THEN sale_price 
+                    ELSE price 
+                END ASC
+            </when>
+
+            <!-- 높은가격순 -->
+            <when test="sort == 'highPrice'">
+                ORDER BY 
+                CASE 
+                    WHEN sale_price IS NOT NULL AND sale_price > 0 
+                    THEN sale_price 
+                    ELSE price 
+                END DESC
+            </when>
+
+            <!-- 최신순 -->
+            <when test="sort == 'new'">
+                ORDER BY created_at DESC
+            </when>
+
+            <!-- 판매량순은 아직 주문 테이블 연결 전이면 임시로 최신순 -->
+            <when test="sort == 'sales'">
+                ORDER BY product_id DESC
+            </when>
+
+            <!-- 혹시 이상한 sort 값 들어오면 기본 정렬 -->
+            <otherwise>
+                ORDER BY product_id DESC
+            </otherwise>
+
+        </choose>
+    </select>
+
 </mapper>

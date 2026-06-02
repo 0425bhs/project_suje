@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <link rel="stylesheet" href="/css/product_category_list.css">
+    <link rel="stylesheet" href="/css/product/product_category_list.css">
     <script src="/js/product_category_list.js"></script>
 </head>
 

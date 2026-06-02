@@ -37,4 +37,5 @@ public interface ProductDAO {
 
     int seller_product_toggle(ProductVO vo);
     
+    List<ProductVO> sellerHomepageProductList(Map<String, Object> map);
 }
