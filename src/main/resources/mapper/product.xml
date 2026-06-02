@@ -48,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{stock},
             #{delivery_fee},
             #{free_shipping},
-            #{status},
+            'APPROVED',
             #{image_l},
             #{image_s},
             CASE 
@@ -77,7 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             stock = #{stock},
             delivery_fee = #{delivery_fee},
             free_shipping = #{free_shipping},
-            status = #{status},
+            <!-- status = #{status}, -->
             image_l = #{image_l},
             image_s = #{image_s},
             updated_at = CURRENT_TIMESTAMP

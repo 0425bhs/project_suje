@@ -106,8 +106,8 @@
                     <table class="product-manage-table">
                         <thead>
                             <tr>
-                                <th>대표 이미지</th>
                                 <th>상품번호</th>
+                                <th>대표 이미지</th>
                                 <th>상품명</th>
                                 <th>가격</th>
                                 <th>세일가격</th>
@@ -122,6 +122,9 @@
                         <tbody>
                             <c:forEach var="vo" items="${list}">
                                 <tr>
+
+                                    <td class="product-id">#${vo.product_id}</td>
+
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
@@ -133,8 +136,6 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </td>
-
-                                    <td class="product-id">#${vo.product_id}</td>
 
                                     <td class="product-name">
                                         ${vo.name}
