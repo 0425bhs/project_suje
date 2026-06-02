@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <title>HANDMADE</title>
-    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/product/product.css">
 </head>
 
 <body>

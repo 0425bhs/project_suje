@@ -26,7 +26,7 @@ public class ProductController {
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
    
-    @GetMapping(value={"/", "main.do"})
+    @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
     public String main() {
         return "main";
     }
