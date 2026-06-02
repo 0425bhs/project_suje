@@ -51,7 +51,7 @@
     </div>
 
     <c:forEach var="list" items="${list}">
-        <div>
+        <div class="product-card" data-product-id="${list.product_id}">
             <img src="${list.image_l}" alt="${list.name}"/>
 
             <div>

@@ -24,7 +24,7 @@
                 <div class="category-group ${big.category_id == selectedBigCategoryId ? 'open' : ''}">
 
                     <button type="button" class="category-title-btn">
-                        ${big.category_name}
+                        ${big.name}
                         <span>⌄</span>
                     </button>
 
@@ -39,7 +39,7 @@
                         <c:forEach var="small" items="${smallCategoryList}">
                             <c:if test="${small.parent_id == big.category_id}">
                                 <a href="/category_list.do?category_id=${small.category_id}">
-                                    ${small.category_name}
+                                    ${small.name}
                                 </a>
                             </c:if>
                         </c:forEach>
