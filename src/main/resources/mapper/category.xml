@@ -10,24 +10,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="small_category_list" resultType="category">
-        select category_id,name,parent_id from categories where parent_id=#{parent_id} order by category_id
+        select category_id,name,parent_id from categories where parent_id=#{value} order by category_id
     </select>
 
     <select id="find_parent_id" resultType="java.lang.Integer">
-        select parent_id from categories where category_id=#{category_id}
+        select parent_id from categories where category_id=#{value}
     </select>
     
     <select id="getCategroyNameById"
-            parameterType="int"
             resultType="String">
-        select name from categories where category_id=#{category_id}
+        select name from categories where category_id=#{value}
     </select>
 
-    <select id="small_category_all_list" resultType="com.kh.suje.vo.CategoryVO">
-        SELECT *
-        FROM categories
-        WHERE parent_id IS NOT NULL
-        ORDER BY parent_id, category_id
+    <select id="small_category_all_list" resultType="category">
+        SELECT category_id,name,parent_id from categories
+        where parent_id IS NOT NULL order by parent_id, category_id
     </select>
     
 </mapper>

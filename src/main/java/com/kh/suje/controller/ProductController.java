@@ -27,10 +27,13 @@ public class ProductController {
     private final CategoryDAO categorydao;
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
-    public String main() {
+    public String main(Model model){
+
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
         return "main";
     }
-    
+        
     @GetMapping("/category_list.do")
     public String product_category_list(Model model, Integer page, Integer category_id) {
 

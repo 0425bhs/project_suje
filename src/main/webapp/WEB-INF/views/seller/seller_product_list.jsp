@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>판매자 관리보드 - 내 상품 관리</title>
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
+    <script src="/js/seller_product_toggle.js"></script>
 </head>
 
 <body>
@@ -32,9 +33,8 @@
                 <small>준비중</small>
             </a>
 
-            <a href="#" class="menu-disabled" onclick="return false;">
+            <a href="/seller_homepage.do" class="menu-disabled">
                 판매자 홈페이지
-                <small>준비중</small>
             </a>
 
             <a href="/seller_product_list.do" class="menu-active">
@@ -177,30 +177,26 @@
                                     </td>
 
                                     <td>
-                                        <!-- 수정: APPROVED 상태 span에 id 추가 -->
-                                        <!-- 이유: 버튼 클릭 후 JS로 상태 글자를 바꾸려면 id가 필요함 -->
                                         <c:if test="${vo.status eq 'APPROVED'}">
                                             <span id="statusBadge_${vo.product_id}" class="status-badge status-approved">
                                                 활성화
                                             </span>
                                         </c:if>
 
-                                        <!-- 수정: HIDDEN 상태 span에 id 추가 -->
-                                        <!-- 이유: 버튼 클릭 후 JS로 상태 글자를 바꾸려면 id가 필요함 -->
                                         <c:if test="${vo.status eq 'HIDDEN'}">
                                             <span id="statusBadge_${vo.product_id}" class="status-badge status-hidden">
                                                 비활성화
                                             </span>
                                         </c:if>
 
-                                        <!-- 수정: 판매자가 직접 바꾸는 상태는 아니지만 화면 표시는 유지 -->
+                                        <!-- 판매자가 직접 바꾸는 상태는 아니지만 화면 표시는 유지 -->
                                         <c:if test="${vo.status eq 'PENDING'}">
                                             <span class="status-badge status-pending">
                                                 승인 대기
                                             </span>
                                         </c:if>
 
-                                        <!-- 수정: 판매자가 직접 바꾸는 상태는 아니지만 화면 표시는 유지 -->
+                                        <!-- 판매자가 직접 바꾸는 상태는 아니지만 화면 표시는 유지 -->
                                         <c:if test="${vo.status eq 'REJECTED'}">
                                             <span class="status-badge status-rejected">
                                                 승인 거절
