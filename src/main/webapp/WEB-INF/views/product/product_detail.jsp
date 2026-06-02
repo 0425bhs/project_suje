@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 상세</title>
-    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/product/product_main.css">
 </head>
 
 <body>
@@ -17,7 +17,7 @@
 
     <div class="product-util">
         <div class="product-util-inner">
-            <a href="#" class="disabled">핸드메이드 앱 설치하기</a>
+            <span>작가의 손길이 담긴 핸드메이드 마켓</span>
 
             <div class="product-util-menu">
                 <a href="#" class="disabled">로그인</a>
@@ -28,7 +28,7 @@
     </div>
 
     <div class="product-header-inner">
-        <a class="product-brand" href="/product/list.do">
+        <a class="product-brand" href="/product/main.do">
             HAND<span>MADE</span>
         </a>
 
@@ -176,7 +176,7 @@
                 <div class="product-btn-row">
                     <button type="submit" class="product-btn primary full">
                         주문하기
-                    </button>
+                    </button>list.domain.do
                 </div>
             </form>
 
@@ -187,7 +187,7 @@
             </div>
 
             <div class="product-btn-row">
-                <a class="product-btn light full" href="/product/list.do">
+                <a class="product-btn light full" href="/product/main.do">
                     상품 목록으로
                 </a>
             </div>

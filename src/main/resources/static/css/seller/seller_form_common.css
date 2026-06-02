@@ -1,0 +1,356 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Malgun Gothic', Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+.seller-board {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 사이드바 */
+.seller-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    padding: 30px 22px;
+    background: #1f2229;
+    color: #fff;
+}
+
+.sidebar-logo {
+    font-size: 25px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+.sidebar-logo span {
+    color: #ff654f;
+}
+
+.sidebar-title {
+    color: #9ca3af;
+    font-size: 13px;
+    margin-bottom: 30px;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-menu a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 14px;
+    border-radius: 10px;
+    color: #d1d5db;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: 0.15s;
+}
+
+.sidebar-menu a:hover {
+    background: #30343d;
+    color: #fff;
+}
+
+.sidebar-menu a.menu-active {
+    background: #ff654f;
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(255, 101, 79, 0.25);
+}
+
+.sidebar-menu a.menu-disabled {
+    color: #6b7280;
+    cursor: default;
+}
+
+.sidebar-menu a.menu-disabled:hover {
+    background: transparent;
+    color: #6b7280;
+}
+
+.sidebar-menu small {
+    font-size: 10px;
+    color: #777;
+}
+
+.sidebar-bottom {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 28px;
+}
+
+.sidebar-bottom a {
+    display: block;
+    padding: 13px;
+    border: 1px solid #3f4551;
+    border-radius: 10px;
+    color: #ddd;
+    text-align: center;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.sidebar-bottom a:hover {
+    background: #30343d;
+    color: #fff;
+}
+
+/* 본문 */
+.seller-main {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    min-height: 100vh;
+    padding: 44px;
+}
+
+/* 등록/수정 폼 공통 박스 */
+.product-insert-box,
+.product-modify-box {
+    max-width: 1280px;
+    background: #fff;
+    border: 1px solid #e5e8eb;
+    border-radius: 18px;
+    padding: 38px 42px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+}
+
+/* 폼 자체 */
+.product-insert-form,
+.product-modify-form {
+    width: 100%;
+}
+
+/* 구역 카드 */
+.form-section {
+    position: relative;
+    margin-bottom: 28px;
+    padding: 30px;
+    border: 1px solid #edf0f3;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.form-section:last-of-type {
+    margin-bottom: 0;
+}
+
+/* 구역 제목은 CSS에서 표시 */
+.form-section::before {
+    display: block;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #edf0f3;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+}
+
+/* 입력 */
+.form-row {
+    margin-bottom: 22px;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+.form-row label,
+.image-upload-box label {
+    display: block;
+    margin-bottom: 9px;
+    color: #2f3542;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+    width: 100%;
+    border: 1px solid #dce1e7;
+    border-radius: 10px;
+    padding: 15px 16px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: 0.15s;
+}
+
+.form-row input:hover,
+.form-row select:hover,
+.form-row textarea:hover {
+    border-color: #c6ccd5;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+    border-color: #ff654f;
+    box-shadow: 0 0 0 4px rgba(255, 101, 79, 0.12);
+}
+
+.form-row textarea {
+    min-height: 170px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.category-select {
+    cursor: pointer;
+}
+
+/* 가격/배송 영역 */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.form-grid .form-row {
+    margin-bottom: 0;
+}
+
+.free-shipping-row {
+    margin-top: 24px;
+    padding: 22px;
+    border-radius: 14px;
+    background: #fafbfc;
+    border: 1px solid #edf0f3;
+}
+
+.form-help {
+    margin: 10px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.form-help span {
+    color: #ff654f;
+    font-weight: 900;
+}
+
+/* 이미지 업로드 */
+.image-upload-area {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.image-upload-box {
+    min-height: 210px;
+    padding: 26px;
+    border: 2px dashed #cfd6df;
+    border-radius: 16px;
+    background: #fafbfc;
+    transition: 0.15s;
+}
+
+.image-upload-box:hover {
+    border-color: #ff654f;
+    background: #fff8f6;
+}
+
+.image-upload-box::after {
+    content: "JPG, PNG 파일을 등록할 수 있습니다.";
+    display: block;
+    margin-top: 12px;
+    color: #8b95a1;
+    font-size: 12px;
+}
+
+.file-input-box {
+    padding: 22px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #e5e8eb;
+}
+
+.file-input-box input[type="file"] {
+    width: 100%;
+    font-size: 14px;
+}
+
+/* 버튼 */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 8px;
+}
+
+.btn {
+    min-width: 130px;
+    padding: 14px 22px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.btn-primary {
+    background: #ff654f;
+    color: #fff;
+    box-shadow: 0 8px 16px rgba(255, 101, 79, 0.22);
+}
+
+.btn-primary:hover {
+    background: #e9533f;
+}
+
+.btn-white {
+    background: #fff;
+    color: #333;
+    border-color: #dce1e7;
+}
+
+.btn-white:hover {
+    border-color: #222;
+}
+
+@media (max-width: 1100px) {
+    .seller-board {
+        display: block;
+    }
+
+    .seller-sidebar {
+        position: static;
+        width: 100%;
+    }
+
+    .sidebar-bottom {
+        position: static;
+        margin-top: 24px;
+    }
+
+    .seller-main {
+        margin-left: 0;
+        width: 100%;
+        padding: 24px;
+    }
+
+    .form-grid,
+    .image-upload-area {
+        grid-template-columns: 1fr;
+    }
+}

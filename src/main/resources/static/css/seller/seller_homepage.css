@@ -1,0 +1,19 @@
+.sort-box {
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.sort-box a {
+    color: #555;
+    text-decoration: none;
+    margin: 0 8px;
+}
+
+.sort-box a.active {
+    color: #0078ff;
+    font-weight: bold;
+}
+
+.sort-box span {
+    color: #ddd;
+}

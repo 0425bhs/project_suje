@@ -32,4 +32,10 @@ public interface ProductDAO {
     // 세일 상품 개수
     int product_sale_cnt();
 
+    //판매자 내 상품 목록
+    List<ProductVO> seller_product_list(int seller_id);
+
+    int seller_product_toggle(ProductVO vo);
+    
+    List<ProductVO> sellerHomepageProductList(Map<String, Object> map);
 }
