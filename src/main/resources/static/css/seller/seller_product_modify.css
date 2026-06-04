@@ -1,0 +1,85 @@
+/* 상품 수정 페이지 전용 */
+
+.product-modify-box::before {
+    content: "상품 수정";
+    display: block;
+    margin-bottom: 8px;
+    color: #ff654f;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.product-modify-box::after {
+    content: "등록된 상품의 기본 정보, 가격, 배송 조건, 이미지를 수정합니다.";
+    display: block;
+    margin-bottom: 30px;
+    padding-bottom: 22px;
+    border-bottom: 2px solid #222;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.product-modify-form .form-section:nth-of-type(1)::before {
+    content: "기본 정보";
+}
+
+.product-modify-form .form-section:nth-of-type(2)::before {
+    content: "가격 / 배송 정보";
+}
+
+.product-modify-form .form-section:nth-of-type(3)::before {
+    content: "이미지 정보";
+}
+
+/* 기존 이미지 미리보기 */
+.image-preview {
+    position: relative;
+    width: 180px;
+    margin-bottom: 16px;
+}
+
+.image-preview img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border: 1px solid #e5e8eb;
+    border-radius: 14px;
+    background: #fff;
+    display: block;
+}
+
+/* 이미지 삭제 버튼 */
+.image-delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 46px;
+    height: 30px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.image-delete-btn:hover {
+    background: #ff654f;
+}
+
+/* 수정 폼은 기존 이미지 미리보기가 있어서 높이 여유 */
+.product-modify-form .image-upload-box {
+    min-height: 340px;
+}
+
+/* 수정 버튼 강조 */
+.product-modify-form .btn-primary {
+    background: #ff654f;
+    color: #fff;
+}
+
+.product-modify-form .btn-primary:hover {
+    background: #e9533f;
+}

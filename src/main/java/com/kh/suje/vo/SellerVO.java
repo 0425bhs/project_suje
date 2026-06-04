@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,5 +23,8 @@ public class SellerVO {
     private String openingDate;        // opening_date : DATE (사업자 개업일자)
     private String businessAddress;    // business_address : VARCHAR(255) (사업자 주소)
 
- 
+    // private int user_id;
+    // private Integer seller_id;
+    // private String company_name,business_number,status,created_at;
+
 }
