@@ -90,4 +90,5 @@ public class QnaController {
 
         return "/qna/qna_detail";
     }
+    
 }   
