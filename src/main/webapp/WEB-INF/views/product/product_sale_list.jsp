@@ -6,55 +6,351 @@
 <html lang="ko">
 
     <head>
-        
+        <title>HANDMADE - 할인</title>
+
+        <link rel="stylesheet" href="/css/product/product_main.css">
+        <link rel="stylesheet" href="/css/product/product_sale_list.css">
+
+        <script src="/js/product_main.js" defer></script>
+        <script src="/js/product_sale_list.js" defer></script>
     </head>
 
     <body>
 
-        <h2>세일 상품</h2>
+    <c:set var="totalSaleCount" value="${saleCount == null ? 0 : saleCount}" />
 
-            <c:forEach var="list" items="${list}">
-                <div>
-                    <img src="${list.image_l}" alt="${list.name}" width="200"/>
+    <header class="product-header">
 
-                    <h3>
-                        <a href="/product_detail.do?product_id=${list.product_id}">
-                            ${list.name}
-                        </a>
-                    </h3>
+        <div class="product-util">
+            <div class="product-util-inner">
+                <span>작가의 손길이 담긴 핸드메이드 마켓</span>
 
-                    <p>
-                        <span style="text-decoration: line-through; color: gray;">
-                            <fmt:formatNumber value="${list.price}" pattern="#,###"/>원
-                        </span>
-                    </p>
-
-                    <p>
-                        <strong>${list.sale_rate}% 할인</strong>
-                        <fmt:formatNumber value="${list.sale_price}" pattern="#,###"/>원
-                    </p>
-
-                    <c:if test="${list.free_shipping > 0}">
-                        <p>
-                            <fmt:formatNumber value="${list.free_shipping}" pattern="#,###"/>원 이상 무료배송
-                        </p>
-                    </c:if>
-
-                    <c:if test="${list.free_shipping == 0}">
-                        <p>무료배송</p>
-                    </c:if>
-
-                    <input type="button" value="장바구니 담기"
-                        onclick="location.href='/cart_insert.do?product_id=${list.product_id}'"/>
-
-                    <input type="button" value="판매자 상품 수정"
-                        onclick="location.href='/seller_product_modify.do?product_id=${list.product_id}'"/>
+                <div class="product-util-menu">
+                    <a href="#" class="disabled">로그인</a>
+                    <a href="#" class="disabled">회원가입</a>
+                    <a href="#" class="disabled">고객센터</a>
                 </div>
-            </c:forEach>
+            </div>
+        </div>
 
-            <div>
+        <div class="product-header-inner">
+
+            <a class="product-brand" href="/">
+                HAND<span>MADE</span>
+            </a>
+
+            <div class="product-search-box disabled">
+                찾으시는 작가, 작품이 있나요?
+            </div>
+
+            <div class="product-header-actions">
+                <a href="/order/my">주문내역</a>
+                <a href="/seller_product_list.do">판매자센터</a>
+                <a href="#" class="disabled">♡ 관심</a>
+                <a href="#" class="disabled">🛒 장바구니</a>
+            </div>
+
+        </div>
+
+        <nav class="product-nav-bar">
+            <div class="product-nav-inner">
+
+                <div class="all-category-wrap">
+
+                    <button type="button" class="all-category-btn">
+                        ☰ 전체 카테고리
+                    </button>
+
+                    <div class="all-category-panel">
+
+                        <c:forEach var="big" items="${bigCategoryList}">
+                            <div class="all-category-item">
+
+                                <a href="/category_list.do?category_id=${big.category_id}"
+                                class="all-category-big">
+                                    ${big.name}
+                                </a>
+
+                                <div class="all-category-small-list">
+                                    <a href="/category_list.do?category_id=${big.category_id}">
+                                        전체
+                                    </a>
+
+                                    <c:forEach var="small" items="${smallCategoryList}">
+                                        <c:if test="${small.parent_id == big.category_id}">
+                                            <a href="/category_list.do?category_id=${small.category_id}">
+                                                ${small.name}
+                                            </a>
+                                        </c:if>
+                                    </c:forEach>
+                                </div>
+
+                            </div>
+                        </c:forEach>
+
+                    </div>
+                </div>
+
+                <a href="#" class="disabled">🎁 선물추천</a>
+                <a href="/product_sale.do" class="sale-nav-active">🏷️ 할인</a>
+                <a href="#" class="disabled">🏆 베스트</a>
+                <a href="#" class="disabled">💛 취향발견</a>
+                <a href="/all_list.do">🆕 최신작품</a>
+                <a href="#" class="disabled">💬 후기</a>
+
+            </div>
+        </nav>
+
+    </header>
+
+
+    <div class="sale-page">
+
+        <!-- 상단 할인 슬라이드 -->
+        <section class="sale-hero">
+            <div class="sale-hero-inner">
+
+                <h1>오늘 하루만 특별 할인</h1>
+
+                <div class="sale-countdown">
+                    <strong id="saleHour">00</strong>
+                    <span>:</span>
+                    <strong id="saleMinute">00</strong>
+                    <span>:</span>
+                    <strong id="saleSecond">00</strong>
+                </div>
+
+                <c:choose>
+
+                    <c:when test="${empty list}">
+                        <div class="sale-empty">
+                            현재 할인 중인 상품이 없습니다.
+                        </div>
+                    </c:when>
+
+                    <c:otherwise>
+
+                        <div class="sale-feature-wrap">
+
+                            <button type="button" class="sale-slide-btn sale-slide-prev" id="salePrevBtn">
+                                ‹
+                            </button>
+
+                            <button type="button" class="sale-slide-btn sale-slide-next" id="saleNextBtn">
+                                ›
+                            </button>
+
+                            <div class="sale-feature-viewport">
+                                <div class="sale-feature-track" id="saleFeatureTrack">
+
+                                    <c:forEach var="vo" items="${list}">
+                                        <a class="sale-feature-card"
+                                        href="/product_detail.do?product_id=${vo.product_id}">
+
+                                            <div class="sale-feature-img">
+                                                <c:choose>
+                                                    <c:when test="${vo.image_s != null && vo.image_s != 'no_file'}">
+                                                        <img src="${vo.image_s}" alt="${vo.name}">
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <img src="/images/no_image.png" alt="이미지 없음">
+                                                    </c:otherwise>
+                                                </c:choose>
+
+                                                <span class="sale-heart">♡</span>
+                                            </div>
+
+                                            <div class="sale-feature-info">
+                                                <p class="sale-feature-name">${vo.name}</p>
+
+                                                <div class="sale-feature-price">
+                                                    <em>${vo.sale_rate}%</em>
+                                                    <strong>
+                                                        <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
+                                                    </strong>
+                                                </div>
+                                            </div>
+
+                                        </a>
+                                    </c:forEach>
+
+                                </div>
+                            </div>
+
+                            <div class="sale-feature-dots" id="saleFeatureDots"></div>
+
+                            <a href="#saleList" class="sale-more-btn">
+                                할인작품 더보기 〉
+                            </a>
+
+                        </div>
+
+                    </c:otherwise>
+
+                </c:choose>
+
+            </div>
+        </section>
+
+
+        <!-- 하단 할인 목록 -->
+        <section class="sale-list-section" id="saleList">
+
+            <div class="sale-tab-menu">
+                <button type="button" class="active">전체</button>
+                <button type="button">깜짝할인</button>
+                <button type="button">월할인</button>
+                <button type="button">오늘만할인</button>
+                <button type="button">시즌할인</button>
+            </div>
+
+            <div class="sale-filter-row">
+                <button type="button">쿠폰/할인 ⌄</button>
+                <button type="button">예상출발일 ⌄</button>
+                <button type="button">가격대 ⌄</button>
+                <button type="button">작품 특징 ⌄</button>
+                <button type="button">카테고리 ⌄</button>
+            </div>
+
+            <div class="sale-sort-row">
+
+                <div class="sale-sort-left">
+                    <strong>✓ 인기순</strong>
+                    <span>|</span>
+                    <a href="#">최신순(NEW)</a>
+                    <span>|</span>
+                    <a href="#">찜 많은순</a>
+                    <span>|</span>
+                    <a href="#">구매후기 많은순</a>
+                    <span>|</span>
+                    <a href="#">판매수 많은순</a>
+                    <span>|</span>
+                    <a href="#">할인율 높은순</a>
+                    <span>|</span>
+                    <a href="#">낮은 가격순</a>
+                    <span>|</span>
+                    <a href="#">높은 가격순</a>
+                </div>
+
+                <label class="sale-image-only">
+                    <input type="checkbox" checked>
+                    이미지만 볼래요
+                </label>
+
+            </div>
+
+            <p class="sale-count-text">
+                총 <fmt:formatNumber value="${totalSaleCount}" pattern="#,###"/>개
+            </p>
+
+            <c:choose>
+
+                <c:when test="${empty list}">
+                    <div class="sale-empty">
+                        현재 할인 중인 상품이 없습니다.
+                    </div>
+                </c:when>
+
+                <c:otherwise>
+
+                    <div class="sale-product-grid">
+
+                        <c:forEach var="vo" items="${list}">
+                            <a class="sale-product-card"
+                            href="/product_detail.do?product_id=${vo.product_id}">
+
+                                <div class="sale-product-img">
+                                    <c:choose>
+                                        <c:when test="${vo.image_s != null && vo.image_s != 'no_file'}">
+                                            <img src="${vo.image_s}" alt="${vo.name}">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="/images/no_image.png" alt="이미지 없음">
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                    <span class="sale-heart">♡</span>
+                                </div>
+
+                                <div class="sale-product-info">
+
+                                    <div class="sale-seller-name">
+                                        HANDMADE 작가
+                                    </div>
+
+                                    <p class="sale-product-name">
+                                        ${vo.name}
+                                    </p>
+
+                                    <div class="sale-origin-price">
+                                        <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
+                                    </div>
+
+                                    <div class="sale-final-price">
+                                        <em>${vo.sale_rate}%</em>
+                                        <strong>
+                                            <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
+                                        </strong>
+                                    </div>
+
+                                    <div class="sale-benefit">
+                                        멤버십 할인 · 추가할인
+                                    </div>
+
+                                    <div class="sale-tags">
+
+                                        <span>d special</span>
+
+                                        <c:choose>
+                                            <c:when test="${vo.delivery_fee == 0}">
+                                                <span>무료배송</span>
+                                            </c:when>
+
+                                            <c:when test="${vo.free_shipping > 0}">
+                                                <span>
+                                                    <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상 무료배송
+                                                </span>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <span>
+                                                    배송비 <fmt:formatNumber value="${vo.delivery_fee}" pattern="#,###"/>원
+                                                </span>
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                    </div>
+
+                                    <div class="sale-review">
+                                        후기 준비중
+                                    </div>
+
+                                </div>
+
+                            </a>
+                        </c:forEach>
+
+                    </div>
+
+                </c:otherwise>
+
+            </c:choose>
+
+            <div class="sale-page-menu">
                 ${pageMenu}
             </div>
+
+        </section>
+
+    </div>
+
+
+    <footer class="product-footer">
+        <div class="product-footer-inner">
+            <strong>HANDMADE</strong>
+            <p>작가 상품을 둘러보고 마음에 드는 작품을 주문할 수 있습니다.</p>
+        </div>
+    </footer>
 
     </body>
 </html>
