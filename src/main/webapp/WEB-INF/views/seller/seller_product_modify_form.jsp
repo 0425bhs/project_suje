@@ -26,7 +26,7 @@
             </div>
 
             <div class="sidebar-title">
-                판매자센터
+                판매자 관리보드
             </div>
 
             <nav class="sidebar-menu">
@@ -45,10 +45,6 @@
 
                 <a href="/seller_product_insert.do">
                     상품 등록
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    상품 삭제
                 </a>
 
                 <a href="#" class="menu-disabled" onclick="return false;">

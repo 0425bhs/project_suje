@@ -16,21 +16,20 @@ body {
 
 /* 사이드바 */
 .seller-sidebar {
+    width: 250px;
+    background: #222;
+    color: #fff;
+    padding: 28px 22px;
     position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
-    width: 250px;
-    padding: 30px 22px;
-    background: #1f2229;
-    color: #fff;
 }
 
 .sidebar-logo {
     font-size: 25px;
     font-weight: 900;
     margin-bottom: 8px;
-    letter-spacing: -1px;
 }
 
 .sidebar-logo span {
@@ -38,15 +37,15 @@ body {
 }
 
 .sidebar-title {
-    color: #9ca3af;
+    color: #aaa;
     font-size: 13px;
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 }
 
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
 }
 
 .sidebar-menu a {
@@ -54,38 +53,41 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 13px 14px;
-    border-radius: 10px;
-    color: #d1d5db;
+    color: #ccc;
     text-decoration: none;
     font-size: 14px;
     font-weight: 700;
-    transition: 0.15s;
+    border-radius: 8px;
 }
 
 .sidebar-menu a:hover {
-    background: #30343d;
+    background: #333;
     color: #fff;
 }
 
 .sidebar-menu a.menu-active {
     background: #ff654f;
     color: #fff;
-    box-shadow: 0 8px 18px rgba(255, 101, 79, 0.25);
 }
 
 .sidebar-menu a.menu-disabled {
-    color: #6b7280;
+    color: #777;
     cursor: default;
 }
 
 .sidebar-menu a.menu-disabled:hover {
     background: transparent;
-    color: #6b7280;
+    color: #777;
 }
 
 .sidebar-menu small {
     font-size: 10px;
     color: #777;
+    font-weight: 700;
+}
+
+.menu-active small {
+    color: #fff;
 }
 
 .sidebar-bottom {
@@ -97,19 +99,26 @@ body {
 
 .sidebar-bottom a {
     display: block;
-    padding: 13px;
-    border: 1px solid #3f4551;
-    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #444;
     color: #ddd;
     text-align: center;
     text-decoration: none;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 700;
+    border-radius: 8px;
 }
 
 .sidebar-bottom a:hover {
-    background: #30343d;
+    background: #333;
     color: #fff;
+}
+
+/* 오른쪽 본문 */
+.seller-main {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    padding: 42px;
 }
 
 /* 본문 */
