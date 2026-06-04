@@ -11,9 +11,7 @@
 </head>
 
 <body>
-
-
-
+    
     <div class="seller-board">
 
         <jsp:include page="seller_sidebar.jsp">
