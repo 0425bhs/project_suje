@@ -7,6 +7,9 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.vo.ProductVO;
 
@@ -42,5 +45,33 @@ public class SellerController {
     model.addAttribute("sort", sort);
 
     return "seller/seller_homepage";
+    }
+
+    @PostMapping("/seller_product_delete.do")
+    @ResponseBody
+    public Map<String, Object> sellerProductDelete(int product_id) {
+
+        Map<String, Object> map = new HashMap<>();
+
+        int result = productdao.seller_product_delete(product_id);
+
+        map.put("result", result);
+
+        return map;
+    }
+
+    @GetMapping("/seller_dashboard.do")
+    public String sellerDashboard() {
+        return "/seller/seller_dashboard";
+    }
+
+    @GetMapping("/seller_order_list.do")
+    public String sellerOrderList() {
+        return "/seller/seller_order_list";
+    }
+
+    @GetMapping("/seller_qna_list.do")
+    public String sellerQnaList() {
+        return "/seller/seller_qna_list";
     }
 }

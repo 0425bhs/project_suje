@@ -26,28 +26,26 @@ window.onload=function () {
     });    
 
 
-    if (bigCategory != null && smallCategory != null) {
-        bigCategory.addEventListener("change",function(){
-            let parentId = this.value;
+    bigCategory.addEventListener("change",function(){
+        let parentId = this.value;
 
-            smallCategory.innerHTML = "<option value=''>하위 카테고리 선택</option>";
+        smallCategory.innerHTML="<option value=''>하위 카테고리 선택</option>";
 
-            if (parentId == "") {
-                return;
-            }
+        if (parentId == ""){
+            return;
+        }
 
-            fetch("/sub.do?parent_id="+parentId).then(res=>res.json()).then(data=>{
-                data.forEach(category=>{
-                    let option = document.createElement("option");
+        fetch("/sub.do?parent_id=" + parentId).then(res=>res.json()).then(data=>{
+            data.forEach(category=>{
+                let option=document.createElement("option");
 
-                    option.value = category.category_id;
-                    option.innerText = category.name;
+                option.value=category.category_id;
+                option.innerText=category.name;
 
-                    smallCategory.appendChild(option);
-                });
+                smallCategory.appendChild(option);
             });
         });
-    }
+    });
 };
 
 
@@ -99,8 +97,8 @@ function send(f) {
 
 
     // 콤마 제거 후 숫자로 변환
-    let price = Number(f.price.value.replace(/,/g, ""));
-    let salePrice = Number((f.sale_price.value || "0").replace(/,/g, ""));
+    let price = Number(f.price.value || 0);
+    let salePrice = Number(f.sale_price.value || 0);
 
     if (price <= 0) {
         alert("상품 가격을 미기입하셨습니다.");
@@ -132,31 +130,31 @@ function send(f) {
     const freeShippingView = document.getElementById("free_shipping_view");
     const freeShipping = document.getElementById("free_shipping");
 
-    freeShipping.value = freeShippingView.value.replace(/[^0-9]/g, "");
+    let freeShippingValue = freeShippingView.value.replace(/[^0-9]/g, "");
 
-    if (freeShipping.value=="") {
-        freeShipping.value="0";
+    if (freeShippingValue == "") {
+        freeShippingValue = "0";
     }
 
-    let freeShippingValue = Number(freeShipping.value);
+    freeShippingValue = Number(freeShippingValue);
 
-    if (freeShippingValue < 0) {
+    if (freeShippingValue < 0){
         alert("무료배송 기준 금액을 올바르게 입력해주세요.");
         freeShippingView.focus();
         return;
     }
 
-    if (deliveryFee==0) {
+    if (deliveryFee == 0){
         freeShippingValue = 0;
     }
 
-    if (imageL.value == "") {
+    if (imageL.value == ""){
         alert("대표 이미지를 등록해주세요.");
         imageL.focus();
         return;
     }
 
-    if (imageS.value == "") {
+    if (imageS.value == ""){
         alert("상세 이미지를 등록해주세요.");
         imageS.focus();
         return;
@@ -174,11 +172,11 @@ function send(f) {
     let formData = new FormData(f);
 
     fetch("/seller_product_insert.do",{method:"post",body:formData}).then(res=>res.json()).then(data=>{
-        if (data.result==1) {
+        if (data.result==1){
             alert("상품 등록이 되었습니다.");
             location.href="/all_list.do";
-        } else {
-            alert("상품 등록이 실패되어 관리자에게 문의바랍니다.");
+        } else{
+            alert("상품 등록이 불가능합니다. 관리자에게 문의바랍니다.");
         }
     });
 }

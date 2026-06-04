@@ -256,6 +256,7 @@ public class ProductController {
     @PostMapping("/seller_product_modify.do")
     @ResponseBody
     public Map<String,Object> seller_product_modify(ProductVO vo,String ori_image_l,String ori_image_s,String del_image_l,String del_image_s)throws Exception{
+        
         String savePath = "c:/upload/";
         File dir = new File(savePath);
 

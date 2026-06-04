@@ -162,6 +162,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update products set status=#{status} where product_id=#{product_id}
     </update>
 
+    <delete id="seller_product_delete" parameterType="int">
+        delete from products where product_id = #{value}
+    </delete>
+
     <select id="sellerHomepageProductList" parameterType="map" resultType="com.kh.suje.vo.ProductVO">
         SELECT * FROM products WHERE seller_id = #{seller_id} AND status = 'APPROVED'
         <choose>
