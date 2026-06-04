@@ -16,54 +16,10 @@
 
     <div class="seller-board">
 
-        <aside class="seller-sidebar">
-
-            <div class="sidebar-logo">
-                HAND<span>MADE</span>
-            </div>
-
-            <div class="sidebar-title">
-                판매자 관리보드
-            </div>
-
-            <nav class="sidebar-menu">
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 대시보드
-                    <small>준비중</small>
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 홈페이지
-                </a>
-
-                <a href="/seller_product_list.do">
-                    내 상품 관리
-                </a>
-
-                <a href="/seller_product_insert.do" class="menu-active">
-                    상품 등록
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 주문 관리
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    상품 문의 답변 관리
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 매출 통계
-                </a>
-
-            </nav>
-
-            <div class="sidebar-bottom">
-                <a href="/product/main.do">쇼핑몰로 이동</a>
-            </div>
-
-        </aside>
+        <jsp:include page="seller_sidebar.jsp">
+            <jsp:param name="activeMenu" value="orderInsert" />
+            <jsp:param name="sidebarTitle" value="상품 등록" />
+        </jsp:include>
 
         <main class="seller-main">
 
