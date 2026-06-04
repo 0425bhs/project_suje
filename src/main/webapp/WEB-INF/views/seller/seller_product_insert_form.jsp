@@ -17,8 +17,8 @@
     <div class="seller-board">
 
         <jsp:include page="seller_sidebar.jsp">
-            <jsp:param name="activeMenu" value="orderInsert" />
-            <jsp:param name="sidebarTitle" value="상품 등록" />
+            <jsp:param name="activeMenu" value="productInsert" />
+            <jsp:param name="sidebarTitle" value="상품등록" />
         </jsp:include>
 
         <main class="seller-main">

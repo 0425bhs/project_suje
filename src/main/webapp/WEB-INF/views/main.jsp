@@ -16,6 +16,11 @@
 
 <header class="product-header">
 
+    <!-- 
+        1. 최상단 유틸 영역
+        - 왼쪽: 쇼핑몰 소개 문구
+        - 오른쪽: 로그인 / 회원가입 / 고객센터
+    -->
     <div class="product-util">
         <div class="product-util-inner">
             <span>작가의 손길이 담긴 핸드메이드 마켓</span>
@@ -28,41 +33,47 @@
         </div>
     </div>
 
+
+    <!-- 
+        2. 메인 헤더 영역
+        - 로고 / 전체 카테고리 / 검색창 / 우측 메뉴
+    -->
     <div class="product-header-inner">
+
+        <!-- 쇼핑몰 로고 -->
         <a class="product-brand" href="/">
             HAND<span>MADE</span>
         </a>
 
-        <!-- 전체 카테고리 버튼 영역 -->
+
+        <!-- 
+            전체 카테고리 버튼 영역
+            - 로고 바로 옆에 배치
+            - 버튼 클릭 시 카테고리 박스 열림
+        -->
         <div class="all-category-wrap">
 
-            <!-- 누르면 카테고리 박스 열림 -->
             <button type="button" class="all-category-btn">
                 ☰ 전체 카테고리
             </button>
 
-            <!-- 펼쳐지는 전체 카테고리 박스 -->
             <div class="all-category-panel">
 
-                <!-- 대분류 반복 -->
                 <c:forEach var="big" items="${bigCategoryList}">
 
                     <div class="all-category-item">
 
-                        <!-- 대분류 이름 -->
-                        <a href="/category_list.do?category_id=${big.category_id}" class="all-category-big">
+                        <a href="/category_list.do?category_id=${big.category_id}"
+                           class="all-category-big">
                             ${big.name}
                         </a>
 
-                        <!-- 소분류 영역 -->
                         <div class="all-category-small-list">
 
-                            <!-- 대분류 전체 보기 -->
                             <a href="/category_list.do?category_id=${big.category_id}">
                                 전체
                             </a>
 
-                            <!-- 소분류 반복 -->
                             <c:forEach var="small" items="${smallCategoryList}">
                                 <c:if test="${small.parent_id == big.category_id}">
                                     <a href="/category_list.do?category_id=${small.category_id}">
@@ -80,18 +91,28 @@
             </div>
         </div>
 
+
+        <!-- 검색창 영역: 현재는 디자인용 -->
         <div class="product-search-box disabled">
             찾으시는 작가, 작품이 있나요?
         </div>
 
+
+        <!-- 우측 사용자 메뉴 -->
         <div class="product-header-actions">
             <a href="/order/my">주문내역</a>
             <a href="/seller_product_list.do">판매자센터</a>
             <a href="#" class="disabled">♡ 관심</a>
             <a href="#" class="disabled">🛒 장바구니</a>
         </div>
+
     </div>
 
+
+    <!-- 
+        3. 하단 네비게이션 메뉴
+        - 전체 카테고리는 위로 이동했으므로 여기에는 주요 메뉴만 배치
+    -->
     <nav class="product-nav-bar">
         <div class="product-nav-inner">
 
