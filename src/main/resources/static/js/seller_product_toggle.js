@@ -30,3 +30,27 @@ function productToggle(product_id, status) {
         }
     });
 }
+
+function productDelete(product_id) {
+
+    if (!confirm("정말 이 상품을 삭제하시겠습니까?")) {
+        return;
+    }
+
+    fetch("/seller_product_delete.do", {
+        method: "post",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "product_id=" + encodeURIComponent(product_id)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.result == 1) {
+            alert("상품이 삭제되었습니다.");
+            location.href = "/seller_product_list.do";
+        } else {
+            alert("상품 삭제 실패");
+        }
+    });
+}

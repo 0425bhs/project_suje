@@ -19,57 +19,10 @@
 
     <div class="seller-board">
 
-        <aside class="seller-sidebar">
-
-            <div class="sidebar-logo">
-                HAND<span>MADE</span>
-            </div>
-
-            <div class="sidebar-title">
-                판매자센터
-            </div>
-
-            <nav class="sidebar-menu">
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 대시보드
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 홈페이지
-                </a>
-                
-                <a href="/seller_product_list.do" class="menu-active">
-                    내 상품 관리
-                </a>
-
-                <a href="/seller_product_insert.do">
-                    상품 등록
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    상품 삭제
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 주문 관리
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    상품 문의 답변 관리
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 매출 통계
-                </a>
-
-            </nav>
-
-            <div class="sidebar-bottom">
-                <a href="/product/main.do">쇼핑몰로 이동</a>
-            </div>
-
-        </aside>
+        <jsp:include page="seller_sidebar.jsp">
+            <jsp:param name="activeMenu" value="productModify"/>
+            <jsp:param name="sidebarTitle" value="내 상품 수정"/>
+        </jsp:include>
 
         <main class="seller-main">
 
@@ -82,8 +35,6 @@
 
                     <input type="hidden" name="ori_image_l" id="ori_image_l" value="${vo.image_l}">
                     <input type="hidden" name="ori_image_s" id="ori_image_s" value="${vo.image_s}">
-                    <input type="hidden" name="del_image_l" value="${vo.image_l}">
-                    <input type="hidden" name="del_image_s" value="${vo.image_s}">
 
                     <div class="form-section">
 
@@ -167,7 +118,6 @@
                                 <c:if test="${vo.image_l ne 'no_file'}">
                                     <div class="image-preview" id="image_l_div">
                                         <img src="${vo.image_l}" alt="대표 이미지">
-                                        <button type="button" class="image-delete-btn" onclick="delImgL()">삭제</button>
                                     </div>
                                 </c:if>
 
@@ -182,7 +132,6 @@
                                 <c:if test="${vo.image_s ne 'no_file'}">
                                     <div class="image-preview" id="image_s_div">
                                         <img src="${vo.image_s}" alt="상세 이미지">
-                                        <button type="button" class="image-delete-btn" onclick="delImgS()">삭제</button>
                                     </div>
                                 </c:if>
 

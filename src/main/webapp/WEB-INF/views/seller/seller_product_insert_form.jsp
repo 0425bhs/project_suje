@@ -16,58 +16,10 @@
 
     <div class="seller-board">
 
-        <aside class="seller-sidebar">
-
-            <div class="sidebar-logo">
-                HAND<span>MADE</span>
-            </div>
-
-            <div class="sidebar-title">
-                판매자센터
-            </div>
-
-            <nav class="sidebar-menu">
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 대시보드
-                    <small>준비중</small>
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 홈페이지
-                </a>
-
-                <a href="/seller_product_list.do">
-                    내 상품 관리
-                </a>
-
-                <a href="/seller_product_insert.do" class="menu-active">
-                    상품 등록
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    상품 삭제
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 주문 관리
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    상품 문의 답변 관리
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 매출 통계
-                </a>
-
-            </nav>
-
-            <div class="sidebar-bottom">
-                <a href="/product/main.do">쇼핑몰로 이동</a>
-            </div>
-
-        </aside>
+        <jsp:include page="seller_sidebar.jsp">
+            <jsp:param name="activeMenu" value="productInsert" />
+            <jsp:param name="sidebarTitle" value="내 상품 등록" />
+        </jsp:include>
 
         <main class="seller-main">
 
@@ -82,15 +34,24 @@
                     <div class="form-section">
 
                         <div class="form-row category-row">
-                            <label>카테고리</label>
+                            <label>대분류 카테고리</label>
 
-                            <select name="category_id" class="category-select">
+                            <select id="big_category_id" class="category-select">
+                                <option value="">대분류 선택</option>
                                 <option value="1">패션/주얼리</option>
                                 <option value="2">홈리빙</option>
                                 <option value="3">뷰티</option>
                                 <option value="4">식품</option>
                                 <option value="5">공예</option>
                                 <option value="6">반려동물</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row category-row">
+                            <label>소분류 카테고리</label>
+
+                            <select name="category_id" id="category_id" class="category-select">
+                                <option value="">하위 카테고리 선택</option>
                             </select>
                         </div>
 
