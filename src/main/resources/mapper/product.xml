@@ -150,6 +150,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           AND sale_price > 0
     </select>
 
+    <!-- 베스트 상품 -->
+    <select id="product_best_all_list" resultType="product">
+        SELECT *
+        FROM products
+        WHERE status = 'APPROVED'
+        ORDER BY product_id DESC
+    </select>
+
     <!-- 판매자 내 상품 목록 -->
     <select id="seller_product_list" parameterType="int" resultType="product">
         SELECT *

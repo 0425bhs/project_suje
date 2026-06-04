@@ -1,0 +1,281 @@
+.product-nav-inner a.nav-active {
+    color: #ff6f4f;
+}
+
+.product-nav-inner a.nav-active::after {
+    width: 100%;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.best-page {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 44px 80px;
+}
+
+/* 상단 카테고리 이동 메뉴 */
+.best-category-nav {
+    position: sticky;
+    top: 168px;
+    z-index: 20;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.best-category-inner {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+
+    height: 48px;
+    overflow-x: auto;
+}
+
+.best-category-inner a {
+    position: relative;
+    flex: 0 0 auto;
+
+    color: #555;
+    font-size: 15px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.best-category-inner a:hover {
+    color: #ff654f;
+}
+
+.best-category-inner a.active {
+    color: #111;
+    font-weight: 950;
+}
+
+.best-category-inner a.active::after {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -15px;
+
+    height: 3px;
+    background: #222;
+}
+
+/* 카테고리별 섹션 */
+.best-category-section {
+    scroll-margin-top: 230px;
+    padding-top: 32px;
+    margin-bottom: 42px;
+}
+
+.best-section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 18px;
+}
+
+.best-section-title-row h2 {
+    margin: 0;
+
+    color: #222;
+    font-size: 28px;
+    font-weight: 950;
+    letter-spacing: -1px;
+}
+
+.best-section-title-row a {
+    color: #222;
+    font-size: 15px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.best-section-title-row a:hover {
+    color: #ff654f;
+}
+
+/* 상품 그리드 */
+.best-product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 34px 18px;
+}
+
+.best-product-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.best-product-img {
+    position: relative;
+    width: 100%;
+    height: 235px;
+
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f5f5f5;
+}
+
+.best-product-img img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    object-fit: cover;
+
+    transition: 0.2s;
+}
+
+.best-product-card:hover .best-product-img img {
+    transform: scale(1.04);
+}
+
+/* 이미지 위 순위 */
+.best-rank {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #ff6f4f;
+    color: #fff;
+
+    font-size: 16px;
+    font-weight: 950;
+}
+
+.best-product-card:nth-child(1) .best-rank,
+.best-product-card:nth-child(2) .best-rank,
+.best-product-card:nth-child(3) .best-rank {
+    background: #111;
+}
+
+.best-heart {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid #fff;
+    border-radius: 50%;
+
+    color: #fff;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.best-product-info {
+    padding-top: 10px;
+}
+
+.best-product-name {
+    height: 42px;
+    margin: 0 0 8px;
+
+    color: #222;
+    font-size: 15px;
+    line-height: 1.45;
+    font-weight: 800;
+
+    overflow: hidden;
+}
+
+.best-origin-price {
+    margin: 0 0 3px;
+
+    color: #aaa;
+    font-size: 13px;
+    text-decoration: line-through;
+}
+
+.best-sale-price {
+    margin: 0 0 8px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.best-sale-price span {
+    color: #ff3b30;
+    font-size: 17px;
+    font-weight: 950;
+}
+
+.best-sale-price strong {
+    color: #222;
+    font-size: 18px;
+    font-weight: 950;
+}
+
+.best-normal-price {
+    margin: 0 0 8px;
+}
+
+.best-normal-price strong {
+    color: #222;
+    font-size: 18px;
+    font-weight: 950;
+}
+
+.best-review {
+    margin: 0;
+    color: #777;
+    font-size: 13px;
+}
+
+.best-empty {
+    padding: 60px 20px;
+    border: 1px solid #eee;
+    background: #fafafa;
+
+    text-align: center;
+    color: #777;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+@media (max-width: 1200px) {
+    .best-product-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .best-page {
+        padding: 0 24px 60px;
+    }
+
+    .best-category-nav {
+        top: 0;
+    }
+
+    .best-product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .best-category-section {
+        scroll-margin-top: 80px;
+    }
+}

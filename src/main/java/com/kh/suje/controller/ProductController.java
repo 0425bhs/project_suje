@@ -25,6 +25,7 @@ public class ProductController {
 
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
+    
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
     public String main(Model model){
@@ -131,9 +132,25 @@ public class ProductController {
 
         model.addAttribute("list", list);
         model.addAttribute("pageMenu", pageMenu);
+
+        // 전체 카테고리용 데이터
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
         return "product/product_sale_list";
     }
 
+    @GetMapping("/product_best.do")
+    public String product_best_list(Model model) {
+
+        List<ProductVO> list = productdao.product_best_all_list();
+
+        model.addAttribute("list", list);
+
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
+        return "product/product_best_list";
+    }
 
     @GetMapping("/all_list.do")
     String allProductList(Model model,Integer page){
@@ -160,6 +177,10 @@ public class ProductController {
 
         model.addAttribute("list",list);
         model.addAttribute("pageMenu",pageMenu);
+
+        // 전체 카테고리용 데이터  
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
         return "product/product_new_list";
     }
 

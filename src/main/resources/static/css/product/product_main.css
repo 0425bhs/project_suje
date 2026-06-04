@@ -275,6 +275,7 @@ input {
 }
 
 
+
 /* =========================================================
    5. Header - 하단 메뉴 바
 ========================================================= */
@@ -1261,4 +1262,12 @@ input {
         width: 90vw;
         grid-template-columns: 1fr;
     }
+}
+
+.product-nav-inner a.nav-active {
+    color: #ff6f4f;
+}
+
+.product-nav-inner a.nav-active::after {
+    width: 100%;
 }
