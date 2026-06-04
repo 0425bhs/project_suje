@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.UserDAO">
+
+<!--아이디 중복체크-->
+<select id = "userNickCheck" parameterType = "String"
+resultType = "user">
+
+select * from users where nick_name=#{nickName}
+
+</select>
+
+<!--가입-->
+<insert id = "insertUser" parameterType="user"  
+useGeneratedKeys="true" keyProperty="userId">
+insert into users( email, password, name,
+phone, gender, role, nick_name )
+values( #{email}, #{password}, #{name}, #{phone}, #{gender}, 
+#{role}, #{nickName} )
+</insert>
+
+<!--로그인-->
+<select id = "LoginCheck" parameterType="String"
+resultType="user">
+select * from users where email=#{email}	
+</select>		
+</mapper>
