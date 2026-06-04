@@ -19,5 +19,4 @@ public class PaymentVO {
     private String status; //결제상태
     private String transaction_id; //API
     private String created_at; //결제 데이터 생성 시간
-
 }

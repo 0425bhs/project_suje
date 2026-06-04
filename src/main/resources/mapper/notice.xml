@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kh.suje.dao.NoticeDAO">
+    <select id="getNoticeList"
+            resultType="notice">
+        SELECT *
+        FROM notices
+    </select>
+
+    <select id="getNoticeById"
+            parameterType="int"
+            resultType="notice">
+        SELECT *
+        FROM notices
+        WHERE notice_id = #{noticeId}
+    </select>
+
+	<insert id="addNotice"
+            parameterType="notice">
+        INSERT INTO notices (title, content)
+        VALUES (#{title}, #{content})
+    </insert>
+
+    <insert id="updateNotice"
+            parameterType="notice">
+        UPDATE notices
+        SET title = #{title}, content = #{content}
+        WHERE notice_id = #{notice_id}
+    </insert>
+</mapper>

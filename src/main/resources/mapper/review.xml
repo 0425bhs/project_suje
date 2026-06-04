@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.ReviewDAO">
+	<insert id="addReview"
+            parameterType="review">
+        INSERT INTO reviews (user_id, product_id, order_item_id, rating, content)
+        VALUES (#{user_id}, #{product_id}, 1, #{rating}, #{content})
+    </insert>
+
+    <select id="getReviewById"
+            parameterType="int"
+            resultType="review">
+        SELECT r.*, p.name product_name, p.image_s
+        FROM reviews r
+        JOIN products p 
+        ON r.product_id = p.product_id
+        WHERE r.review_id = #{review_id}
+    </select>
+
+    <select id="getMyReviewList"
+            parameterType="int"
+            resultType="review">
+        SELECT r.*, p.name product_name, p.image_s
+        FROM reviews r
+        JOIN products p
+        ON r.product_id = p.product_id
+        WHERE r.user_id = #{id}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="getLiveReviewList"
+            parameterType="int"
+            resultType="review">
+        SELECT r.*, p.name product_name, p.image_s
+        FROM reviews r
+        JOIN products p
+        ON r.product_id = p.product_id
+        ORDER BY created_at DESC
+        LIMIT 10
+    </select>
+
+    <update id="updateReview"
+            parameterType="review">
+        UPDATE reviews
+        SET content = #{content},
+            rating = #{rating}
+        WHERE review_id = #{review_id}
+    </update>
+
+    <delete id="deleteReview"
+            parameterType="int">
+        DELETE FROM reviews
+        WHERE review_id = #{review_id}
+    </delete>
+</mapper>
