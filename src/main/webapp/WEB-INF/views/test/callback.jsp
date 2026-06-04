@@ -11,7 +11,7 @@
 <script type="text/javascript">
   var naver_id_login = new naver_id_login("PJUFdZV_k1HGDTGlI5o9", "http://localhost:9090/login_callback.do");
   // 접근 토큰 값 출력
-  // alert(naver_id_login.oauthParams.access_token);
+  alert(naver_id_login.oauthParams.access_token);
   // 네이버 사용자 프로필 조회
   naver_id_login.get_naver_userprofile("naverSignInCallback()");
   // 네이버 사용자 프로필 조회 이후 프로필 정보를 처리할 callback function
@@ -27,17 +27,17 @@
       tag.value = naver_id_login.getProfileData(i.id);
     }
 
-    // let nickname = document.getElementById("nickname"); 
-    // let name = document.getElementById("name"); 
-    // let email = document.getElementById("email"); 
-    // let gender = document.getElementById("gender"); 
-    // let birthday = document.getElementById("birthday"); 
+    let nickname = document.getElementById("nickname"); 
+    let name = document.getElementById("name"); 
+    let email = document.getElementById("email"); 
+    let gender = document.getElementById("gender"); 
+    let birthday = document.getElementById("birthday"); 
     
-    // nickname.value = naver_id_login.getProfileData('nickname');
-    // name.value = naver_id_login.getProfileData('name');
-    // email.value = naver_id_login.getProfileData('email');
-    // gender.value = naver_id_login.getProfileData('gender');
-    // birthday.value = naver_id_login.getProfileData('birthday');
+    nickname.value = naver_id_login.getProfileData('nickname');
+    name.value = naver_id_login.getProfileData('name');
+    email.value = naver_id_login.getProfileData('email');
+    gender.value = naver_id_login.getProfileData('gender');
+    birthday.value = naver_id_login.getProfileData('birthday');
   }
 </script>
 </body>

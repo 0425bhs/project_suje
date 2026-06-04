@@ -25,9 +25,9 @@ public class ReviewController {
     private final ReviewDAO reviewDAO;
     private final ProductDAO productDAO;
     
-    @GetMapping("/review")
+    @GetMapping(value={"testmain" ,"/review"})
     private String main() {
-        return "/main";
+        return "/testmain";
     }
 
     @GetMapping("/review_form.do")

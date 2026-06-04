@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReportDAO;
 import com.kh.suje.vo.ReportVO;
 
