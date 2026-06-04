@@ -1263,3 +1263,11 @@ input {
         grid-template-columns: 1fr;
     }
 }
+
+.product-nav-inner a.nav-active {
+    color: #ff6f4f;
+}
+
+.product-nav-inner a.nav-active::after {
+    width: 100%;
+}

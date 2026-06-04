@@ -32,6 +32,9 @@ public interface ProductDAO {
     // 세일 상품 개수
     int product_sale_cnt();
 
+    //베스트 상품
+    List<ProductVO> product_best_all_list();
+
     //판매자 내 상품 목록
     List<ProductVO> seller_product_list(int seller_id);
 
