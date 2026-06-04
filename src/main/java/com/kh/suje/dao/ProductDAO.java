@@ -40,4 +40,6 @@ public interface ProductDAO {
     List<ProductVO> sellerHomepageProductList(Map<String, Object> map);
 
     int seller_product_delete(int product_id);
+    
+    int sellerProductDeleteSelected(int[] product_id);
 }

@@ -14,12 +14,15 @@ body {
     min-height: 100vh;
 }
 
-/* 사이드바 - 내 상품 관리 페이지 기준으로 통일 */
+/* =========================================================
+   판매자센터 공통 사이드바
+========================================================= */
+
 .seller-sidebar {
-    width: 250px;
-    background: #222;
+    width: 280px;
+    background: #100f0f;
     color: #fff;
-    padding: 28px 22px;
+    padding: 32px 24px;
     position: fixed;
     left: 0;
     top: 0;
@@ -27,12 +30,12 @@ body {
 }
 
 .sidebar-logo {
-    font-size: 25px;
+    font-size: 27px;
     font-weight: 900;
     margin-bottom: 8px;
+    letter-spacing: -1px;
 }
 
-/* 로고가 a 태그일 때도 기본 링크 색/밑줄 제거 */
 .sidebar-logo,
 .sidebar-logo:link,
 .sidebar-logo:visited,
@@ -48,44 +51,38 @@ body {
 }
 
 .sidebar-logo span,
-.sidebar-logo:link span,
-.sidebar-logo:visited span,
-.sidebar-logo:hover span,
-.sidebar-logo:active span,
-.sidebar-logo a span,
-.sidebar-logo a:link span,
-.sidebar-logo a:visited span,
-.sidebar-logo a:hover span,
-.sidebar-logo a:active span {
+.sidebar-logo a span {
     color: #ff654f;
 }
 
 .sidebar-title {
     color: #aaa;
     font-size: 13px;
-    margin-bottom: 28px;
+    margin-bottom: 34px;
 }
 
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 8px;
 }
 
 .sidebar-menu a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 13px 14px;
+
+    padding: 14px 16px;
     color: #ccc;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
-    border-radius: 8px;
+
+    border-radius: 9px;
 }
 
 .sidebar-menu a:hover {
-    background: #333;
+    background: #252323;
     color: #fff;
 }
 
@@ -116,14 +113,14 @@ body {
 
 .sidebar-bottom {
     position: absolute;
-    left: 22px;
-    right: 22px;
-    bottom: 28px;
+    left: 24px;
+    right: 24px;
+    bottom: 30px;
 }
 
 .sidebar-bottom a {
     display: block;
-    padding: 12px;
+    padding: 13px;
     border: 1px solid #444;
     color: #ddd;
     text-align: center;
@@ -134,22 +131,85 @@ body {
 }
 
 .sidebar-bottom a:hover {
-    background: #333;
+    background: #252323;
     color: #fff;
 }
 
-/* 본문 */
+/* =========================================================
+   판매자센터 공통 본문 영역
+========================================================= */
+
 .seller-main {
-    margin-left: 250px;
-    width: calc(100% - 250px);
+    margin-left: 290px;
+    width: calc(100% - 300px);
     min-height: 100vh;
-    padding: 44px;
+    padding: 40px 48px;
 }
 
-/* 등록/수정 폼 공통 박스 */
+/* =========================================================
+   공통 버튼
+========================================================= */
+
+.btn {
+    min-width: 130px;
+    padding: 14px 22px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.15s;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: #ff654f;
+    color: #fff;
+    box-shadow: 0 8px 16px rgba(255, 101, 79, 0.22);
+}
+
+.btn-primary:hover {
+    background: #e9533f;
+}
+
+.btn-white {
+    background: #fff;
+    color: #333;
+    border-color: #dce1e7;
+}
+
+.btn-white:hover {
+    border-color: #222;
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #111;
+}
+
+.btn-secondary:hover {
+    background: #e2e2e2;
+}
+
+.btn-danger {
+    background: #f0f0f0;
+    color: #111;
+}
+
+.btn-danger:hover {
+    background: #e6dede;
+    color: #c62828;
+}
+
+/* =========================================================
+   상품 등록 / 상품 수정 폼 공통
+========================================================= */
+
 .product-insert-box,
 .product-modify-box {
     max-width: 1280px;
+    margin: 0 auto;
     background: #fff;
     border: 1px solid #e5e8eb;
     border-radius: 18px;
@@ -157,13 +217,11 @@ body {
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
 }
 
-/* 폼 자체 */
 .product-insert-form,
 .product-modify-form {
     width: 100%;
 }
 
-/* 구역 카드 */
 .form-section {
     position: relative;
     margin-bottom: 28px;
@@ -177,7 +235,6 @@ body {
     margin-bottom: 0;
 }
 
-/* 구역 제목은 CSS에서 표시 */
 .form-section::before {
     display: block;
     margin-bottom: 22px;
@@ -188,7 +245,6 @@ body {
     letter-spacing: -0.5px;
 }
 
-/* 입력 */
 .form-row {
     margin-bottom: 22px;
 }
@@ -243,7 +299,6 @@ body {
     cursor: pointer;
 }
 
-/* 가격/배송 영역 */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -273,7 +328,6 @@ body {
     font-weight: 900;
 }
 
-/* 이미지 업로드 */
 .image-upload-area {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -314,7 +368,6 @@ body {
     font-size: 14px;
 }
 
-/* 버튼 */
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -322,37 +375,9 @@ body {
     padding-top: 8px;
 }
 
-.btn {
-    min-width: 130px;
-    padding: 14px 22px;
-    border-radius: 10px;
-    border: 1px solid transparent;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    transition: 0.15s;
-}
-
-.btn-primary {
-    background: #ff654f;
-    color: #fff;
-    box-shadow: 0 8px 16px rgba(255, 101, 79, 0.22);
-}
-
-.btn-primary:hover {
-    background: #e9533f;
-}
-
-.btn-white {
-    background: #fff;
-    color: #333;
-    border-color: #dce1e7;
-}
-
-.btn-white:hover {
-    border-color: #222;
-}
+/* =========================================================
+   반응형
+========================================================= */
 
 @media (max-width: 1100px) {
     .seller-board {
