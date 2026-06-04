@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>판매자 관리보드 - 내 상품 관리</title>
     
+    <link rel="stylesheet" href="/css/seller/seller_form_common.css">
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
     <script src="/js/seller_product_toggle.js"></script>
 </head>
