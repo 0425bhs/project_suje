@@ -78,15 +78,24 @@
                     <div class="form-section">
 
                         <div class="form-row category-row">
-                            <label>카테고리</label>
+                            <label>대분류 카테고리</label>
 
-                            <select name="category_id" class="category-select">
+                            <select id="big_category_id" class="category-select">
+                                <option value="">대분류 선택</option>
                                 <option value="1">패션/주얼리</option>
                                 <option value="2">홈리빙</option>
                                 <option value="3">뷰티</option>
                                 <option value="4">식품</option>
                                 <option value="5">공예</option>
                                 <option value="6">반려동물</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row category-row">
+                            <label>소분류 카테고리</label>
+
+                            <select name="category_id" id="category_id" class="category-select">
+                                <option value="">하위 카테고리 선택</option>
                             </select>
                         </div>
 

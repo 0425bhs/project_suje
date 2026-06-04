@@ -78,8 +78,6 @@
 
                     <input type="hidden" name="ori_image_l" id="ori_image_l" value="${vo.image_l}">
                     <input type="hidden" name="ori_image_s" id="ori_image_s" value="${vo.image_s}">
-                    <input type="hidden" name="del_image_l" value="${vo.image_l}">
-                    <input type="hidden" name="del_image_s" value="${vo.image_s}">
 
                     <div class="form-section">
 
@@ -163,7 +161,6 @@
                                 <c:if test="${vo.image_l ne 'no_file'}">
                                     <div class="image-preview" id="image_l_div">
                                         <img src="${vo.image_l}" alt="대표 이미지">
-                                        <button type="button" class="image-delete-btn" onclick="delImgL()">삭제</button>
                                     </div>
                                 </c:if>
 
@@ -178,7 +175,6 @@
                                 <c:if test="${vo.image_s ne 'no_file'}">
                                     <div class="image-preview" id="image_s_div">
                                         <img src="${vo.image_s}" alt="상세 이미지">
-                                        <button type="button" class="image-delete-btn" onclick="delImgS()">삭제</button>
                                     </div>
                                 </c:if>
 

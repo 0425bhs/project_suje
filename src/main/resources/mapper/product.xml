@@ -48,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{stock},
             #{delivery_fee},
             #{free_shipping},
-            #{status},
+            'APPROVED',
             #{image_l},
             #{image_s},
             CASE 
@@ -77,7 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             stock = #{stock},
             delivery_fee = #{delivery_fee},
             free_shipping = #{free_shipping},
-            status = #{status},
+            <!-- status = #{status}, -->
             image_l = #{image_l},
             image_s = #{image_s},
             updated_at = CURRENT_TIMESTAMP
@@ -161,6 +161,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="seller_product_toggle" parameterType="product">
         update products set status=#{status} where product_id=#{product_id}
     </update>
+
+    <delete id="seller_product_delete" parameterType="int">
+        delete from products where product_id = #{value}
+    </delete>
 
     <select id="sellerHomepageProductList" parameterType="map" resultType="com.kh.suje.vo.ProductVO">
         SELECT * FROM products WHERE seller_id = #{seller_id} AND status = 'APPROVED'

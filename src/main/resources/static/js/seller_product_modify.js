@@ -52,22 +52,8 @@ window.onload=function(){
 
 function send(f){
 
-    const bigCategory = document.getElementById("big_category_id");
-    const category_id=f.category_id;
     const name=f.name;
     const description=f.description;
-
-    if (bigCategory.value == "") {
-        alert("대분류 카테고리를 선택하세요.");
-        bigCategory.focus();
-        return;
-    }
-
-    if (category_id.value == "") {
-        alert("하위 카테고리를 선택하세요.");
-        category_id.focus();
-        return;
-    }
 
     if (name.value=="") {
         alert("제품명를 등록해주세요.");
@@ -80,14 +66,8 @@ function send(f){
         description.focus();
         return;
     }
-
-    if (f.stock.value == "") {
-        alert("재고 수량을 등록해주세요.");
-        f.stock.focus();
-        return;
-    }
-
-    let stockValue = Number(f.stock.value);
+    
+    let stockValue = Number(f.stock.value || 0);
 
     if (stockValue < 0) {
         alert("올바른 재고 수량을 입력해주세요.");
@@ -105,7 +85,7 @@ function send(f){
     }
 
     if (salePrice < 0) {
-        alert("세일 가격을 올바르게 입력해주세요.");
+        alert("세일 가격은 음수로 입력할 수 없습니다.");
         f.sale_price.focus();
         return;
     }

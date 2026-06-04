@@ -7,6 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <title>판매자 관리보드 - 내 상품 관리</title>
+    
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
     <script src="/js/seller_product_toggle.js"></script>
 </head>
@@ -16,57 +17,10 @@
 <div class="seller-board">
 
     <!-- 왼쪽 메뉴 -->
-    <aside class="seller-sidebar">
-
-        <div class="sidebar-logo">
-            HAND<span>MADE</span>
-        </div>
-
-        <div class="sidebar-title">
-            판매자 관리보드
-        </div>
-
-        <nav class="sidebar-menu">
-
-            <a href="#" class="menu-disabled" onclick="return false;">
-                판매자 대시보드
-                <small>준비중</small>
-            </a>
-
-            <a href="/seller_homepage.do" class="menu-disabled">
-                판매자 홈페이지
-            </a>
-
-            <a href="/seller_product_list.do" class="menu-active">
-                내 상품 관리
-            </a>
-
-            <a href="/seller_product_insert.do">
-                상품 등록
-            </a>
-            
-            <a href="#" class="menu-disabled" onclick="return false;">
-                판매자 주문 관리
-                <small>준비중</small>
-            </a>
-
-            <a href="#" class="menu-disabled" onclick="return false;">
-                상품 문의 답변 관리
-                <small>준비중</small>
-            </a>
-
-            <a href="#" class="menu-disabled" onclick="return false;">
-                판매자 매출 통계
-                <small>준비중</small>
-            </a>
-
-        </nav>
-
-        <div class="sidebar-bottom">
-            <a href="/main.do">쇼핑몰로 이동</a>
-        </div>
-
-    </aside>
+    <jsp:include page="seller_sidebar.jsp">
+        <jsp:param name="activeMenu" value="productList" />
+        <jsp:param name="sidebarTitle" value="내 상품 관리" />
+    </jsp:include>
 
     <!-- 오른쪽 본문 -->
     <main class="seller-main">
@@ -106,8 +60,8 @@
                     <table class="product-manage-table">
                         <thead>
                             <tr>
-                                <th>대표 이미지</th>
                                 <th>상품번호</th>
+                                <th>대표 이미지</th>
                                 <th>상품명</th>
                                 <th>가격</th>
                                 <th>세일가격</th>
@@ -122,6 +76,9 @@
                         <tbody>
                             <c:forEach var="vo" items="${list}">
                                 <tr>
+
+                                    <td class="product-id">#${vo.product_id}</td>
+
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
@@ -133,8 +90,6 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </td>
-
-                                    <td class="product-id">#${vo.product_id}</td>
 
                                     <td class="product-name">
                                         ${vo.name}
@@ -225,9 +180,7 @@
                                             </button>
                                         </c:if>
 
-                                        <button type="button"
-                                                class="delete-btn"
-                                                onclick="productDelete('${vo.product_id}')">
+                                        <button type="button" class="delete-btn" onclick="productDelete('${vo.product_id}')">
                                             삭제
                                         </button>
                                     </td>
