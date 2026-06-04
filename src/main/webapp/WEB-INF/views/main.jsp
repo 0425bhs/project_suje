@@ -33,6 +33,53 @@
             HAND<span>MADE</span>
         </a>
 
+        <!-- 전체 카테고리 버튼 영역 -->
+        <div class="all-category-wrap">
+
+            <!-- 누르면 카테고리 박스 열림 -->
+            <button type="button" class="all-category-btn">
+                ☰ 전체 카테고리
+            </button>
+
+            <!-- 펼쳐지는 전체 카테고리 박스 -->
+            <div class="all-category-panel">
+
+                <!-- 대분류 반복 -->
+                <c:forEach var="big" items="${bigCategoryList}">
+
+                    <div class="all-category-item">
+
+                        <!-- 대분류 이름 -->
+                        <a href="/category_list.do?category_id=${big.category_id}" class="all-category-big">
+                            ${big.name}
+                        </a>
+
+                        <!-- 소분류 영역 -->
+                        <div class="all-category-small-list">
+
+                            <!-- 대분류 전체 보기 -->
+                            <a href="/category_list.do?category_id=${big.category_id}">
+                                전체
+                            </a>
+
+                            <!-- 소분류 반복 -->
+                            <c:forEach var="small" items="${smallCategoryList}">
+                                <c:if test="${small.parent_id == big.category_id}">
+                                    <a href="/category_list.do?category_id=${small.category_id}">
+                                        ${small.name}
+                                    </a>
+                                </c:if>
+                            </c:forEach>
+
+                        </div>
+
+                    </div>
+
+                </c:forEach>
+
+            </div>
+        </div>
+
         <div class="product-search-box disabled">
             찾으시는 작가, 작품이 있나요?
         </div>
@@ -47,53 +94,6 @@
 
     <nav class="product-nav-bar">
         <div class="product-nav-inner">
-
-            <!-- 전체 카테고리 버튼 영역 -->
-            <div class="all-category-wrap">
-
-                <!-- 누르면 카테고리 박스 열림 -->
-                <button type="button" class="all-category-btn">
-                    ☰ 전체 카테고리
-                </button>
-
-                <!-- 펼쳐지는 전체 카테고리 박스 -->
-                <div class="all-category-panel">
-
-                    <!-- 대분류 반복 -->
-                    <c:forEach var="big" items="${bigCategoryList}">
-
-                        <div class="all-category-item">
-
-                            <!-- 대분류 이름 -->
-                            <a href="/category_list.do?category_id=${big.category_id}" class="all-category-big">
-                                ${big.name}
-                            </a>
-
-                            <!-- 소분류 영역 -->
-                            <div class="all-category-small-list">
-
-                                <!-- 대분류 전체 보기 -->
-                                <a href="/category_list.do?category_id=${big.category_id}">
-                                    전체
-                                </a>
-
-                                <!-- 소분류 반복 -->
-                                <c:forEach var="small" items="${smallCategoryList}">
-                                    <c:if test="${small.parent_id == big.category_id}">
-                                        <a href="/category_list.do?category_id=${small.category_id}">
-                                            ${small.name}
-                                        </a>
-                                    </c:if>
-                                </c:forEach>
-
-                            </div>
-
-                        </div>
-
-                    </c:forEach>
-
-                </div>
-            </div>
 
             <a href="#" class="disabled">🎁 선물추천</a>
             <a href="/product_sale.do">🏷️ 할인</a>
