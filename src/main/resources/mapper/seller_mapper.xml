@@ -4,21 +4,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.suje.dao.SellerDAO">
 
-
-
-
-<!--가입-->
-<insert id = "insertSeller" 
-parameterType="seller">
-
-insert into sellers( user_id,
-    company_name, business_number, seller_status, 
-    representative_name, opening_date, business_address)
-values( #{userId}, #{companyName}, #{businessNumber}, 
-   #{sellerStatus},  #{representativeName}, 
-   #{openingDate}, #{businessAddress} )
-
-</insert>
-	
-		
+    <!--가입-->
+    <insert id="insertSeller" parameterType="seller">
+        insert into sellers( user_id,
+            company_name, business_number, seller_status, 
+            representative_name, opening_date, business_address)
+        values( #{userId}, #{companyName}, #{businessNumber}, 
+        #{sellerStatus},  #{representativeName}, 
+        #{openingDate}, #{businessAddress} )
+    </insert>
+        	
 </mapper>

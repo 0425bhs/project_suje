@@ -171,7 +171,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="seller_product_delete" parameterType="int">
-        delete from products where product_id = #{value}
+        delete from products where product_id=#{value}
+    </delete>
+
+    <delete id="sellerProductDeleteSelected">
+        delete from products where product_id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </delete>
 
     <select id="sellerHomepageProductList" parameterType="map" resultType="com.kh.suje.vo.ProductVO">
