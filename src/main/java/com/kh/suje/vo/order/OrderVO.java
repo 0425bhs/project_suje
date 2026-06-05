@@ -20,4 +20,10 @@ public class OrderVO {
     private String created_at; // 주문 생성일
     private String updated_at; // 주문 수정일 / 주문 상태 변경일
 
+    // 취소 사유
+    private String cancel_reason;
+
+    // 취소 일시
+    private String cancelled_at;
+
 }

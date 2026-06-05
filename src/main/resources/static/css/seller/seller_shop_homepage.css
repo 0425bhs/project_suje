@@ -1,0 +1,379 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Malgun Gothic', Arial, sans-serif;
+    background: #fff;
+    color: #111;
+}
+
+/* =========================================================
+   구매자용 판매자샵 화면
+   - 사이드바 없음
+   - 상단 공통 헤더는 product_header.css에서 관리
+========================================================= */
+
+/* 경로 영역 */
+.shop-breadcrumb {
+    background: #f3f4f6;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.shop-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 12px 24px;
+
+    font-size: 13px;
+    font-weight: 800;
+    color: #333;
+}
+
+/* 전체 영역 */
+.buyer-shop {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 38px 24px 80px;
+}
+
+/* 판매자 소개 영역 */
+.buyer-shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 26px 0 36px;
+}
+
+.seller-profile {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.seller-logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ff6b57;
+    color: #fff;
+
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.seller-profile h1 {
+    margin: 0;
+
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.seller-profile p {
+    margin: 8px 0 0;
+
+    color: #666;
+    font-size: 15px;
+}
+
+/* 작가샵 찜하기 버튼 */
+.wish-shop-btn {
+    height: 42px;
+    padding: 0 18px;
+
+    background: #fff;
+    border: 1px solid #b8c0cc;
+    border-radius: 4px;
+
+    color: #222;
+    font-size: 14px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.wish-shop-btn:hover {
+    border-color: #ff6b57;
+    color: #ff4f3a;
+}
+
+/* 탭 메뉴 */
+.buyer-shop-tabs {
+    display: flex;
+    gap: 38px;
+
+    border-bottom: 1px solid #ddd;
+}
+
+.buyer-shop-tabs a {
+    position: relative;
+
+    padding: 18px 0 14px;
+
+    color: #111;
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.buyer-shop-tabs a.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+
+    width: 100%;
+    height: 4px;
+
+    background: #111;
+}
+
+.buyer-shop-tabs a:hover {
+    color: #ff4f3a;
+}
+
+/* 정렬 + 검색 */
+.buyer-shop-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin: 34px 0 32px;
+}
+
+.sort-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 14px;
+}
+
+.sort-box a {
+    color: #666;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.sort-box a.active {
+    color: #ff4f3a;
+    font-weight: 900;
+}
+
+.sort-box a:hover {
+    color: #ff4f3a;
+}
+
+.sort-box span {
+    color: #ddd;
+}
+
+/* 샵 내부 검색 */
+.shop-search {
+    display: flex;
+    align-items: center;
+
+    width: 330px;
+    height: 44px;
+
+    background: #fff;
+    border: 1px solid #c8d0da;
+    border-radius: 4px;
+
+    overflow: hidden;
+}
+
+.shop-search input {
+    flex: 1;
+    height: 100%;
+    padding: 0 14px;
+
+    border: none;
+    outline: none;
+
+    color: #333;
+    font-size: 14px;
+}
+
+.shop-search input::placeholder {
+    color: #999;
+}
+
+.shop-search button {
+    width: 48px;
+    height: 100%;
+
+    border: none;
+    background: #fff;
+
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.shop-search button:hover {
+    background: #f7f7f7;
+}
+
+/* 상품 목록 */
+.buyer-product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 24px 14px;
+    justify-items: center;
+}
+
+.buyer-product-card {
+    background: #fff;
+    width: 88%;
+    max-width: 290px;
+}
+
+/* 상품 이미지 */
+.product-img-box {
+    display: block;
+
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    background: #f5f5f5;
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.product-img-box img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: transform 0.2s ease;
+}
+
+.buyer-product-card:hover .product-img-box img {
+    transform: scale(1.04);
+}
+
+/* 상품명 */
+.product-name {
+    margin-top: 14px;
+}
+
+.product-name a {
+    display: block;
+
+    color: #222;
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.4;
+}
+
+.product-name a:hover {
+    text-decoration: underline;
+}
+
+/* 가격 */
+.product-price {
+    margin: 8px 0 0;
+
+    color: #111;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.origin-price {
+    margin: 8px 0 3px;
+
+    color: #999;
+    font-size: 13px;
+    text-decoration: line-through;
+}
+
+.sale-price {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.sale-price strong {
+    margin-right: 6px;
+
+    color: #e5392d;
+    font-size: 18px;
+}
+
+.sale-price span {
+    color: #111;
+}
+
+/* 배송 정보 */
+.delivery-info {
+    margin: 7px 0 0;
+
+    color: #777;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* 상품이 없을 때 사용할 수 있음 */
+.empty-product {
+    grid-column: 1 / -1;
+
+    padding: 80px 0;
+
+    text-align: center;
+    color: #888;
+    font-size: 15px;
+
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background: #fafafa;
+}
+
+/* 반응형 */
+@media (max-width: 1100px) {
+    .buyer-product-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 760px) {
+    .buyer-shop-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .buyer-shop-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .shop-search {
+        width: 100%;
+    }
+
+    .buyer-shop-tabs {
+        gap: 24px;
+        overflow-x: auto;
+    }
+
+    .buyer-product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 34px 16px;
+    }
+}

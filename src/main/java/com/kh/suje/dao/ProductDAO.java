@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.order.OrderItemVO;
 
 public interface ProductDAO {
 
@@ -32,12 +33,23 @@ public interface ProductDAO {
     // 세일 상품 개수
     int product_sale_cnt();
 
+    //베스트 상품
+    List<ProductVO> product_best_all_list();
+
     //판매자 내 상품 목록
-    List<ProductVO> seller_product_list(int seller_id);
+    List<ProductVO> seller_product_list(Map<String, Object> map);
 
     int seller_product_toggle(ProductVO vo);
     
     List<ProductVO> sellerHomepageProductList(Map<String, Object> map);
 
     int seller_product_delete(int product_id);
+    
+    int sellerProductDeleteSelected(int[] product_id);
+
+    // 결제 성공 시 재고 차감
+    int decreaseStock(OrderItemVO vo);
+
+    // 결제 취소 시 재고 복구
+    int increaseStock(OrderItemVO vo);
 }

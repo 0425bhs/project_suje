@@ -150,12 +150,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           AND sale_price > 0
     </select>
 
-    <!-- 판매자 내 상품 목록 -->
-    <select id="seller_product_list" parameterType="int" resultType="product">
+    <!-- 베스트 상품 -->
+    <select id="product_best_all_list" resultType="product">
         SELECT *
         FROM products
-        WHERE seller_id = #{value}
+        WHERE status = 'APPROVED'
         ORDER BY product_id DESC
+    </select>
+
+    <!-- 판매자 내 상품 목록 -->
+    <select id="seller_product_list" parameterType="map" resultType="product">
+        SELECT * FROM products
+        <where>
+            <if test="status != null and status != ''">
+                status = #{status}
+            </if>
+        </where>
+        <choose>
+            <when test="sort == 'lowPrice'">
+                ORDER BY price ASC
+            </when>
+
+            <when test="sort == 'highPrice'">
+                ORDER BY price DESC
+            </when>
+
+            <when test="sort == 'lowStock'">
+                ORDER BY stock ASC
+            </when>
+
+            <otherwise>
+                ORDER BY product_id DESC
+            </otherwise>
+        </choose>
     </select>
 
     <update id="seller_product_toggle" parameterType="product">
@@ -163,7 +190,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="seller_product_delete" parameterType="int">
-        delete from products where product_id = #{value}
+        delete from products where product_id=#{value}
+    </delete>
+
+    <delete id="sellerProductDeleteSelected">
+        delete from products where product_id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </delete>
 
     <select id="sellerHomepageProductList" parameterType="map" resultType="com.kh.suje.vo.ProductVO">
@@ -211,5 +245,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         </choose>
     </select>
+
+    <!-- 결제 성공 시 상품 재고 차감 -->
+    <update id="decreaseStock" parameterType="orderItem">
+        UPDATE products
+        SET stock = stock - #{quantity}
+        WHERE product_id = #{product_id}
+        AND stock >= #{quantity}
+    </update>
+
+    <!-- 결제 취소 시 상품 재고 복구 -->
+    <update id="increaseStock" parameterType="orderItem">
+        UPDATE products
+        SET stock = stock + #{quantity}
+        WHERE product_id = #{product_id}
+    </update>
 
 </mapper>

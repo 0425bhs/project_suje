@@ -25,6 +25,7 @@ public class ProductController {
 
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
+    
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
     public String main(Model model){
@@ -98,6 +99,11 @@ public class ProductController {
     public String product_detail_form(int product_id,Model model){
         ProductVO vo=productdao.product_one(product_id);
         model.addAttribute("vo",vo);
+
+        // 전체 카테고리 헤더용
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
         return "/product/product_detail";
     }   
 
@@ -131,9 +137,25 @@ public class ProductController {
 
         model.addAttribute("list", list);
         model.addAttribute("pageMenu", pageMenu);
+
+        // 전체 카테고리용 데이터
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
         return "product/product_sale_list";
     }
 
+    @GetMapping("/product_best.do")
+    public String product_best_list(Model model) {
+
+        List<ProductVO> list = productdao.product_best_all_list();
+
+        model.addAttribute("list", list);
+
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
+        return "product/product_best_list";
+    }
 
     @GetMapping("/all_list.do")
     String allProductList(Model model,Integer page){
@@ -160,6 +182,10 @@ public class ProductController {
 
         model.addAttribute("list",list);
         model.addAttribute("pageMenu",pageMenu);
+
+        // 전체 카테고리용 데이터  
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
         return "product/product_new_list";
     }
 
@@ -214,13 +240,13 @@ public class ProductController {
             image_S.transferTo(savFile);
         }
 
-        if (filename_l.equals("no_file")) {
+        if (filename_l.equals("no_file")){
             vo.setImage_l("no_file");
         } else {
             vo.setImage_l("/upload/" + filename_l);
         }
 
-        if (filename_s.equals("no_file")) {
+        if (filename_s.equals("no_file")){
             vo.setImage_s("no_file");
         } else {
             vo.setImage_s("/upload/" + filename_s);
@@ -271,7 +297,7 @@ public class ProductController {
 
         String image_l_name = "no_file";
 
-        if (vo.getImage_l_file() != null && !vo.getImage_l_file().isEmpty()) {
+        if (vo.getImage_l_file() != null && !vo.getImage_l_file().isEmpty()){
             image_l_name=vo.getImage_l_file().getOriginalFilename();
             File saveFile=new File(savePath, image_l_name);
 
@@ -302,7 +328,7 @@ public class ProductController {
 
             vo.getImage_s_file().transferTo(saveFile);
 
-        } else if (ori_image_s!=null && !ori_image_s.equals("no_file")) {
+        } else if (ori_image_s!=null && !ori_image_s.equals("no_file")){
             image_s_name = ori_image_s;
         }
 
@@ -311,12 +337,12 @@ public class ProductController {
 
         int res=productdao.seller_product_modify(vo);
 
-        if (res == 1) {
+        if (res == 1){
             if (del_image_l != null && !del_image_l.equals("no_file")){
                 File delFile = new File(savePath, del_image_l.replace("/upload/", ""));
 
                 if (vo.getImage_l_file()!=null && !vo.getImage_l_file().isEmpty()){
-                    if (delFile.exists()) {
+                    if (delFile.exists()){
                         delFile.delete();
                     }
                 }
@@ -326,7 +352,7 @@ public class ProductController {
                 File delFile=new File(savePath, del_image_s.replace("/upload/", ""));
 
                 if (vo.getImage_s_file() != null && !vo.getImage_s_file().isEmpty()){
-                    if (delFile.exists()) {
+                    if (delFile.exists()){
                         delFile.delete();
                     }
                 }
@@ -341,31 +367,62 @@ public class ProductController {
     }
     
     @GetMapping("/seller_product_list.do")
-    public String seller_product_list(Model model) {
+    public String seller_product_list(Model model,String status,String sort){
 
         // 로그인/판매자 기능 붙기 전까지 임시 seller_id
         int seller_id = 1;
 
-        List<ProductVO> list = productdao.seller_product_list(seller_id);
+        if (sort == null || sort.equals("")) {
+            sort = "new";
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", status);
+        map.put("sort", sort);
+
+        List<ProductVO> list = productdao.seller_product_list(map);
 
         model.addAttribute("list", list);
+        model.addAttribute("status", status);
+        model.addAttribute("sort", sort);
 
-        return "seller/seller_product_list";
+        return "/seller/seller_product_list";
     }
         
     @PostMapping("/seller_product_toggle.do")
     @ResponseBody
-    public Map<String,Object> seller_product_toggle(ProductVO vo) {
+    public Map<String,Object> seller_product_toggle(ProductVO vo){
 
     Map<String,Object> map=new HashMap<>();
 
     int result=productdao.seller_product_toggle(vo);
 
-    map.put("result", result);
-    map.put("status", vo.getStatus());
+    map.put("result",result);
+    map.put("status",vo.getStatus());
 
     return map;
     }
 
+    @PostMapping("/seller_product_delete.do")
+    @ResponseBody
+    public Map<String, Object> sellerProductDelete(int product_id){
+
+        Map<String,Object> map = new HashMap<>();
+
+        int result = productdao.seller_product_delete(product_id);
+
+        map.put("result", result);
+
+        return map;
+    }
+
+    // 체크된 상품 여러 개 삭제
+    @PostMapping("/seller_product_delete_selected.do")
+    public String sellerProductDeleteSelected(int[] product_id){
+
+        productdao.sellerProductDeleteSelected(product_id);
+
+        return "redirect:/seller_product_list.do";
+    }
 
 }

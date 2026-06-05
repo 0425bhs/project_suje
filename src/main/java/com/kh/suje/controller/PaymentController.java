@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.PaymentDAO;
+import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
 import com.kh.suje.vo.payment.PaymentVO;
@@ -29,15 +30,19 @@ public class PaymentController {
     private final PaymentDAO paymentDAO;
     private final OrderDAO orderDAO;
 
+    // 상품 재고 차감 / 복구를 위해 사용하는 DAO
+    private final ProductDAO productDAO;
+
     @Value("${toss.client-key}")
     private String tossClientKey;
 
     @Value("${toss.secret-key}")
     private String tossSecretKey;
 
-    public PaymentController(PaymentDAO paymentDAO, OrderDAO orderDAO) {
+    public PaymentController(PaymentDAO paymentDAO, OrderDAO orderDAO, ProductDAO productDAO) {
         this.paymentDAO = paymentDAO;
         this.orderDAO = orderDAO;
+        this.productDAO = productDAO;
     }
 
     // 결제 대기 화면
@@ -204,6 +209,26 @@ public class PaymentController {
 
                 orderDAO.updateOrderStatus(orderVO);
 
+                // =========================================================
+                // 결제 성공 후 상품 재고 차감
+                // - 결제가 정상 승인되고 주문 상태가 PAID로 변경된 뒤 실행
+                // - order_items에 저장된 상품 목록을 가져온다.
+                // - 각 상품의 주문 수량만큼 products.stock을 감소시킨다.
+                // - stock이 부족해서 차감 실패하면 결제 완료 화면으로 보내지 않고 실패 화면으로 보낸다.
+                // =========================================================
+                List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order_id);
+
+                for (OrderItemVO item : itemList) {
+
+                    int stockResult = productDAO.decreaseStock(item);
+
+                    if (stockResult == 0) {
+                        model.addAttribute("order_id", order_id);
+                        model.addAttribute("message", "상품 재고가 부족하여 재고 차감에 실패했습니다.");
+                        return "payment/payment_fail";
+                    }
+                }
+
                 return "redirect:/order/complete?order_id=" + order_id;
             }
 
@@ -231,6 +256,8 @@ public class PaymentController {
             return "payment/payment_fail";
         }
     }
+
+    
 
     // Toss 결제 실패 후 돌아오는 주소
     // Toss failUrl: /payment/toss/fail
@@ -260,6 +287,7 @@ public class PaymentController {
     @Transactional
     public String tossCancel(
             @RequestParam("order_id") int order_id,
+            @RequestParam(value = "cancel_reason", required = false, defaultValue = "사용자 요청") String cancel_reason,
             Model model
     ) {
         OrderVO order = orderDAO.selectOrderById(order_id);
@@ -302,8 +330,20 @@ public class PaymentController {
             String auth = Base64.getEncoder()
                     .encodeToString((tossSecretKey + ":").getBytes(StandardCharsets.UTF_8));
 
+            String cancelReason = cancel_reason;
+
+            if (cancelReason == null || cancelReason.trim().isEmpty()) {
+                cancelReason = "사용자 요청";
+            }
+
+            String safeCancelReason = cancelReason.trim()
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\r", " ")
+                    .replace("\n", " ");
+
             String jsonBody = "{"
-                    + "\"cancelReason\":\"사용자 요청으로 결제 취소\""
+                    + "\"cancelReason\":\"" + safeCancelReason + "\""
                     + "}";
 
             HttpClient client = HttpClient.newBuilder()
@@ -335,16 +375,36 @@ public class PaymentController {
 
                 int paymentResult = paymentDAO.updatePaymentCancel(paymentVO);
 
+                // =========================================================
+                // 결제취소 성공 후 주문 취소 정보 저장
+                // - orders.status = CANCELLED
+                // - orders.cancel_reason = 사용자가 선택한 취소 사유
+                // - orders.cancelled_at = 현재 시간
+                // =========================================================
                 OrderVO orderVO = new OrderVO();
                 orderVO.setOrder_id(order_id);
                 orderVO.setStatus("CANCELLED");
+                orderVO.setCancel_reason(cancelReason);
 
-                int orderResult = orderDAO.updateOrderStatus(orderVO);
+                int orderResult = orderDAO.updateOrderCancelInfo(orderVO);
 
                 if (paymentResult == 0 || orderResult == 0) {
                     model.addAttribute("order_id", order_id);
                     model.addAttribute("message", "Toss 취소는 성공했지만 DB 상태 변경에 실패했습니다.");
                     return "payment/payment_fail";
+                }
+
+                // =========================================================
+                // 결제 취소 성공 후 상품 재고 복구
+                // - Toss 결제취소가 성공하고,
+                // - payments.status = CANCELLED,
+                // - orders.status = CANCELLED 로 변경된 뒤 실행
+                // - 주문 상품 목록을 가져와서 주문 수량만큼 products.stock을 다시 증가시킨다.
+                // =========================================================
+                List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order_id);
+
+                for (OrderItemVO item : itemList) {
+                    productDAO.increaseStock(item);
                 }
 
                 return "redirect:/order/my?status=CANCELLED";

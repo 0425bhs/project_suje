@@ -5,6 +5,7 @@
 <html lang="ko">
 
     <head>
+        <link rel="stylesheet" href="/css/seller/seller_form_common.css">
         <link rel="stylesheet" href="/css/seller/seller_product_list.css">
     </head>
 
