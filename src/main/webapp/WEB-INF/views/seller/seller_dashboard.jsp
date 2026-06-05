@@ -14,7 +14,8 @@
             <jsp:include page="seller_sidebar.jsp">
                 <jsp:param name="activeMenu" value="dashboard" />
                 <jsp:param name="sidebarTitle" value="판매자 대시보드" />
-            </jsp:include>
+            </jsp:include>  
+            
         </div>
     </body>
 
