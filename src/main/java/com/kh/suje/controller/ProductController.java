@@ -34,11 +34,6 @@ public class ProductController {
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
         return "main";
     }
-
-    @GetMapping("/main2.do")
-    public String main2() {
-        return "main2";
-    }
         
     @GetMapping("/category_list.do")
     public String product_category_list(Model model, Integer page, Integer category_id) {
