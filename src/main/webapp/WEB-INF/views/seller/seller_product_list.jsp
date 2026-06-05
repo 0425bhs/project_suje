@@ -53,62 +53,83 @@
                 </div>
             </div>
 
+            <div class="view-switch-buttons">
+
+                <button type="button"
+                        class="view-icon-btn active"
+                        data-view="table"
+                        title="테이블형">
+                    <span class="view-icon icon-table"></span>
+                </button>
+
+                <button type="button"
+                        class="view-icon-btn"
+                        data-view="card"
+                        title="카드형">
+                    <span class="view-icon icon-grid"></span>
+                </button>
+
+                <button type="button"
+                        class="view-icon-btn"
+                        data-view="list"
+                        title="리스트형">
+                    <span class="view-icon icon-list"></span>
+                </button>
+
+            </div>    
+
             <!-- 필터 / 정렬 영역 -->
             <div class="filter-box">
 
-                <!-- 상태 필터 -->
-                <div class="filter-line">
-                    <span class="filter-title">상태</span>
+                <div class="filter-buttons">
 
                     <a href="/seller_product_list.do?sort=${sort}"
-                       class="${empty status ? 'active' : ''}">
+                    class="${empty status ? 'active' : ''}">
                         전체
                     </a>
 
                     <a href="/seller_product_list.do?status=APPROVED&sort=${sort}"
-                       class="${status eq 'APPROVED' ? 'active' : ''}">
+                    class="${status eq 'APPROVED' ? 'active' : ''}">
                         판매중
                     </a>
 
                     <a href="/seller_product_list.do?status=HIDDEN&sort=${sort}"
-                       class="${status eq 'HIDDEN' ? 'active' : ''}">
+                    class="${status eq 'HIDDEN' ? 'active' : ''}">
                         판매중지
                     </a>
 
                     <a href="/seller_product_list.do?status=PENDING&sort=${sort}"
-                       class="${status eq 'PENDING' ? 'active' : ''}">
+                    class="${status eq 'PENDING' ? 'active' : ''}">
                         승인대기
                     </a>
 
                     <a href="/seller_product_list.do?status=REJECTED&sort=${sort}"
-                       class="${status eq 'REJECTED' ? 'active' : ''}">
+                    class="${status eq 'REJECTED' ? 'active' : ''}">
                         승인거절
                     </a>
-                </div>
 
-                <!-- 정렬 필터 -->
-                <div class="filter-line">
-                    <span class="filter-title">정렬</span>
+                    <span class="filter-divider"></span>
 
                     <a href="/seller_product_list.do?status=${status}&sort=new"
-                       class="${sort eq 'new' or empty sort ? 'active' : ''}">
+                    class="${sort eq 'new' or empty sort ? 'active' : ''}">
                         최신순
                     </a>
-
+                    
                     <a href="/seller_product_list.do?status=${status}&sort=lowPrice"
-                       class="${sort eq 'lowPrice' ? 'active' : ''}">
+                    class="${sort eq 'lowPrice' ? 'active' : ''}">
                         낮은가격순
                     </a>
 
                     <a href="/seller_product_list.do?status=${status}&sort=highPrice"
-                       class="${sort eq 'highPrice' ? 'active' : ''}">
+                    class="${sort eq 'highPrice' ? 'active' : ''}">
                         높은가격순
                     </a>
 
                     <a href="/seller_product_list.do?status=${status}&sort=lowStock"
-                       class="${sort eq 'lowStock' ? 'active' : ''}">
+                    class="${sort eq 'lowStock' ? 'active' : ''}">
                         재고적은순
                     </a>
+
                 </div>
 
             </div>
@@ -165,10 +186,13 @@
 
                                         <td class="product-id">#${vo.product_id}</td>
 
-                                        <td>
+                                        <td align="center">
                                             <c:choose>
                                                 <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                                    <img src="${vo.image_l}" class="product-thumb" alt="${vo.name}">
+                                                    <div style="width: 70px;">
+                                                        <img src="${vo.image_l}" class="product-thumb" alt="${vo.name}">
+                                                    </div>
+
                                                 </c:when>
 
                                                 <c:otherwise>
