@@ -62,7 +62,6 @@
 
     text-align: center;
     text-decoration: none;
-
     font-size: 14px;
     font-weight: 900;
 
@@ -145,7 +144,7 @@
     border-bottom: 1px solid #eef0f2;
 
     color: #111;
-    font-size: 13px;
+    font-size: 13px;https://github.com/0425bhs/project_suje/pull/38/conflict?name=src%252Fmain%252Fresources%252Fstatic%252Fcss%252Fseller%252Fseller_product_list.css&ancestor_oid=4f32b4c772093e1677a839a693e4d9d2ddce9317&base_oid=efdaa17868faf3339fd2b6cb458d03cd985554af&head_oid=66157b0638570e6cde4ae48d29504bdaf752b32e
     text-align: center;
     vertical-align: middle;
 }
@@ -156,18 +155,6 @@
 
 /* =========================================================
    colgroup 컬럼 너비
-========================================================= */
-
-.col-check {
-    width: 46px;
-}
-
-.col-id {
-    width: 80px;
-}
-
-.col-img {
-    width: 95px;
 }
 
 .col-name {
@@ -319,67 +306,6 @@
 
 /* =========================================================
    관리 버튼
-========================================================= */
-
-.manage-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-
-.edit-btn,
-.toggle-btn,
-.delete-btn {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    min-width: 64px;
-    height: 30px;
-    padding: 0 8px;
-
-    border: none;
-    border-radius: 6px;
-
-    color: #fff;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 800;
-
-    cursor: pointer;
-}
-
-.edit-btn {
-    background: #555;
-}
-
-.edit-btn:hover {
-    background: #222;
-}
-
-.toggle-on-btn {
-    background: #2ecc71;
-}
-
-.toggle-on-btn:hover {
-    background: #27ae60;
-}
-
-.toggle-off-btn {
-    background: #777;
-}
-
-.toggle-off-btn:hover {
-    background: #555;
-}
-
-.delete-btn {
-    background: #d9534f;
-}
-
-.delete-btn:hover {
-    background: #c9302c;
 }
 
 /* =========================================================
