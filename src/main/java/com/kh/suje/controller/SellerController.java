@@ -30,18 +30,7 @@ public class SellerController {
     private final CategoryDAO categorydao;
     private final SellerDAO sellerDAO;
 
-    @PostMapping("/seller_product_delete.do")
-    @ResponseBody
-    public Map<String, Object> sellerProductDelete(int product_id) {
 
-        Map<String, Object> map = new HashMap<>();
-
-        int result = productdao.seller_product_delete(product_id);
-
-        map.put("result", result);
-
-        return map;
-    }
 
     @GetMapping("/seller_dashboard.do")
     public String sellerDashboard(Model model) {
