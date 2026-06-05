@@ -19,7 +19,7 @@ body {
 ========================================================= */
 
 .seller-sidebar {
-    width: 280px;
+    width: 300px;
     background: #100f0f;
     color: #fff;
     padding: 32px 24px;
@@ -51,7 +51,15 @@ body {
 }
 
 .sidebar-logo span,
-.sidebar-logo a span {
+.sidebar-logo:link span,
+.sidebar-logo:visited span,
+.sidebar-logo:hover span,
+.sidebar-logo:active span,
+.sidebar-logo a span,
+.sidebar-logo a:link span,
+.sidebar-logo a:visited span,
+.sidebar-logo a:hover span,
+.sidebar-logo a:active span {
     color: #ff654f;
 }
 
@@ -140,66 +148,10 @@ body {
 ========================================================= */
 
 .seller-main {
-    margin-left: 290px;
+    margin-left: 300px;
     width: calc(100% - 300px);
     min-height: 100vh;
     padding: 40px 48px;
-}
-
-/* =========================================================
-   공통 버튼
-========================================================= */
-
-.btn {
-    min-width: 130px;
-    padding: 14px 22px;
-    border-radius: 10px;
-    border: 1px solid transparent;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    transition: 0.15s;
-    text-decoration: none;
-}
-
-.btn-primary {
-    background: #ff654f;
-    color: #fff;
-    box-shadow: 0 8px 16px rgba(255, 101, 79, 0.22);
-}
-
-.btn-primary:hover {
-    background: #e9533f;
-}
-
-.btn-white {
-    background: #fff;
-    color: #333;
-    border-color: #dce1e7;
-}
-
-.btn-white:hover {
-    border-color: #222;
-}
-
-.btn-secondary {
-    background: #f0f0f0;
-    color: #111;
-}
-
-.btn-secondary:hover {
-    background: #e2e2e2;
-}
-
-.btn-danger {
-    background: #f0f0f0;
-    color: #111;
-}
-
-.btn-danger:hover {
-    background: #e6dede;
-    color: #c62828;
 }
 
 /* =========================================================
@@ -373,6 +325,45 @@ body {
     justify-content: flex-end;
     gap: 10px;
     padding-top: 8px;
+}
+
+.btn {
+    min-width: 130px;
+    padding: 14px 22px;
+    border-radius: 10px;
+    border: none;
+    background: #ff654f;
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.15s;
+}
+
+.btn:hover {
+    background: #e9533f;
+}
+
+.btn-primary {
+    background: #ff654f;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #e9533f;
+}
+
+.btn-white {
+    background: #fff;
+    color: #333;
+    border: 1px solid #dce1e7;
+}
+
+.btn-white:hover {
+    border-color: #222;
+    background: #fff;
 }
 
 /* =========================================================
