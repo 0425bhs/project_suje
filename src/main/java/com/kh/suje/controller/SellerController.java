@@ -27,33 +27,8 @@ public class SellerController {
     HttpSession session;
 
     private final ProductDAO productdao;
+    private final CategoryDAO categorydao;
     private final SellerDAO sellerDAO;
-
-    // @GetMapping("/seller_homepage.do")
-    // public String sellerHomepage(Model model,Integer seller_id,String sort) {
-
-    //     //테스트용으로 1번 판매자 사용
-    //     if (seller_id == null) {
-    //         seller_id = 1;
-    //     }    
-
-    //     // 처음 들어왔을 때 sort가 없으면 기본값
-    //     if (sort == null || sort.equals("")) {
-    //         sort = "rank";
-    //     }
-
-    //     Map<String, Object> map = new HashMap<>();
-    //     map.put("seller_id", seller_id);
-    //     map.put("sort", sort);
-
-    //     List<ProductVO> list=productdao.sellerHomepageProductList(map);
-
-    //     model.addAttribute("list", list);
-    //     model.addAttribute("seller_id", seller_id);
-    //     model.addAttribute("sort", sort);
-
-    //     return "seller/seller_homepage";
-    // }
 
     @PostMapping("/seller_product_delete.do")
     @ResponseBody
