@@ -23,6 +23,7 @@ body {
     background: #100f0f;
     color: #fff;
     padding: 32px 24px;
+
     position: fixed;
     left: 0;
     top: 0;
@@ -37,10 +38,6 @@ body {
 }
 
 .sidebar-logo,
-.sidebar-logo:link,
-.sidebar-logo:visited,
-.sidebar-logo:hover,
-.sidebar-logo:active,
 .sidebar-logo a,
 .sidebar-logo a:link,
 .sidebar-logo a:visited,
@@ -51,15 +48,7 @@ body {
 }
 
 .sidebar-logo span,
-.sidebar-logo:link span,
-.sidebar-logo:visited span,
-.sidebar-logo:hover span,
-.sidebar-logo:active span,
-.sidebar-logo a span,
-.sidebar-logo a:link span,
-.sidebar-logo a:visited span,
-.sidebar-logo a:hover span,
-.sidebar-logo a:active span {
+.sidebar-logo a span {
     color: #ff654f;
 }
 
@@ -129,6 +118,7 @@ body {
 .sidebar-bottom a {
     display: block;
     padding: 13px;
+
     border: 1px solid #444;
     color: #ddd;
     text-align: center;
@@ -151,7 +141,109 @@ body {
     margin-left: 300px;
     width: calc(100% - 300px);
     min-height: 100vh;
-    padding: 40px 48px;
+    padding: 24px 45px;
+}
+
+/* =========================================================
+   판매자 페이지 공통 상단
+========================================================= */
+
+.seller-main-header {
+    width: 100%;
+    max-width: none;
+    margin: 0 0 24px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.page-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ff654f;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.seller-main-header h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.seller-main-header p {
+    margin: 10px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* =========================================================
+   공통 버튼
+========================================================= */
+
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    min-width: 118px;
+    height: 46px;
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #ff654f;
+    color: #fff;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    text-align: center;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: 0.15s;
+    box-shadow: none;
+}
+
+.btn:hover {
+    background: #e9533f;
+    color: #fff;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+    background: #ff654f;
+    color: #fff;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-danger:hover {
+    background: #e9533f;
+    color: #fff;
+}
+
+.btn-white {
+    background: #fff;
+    color: #333;
+    border: 1px solid #dce1e7;
+}
+
+.btn-white:hover {
+    background: #fff;
+    color: #333;
+    border-color: #222;
 }
 
 /* =========================================================
@@ -162,6 +254,7 @@ body {
 .product-modify-box {
     max-width: 1280px;
     margin: 0 auto;
+
     background: #fff;
     border: 1px solid #e5e8eb;
     border-radius: 18px;
@@ -178,6 +271,7 @@ body {
     position: relative;
     margin-bottom: 28px;
     padding: 30px;
+
     border: 1px solid #edf0f3;
     border-radius: 16px;
     background: #fff;
@@ -191,7 +285,9 @@ body {
     display: block;
     margin-bottom: 22px;
     padding-bottom: 16px;
+
     border-bottom: 1px solid #edf0f3;
+
     font-size: 22px;
     font-weight: 900;
     letter-spacing: -0.5px;
@@ -209,6 +305,7 @@ body {
 .image-upload-box label {
     display: block;
     margin-bottom: 9px;
+
     color: #2f3542;
     font-size: 14px;
     font-weight: 900;
@@ -221,6 +318,7 @@ body {
     border: 1px solid #dce1e7;
     border-radius: 10px;
     padding: 15px 16px;
+
     background: #fff;
     font-family: inherit;
     font-size: 14px;
@@ -264,6 +362,7 @@ body {
 .free-shipping-row {
     margin-top: 24px;
     padding: 22px;
+
     border-radius: 14px;
     background: #fafbfc;
     border: 1px solid #edf0f3;
@@ -289,6 +388,7 @@ body {
 .image-upload-box {
     min-height: 210px;
     padding: 26px;
+
     border: 2px dashed #cfd6df;
     border-radius: 16px;
     background: #fafbfc;
@@ -304,6 +404,7 @@ body {
     content: "JPG, PNG 파일을 등록할 수 있습니다.";
     display: block;
     margin-top: 12px;
+
     color: #8b95a1;
     font-size: 12px;
 }
@@ -325,45 +426,6 @@ body {
     justify-content: flex-end;
     gap: 10px;
     padding-top: 8px;
-}
-
-.btn {
-    min-width: 130px;
-    padding: 14px 22px;
-    border-radius: 10px;
-    border: none;
-    background: #ff654f;
-    color: #fff;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    text-decoration: none;
-    transition: 0.15s;
-}
-
-.btn:hover {
-    background: #e9533f;
-}
-
-.btn-primary {
-    background: #ff654f;
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background: #e9533f;
-}
-
-.btn-white {
-    background: #fff;
-    color: #333;
-    border: 1px solid #dce1e7;
-}
-
-.btn-white:hover {
-    border-color: #222;
-    background: #fff;
 }
 
 /* =========================================================
@@ -389,6 +451,16 @@ body {
         margin-left: 0;
         width: 100%;
         padding: 24px;
+    }
+
+    .seller-main-header {
+        display: block;
+        max-width: 100%;
+    }
+
+    .header-actions {
+        margin-top: 18px;
+        flex-wrap: wrap;
     }
 
     .form-grid,
