@@ -137,6 +137,71 @@ body {
 
 /* =========================================================
    판매자센터 공통 본문 영역
+========================================================= */
+
+.seller-main {
+    margin-left: 290px;
+    width: calc(100% - 300px);
+    min-height: 100vh;
+    padding: 40px 48px;
+}
+
+/* =========================================================
+   공통 버튼
+========================================================= */
+
+.btn {
+    min-width: 130px;
+    padding: 14px 22px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.15s;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: #ff654f;
+    color: #fff;
+    box-shadow: 0 8px 16px rgba(255, 101, 79, 0.22);
+}
+
+.btn-primary:hover {
+    background: #e9533f;
+}
+
+.btn-white {
+    background: #fff;
+    color: #333;
+    border-color: #dce1e7;
+}
+
+.btn-white:hover {
+    border-color: #222;
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #111;
+}
+
+.btn-secondary:hover {
+    background: #e2e2e2;
+}
+
+.btn-danger {
+    background: #f0f0f0;
+    color: #111;
+}
+
+.btn-danger:hover {
+    background: #e6dede;
+    color: #c62828;
+}
+
 /* =========================================================
    상품 등록 / 상품 수정 폼 공통
 ========================================================= */
