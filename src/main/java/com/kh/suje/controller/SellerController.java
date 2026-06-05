@@ -4,25 +4,67 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.vo.ProductVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class SellerController {
 
+    @Autowired
+    HttpSession session;
+
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
+    private final SellerDAO sellerDAO;
+
+    @PostMapping("/seller_product_delete.do")
+    @ResponseBody
+    public Map<String, Object> sellerProductDelete(int product_id) {
+
+        Map<String, Object> map = new HashMap<>();
+
+        int result = productdao.seller_product_delete(product_id);
+
+        map.put("result", result);
+
+        return map;
+    }
 
     @GetMapping("/seller_dashboard.do")
-    public String sellerDashboard(){
+    public String sellerDashboard(Model model) {
+        // SellerVO seller = (SellerVO) session.getAttribute("seller");
+        // int seller_id = seller.getSellerId();
+        int seller_id = 1;
+
+        Map<String, Object> orderStatusCounts = sellerDAO.getOrderStatusCounts(seller_id);
+        Map<String, Object> productStatusCounts = sellerDAO.getProductStatusCounts(seller_id);
+        int unansweredQnaCount = sellerDAO.getUnansweredQnaCount(seller_id);
+        int newReviewCount = sellerDAO.getNewReviewCount(seller_id);
+
+        if (orderStatusCounts != null) {
+            model.addAllAttributes(orderStatusCounts); 
+        }
+
+        if (productStatusCounts != null) {
+            model.addAllAttributes(productStatusCounts); 
+        }
+
+        model.addAttribute("unansweredQnaCount", unansweredQnaCount); 
+        model.addAttribute("newReviewCount", newReviewCount);
+
         return "/seller/seller_dashboard";
     }
 

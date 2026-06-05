@@ -8,6 +8,214 @@
    상품 관리 박스
 ========================================================= */
 
+.seller-board {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 왼쪽 사이드바 */
+.seller-sidebar {
+    width: 250px;
+    background: #222;
+    color: #fff;
+    padding: 28px 22px;
+    position: sticky;
+
+    flex-shrink: 0;
+    height: 100vh;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.sidebar-logo {
+    font-size: 25px;
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+/* 로고가 a 태그일 때도 기본 링크 색/밑줄 제거 */
+.sidebar-logo,
+.sidebar-logo:link,
+.sidebar-logo:visited,
+.sidebar-logo:hover,
+.sidebar-logo:active,
+.sidebar-logo a,
+.sidebar-logo a:link,
+.sidebar-logo a:visited,
+.sidebar-logo a:hover,
+.sidebar-logo a:active {
+    color: #fff;
+    text-decoration: none;
+}
+
+.sidebar-logo span,
+.sidebar-logo:link span,
+.sidebar-logo:visited span,
+.sidebar-logo:hover span,
+.sidebar-logo:active span,
+.sidebar-logo a span,
+.sidebar-logo a:link span,
+.sidebar-logo a:visited span,
+.sidebar-logo a:hover span,
+.sidebar-logo a:active span {
+    color: #ff654f;
+}
+
+.sidebar-title {
+    color: #aaa;
+    font-size: 13px;
+    margin-bottom: 28px;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.sidebar-menu a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 14px;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+.sidebar-menu a:hover {
+    background: #333;
+    color: #fff;
+}
+
+.sidebar-menu a.menu-active {
+    background: #ff654f;
+    color: #fff;
+}
+
+.sidebar-menu a.menu-disabled {
+    color: #777;
+    cursor: default;
+}
+
+.sidebar-menu a.menu-disabled:hover {
+    background: transparent;
+    color: #777;
+}
+
+.sidebar-menu small {
+    font-size: 10px;
+    color: #777;
+    font-weight: 700;
+}
+
+.menu-active small {
+    color: #fff;
+}
+
+.sidebar-bottom {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 28px;
+}
+
+.sidebar-bottom a {
+    display: block;
+    padding: 12px;
+    border: 1px solid #444;
+    color: #ddd;
+    text-align: center;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+.sidebar-bottom a:hover {
+    background: #333;
+    color: #fff;
+}
+
+/* 오른쪽 본문 */
+.seller-main {
+    /* margin-left: 250px; */
+    /* width: calc(100% - 250px); */
+    width: 100%;
+    padding: 42px;
+}
+
+/* 상단 */
+.seller-main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+}
+
+.page-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ff654f;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.seller-main-header h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.seller-main-header p {
+    margin: 10px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* 버튼 */
+.btn {
+    display: inline-block;
+    min-width: 120px;
+    padding: 13px 18px;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.btn-primary {
+    background: #ff654f;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #e9533f;
+}
+
+.btn-white {
+    background: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-white:hover {
+    border-color: #222;
+}
+
+/* 상품 관리 박스 */
 .product-manage-box {
     width: 100%;
     max-width: none;

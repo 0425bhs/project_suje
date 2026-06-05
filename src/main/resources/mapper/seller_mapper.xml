@@ -5,13 +5,57 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.kh.suje.dao.SellerDAO">
 
     <!--가입-->
-    <insert id="insertSeller" parameterType="seller">
+    <insert id = "insertSeller" 
+            parameterType="seller">
         insert into sellers( user_id,
             company_name, business_number, seller_status, 
             representative_name, opening_date, business_address)
         values( #{userId}, #{companyName}, #{businessNumber}, 
-        #{sellerStatus},  #{representativeName}, 
-        #{openingDate}, #{businessAddress} )
+                #{sellerStatus},  #{representativeName}, 
+                #{openingDate}, #{businessAddress} )
     </insert>
-        	
+        
+    <select id="getOrderStatusCounts"
+            parameterType="int"
+            resultType="java.util.Map">
+        SELECT 
+            COUNT(DISTINCT CASE WHEN o.status = 'PAID' THEN o.order_id END) AS newOrderCount,
+            COUNT(DISTINCT CASE WHEN o.status = 'PREPARING' THEN o.order_id END) AS preparingCount,
+            COUNT(DISTINCT CASE WHEN o.status = 'SHIPPING' THEN o.order_id END) AS shippingCount,
+            COUNT(DISTINCT CASE WHEN o.status = 'DELIVERED' THEN o.order_id END) AS deliveredCount,
+            COUNT(DISTINCT CASE WHEN o.status = 'CANCELLED' THEN o.order_id END) AS cancelledCount
+        FROM orders o
+        JOIN order_items oi ON oi.order_id = o.order_id
+        JOIN products p ON p.product_id = oi.product_id
+        WHERE p.seller_id = #{seller_id}
+    </select>
+
+    <select id="getProductStatusCounts" 
+            parameterType="int" 
+            resultType="java.util.Map">
+        SELECT 
+            COUNT(CASE WHEN status = 'APPROVED' AND stock > 0 THEN 1 END) AS onSaleCount,
+            COUNT(CASE WHEN status = 'APPROVED' AND stock = 0 THEN 1 END) AS outOfStockCount
+        FROM products
+        WHERE seller_id = #{seller_id}
+    </select>
+
+    <select id="getUnansweredQnaCount"
+            parameterType="int"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM qnas q
+        JOIN products p ON p.product_id = q.product_id
+        WHERE p.seller_id = #{seller_id}
+        AND q.answered_at IS NULL
+    </select>
+
+    <select id="getNewReviewCount"
+            parameterType="int"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM qnas q
+        JOIN products p ON p.product_id = q.product_id
+        WHERE p.seller_id = #{seller_id}
+    </select>
 </mapper>
