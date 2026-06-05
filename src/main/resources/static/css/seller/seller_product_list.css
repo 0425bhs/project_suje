@@ -6,6 +6,10 @@
 
 /* =========================================================
    상단 영역
+========================================================= */
+
+.seller-main-header {
+    max-width: 1500px;
     margin: 0 auto 24px;
 
     display: flex;
@@ -40,6 +44,7 @@
     gap: 10px;
 }
 
+/* 상단 버튼 공통 */
 .header-actions .btn {
     display: inline-flex;
     justify-content: center;
@@ -52,6 +57,9 @@
     border: none;
     border-radius: 6px;
 
+    background: #ff654f;
+    color: #fff;
+
     text-align: center;
     text-decoration: none;
 
@@ -59,34 +67,22 @@
     font-weight: 900;
 
     box-shadow: none;
+    cursor: pointer;
 }
 
-.header-actions .btn-primary {
+/* 상품 등록 / 선택 수정 / 선택 삭제 모두 같은 색 */
+.header-actions .btn-primary,
+.header-actions .btn-secondary,
+.header-actions .btn-danger {
     background: #ff654f;
     color: #fff;
 }
 
-.header-actions .btn-primary:hover {
-    background: #e9533f;
-}
-
-.header-actions .btn-secondary {
-    background: #f0f0f0;
-    color: #111;
-}
-
-.header-actions .btn-secondary:hover {
-    background: #e2e2e2;
-}
-
-.header-actions .btn-danger {
-    background: #f0f0f0;
-    color: #111;
-}
-
+.header-actions .btn-primary:hover,
+.header-actions .btn-secondary:hover,
 .header-actions .btn-danger:hover {
-    background: #e6dede;
-    color: #c62828;
+    background: #e9533f;
+    color: #fff;
 }
 
 /* =========================================================
@@ -160,11 +156,22 @@
 
 /* =========================================================
    colgroup 컬럼 너비
-   JSP의 colgroup class와 연결됨
+========================================================= */
+
+.col-check {
+    width: 46px;
+}
+
+.col-id {
+    width: 80px;
+}
+
+.col-img {
+    width: 95px;
 }
 
 .col-name {
-    width: 160px;
+    width: 170px;
 }
 
 .col-price {
@@ -193,6 +200,10 @@
 
 .col-date {
     width: 130px;
+}
+
+.col-manage {
+    width: 100px;
 }
 
 /* =========================================================
@@ -252,7 +263,7 @@
 }
 
 /* =========================================================
-   상태 버튼
+   상태 뱃지
 ========================================================= */
 
 .status-badge {
@@ -276,42 +287,21 @@
     text-decoration: none;
 }
 
-/* button 태그 기본 스타일 제거 */
-button.status-badge {
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-/* 클릭 가능한 상태 버튼 */
-.status-toggle {
-    cursor: pointer;
-    transition: 0.15s;
-}
-
-.status-toggle:hover {
-    opacity: 0.85;
-    transform: translateY(-1px);
-}
-
-/* 활성화 - 초록 */
 .status-approved {
     background: #2ecc71;
     color: #fff;
 }
 
-/* 비활성화 - 회색 */
 .status-hidden {
     background: #777;
     color: #fff;
 }
 
-/* 승인 대기 - 주황 */
 .status-pending {
     background: #f0ad4e;
     color: #fff;
 }
 
-/* 승인 거절 - 빨강 */
 .status-rejected {
     background: #d9534f;
     color: #fff;
@@ -319,6 +309,85 @@ button.status-badge {
 
 /* =========================================================
    등록일 / 수정일
+========================================================= */
+
+.product-date {
+    color: #444;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+/* =========================================================
+   관리 버튼
+========================================================= */
+
+.manage-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.edit-btn,
+.toggle-btn,
+.delete-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    min-width: 64px;
+    height: 30px;
+    padding: 0 8px;
+
+    border: none;
+    border-radius: 6px;
+
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.edit-btn {
+    background: #555;
+}
+
+.edit-btn:hover {
+    background: #222;
+}
+
+.toggle-on-btn {
+    background: #2ecc71;
+}
+
+.toggle-on-btn:hover {
+    background: #27ae60;
+}
+
+.toggle-off-btn {
+    background: #777;
+}
+
+.toggle-off-btn:hover {
+    background: #555;
+}
+
+.delete-btn {
+    background: #d9534f;
+}
+
+.delete-btn:hover {
+    background: #c9302c;
+}
+
+/* =========================================================
+   빈 목록
+========================================================= */
+
+.empty-box {
+    max-width: 1500px;
     margin: 20px auto 0;
 
     padding: 70px 20px;
@@ -338,7 +407,8 @@ button.status-badge {
 
 @media (max-width: 1300px) {
     .seller-main-header,
-    .product-manage-box {
+    .product-manage-box,
+    .empty-box {
         max-width: 100%;
     }
 
@@ -347,6 +417,6 @@ button.status-badge {
     }
 
     .product-manage-table {
-        min-width: 1100px;
+        min-width: 1180px;
     }
 }

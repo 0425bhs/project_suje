@@ -19,7 +19,7 @@ body {
 ========================================================= */
 
 .seller-sidebar {
-    width: 280px;
+    width: 300px;
     background: #100f0f;
     color: #fff;
     padding: 32px 24px;
@@ -51,7 +51,15 @@ body {
 }
 
 .sidebar-logo span,
-.sidebar-logo a span {
+.sidebar-logo:link span,
+.sidebar-logo:visited span,
+.sidebar-logo:hover span,
+.sidebar-logo:active span,
+.sidebar-logo a span,
+.sidebar-logo a:link span,
+.sidebar-logo a:visited span,
+.sidebar-logo a:hover span,
+.sidebar-logo a:active span {
     color: #ff654f;
 }
 
@@ -137,6 +145,15 @@ body {
 
 /* =========================================================
    판매자센터 공통 본문 영역
+========================================================= */
+
+.seller-main {
+    margin-left: 300px;
+    width: calc(100% - 300px);
+    min-height: 100vh;
+    padding: 40px 48px;
+}
+
 /* =========================================================
    상품 등록 / 상품 수정 폼 공통
 ========================================================= */
@@ -308,6 +325,45 @@ body {
     justify-content: flex-end;
     gap: 10px;
     padding-top: 8px;
+}
+
+.btn {
+    min-width: 130px;
+    padding: 14px 22px;
+    border-radius: 10px;
+    border: none;
+    background: #ff654f;
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.15s;
+}
+
+.btn:hover {
+    background: #e9533f;
+}
+
+.btn-primary {
+    background: #ff654f;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #e9533f;
+}
+
+.btn-white {
+    background: #fff;
+    color: #333;
+    border: 1px solid #dce1e7;
+}
+
+.btn-white:hover {
+    border-color: #222;
+    background: #fff;
 }
 
 /* =========================================================
