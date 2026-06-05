@@ -365,7 +365,7 @@ public class ProductController {
     public String seller_product_list(Model model,String status,String sort){
 
         // 로그인/판매자 기능 붙기 전까지 임시 seller_id
-        int seller_id = 1;
+        //int seller_id = 1;
 
         if (sort == null || sort.equals("")) {
             sort = "new";

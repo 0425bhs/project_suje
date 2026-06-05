@@ -122,4 +122,9 @@ public class SellerController {
         return "/seller/seller_shop_homepage";
     } 
 
+    @GetMapping("/seller_statistics.do")
+    public String seller_statistics(){
+        return "/seller//seller_statistics";
+    }
+
 }
