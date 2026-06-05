@@ -99,6 +99,11 @@ public class ProductController {
     public String product_detail_form(int product_id,Model model){
         ProductVO vo=productdao.product_one(product_id);
         model.addAttribute("vo",vo);
+
+        // 전체 카테고리 헤더용
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
         return "/product/product_detail";
     }   
 
@@ -362,16 +367,26 @@ public class ProductController {
     }
     
     @GetMapping("/seller_product_list.do")
-    public String seller_product_list(Model model){
+    public String seller_product_list(Model model,String status,String sort){
 
         // 로그인/판매자 기능 붙기 전까지 임시 seller_id
         int seller_id = 1;
 
-        List<ProductVO> list = productdao.seller_product_list(seller_id);
+        if (sort == null || sort.equals("")) {
+            sort = "new";
+        }
 
-        model.addAttribute("list",list);
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", status);
+        map.put("sort", sort);
 
-        return "seller/seller_product_list";
+        List<ProductVO> list = productdao.seller_product_list(map);
+
+        model.addAttribute("list", list);
+        model.addAttribute("status", status);
+        model.addAttribute("sort", sort);
+
+        return "/seller/seller_product_list";
     }
         
     @PostMapping("/seller_product_toggle.do")

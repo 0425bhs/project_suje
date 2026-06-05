@@ -5,102 +5,23 @@
 ========================================================= */
 
 /* =========================================================
-   상단 영역
-========================================================= */
-
-.seller-main-header {
-    max-width: 1500px;
-    margin: 0 auto 24px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-.page-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #ff654f;
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: 1.5px;
-}
-
-.seller-main-header h1 {
-    margin: 0;
-    font-size: 32px;
-    font-weight: 900;
-    letter-spacing: -1px;
-}
-
-.seller-main-header p {
-    margin: 10px 0 0;
-    color: #777;
-    font-size: 14px;
-}
-
-.header-actions {
-    display: flex;
-    gap: 10px;
-}
-
-/* 상단 버튼 공통 */
-.header-actions .btn {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    min-width: 118px;
-    height: 46px;
-    padding: 0 18px;
-
-    border: none;
-    border-radius: 6px;
-
-    background: #ff654f;
-    color: #fff;
-
-    text-align: center;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 900;
-
-    box-shadow: none;
-    cursor: pointer;
-}
-
-/* 상품 등록 / 선택 수정 / 선택 삭제 모두 같은 색 */
-.header-actions .btn-primary,
-.header-actions .btn-secondary,
-.header-actions .btn-danger {
-    background: #ff654f;
-    color: #fff;
-}
-
-.header-actions .btn-primary:hover,
-.header-actions .btn-secondary:hover,
-.header-actions .btn-danger:hover {
-    background: #e9533f;
-    color: #fff;
-}
-
-/* =========================================================
    상품 관리 박스
 ========================================================= */
 
 .product-manage-box {
-    max-width: 1500px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: none;
+    margin: 0;
 
     background: #fff;
     border: 1px solid #e5e8eb;
     border-radius: 12px;
-    padding: 24px 26px;
+    padding: 22px 24px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
 }
 
 .product-manage-header {
-    padding-bottom: 16px;
+    padding-bottom: 15px;
     margin-bottom: 0;
     border-bottom: 2px solid #100f0f;
 }
@@ -128,7 +49,8 @@
 }
 
 .product-manage-table th {
-    padding: 13px 8px;
+    padding: 10px 6px;
+
     background: #fafafa;
     border-bottom: 1px solid #e5e8eb;
 
@@ -140,11 +62,11 @@
 }
 
 .product-manage-table td {
-    padding: 13px 8px;
+    padding: 9px 6px;
     border-bottom: 1px solid #eef0f2;
 
     color: #111;
-    font-size: 13px;https://github.com/0425bhs/project_suje/pull/38/conflict?name=src%252Fmain%252Fresources%252Fstatic%252Fcss%252Fseller%252Fseller_product_list.css&ancestor_oid=4f32b4c772093e1677a839a693e4d9d2ddce9317&base_oid=efdaa17868faf3339fd2b6cb458d03cd985554af&head_oid=66157b0638570e6cde4ae48d29504bdaf752b32e
+    font-size: 13px;
     text-align: center;
     vertical-align: middle;
 }
@@ -155,42 +77,51 @@
 
 /* =========================================================
    colgroup 컬럼 너비
+   전체 합 100%
+========================================================= */
+
+.col-check {
+    width: 4%;
+}
+
+.col-id {
+    width: 7%;
+}
+
+.col-img {
+    width: 12%;
 }
 
 .col-name {
-    width: 170px;
+    width: 14%;
 }
 
 .col-price {
-    width: 95px;
+    width: 8%;
 }
 
 .col-sale {
-    width: 95px;
+    width: 8%;
 }
 
 .col-stock {
-    width: 70px;
+    width: 6%;
 }
 
 .col-delivery {
-    width: 95px;
+    width: 8%;
 }
 
 .col-free {
-    width: 120px;
+    width: 10%;
 }
 
 .col-status {
-    width: 100px;
+    width: 9%;
 }
 
 .col-date {
-    width: 130px;
-}
-
-.col-manage {
-    width: 100px;
+    width: 14%;
 }
 
 /* =========================================================
@@ -207,8 +138,8 @@
 ========================================================= */
 
 .product-thumb {
-    width: 58px;
-    height: 58px;
+    width: 70px;
+    height: 70px;
     object-fit: cover;
 
     border: 1px solid #eee;
@@ -217,15 +148,15 @@
 }
 
 .no-image {
-    width: 58px;
-    height: 58px;
+    width: 70px;
+    height: 70px;
     margin: 0 auto;
 
     border: 1px solid #eee;
     background: #fafafa;
     color: #aaa;
 
-    font-size: 11px;
+    font-size: 10px;
     border-radius: 8px;
 
     display: flex;
@@ -245,12 +176,12 @@
 .product-name {
     text-align: center;
     font-weight: 900;
-    line-height: 1.45;
+    line-height: 1.4;
     word-break: keep-all;
 }
 
 /* =========================================================
-   상태 뱃지
+   상태 버튼
 ========================================================= */
 
 .status-badge {
@@ -274,21 +205,40 @@
     text-decoration: none;
 }
 
+button.status-badge {
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.status-toggle {
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.status-toggle:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+
+/* 판매중 */
 .status-approved {
     background: #2ecc71;
     color: #fff;
 }
 
+/* 판매중지 */
 .status-hidden {
     background: #777;
     color: #fff;
 }
 
+/* 승인 대기 */
 .status-pending {
     background: #f0ad4e;
     color: #fff;
 }
 
+/* 승인 거절 */
 .status-rejected {
     background: #d9534f;
     color: #fff;
@@ -298,14 +248,11 @@
    등록일 / 수정일
 ========================================================= */
 
-.product-date {
-    color: #444;
-    font-size: 12px;
-    line-height: 1.45;
-}
-
-/* =========================================================
-   관리 버튼
+.date-info {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: nowrap;
 }
 
 /* =========================================================
@@ -313,8 +260,9 @@
 ========================================================= */
 
 .empty-box {
-    max-width: 1500px;
-    margin: 20px auto 0;
+    width: 100%;
+    max-width: none;
+    margin: 20px 0 0;
 
     padding: 70px 20px;
     text-align: center;
@@ -332,17 +280,59 @@
 ========================================================= */
 
 @media (max-width: 1300px) {
-    .seller-main-header,
-    .product-manage-box,
-    .empty-box {
-        max-width: 100%;
-    }
-
     .product-manage-box {
+        max-width: 100%;
         overflow-x: auto;
     }
 
     .product-manage-table {
-        min-width: 1180px;
+        min-width: 1100px;
     }
+}
+
+.filter-box {
+    margin: 18px 0 22px;
+    padding: 16px 18px;
+    background: #fafafa;
+    border: 1px solid #e5e8eb;
+    border-radius: 12px;
+}
+
+.filter-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-line + .filter-line {
+    margin-top: 10px;
+}
+
+.filter-title {
+    width: 70px;
+    font-size: 14px;
+    font-weight: 900;
+    color: #333;
+}
+
+.filter-box a {
+    padding: 7px 13px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #555;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.filter-box a:hover {
+    border-color: #ff654f;
+    color: #ff654f;
+}
+
+.filter-box a.active {
+    background: #ff654f;
+    border-color: #ff654f;
+    color: #fff;
 }

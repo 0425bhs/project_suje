@@ -53,6 +53,67 @@
                 </div>
             </div>
 
+            <!-- 필터 / 정렬 영역 -->
+            <div class="filter-box">
+
+                <!-- 상태 필터 -->
+                <div class="filter-line">
+                    <span class="filter-title">상태</span>
+
+                    <a href="/seller_product_list.do?sort=${sort}"
+                       class="${empty status ? 'active' : ''}">
+                        전체
+                    </a>
+
+                    <a href="/seller_product_list.do?status=APPROVED&sort=${sort}"
+                       class="${status eq 'APPROVED' ? 'active' : ''}">
+                        판매중
+                    </a>
+
+                    <a href="/seller_product_list.do?status=HIDDEN&sort=${sort}"
+                       class="${status eq 'HIDDEN' ? 'active' : ''}">
+                        판매중지
+                    </a>
+
+                    <a href="/seller_product_list.do?status=PENDING&sort=${sort}"
+                       class="${status eq 'PENDING' ? 'active' : ''}">
+                        승인대기
+                    </a>
+
+                    <a href="/seller_product_list.do?status=REJECTED&sort=${sort}"
+                       class="${status eq 'REJECTED' ? 'active' : ''}">
+                        승인거절
+                    </a>
+                </div>
+
+                <!-- 정렬 필터 -->
+                <div class="filter-line">
+                    <span class="filter-title">정렬</span>
+
+                    <a href="/seller_product_list.do?status=${status}&sort=new"
+                       class="${sort eq 'new' or empty sort ? 'active' : ''}">
+                        최신순
+                    </a>
+
+                    <a href="/seller_product_list.do?status=${status}&sort=lowPrice"
+                       class="${sort eq 'lowPrice' ? 'active' : ''}">
+                        낮은가격순
+                    </a>
+
+                    <a href="/seller_product_list.do?status=${status}&sort=highPrice"
+                       class="${sort eq 'highPrice' ? 'active' : ''}">
+                        높은가격순
+                    </a>
+
+                    <a href="/seller_product_list.do?status=${status}&sort=lowStock"
+                       class="${sort eq 'lowStock' ? 'active' : ''}">
+                        재고적은순
+                    </a>
+                </div>
+
+            </div>
+
+
             <c:choose>
                 <c:when test="${empty list}">
                     <div class="empty-box">
@@ -158,18 +219,14 @@
 
                                         <td>
                                             <c:if test="${vo.status eq 'APPROVED'}">
-                                                <button type="button" id="statusBadge_${vo.product_id}"
-                                                        class="status-badge status-approved status-toggle"
-                                                        onclick="productToggle('${vo.product_id}', 'HIDDEN')">
-                                                    활성화
+                                                <button type="button" id="statusBadge_${vo.product_id}" class="status-badge status-approved status-toggle" onclick="productToggle('${vo.product_id}', 'HIDDEN')">
+                                                    판매중
                                                 </button>
                                             </c:if>
 
                                             <c:if test="${vo.status eq 'HIDDEN'}">
-                                                <button type="button" id="statusBadge_${vo.product_id}"
-                                                        class="status-badge status-hidden status-toggle"
-                                                        onclick="productToggle('${vo.product_id}', 'APPROVED')">
-                                                    비활성화
+                                                <button type="button" id="statusBadge_${vo.product_id}" class="status-badge status-hidden status-toggle" onclick="productToggle('${vo.product_id}', 'APPROVED')">
+                                                    판매중지
                                                 </button>
                                             </c:if>
 

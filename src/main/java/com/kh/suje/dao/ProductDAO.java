@@ -36,7 +36,7 @@ public interface ProductDAO {
     List<ProductVO> product_best_all_list();
 
     //판매자 내 상품 목록
-    List<ProductVO> seller_product_list(int seller_id);
+    List<ProductVO> seller_product_list(Map<String, Object> map);
 
     int seller_product_toggle(ProductVO vo);
     
