@@ -20,7 +20,11 @@ body {
     background: #222;
     color: #fff;
     padding: 28px 22px;
-    position: fixed;
+    position: sticky;
+
+    flex-shrink: 0;
+    height: 100vh;
+
     left: 0;
     top: 0;
     bottom: 0;
@@ -140,8 +144,9 @@ body {
 
 /* 오른쪽 본문 */
 .seller-main {
-    margin-left: 250px;
-    width: calc(100% - 250px);
+    /* margin-left: 250px; */
+    /* width: calc(100% - 250px); */
+    width: 100%;
     padding: 42px;
 }
 
