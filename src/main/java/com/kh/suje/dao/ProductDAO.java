@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.order.OrderItemVO;
 
 public interface ProductDAO {
 
@@ -45,4 +46,10 @@ public interface ProductDAO {
     int seller_product_delete(int product_id);
     
     int sellerProductDeleteSelected(int[] product_id);
+
+    // 결제 성공 시 재고 차감
+    int decreaseStock(OrderItemVO vo);
+
+    // 결제 취소 시 재고 복구
+    int increaseStock(OrderItemVO vo);
 }

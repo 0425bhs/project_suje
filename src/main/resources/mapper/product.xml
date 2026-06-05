@@ -227,4 +227,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </choose>
     </select>
 
+    <!-- 결제 성공 시 상품 재고 차감 -->
+    <update id="decreaseStock" parameterType="orderItem">
+        UPDATE products
+        SET stock = stock - #{quantity}
+        WHERE product_id = #{product_id}
+        AND stock >= #{quantity}
+    </update>
+
+    <!-- 결제 취소 시 상품 재고 복구 -->
+    <update id="increaseStock" parameterType="orderItem">
+        UPDATE products
+        SET stock = stock + #{quantity}
+        WHERE product_id = #{product_id}
+    </update>
+
 </mapper>

@@ -9,22 +9,30 @@
         <meta charset="UTF-8">
         <title>내 주문 내역</title>
         <link rel="stylesheet" href="/css/order-payment.css">
+        <link rel="stylesheet" href="/css/payment/order-payment.css">
+
+        <script src="/js/order-payment.js" defer></script>
     </head>
 
     <body>
 
     <header class="site-header">
         <div class="header-inner">
-            <a class="brand" href="/main.do">
+
+            <!-- 로고 클릭 시 메인 홈으로 이동 -->
+            <a class="brand" href="/product/main.do">
                 HAND<span>MADE</span>
             </a>
 
             <nav class="main-nav">
+                <!-- 만든 페이지 -->
                 <a href="/product/main.do">상품보기</a>
+                <a href="/product_best.do">베스트</a>
+                <a href="/all_list.do">최신작품</a>
+
+                <!-- 아직 안 만든 페이지 -->
                 <a href="#">선물추천</a>
-                <a href="#">베스트</a>
                 <a href="#">취향발견</a>
-                <a href="#">최신작품</a>
                 <a href="#">작가</a>
             </nav>
 
@@ -33,6 +41,7 @@
                 <a href="#">관심</a>
                 <a href="#">장바구니</a>
             </div>
+
         </div>
     </header>
 
@@ -211,13 +220,11 @@
                                                 <c:if test="${order.status eq 'PAID'}">
                                                     <a href="/order/delivery?order_id=${order.order_id}">배송조회</a>
 
-                                                    <form action="/payment/toss/cancel" method="post" class="inline-form">
-                                                        <input type="hidden" name="order_id" value="${order.order_id}">
-                                                        <button type="submit" class="link-button"
-                                                                onclick="return confirm('결제를 취소하시겠습니까?');">
-                                                            결제취소
-                                                        </button>
-                                                    </form>
+                                                    <button type="button"
+                                                            class="link-button"
+                                                            onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
+                                                        결제취소
+                                                    </button>
                                                 </c:if>
 
                                                 <c:if test="${order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
@@ -236,6 +243,102 @@
 
         </div>
     </section>
+
+    <!-- 결제취소 모달 -->
+    <div class="cancel-modal-wrap" id="cancelModal">
+
+        <div class="cancel-modal-bg" onclick="closeCancelModal()"></div>
+
+        <div class="cancel-modal-box">
+
+            <div class="cancel-modal-head">
+                <div>
+                    <span>PAYMENT CANCEL</span>
+                    <h3>결제취소 요청</h3>
+                    <p>취소 사유와 안내사항을 확인해주세요.</p>
+                </div>
+
+                <button type="button"
+                        class="cancel-modal-close"
+                        onclick="closeCancelModal()">
+                    ×
+                </button>
+            </div>
+
+            <div class="cancel-modal-body">
+
+                <div class="cancel-info-row">
+                    <span>주문번호</span>
+                    <strong id="cancelOrderIdText">#</strong>
+                </div>
+
+                <div class="cancel-info-row">
+                    <span>결제금액</span>
+                    <strong id="cancelAmountText">0원</strong>
+                </div>
+
+                <div class="cancel-form-row">
+                    <label for="cancelReason">취소 사유</label>
+
+                    <select id="cancelReason">
+                        <option value="">취소 사유를 선택해주세요</option>
+                        <option value="단순 변심">단순 변심</option>
+                        <option value="상품을 잘못 주문함">상품을 잘못 주문함</option>
+                        <option value="배송 일정 변경">배송 일정 변경</option>
+                        <option value="다른 상품으로 재주문 예정">다른 상품으로 재주문 예정</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+
+                <div class="cancel-form-row">
+                    <label for="cancelDetail">상세 사유</label>
+
+                    <textarea id="cancelDetail"
+                            placeholder="상세 사유를 입력해주세요. 선택 입력입니다."></textarea>
+                </div>
+
+                <div class="cancel-guide-box">
+                    <strong>결제취소 안내</strong>
+
+                    <ul>
+                        <li>결제취소가 완료되면 주문 상태가 <b>주문 취소</b>로 변경됩니다.</li>
+                        <li>환불은 결제 수단과 카드사 정책에 따라 처리 시간이 다를 수 있습니다.</li>
+                        <li>이미 제작 또는 배송이 시작된 주문은 취소가 제한될 수 있습니다.</li>
+                        <li>취소 요청 후에는 동일 주문으로 다시 결제할 수 없습니다.</li>
+                    </ul>
+                </div>
+
+                <label class="cancel-agree">
+                    <input type="checkbox" id="cancelAgree">
+                    결제취소 안내사항을 확인했습니다.
+                </label>
+
+            </div>
+
+            <div class="cancel-modal-actions">
+
+                <button type="button"
+                        class="cancel-close-btn"
+                        onclick="closeCancelModal()">
+                    닫기
+                </button>
+
+                <form action="/payment/toss/cancel" method="post" id="cancelForm">
+                    <input type="hidden" name="order_id" id="cancelOrderId">
+                    <input type="hidden" name="cancel_reason" id="cancelReasonInput">
+
+                    <button type="button"
+                            class="cancel-submit-btn"
+                            onclick="submitCancelForm()">
+                        결제취소 요청
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <footer class="site-footer">
         <div class="footer-inner">

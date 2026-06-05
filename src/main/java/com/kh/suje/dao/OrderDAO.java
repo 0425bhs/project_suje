@@ -35,5 +35,8 @@ public interface OrderDAO {
     // 주문 상태 변경
     int updateOrderStatus(OrderVO vo);
 
+    // 결제취소 시 주문 상태, 취소 사유, 취소 일시 변경
+    int updateOrderCancelInfo(OrderVO vo);
+
     
 }
