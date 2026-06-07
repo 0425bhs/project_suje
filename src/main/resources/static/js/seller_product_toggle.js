@@ -26,25 +26,30 @@ function productToggle(product_id, status) {
 
 // 체크된 상품 번호 가져오기
 function getCheckedProductIds() {
-    const checkedList = document.querySelectorAll(".product-check:checked");
-    return Array.from(checkedList).map(check => check.value);
+    const checkedList=document.querySelectorAll(".product-check:checked:not(:disabled)");
+    return Array.from(checkedList).map(check=>check.value);
 }
 
 // 전체 체크
-function allCheck(checkAll) {
-    const checkList = document.querySelectorAll(".product-check");
-    checkList.forEach(check => {
-        check.checked = checkAll.checked;
+function allCheck(checkAll){
+    const checkList=document.querySelectorAll(".product-check:not(:disabled)");
+
+    checkList.forEach(check=>{
+        check.checked=checkAll.checked;
     });
 }
 
 // 개별 체크 눌렀을 때 전체 체크 상태 맞추기
 function checkOne() {
-    const checkAll = document.getElementById("checkAll");
-    const checkList = document.querySelectorAll(".product-check");
-    const checkedList = document.querySelectorAll(".product-check:checked");
+    const checkAll=document.getElementById("checkAll");
+    const checkList=document.querySelectorAll(".product-check:not(:disabled)");
+    const checkedList=document.querySelectorAll(".product-check:checked:not(:disabled)");
 
-    checkAll.checked = checkList.length === checkedList.length;
+    if (checkAll == null){
+        return;
+    }
+
+    checkAll.checked = checkList.length > 0 && checkList.length === checkedList.length;
 }
 
 // 선택 수정
@@ -108,3 +113,81 @@ function productDelete(product_id) {
         }
     });
 }
+
+// 보기 방식 변경
+function changeProductView(viewType) {
+    const productBox = document.querySelector(".product-manage-box");
+    const viewButtons = document.querySelectorAll(".view-icon-btn");
+    const tableChecks = document.querySelectorAll(".table-check");
+    const cardChecks = document.querySelectorAll(".card-check");
+    const checkAll = document.getElementById("checkAll");
+
+    if (productBox == null) {
+        return;
+    }
+
+    productBox.classList.remove("view-no-image", "view-image", "view-card");
+
+    if (viewType === "noImage") {
+        productBox.classList.add("view-no-image");
+
+        tableChecks.forEach(check => {
+            check.disabled = false;
+        });
+
+        cardChecks.forEach(check => {
+            check.checked = false;
+            check.disabled = true;
+        });
+    }
+
+    if (viewType === "image") {
+        productBox.classList.add("view-image");
+
+        tableChecks.forEach(check => {
+            check.disabled = false;
+        });
+
+        cardChecks.forEach(check => {
+            check.checked = false;
+            check.disabled = true;
+        });
+    }
+
+    if (viewType === "card") {
+        productBox.classList.add("view-card");
+
+        tableChecks.forEach(check => {
+            check.checked = false;
+            check.disabled = true;
+        });
+
+        cardChecks.forEach(check => {
+            check.disabled = false;
+        });
+    }
+
+    viewButtons.forEach(button => {
+        button.classList.remove("active");
+
+        if (button.dataset.view === viewType) {
+            button.classList.add("active");
+        }
+    });
+
+    if (checkAll != null) {
+        checkAll.checked = false;
+    }
+}
+
+window.addEventListener("load", function () {
+    const viewButtons = document.querySelectorAll(".view-icon-btn");
+
+    changeProductView("noImage");
+
+    viewButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            changeProductView(this.dataset.view);
+        });
+    });
+});

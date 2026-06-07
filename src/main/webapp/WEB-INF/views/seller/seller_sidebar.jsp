@@ -18,10 +18,6 @@
             판매자 대시보드
         </a>
 
-        <a href="/seller_homepage.do" class="${param.activeMenu eq 'homepage' ? 'menu-active':''}">
-            판매자 홈페이지
-        </a>
-
         <a href="/seller_product_list.do" class="${param.activeMenu eq 'productList' ? 'menu-active':''}">
             내 상품 관리
         </a>
