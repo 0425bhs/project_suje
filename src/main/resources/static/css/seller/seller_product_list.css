@@ -40,9 +40,6 @@
 
 /* =========================================================
    보기 방식 아이콘 버튼
-   - 필터 위쪽
-   - 오른쪽 정렬
-   - active는 연한 회색
 ========================================================= */
 
 .view-switch-buttons {
@@ -87,7 +84,6 @@
     position: relative;
 }
 
-/* 1번 아이콘: 일자형 / 테이블형 */
 .icon-table {
     width: 15px;
     height: 12px;
@@ -98,7 +94,6 @@
         linear-gradient(#111, #111) 0 10px / 15px 2px no-repeat;
 }
 
-/* 2번 아이콘: 카드형 / 격자형 */
 .icon-grid {
     width: 14px;
     height: 14px;
@@ -117,7 +112,6 @@
         linear-gradient(#111, #111) 10px 10px / 4px 4px no-repeat;
 }
 
-/* 3번 아이콘: 리스트형 */
 .icon-list {
     width: 16px;
     height: 13px;
@@ -196,8 +190,7 @@
 }
 
 /* =========================================================
-   상단 상품 등록 / 선택 수정 / 선택 삭제 버튼 크기 조절
-   - 공통 .btn보다 더 구체적으로 잡아서 important 없이 덮어씀
+   상단 상품 등록 / 선택 수정 / 선택 삭제 버튼
 ========================================================= */
 
 .seller-main-header .header-actions .btn {
@@ -254,7 +247,6 @@
 
 /* =========================================================
    colgroup 컬럼 너비
-   전체 합 100%
 ========================================================= */
 
 .col-check {
@@ -397,25 +389,21 @@ button.status-badge {
     transform: translateY(-1px);
 }
 
-/* 판매중 */
 .status-approved {
     background: #2ecc71;
     color: #fff;
 }
 
-/* 판매중지 */
 .status-hidden {
     background: #777;
     color: #fff;
 }
 
-/* 승인 대기 */
 .status-pending {
     background: #f0ad4e;
     color: #fff;
 }
 
-/* 승인 거절 */
 .status-rejected {
     background: #d9534f;
     color: #fff;
@@ -453,8 +441,248 @@ button.status-badge {
 }
 
 /* =========================================================
+   보기 방식 전환
+========================================================= */
+
+.product-manage-box.view-no-image .image-column,
+.product-manage-box.view-no-image .col-img {
+    display: none;
+}
+
+.product-manage-box.view-image .image-column,
+.product-manage-box.view-image .col-img {
+    display: table-cell;
+}
+
+.product-manage-box.view-card .product-manage-table {
+    display: none;
+}
+
+.product-manage-box.view-card .product-card-view {
+    display: grid;
+}
+
+.product-card-view {
+    display: none;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 8px;
+}
+
+/* =========================================================
+   카드형 상품 목록
+========================================================= */
+
+.seller-product-card {
+    position: relative;
+    overflow: hidden;
+
+    background: #fff;
+    border: 1px solid #e5e8eb;
+    border-radius: 14px;
+
+    transition: 0.15s;
+}
+
+.seller-product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.card-check-area {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+
+    width: 26px;
+    height: 26px;
+
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-image-box {
+    width: 100%;
+    height: 210px;
+    background: #fafafa;
+    border-bottom: 1px solid #eef0f2;
+}
+
+.card-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.card-no-image {
+    width: 100%;
+    height: 100%;
+
+    color: #aaa;
+    font-size: 13px;
+    font-weight: 700;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-content {
+    padding: 16px;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.card-product-id {
+    color: #888;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.card-product-name {
+    min-height: 44px;
+    margin-bottom: 10px;
+
+    color: #111;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.4;
+
+    word-break: keep-all;
+}
+
+/* =========================================================
+   카드형 가격 관리 정보
+   - 판매자 화면용
+========================================================= */
+
+.card-price-manage-box {
+    margin-bottom: 14px;
+    padding: 10px 12px;
+
+    background: #fafafa;
+    border: 1px solid #eef0f2;
+    border-radius: 10px;
+}
+
+.price-manage-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 5px 0;
+
+    font-size: 12px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.price-manage-row:last-child {
+    border-bottom: none;
+}
+
+.price-manage-row span {
+    color: #777;
+    font-weight: 700;
+}
+
+.price-manage-row strong {
+    color: #222;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+/* =========================================================
+   카드형 상세 정보
+========================================================= */
+
+.card-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+
+    padding-top: 12px;
+    border-top: 1px solid #eef0f2;
+}
+
+.card-info-grid div {
+    padding: 9px;
+    background: #fafafa;
+    border-radius: 8px;
+}
+
+.card-info-grid span {
+    display: block;
+    margin-bottom: 4px;
+
+    color: #888;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.card-info-grid strong {
+    color: #222;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+/* =========================================================
+   카드형 수정 버튼
+========================================================= */
+
+.card-action-area {
+    margin-top: 14px;
+}
+
+.card-modify-btn {
+    width: 100%;
+    height: 34px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #100f0f;
+    color: #fff;
+    border-radius: 6px;
+
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.card-modify-btn:hover {
+    background: #ff654f;
+    color: #fff;
+}
+
+.seller-product-card .status-badge {
+    min-width: 66px;
+    height: 26px;
+    padding: 0 10px;
+    font-size: 11px;
+}
+
+/* =========================================================
    반응형
 ========================================================= */
+
+@media (max-width: 1600px) {
+    .product-card-view {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
 
 @media (max-width: 1300px) {
     .product-manage-box {
@@ -464,5 +692,15 @@ button.status-badge {
 
     .product-manage-table {
         min-width: 1100px;
+    }
+
+    .product-card-view {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .product-card-view {
+        grid-template-columns: 1fr;
     }
 }

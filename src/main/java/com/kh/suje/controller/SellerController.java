@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.SellerDAO;
@@ -65,34 +62,6 @@ public class SellerController {
     @GetMapping("/seller_qna_list.do")
     public String sellerQnaList(){
         return "/seller/seller_qna_list";
-    }
-
-    @GetMapping("/seller_homepage.do")
-    public String sellerHomepage(Model model, Integer seller_id, String sort) {
-
-        // 테스트용으로 1번 판매자 사용
-        if (seller_id == null) {
-            seller_id = 1;
-        }
-
-        // 처음 들어왔을 때 sort가 없으면 기본값
-        if (sort == null || sort.equals("")) {
-            sort = "rank";
-        }
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("seller_id", seller_id);
-        map.put("sort", sort);
-
-        List<ProductVO> list = productdao.sellerHomepageProductList(map);
-
-        model.addAttribute("list", list);
-        model.addAttribute("seller_id", seller_id);
-        model.addAttribute("sort", sort);
-        model.addAttribute("bigCategoryList", categorydao.big_category_list());
-        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
-
-        return "/seller/seller_homepage";
     }
 
     // 구매자용 판매자샵
