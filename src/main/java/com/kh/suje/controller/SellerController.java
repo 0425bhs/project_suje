@@ -30,8 +30,6 @@ public class SellerController {
     private final CategoryDAO categorydao;
     private final SellerDAO sellerDAO;
 
-
-
     @GetMapping("/seller_dashboard.do")
     public String sellerDashboard(Model model) {
         // SellerVO seller = (SellerVO) session.getAttribute("seller");

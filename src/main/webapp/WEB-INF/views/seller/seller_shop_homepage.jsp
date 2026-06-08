@@ -45,7 +45,7 @@
                     </div>
                 </div>
 
-                <button type="button" class="wish-shop-btn">
+                <button type="button" class="wish-shop-btn" onclick="location.href='favorite_shop.do?seller_id=${seller_id}'">
                     ♡ 작가샵 찜하기
                 </button>
 

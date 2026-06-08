@@ -22,6 +22,8 @@
     <input type="button" value="후기 신고" onclick="location.href='report_form.do?target_type=REVIEW&target_id=1'">
     <input type="button" value="문의 신고" onclick="location.href='report_form.do?target_type=QNA&target_id=1'">
     <hr>
+    <input type="button" value="내 찜 목록" onclick="location.href='my_favorite_list.do'">
+    <hr>
     <input type="button" value="간편 로그인" onclick="location.href='login.do'">
     <hr>
 </body>
