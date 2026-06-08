@@ -78,7 +78,7 @@
             <a href="/order/my">주문내역</a>
             <a href="/seller_product_list.do">판매자센터</a>
             <a href="#" class="disabled">♡ 관심</a>
-            <a href="#" class="disabled">🛒 장바구니</a>
+            <a href="/cart_list.do">🛒 장바구니</a>
         </div>
 
     </div>

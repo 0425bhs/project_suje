@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ProductVO;
 
@@ -25,6 +26,7 @@ public class ProductController {
 
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
+    private final ReviewDAO reviewdao;
     
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
@@ -91,13 +93,12 @@ public class ProductController {
    
 
     @GetMapping("/product_detail.do")
-    public String product_detail_form(int product_id,Model model){
-        ProductVO vo=productdao.product_one(product_id);
-        model.addAttribute("vo",vo);
+    public String product_detail_form(int product_id, Model model) {
 
-        // 전체 카테고리 헤더용
-        model.addAttribute("bigCategoryList", categorydao.big_category_list());
-        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+        ProductVO vo = productdao.product_one(product_id);
+
+        model.addAttribute("vo", vo);
+        model.addAttribute("review_list", reviewdao.getProductReviewList(product_id));
 
         return "/product/product_detail";
     }   

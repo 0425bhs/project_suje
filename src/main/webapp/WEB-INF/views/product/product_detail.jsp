@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -10,6 +10,7 @@
         <title>상품 상세</title>
         <link rel="stylesheet" href="/css/product/product_main.css">
         <script src="/js/product_main.js" defer></script>
+        <script src="/js/cart.js" defer></script>
     </head>
 
     <body>
@@ -33,28 +34,38 @@
                                 <h3>${vo.name}</h3>
                                 <p class="product-card-subtitle">${vo.description}</p>
 
-                                <div class="product-card-price-box">
+                                <div class="product-detail-price-box">
                                     <c:choose>
-                                        <c:when test="${vo.sale_price > 0}">
-                                            <span class="sale-price">
-                                                <strong>${vo.sale_rate}%</strong>
+                                        <c:when test="${vo.sale_price > 0 && vo.sale_price < vo.price}">
+
+                                            <div class="price-top">
+                                                <span class="price-rate">${vo.sale_rate}%</span>
+                                                <span class="origin-price">
+                                                    <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
+                                                </span>
+                                            </div>
+
+                                            <div class="sale-price">
                                                 <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                            </span>
-                                            <span class="origin-price">
-                                                <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                            </span>
+                                            </div>
+
                                         </c:when>
+
                                         <c:otherwise>
-                                            <span class="sale-price current-price">
+                                            <div class="sale-price">
                                                 <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                            </span>
+                                            </div>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
 
-                                <div class="product-card-rating">
-                                    <span class="stars">★★★★★</span>
-                                    <span class="review-count">(8)</span>
+                                <div class="new-review-line">
+                                    <span class="review-star">★</span>
+                                    <span class="review-score">
+                                        <fmt:formatNumber value="${vo.review_avg}" pattern="0.00"/>
+                                    </span>
+                                    <span class="review-dot">·</span>
+                                    <span class="review-count">리뷰 ${vo.review_count}</span>
                                 </div>
                             </div>
                         </div>
@@ -62,7 +73,7 @@
                         <div class="product-detail-info">
                             <div class="product-label">
                                 <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
-                                    {판매자이름}샵 보기
+                                    ${vo.company_name}샵 보기
                                 </a>
                             </div>
 
@@ -78,7 +89,9 @@
                                     </c:otherwise>
                                 </c:choose>
                             </p>
-                            <p>판매자: <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">{판매자이름}</a></p>
+                            <p>
+                                판매자 : <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">${vo.company_name}</a>
+                            </p>
                         </div>
                     </div>
 
@@ -97,7 +110,7 @@
                         <div class="product-summary-line">
                             <span>수량</span>
                             <strong>
-                                <input class="product-quantity" type="number" name="quantity" value="1" min="1">
+                                <input class="product-quantity" id="quantity" type="number" name="quantity" value="1" min="1">
                             </strong>
                         </div>
 
@@ -145,8 +158,9 @@
                         </div>
                     </form>
 
+                    <input type="hidden" id="product_id" value="${vo.product_id}">
                     <div class="product-btn-row">
-                        <button type="button" class="product-btn light full disabled">
+                        <button type="button" class="product-btn primary full" onclick="cartInsert()">
                             장바구니 담기
                         </button>
                     </div>
@@ -156,6 +170,30 @@
                             상품 목록으로
                         </a>
                     </div>
+                </div>
+
+                <div class="product-review-box">
+                    <strong>리뷰</strong>
+
+                    <c:choose>
+                        <c:when test="${empty review_list}">
+                            <p>아직 등록된 리뷰가 없습니다.</p>
+                        </c:when>
+
+                        <c:otherwise>
+                            <c:forEach var="review" items="${review_list}">
+                                <div class="review-item">
+                                    <div>
+                                        <span class="review-star">★</span>
+                                        <strong>${review.rating}</strong>
+                                    </div>
+
+                                    <p>${review.content}</p>
+                                    <small>${review.created_at}</small>
+                                </div>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
 
             </div>

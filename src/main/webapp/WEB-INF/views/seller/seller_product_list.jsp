@@ -49,7 +49,7 @@
             <div class="product-manage-header">
                 <div>
                     <h2>상품 목록</h2>
-                    <p>판매자가 등록한 상품을 최근 등록순으로 확인할 수 있습니다.</p>
+                    <br/>
                 </div>
             </div>
 
