@@ -1,20 +1,31 @@
+.product-nav-inner a.nav-active {
+    color: #ff6f4f !important;
+}
 
+.product-nav-inner a.nav-active::after {
+    width: 100% !important;
+}
+
+/* =========================================================
+   최신작품 / 검색결과 공통 페이지
+========================================================= */
 
 .new-page {
     max-width: 1440px;
     margin: 0 auto;
-    padding: 44px;
+    padding: 32px 44px 80px;
 }
 
 .new-page-title {
-    margin-bottom: 30px;
+    margin-bottom: 14px;
 }
 
 .new-page-title h2 {
     margin: 0;
-    font-size: 32px;
+    color: #222;
+    font-size: 26px;
     font-weight: 900;
-    letter-spacing: -1px;
+    letter-spacing: -0.8px;
 }
 
 .new-page-title p {
@@ -22,6 +33,242 @@
     color: #777;
     font-size: 14px;
 }
+
+/* 제목 아래 통계 라인 */
+.new-page-stats {
+    margin-top: 8px;
+    color: #666;
+    font-size: 13px;
+    letter-spacing: -1px;
+}
+
+/* =========================================================
+   검색 결과 상단 영역
+   JSP class:
+   - search-control-wrap simple-search
+   - search-filters
+   - filter
+   - search-sorts
+   - sort-pills
+   - pill
+   - sep
+   - info
+   - search-view-toggle
+   - search-stats
+========================================================= */
+
+.search-control-wrap.simple-search {
+    width: 100%;
+    margin: 8px 0 22px;
+}
+
+/* 필터 버튼 줄 */
+.search-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 16px;
+}
+
+.search-filters .filter {
+    height: 34px;
+    min-width: 96px;
+    padding: 0 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    border: 1px solid #dddddd;
+    border-radius: 999px;
+    background: #fff;
+
+    color: #444;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+
+    cursor: default;
+}
+
+.search-filters .filter:hover {
+    border-color: #cfcfcf;
+    color: #222;
+}
+
+.search-filters .filter span {
+    color: #777;
+    font-size: 11px;
+}
+
+/* 정렬 + 이미지만 보기 줄 */
+.search-sorts {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+
+    width: 100%;
+    margin: 4px 0 14px;
+}
+
+/* 정렬 목록 */
+.sort-pills {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 정렬 항목 */
+.sort-pills .pill {
+    min-width: auto;
+    height: auto;
+    padding: 0;
+
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+
+    color: #555;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    text-decoration: none;
+
+    cursor: default;
+}
+
+.sort-pills .pill.active {
+    color: #111;
+    font-weight: 900;
+}
+
+.sort-pills .pill:hover {
+    color: #ff6f4f;
+}
+
+.sort-pills .info {
+    color: #aaa;
+    font-size: 11px;
+}
+
+.sort-pills .sep {
+    color: #d9d9d9;
+    font-size: 12px;
+}
+
+/* 이미지만 볼래요 */
+.search-view-toggle {
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    color: #333;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.search-view-toggle input {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+}
+
+/* 총 개수 */
+.search-stats {
+    margin: 0 0 18px;
+    color: #555;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* 혹시 이전 클래스가 JSP에 남아있어도 깨지지 않게 보조 대응 */
+.search-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 16px;
+}
+
+.search-filter-buttons button {
+    height: 34px;
+    min-width: 96px;
+    padding: 0 14px;
+
+    border: 1px solid #dddddd;
+    border-radius: 999px;
+    background: #fff;
+
+    color: #444;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: default;
+}
+
+.search-filter-buttons button:hover {
+    border-color: #cfcfcf;
+    color: #222;
+}
+
+.search-sort-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+
+    width: 100%;
+    margin: 4px 0 14px;
+}
+
+.search-sort-list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.search-sort-list a {
+    color: #555;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.search-sort-list a.active {
+    color: #111;
+    font-weight: 900;
+}
+
+.search-sort-list a:hover {
+    color: #ff6f4f;
+}
+
+.search-sort-list span {
+    color: #d9d9d9;
+    font-size: 12px;
+}
+
+.search-count-text {
+    margin: 0 0 18px;
+    color: #555;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   상품 목록
+========================================================= */
 
 .new-product-wrap {
     display: grid;
@@ -116,6 +363,10 @@
     font-weight: 800;
 }
 
+/* =========================================================
+   빈 목록
+========================================================= */
+
 .new-empty {
     padding: 80px 20px;
     border: 1px solid #eee;
@@ -125,6 +376,10 @@
     font-size: 15px;
     font-weight: 800;
 }
+
+/* =========================================================
+   페이징
+========================================================= */
 
 .new-page-menu {
     margin-top: 42px;
@@ -155,9 +410,18 @@
     color: #fff;
 }
 
+/* =========================================================
+   반응형
+========================================================= */
+
 @media (max-width: 1200px) {
     .new-product-wrap {
         grid-template-columns: repeat(4, 1fr);
+    }
+
+    .search-sorts,
+    .search-sort-row {
+        align-items: flex-start;
     }
 }
 
@@ -168,5 +432,14 @@
 
     .new-product-wrap {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .search-sorts,
+    .search-sort-row {
+        display: block;
+    }
+
+    .search-view-toggle {
+        margin-top: 10px;
     }
 }

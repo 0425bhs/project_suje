@@ -61,4 +61,10 @@ public interface ProductDAO {
 
     // 취향 데이터가 없을 때 보여줄 최신 상품 목록
     List<ProductVO> product_discovery_fallback_list(Map<String, Object> map);
+
+    //상품 검색 목록
+    List<ProductVO> product_search_list(Map<String,Object> map);
+
+    //상품 검색 개수
+    int product_search_cnt(Map<String, Object> map);
 }
