@@ -1004,9 +1004,9 @@ input {
 
 .product-card-price-box {
     display: flex;
-    align-items: baseline;
-    gap: 10px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
     margin-bottom: 14px;
 }
 
@@ -1148,7 +1148,7 @@ input {
 
 .product-order-box {
     position: sticky;
-    top: 120px;
+    top: 210px;
 
     background: #fff;
     border: 1px solid #eee;
@@ -1414,4 +1414,36 @@ input {
 
 .product-nav-inner a.nav-active::after {
     width: 100%;
+}
+
+/* 상품 상세 가격 */
+.product-detail-price-box {
+    margin: 14px 0 16px;
+}
+
+.product-detail-price-box .price-top {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 4px;
+}
+
+.product-detail-price-box .price-rate {
+    color: #777;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.product-detail-price-box .origin-price {
+    color: #888;
+    font-size: 18px;
+    text-decoration: line-through;
+}
+
+.product-detail-price-box .sale-price {
+    color: #d6001c;
+    font-size: 30px;
+    font-weight: 950;
+    line-height: 1.15;
+    letter-spacing: -1px;
 }

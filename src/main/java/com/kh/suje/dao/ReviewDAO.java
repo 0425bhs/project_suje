@@ -9,6 +9,10 @@ public interface ReviewDAO {
     ReviewVO getReviewById(int review_id);
     List<ReviewVO> getMyReviewList(int user_id);
     List<ReviewVO> getLiveReviewList();
+
+    // 상품 상세페이지 리뷰 목록
+    List<ReviewVO> getProductReviewList(int product_id);
+    
     int updateReview(ReviewVO review);
     int deleteReview(int review_id);
 }

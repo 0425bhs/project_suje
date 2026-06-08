@@ -1,5 +1,7 @@
 package com.kh.suje.vo;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +21,14 @@ public class ProductVO {
     private MultipartFile image_l_file,image_s_file;
     
     private int price,sale_price,stock,delivery_fee,free_shipping;
+
+    private String company_name;
+
+    private float review_avg;
+    private int review_count;
+
+    // 상품 상세에서 리뷰 목록 담을 때 사용
+    private List<ReviewVO> review_list;
 
     public int getSale_rate() {
 

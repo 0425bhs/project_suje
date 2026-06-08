@@ -1,15 +1,23 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="stylesheet" href="/css/product/product_main.css">
+    <link rel="stylesheet" href="/css/product/product_card.css">
     <link rel="stylesheet" href="/css/product/product_category_list.css">
+
+    <script src="/js/product_main.js" defer></script>
     <script src="/js/product_category_list.js"></script>
 </head>
 
 <body>
+
+    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
+        <jsp:param name="activeMenu" value="new" />
+    </jsp:include>
 
     <div class="category-page-wrap">
 
@@ -56,48 +64,11 @@
 
             <h2>${category_name}</h2>
 
-            <div class="product-grid">
+            <div class="common-product-wrap">
 
-                <c:forEach var="product" items="${list}">
+                <c:forEach var="vo" items="${list}">
 
-                    <div class="product-card">
-
-                        <img src="${product.image_l}" alt="${product.name}"/>
-
-                        <div class="product-name">
-                            <a href="/product_detail.do?product_id=${product.product_id}">
-                                ${product.name}
-                            </a>
-                        </div>
-
-                        <c:if test="${product.sale_price == 0}">
-                            <p class="price">
-                                <fmt:formatNumber value="${product.price}" pattern="#,###"/>원
-                            </p>
-                        </c:if>
-
-                        <c:if test="${product.sale_price > 0}">
-                            <p class="origin-price">
-                                <fmt:formatNumber value="${product.price}" pattern="#,###"/>원
-                            </p>
-
-                            <p class="sale-price">
-                                <strong>${product.sale_rate}%</strong>
-                                <fmt:formatNumber value="${product.sale_price}" pattern="#,###"/>원
-                            </p>
-                        </c:if>
-
-                        <c:if test="${product.free_shipping > 0}">
-                            <p class="delivery-text">
-                                <fmt:formatNumber value="${product.free_shipping}" pattern="#,###"/>원 이상 무료배송
-                            </p>
-                        </c:if>
-
-                        <c:if test="${product.free_shipping == 0}">
-                            <p class="delivery-text">무료배송</p>
-                        </c:if>
-
-                    </div>
+                    <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
 
                 </c:forEach>
 
