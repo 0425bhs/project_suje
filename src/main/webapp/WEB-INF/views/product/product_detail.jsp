@@ -26,7 +26,7 @@
 
                     <div class="product-detail-main">
                         <div class="product-detail-image-card">
-                            <img class="product-detail-img" src="${vo.image_l}" alt="${vo.name}">
+                            <img class="product-detail-img" src="${vo.image_s}" alt="${vo.name}">
 
                             <div class="product-detail-card-info">
                                 <span class="product-badge">무료배송</span>
