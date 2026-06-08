@@ -52,4 +52,13 @@ public interface ProductDAO {
 
     // 결제 취소 시 재고 복구
     int increaseStock(OrderItemVO vo);
+
+    // 상품 상세 조회 시 사용자가 본 상품 기록 저장
+    int insertProductViewLog(Map<String, Object> map);
+
+    // 취향발견 추천 상품 목록
+    List<ProductVO> product_discovery_list(Map<String, Object> map);
+
+    // 취향 데이터가 없을 때 보여줄 최신 상품 목록
+    List<ProductVO> product_discovery_fallback_list(Map<String, Object> map);
 }

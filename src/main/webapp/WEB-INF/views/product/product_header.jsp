@@ -100,7 +100,10 @@
                 🏆 베스트
             </a>
             
-            <a href="#" class="disabled">💛 취향발견</a>
+            <a href="/product_discovery.do"
+               class="${param.activeMenu eq 'discovery' ? 'nav-active' : ''}">
+                💛 취향발견
+            </a>
 
             <a href="/all_list.do"
                class="${param.activeMenu eq 'new' ? 'nav-active' : ''}">

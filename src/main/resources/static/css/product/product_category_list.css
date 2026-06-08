@@ -1,8 +1,10 @@
 .category-page-wrap {
-    width: 1200px;
+    max-width: 1200px;
+    width: 100%;
     margin: 40px auto;
     display: flex;
     gap: 40px;
+    padding: 0 44px;
 }
 
 /* 왼쪽 카테고리 전체 박스 */
@@ -102,18 +104,26 @@
 }
 
 .product-card {
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 15px;
-    background: #fff;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    overflow: hidden;
+    transition: 0.15s ease;
 }
 
 .product-card img {
     width: 100%;
-    height: 230px;
+    height: 240px;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 8px;
+    transition: 0.2s ease;
 }
+
+.product-card:hover {
+    transform: translateY(-4px);
+}
+
 
 .product-name {
     margin-top: 12px;
@@ -187,4 +197,35 @@
 .page-menu {
     margin-top: 40px;
     text-align: center;
+}
+
+@media (max-width: 1200px) {
+    .category-page-wrap {
+        padding: 0 24px;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .category-page-wrap {
+        display: block;
+        padding: 0 20px;
+        margin: 20px auto;
+    }
+
+    .left-category-box {
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
 }

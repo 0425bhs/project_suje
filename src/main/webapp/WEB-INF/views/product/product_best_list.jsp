@@ -8,10 +8,15 @@
     <head>
         <title>HANDMADE - 베스트</title>
 
+        <!-- 메인 상단바 공통 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
+
+        <!-- 베스트 전용 CSS -->
         <link rel="stylesheet" href="/css/product/product_best_list.css">
 
-        <script src="/js/product_main.js" defer></script>
+        <!-- 전체 카테고리 열고 닫는 JS -->
+        <script src="/js/product_main.js" defer></script>     
+
     </head>
 
     <body>

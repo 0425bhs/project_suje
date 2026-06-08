@@ -1,10 +1,4 @@
-.new-nav-active {
-    color: #ff6f4f !important;
-}
 
-.product-nav-inner a.new-nav-active::after {
-    width: 100% !important;
-}
 
 .new-page {
     max-width: 1440px;

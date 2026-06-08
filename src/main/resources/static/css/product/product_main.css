@@ -13,6 +13,15 @@
 ========================================================= */
 
 
+:root {
+    /* 헤더 높이(고정 헤더가 있을 경우 이 값만 조절하면 됩니다) */
+    --header-height: 140px;
+    /* 스크롤 오프셋(헤더 높이에 따라 필요하면 조절) */
+    --header-scroll-margin: 200px;
+    --header-scroll-margin-mobile: 80px;
+}
+
+
 /* =========================================================
    1. 기본 설정
 ========================================================= */
@@ -109,7 +118,7 @@ input {
 
 .product-header-inner {
     max-width: 1440px;
-    height: 82px;
+    height: 64px;
     margin: 0 auto;
     padding: 0 44px;
 
@@ -230,19 +239,20 @@ input {
 /* 검색창 */
 .product-search-box {
     width: 100%;
-    height: 48px;
-    padding: 0 18px;
+    height: 40px;
+    padding: 0 12px;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
 
-    border: 2px solid #ff7b58;
+    border: 1px solid #ff6f4f;
     background: #fff;
 
-    color: #999;
-    font-size: 15px;
-    font-weight: 700;
+    color: #333;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 6px;
 }
 
 /* 검색 아이콘 느낌 */
@@ -251,6 +261,29 @@ input {
     color: #999;
     font-size: 22px;
     font-weight: 900;
+}
+
+/* 검색창 내부 input/button 대응 */
+.product-search-box input {
+    flex: 1;
+    border: 0;
+    outline: none;
+    font-size: 14px;
+    color: #333;
+    background: transparent;
+    padding: 6px 8px;
+}
+
+.product-search-box button {
+    width: 42px;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff6f4f;
 }
 
 /* 우측 메뉴 */
@@ -281,34 +314,46 @@ input {
 ========================================================= */
 
 .product-nav-bar {
-    height: 56px;
+    height: 46px;
     border-top: 1px solid #f2f2f2;
     background: #fff;
 }
 
 .product-nav-inner {
     max-width: 1440px;
-    height: 56px;
+    height: 46px;
     margin: 0 auto;
     padding: 0 44px;
 
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 76px;
+    gap: 56px;
 }
 
 .product-nav-inner a {
-    height: 56px;
-
-    display: flex;
+    height: 46px;
+    display: inline-flex;
     align-items: center;
+    gap: 6px;
 
     position: relative;
 
     color: #333;
     font-size: 15px;
     font-weight: 900;
+}
+
+/* 작은 아이콘을 위한 공통 클래스 */
+.nav-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    color: #ff6f4f;
+    font-size: 13px;
+    line-height: 1;
 }
 
 .product-nav-inner a:hover {
@@ -595,6 +640,64 @@ input {
 
 .product-card:hover {
     transform: translateY(-4px);
+}
+
+/* 공통 하트 버튼 스타일 (alias로 각 페이지 클래스 보장) */
+.product-heart,
+.sale-heart,
+.best-heart,
+.discovery-heart,
+.new-heart {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.18);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.product-heart:hover,
+.sale-heart:hover,
+.best-heart:hover,
+.discovery-heart:hover,
+.new-heart:hover {
+    background: #ff6f4f;
+    border-color: #ff6f4f;
+}
+
+/* 상품 카드에서 작가명/태그용 유틸 */
+.product-seller {
+    margin-bottom: 5px;
+    color: #888;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.product-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 7px;
+}
+
+.product-tags span {
+    height: 20px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    background: #fff0e8;
+    color: #ff6f4f;
+    font-size: 11px;
+    font-weight: 900;
+    border-radius: 6px;
 }
 
 .product-image-link {

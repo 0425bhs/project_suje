@@ -7,11 +7,17 @@
 
     <head>
         <title>HANDMADE - 할인</title>
+        
 
+        <!-- 메인 상단바 공통 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
+
+        <!-- 세일 전용 CSS -->
         <link rel="stylesheet" href="/css/product/product_sale_list.css">
 
+        <!-- 전체 카테고리 열고 닫는 JS -->
         <script src="/js/product_main.js" defer></script>
+        
         <script src="/js/product_sale_list.js" defer></script>
     </head>
 
