@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -11,8 +11,7 @@
 
         <!-- 메인 상단바 공통 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
-
-        <!-- 세일 전용 CSS -->
+        <link rel="stylesheet" href="/css/product/product_card.css">
         <link rel="stylesheet" href="/css/product/product_sale_list.css">
 
         <!-- 전체 카테고리 열고 닫는 JS -->
@@ -158,11 +157,6 @@
                     <a href="#">높은 가격순</a>
                 </div>
 
-                <label class="sale-image-only">
-                    <input type="checkbox" checked>
-                    이미지만 볼래요
-                </label>
-
             </div>
 
             <p class="sale-count-text">
@@ -179,82 +173,10 @@
 
                 <c:otherwise>
 
-                    <div class="sale-product-grid">
+                    <div class="common-product-wrap">
 
                         <c:forEach var="vo" items="${list}">
-                            <a class="sale-product-card"
-                            href="/product_detail.do?product_id=${vo.product_id}">
-
-                                <div class="sale-product-img">
-                                    <c:choose>
-                                        <c:when test="${vo.image_s != null && vo.image_s != 'no_file'}">
-                                            <img src="${vo.image_s}" alt="${vo.name}">
-                                        </c:when>
-
-                                        <c:otherwise>
-                                            <img src="/images/no_image.png" alt="이미지 없음">
-                                        </c:otherwise>
-                                    </c:choose>
-
-                                    <span class="sale-heart">♡</span>
-                                </div>
-
-                                <div class="sale-product-info">
-
-                                    <div class="sale-seller-name">
-                                        HANDMADE 작가
-                                    </div>
-
-                                    <p class="sale-product-name">
-                                        ${vo.name}
-                                    </p>
-
-                                    <div class="sale-origin-price">
-                                        <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                    </div>
-
-                                    <div class="sale-final-price">
-                                        <em>${vo.sale_rate}%</em>
-                                        <strong>
-                                            <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                        </strong>
-                                    </div>
-
-                                    <div class="sale-benefit">
-                                        멤버십 할인 · 추가할인
-                                    </div>
-
-                                    <div class="sale-tags">
-
-                                        <span>d special</span>
-
-                                        <c:choose>
-                                            <c:when test="${vo.delivery_fee == 0}">
-                                                <span>무료배송</span>
-                                            </c:when>
-
-                                            <c:when test="${vo.free_shipping > 0}">
-                                                <span>
-                                                    <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상 무료배송
-                                                </span>
-                                            </c:when>
-
-                                            <c:otherwise>
-                                                <span>
-                                                    배송비 <fmt:formatNumber value="${vo.delivery_fee}" pattern="#,###"/>원
-                                                </span>
-                                            </c:otherwise>
-                                        </c:choose>
-
-                                    </div>
-
-                                    <div class="sale-review">
-                                        후기 준비중
-                                    </div>
-
-                                </div>
-
-                            </a>
+                            <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
                         </c:forEach>
 
                     </div>

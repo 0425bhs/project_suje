@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ProductVO;
 
@@ -27,6 +28,7 @@ public class ProductController {
 
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
+    private final ReviewDAO reviewdao;
     
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
@@ -164,37 +166,10 @@ public class ProductController {
     @GetMapping("/product_detail.do")
     public String product_detail_form(int product_id, Model model) {
 
-        // 상품 상세 정보 조회
         ProductVO vo = productdao.product_one(product_id);
 
-        // 상품이 없으면 메인으로 이동
-        if (vo == null) {
-            return "redirect:/product/main.do";
-        }
-
-        // 상품 상세 JSP로 상품 정보 전달
         model.addAttribute("vo", vo);
-
-
-        // =========================================================
-        // 취향발견용 상품 조회 기록 저장
-        // - 사용자가 상품 상세 페이지에 들어올 때마다 기록 저장
-        // - 로그인 연결 전이므로 user_id는 임시로 1 사용
-        // - 나중에 로그인 붙으면 session에서 user_id를 가져오면 됨
-        // - 어떤 카테고리 상품을 자주 보는지 확인해서 취향발견 추천에 사용
-        // =========================================================
-        Map<String, Object> viewLogMap = new HashMap<>();
-
-        viewLogMap.put("user_id", 1);
-        viewLogMap.put("product_id", vo.getProduct_id());
-        viewLogMap.put("category_id", vo.getCategory_id());
-
-        productdao.insertProductViewLog(viewLogMap);
-
-
-        // 전체 카테고리 헤더용
-        model.addAttribute("bigCategoryList", categorydao.big_category_list());
-        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+        model.addAttribute("review_list", reviewdao.getProductReviewList(product_id));
 
         return "/product/product_detail";
     }  

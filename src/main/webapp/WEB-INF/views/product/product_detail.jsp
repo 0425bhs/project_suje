@@ -1,6 +1,6 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%--
     제품 상세 페이지: 판매가가 있는 경우 세일가를 기준으로 주문 수량 총액을 계산합니다.
@@ -27,6 +27,7 @@
         <script src="/js/product_detail.js" defer></script>
         <link rel="stylesheet" href="/css/product/product_main.css">
         <script src="/js/product_main.js" defer></script>
+        <script src="/js/cart.js" defer></script>
     </head>
 
     <body>
@@ -111,11 +112,11 @@
                                 <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
                             </div>
 
-                            <div class="store-sale-price">
-                                <span>${vo.sale_rate}%</span>
-                                <strong>
-                                    <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                </strong>
+                        <div class="product-detail-info">
+                            <div class="product-label">
+                                <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
+                                    ${vo.company_name}샵 보기
+                                </a>
                             </div>
                         </c:when>
 
@@ -247,9 +248,31 @@
                         <a href="/qna_form.do?product_id=${vo.product_id}">문의하기</a>
                     </div>
 
-                </form>
+                <div class="product-review-box">
+                    <strong>리뷰</strong>
 
-            </section>
+                    <c:choose>
+                        <c:when test="${empty review_list}">
+                            <p>아직 등록된 리뷰가 없습니다.</p>
+                        </c:when>
+
+                        <c:otherwise>
+                            <c:forEach var="review" items="${review_list}">
+                                <div class="review-item">
+                                    <div>
+                                        <span class="review-star">★</span>
+                                        <strong>${review.rating}</strong>
+                                    </div>
+
+                                    <p>${review.content}</p>
+                                    <small>${review.created_at}</small>
+                                </div>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+
+            </div>
 
         </div>
 

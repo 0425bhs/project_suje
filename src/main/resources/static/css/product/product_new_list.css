@@ -34,28 +34,6 @@
     font-size: 14px;
 }
 
-/* 제목 아래 통계 라인 */
-.new-page-stats {
-    margin-top: 8px;
-    color: #666;
-    font-size: 13px;
-    letter-spacing: -1px;
-}
-
-/* =========================================================
-   검색 결과 상단 영역
-   JSP class:
-   - search-control-wrap simple-search
-   - search-filters
-   - filter
-   - search-sorts
-   - sort-pills
-   - pill
-   - sep
-   - info
-   - search-view-toggle
-   - search-stats
-========================================================= */
 
 .search-control-wrap.simple-search {
     width: 100%;
@@ -268,7 +246,6 @@
 
 /* =========================================================
    상품 목록
-========================================================= */
 
 .new-product-wrap {
     display: grid;
@@ -365,7 +342,6 @@
 
 /* =========================================================
    빈 목록
-========================================================= */
 
 .new-empty {
     padding: 80px 20px;
@@ -412,19 +388,6 @@
 
 /* =========================================================
    반응형
-========================================================= */
-
-@media (max-width: 1200px) {
-    .new-product-wrap {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-    .search-sorts,
-    .search-sort-row {
-        align-items: flex-start;
-    }
-}
-
 @media (max-width: 900px) {
     .new-page {
         padding: 24px;

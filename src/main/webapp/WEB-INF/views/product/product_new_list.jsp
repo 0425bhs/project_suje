@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -104,85 +104,10 @@
 
             <c:otherwise>
 
-                <div class="new-product-wrap">
-
+                <div class="common-product-wrap">
                     <c:forEach var="vo" items="${list}">
-
-                        <div class="new-product-card">
-
-                            <a href="/product_detail.do?product_id=${vo.product_id}"
-                            class="new-image-link">
-
-                                <!-- 이미지 우선순위: 큰 이미지 -> 작은 이미지 -> 기본 이미지 -->
-                                <c:choose>
-                                    <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                        <img src="${vo.image_l}" alt="${vo.name}">
-                                    </c:when>
-
-                                    <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
-                                        <img src="${vo.image_s}" alt="${vo.name}">
-                                    </c:when>
-
-                                    <c:otherwise>
-                                        <img src="/images/no_image.png" alt="이미지 없음">
-                                    </c:otherwise>
-                                </c:choose>
-
-                            </a>
-
-                            <div class="new-product-info">
-
-                                <div class="new-product-name">
-                                    <a href="/product_detail.do?product_id=${vo.product_id}">
-                                        ${vo.name}
-                                    </a>
-                                </div>
-
-                                <!-- 할인 여부에 따른 가격 정보 표시 -->
-                                <c:choose>
-
-                                    <c:when test="${vo.sale_price == 0}">
-                                        <p class="new-price">
-                                            <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                        </p>
-                                    </c:when>
-
-                                    <c:otherwise>
-                                        <p class="new-origin-price">
-                                            <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                        </p>
-
-                                        <p class="new-sale-price">
-                                            <span>${vo.sale_rate}%</span>
-                                            <strong>
-                                                <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                            </strong>
-                                        </p>
-                                    </c:otherwise>
-
-                                </c:choose>
-
-                                <!-- 무료배송 조건 안내 -->
-                                <c:choose>
-                                    <c:when test="${vo.free_shipping > 0}">
-                                        <p class="new-delivery">
-                                            <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상 무료배송
-                                        </p>
-                                    </c:when>
-
-                                    <c:otherwise>
-                                        <p class="new-delivery">
-                                            무료배송
-                                        </p>
-                                    </c:otherwise>
-                                </c:choose>
-
-                            </div>
-
-                        </div>
-
+                        <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
                     </c:forEach>
-
                 </div>
 
             </c:otherwise>

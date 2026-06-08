@@ -1,19 +1,26 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <title>${category_name}</title>
+<head>
+    <link rel="stylesheet" href="/css/product/product_main.css">
+    <link rel="stylesheet" href="/css/product/product_card.css">
+    <link rel="stylesheet" href="/css/product/product_category_list.css">
+
+    <script src="/js/product_main.js" defer></script>
+    <script src="/js/product_category_list.js"></script>
+</head>
 
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/product/product_category_list.css">
 
-        <script src="/js/product_main.js" defer></script>
-        <script src="/js/product_category_list.js" defer></script>
-    </head>
+    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
+        <jsp:param name="activeMenu" value="new" />
+    </jsp:include>
+
+    <div class="category-page-wrap">
 
     <body>
 

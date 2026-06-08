@@ -247,50 +247,51 @@
 
 /* =========================================================
    colgroup 컬럼 너비
+   - px 고정해서 th 간격 틀어짐 줄임
 ========================================================= */
 
 .col-check {
-    width: 4%;
+    width: 50px;
 }
 
 .col-id {
-    width: 7%;
+    width: 85px;
 }
 
 .col-img {
-    width: 12%;
+    width: 120px;
 }
 
 .col-name {
-    width: 14%;
+    width: 190px;
 }
 
 .col-price {
-    width: 8%;
+    width: 130px;
 }
 
 .col-sale {
-    width: 8%;
+    width: 120px;
 }
 
 .col-stock {
-    width: 6%;
+    width: 80px;
 }
 
 .col-delivery {
-    width: 8%;
+    width: 120px;
 }
 
 .col-free {
-    width: 10%;
+    width: 150px;
 }
 
 .col-status {
-    width: 9%;
+    width: 120px;
 }
 
 .col-date {
-    width: 14%;
+    width: 150px;
 }
 
 /* =========================================================
@@ -303,9 +304,36 @@
 }
 
 /* =========================================================
-   이미지
+   대표 이미지
 ========================================================= */
 
+/* td에 image-column 클래스가 있는 경우 */
+.product-manage-table th.image-column,
+.product-manage-table td.image-column {
+    width: 120px;
+    text-align: center !important;
+    vertical-align: middle;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* td 안에 product-thumb 이미지가 있는 경우도 강제로 가운데 */
+.product-manage-table td:has(.product-thumb) {
+    text-align: center !important;
+    vertical-align: middle;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* 이미지가 a태그나 div로 감싸져 있어도 가운데 */
+.product-manage-table td:has(.product-thumb) > a,
+.product-manage-table td:has(.product-thumb) > div {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 이미지 */
 .product-thumb {
     width: 70px;
     height: 70px;
@@ -314,6 +342,9 @@
     border: 1px solid #eee;
     background: #fafafa;
     border-radius: 8px;
+
+    display: block !important;
+    margin: 0 auto !important;
 }
 
 .no-image {
@@ -691,7 +722,7 @@ button.status-badge {
     }
 
     .product-manage-table {
-        min-width: 1100px;
+        min-width: 1320px;
     }
 
     .product-card-view {
