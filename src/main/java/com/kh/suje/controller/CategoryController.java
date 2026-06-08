@@ -17,6 +17,7 @@ public class CategoryController {
 
     private final CategoryDAO categorydao;
     
+    
     @GetMapping("/sub.do")
     @ResponseBody
     public List<CategoryVO> smallCategory(int parent_id){
