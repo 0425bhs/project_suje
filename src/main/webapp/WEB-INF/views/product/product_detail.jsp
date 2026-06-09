@@ -3,8 +3,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%--
-    제품 상세 페이지: 판매가가 있는 경우 세일가를 기준으로 주문 수량 총액을 계산합니다.
-    unitPrice 변수는 장바구니/주문 선택 영역에서 사용됩니다.
+    상품 상세 페이지
+    unitPrice는 실제 주문 계산에 사용할 단가입니다.
+    할인 가격이 있으면 sale_price, 없으면 price를 사용합니다.
 --%>
 <c:choose>
     <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
@@ -15,19 +16,17 @@
     </c:otherwise>
 </c:choose>
 
-    <!DOCTYPE html>
-    <html lang="ko">
+<!DOCTYPE html>
+<html lang="ko">
 
     <head>
         <meta charset="UTF-8">
         <title>${vo.name}</title>
 
-        <!-- 공통 상품 페이지 스크립트 및 상세 페이지 전용 스크립트 로드 -->
+        <link rel="stylesheet" href="/css/product/product_main.css">
+
         <script src="/js/product_main.js" defer></script>
         <script src="/js/product_detail.js" defer></script>
-        <link rel="stylesheet" href="/css/product/product_main.css">
-        <script src="/js/product_main.js" defer></script>
-        <script src="/js/cart.js" defer></script>
     </head>
 
     <body>
@@ -45,52 +44,49 @@
 
                 <div class="store-main-image-box">
 
-                <!-- 메인 상품 이미지: 왼쪽/오른쪽 버튼으로 이미지 전환 가능 -->
-                <button type="button" class="store-image-nav store-image-prev" id="detailImgPrev">
-                    ‹
-                </button>
+                    <button type="button" class="store-image-nav store-image-prev" id="detailImgPrev">
+                        ‹
+                    </button>
 
-                <c:choose>
-                    <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                        <img id="detailMainImage" src="${vo.image_l}" alt="${vo.name}">
-                    </c:when>
+                    <c:choose>
+                        <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
+                            <img id="detailMainImage" src="${vo.image_l}" alt="${vo.name}">
+                        </c:when>
 
-                    <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
-                        <img id="detailMainImage" src="${vo.image_s}" alt="${vo.name}">
-                    </c:when>
+                        <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
+                            <img id="detailMainImage" src="${vo.image_s}" alt="${vo.name}">
+                        </c:when>
 
-                    <c:otherwise>
-                        <img id="detailMainImage" src="/images/no_image.png" alt="이미지 없음">
-                    </c:otherwise>
-                </c:choose>
+                        <c:otherwise>
+                            <img id="detailMainImage" src="/images/no_image.png" alt="이미지 없음">
+                        </c:otherwise>
+                    </c:choose>
 
-                <button type="button" class="store-image-nav store-image-next" id="detailImgNext">
-                    ›
-                </button>
+                    <button type="button" class="store-image-nav store-image-next" id="detailImgNext">
+                        ›
+                    </button>
 
-            </div>
+                </div>
 
-<div class="store-thumb-row">
-    <!-- 상품 이미지 썸네일: 클릭 시 메인 이미지가 변경됩니다 -->
-    <c:if test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-        <button type="button" class="store-thumb-btn active" data-img="${vo.image_l}">
-            <img src="${vo.image_l}" alt="${vo.name}">
-        </button>
-    </c:if>
+                <div class="store-thumb-row">
+                    <c:if test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
+                        <button type="button" class="store-thumb-btn active" data-img="${vo.image_l}">
+                            <img src="${vo.image_l}" alt="${vo.name}">
+                        </button>
+                    </c:if>
 
-    <c:if test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
-        <button type="button" class="store-thumb-btn" data-img="${vo.image_s}">
-            <img src="${vo.image_s}" alt="${vo.name}">
-        </button>
-    </c:if>
-</div>
+                    <c:if test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
+                        <button type="button" class="store-thumb-btn" data-img="${vo.image_s}">
+                            <img src="${vo.image_s}" alt="${vo.name}">
+                        </button>
+                    </c:if>
+                </div>
 
             </section>
 
             <!-- 오른쪽 상품 정보 / 주문 영역 -->
             <section class="store-detail-right">
 
-                <!-- 판매자 정보 및 샵 이동 링크 -->
                 <div class="store-seller-line">
                     <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
                         판매자 샵 보기
@@ -104,7 +100,7 @@
                     ${vo.description}
                 </p>
 
-                <!-- 가격 정보: 할인 중이면 원가와 세일가를 모두 보여줍니다 -->
+                <!-- 가격 정보 -->
                 <div class="store-price-box">
                     <c:choose>
                         <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
@@ -112,11 +108,11 @@
                                 <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
                             </div>
 
-                        <div class="product-detail-info">
-                            <div class="product-label">
-                                <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
-                                    ${vo.company_name}샵 보기
-                                </a>
+                            <div class="store-sale-price">
+                                <span>${vo.sale_rate}%</span>
+                                <strong>
+                                    <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
+                                </strong>
                             </div>
                         </c:when>
 
@@ -130,7 +126,7 @@
                     </c:choose>
                 </div>
 
-                <!-- 상품 기본 정보: 재고, 배송비, 무료배송 조건, 상태 등 -->
+                <!-- 상품 기본 정보 -->
                 <div class="store-info-table">
 
                     <div class="store-info-row">
@@ -247,32 +243,9 @@
                         <button type="button" disabled>♡ 찜하기 준비중</button>
                         <a href="/qna_form.do?product_id=${vo.product_id}">문의하기</a>
                     </div>
+                </form>
 
-                <div class="product-review-box">
-                    <strong>리뷰</strong>
-
-                    <c:choose>
-                        <c:when test="${empty review_list}">
-                            <p>아직 등록된 리뷰가 없습니다.</p>
-                        </c:when>
-
-                        <c:otherwise>
-                            <c:forEach var="review" items="${review_list}">
-                                <div class="review-item">
-                                    <div>
-                                        <span class="review-star">★</span>
-                                        <strong>${review.rating}</strong>
-                                    </div>
-
-                                    <p>${review.content}</p>
-                                    <small>${review.created_at}</small>
-                                </div>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-
-            </div>
+            </section>
 
         </div>
 
@@ -280,6 +253,31 @@
         <section class="store-detail-info-section">
             <h2>상세정보</h2>
             <p>${vo.description}</p>
+        </section>
+
+        <!-- 리뷰 영역 -->
+        <section class="product-review-box">
+            <strong>리뷰</strong>
+
+            <c:choose>
+                <c:when test="${empty review_list}">
+                    <p>아직 등록된 리뷰가 없습니다.</p>
+                </c:when>
+
+                <c:otherwise>
+                    <c:forEach var="review" items="${review_list}">
+                        <div class="review-item">
+                            <div>
+                                <span class="review-star">★</span>
+                                <strong>${review.rating}</strong>
+                            </div>
+
+                            <p>${review.content}</p>
+                            <small>${review.created_at}</small>
+                        </div>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
         </section>
 
     </div>
