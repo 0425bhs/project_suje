@@ -8,22 +8,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <select id = "userNickCheck" parameterType = "String"
 resultType = "user">
 
-select * from users where nick_name=#{nickName}
+select * from users where nick_name=#{nick_name}
 
 </select>
 
 <!--가입-->
 <insert id = "insertUser" parameterType="user"  
-useGeneratedKeys="true" keyProperty="userId">
+useGeneratedKeys="true" keyProperty="user_id">
 insert into users( email, password, name,
-phone, gender, role, nick_name )
+phone, gender, role, nick_name, photo_name )
 values( #{email}, #{password}, #{name}, #{phone}, #{gender}, 
-#{role}, #{nickName} )
+#{role}, #{nick_name}, #{photo_name} )
 </insert>
+
 
 <!--로그인-->
 <select id = "LoginCheck" parameterType="String"
 resultType="user">
 select * from users where email=#{email}	
 </select>		
+
+
+<!--user_id로 조회-->
+<select id = "selectUser" parameterType="int"
+resultType="user">
+
+select * from users where user_id=#{user_id}
+</select>
+
+
+<!--정보 수정-->
+<update id = "user_modify" parameterType = "user">
+
+update users set email=#{email}, password=#{password}, name=#{name},
+phone=#{phone}, gender=#{gender}, nick_name=#{nick_name}, photo_name=#{photo_name}
+where user_id=#{user_id}
+
+</update>
+
 </mapper>
