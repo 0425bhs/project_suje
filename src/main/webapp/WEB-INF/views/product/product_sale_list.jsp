@@ -65,12 +65,10 @@
                             </button>
 
                             <div class="sale-feature-viewport">
-                                <div class="sale-feature-track" id="saleFeatureTrack">
-                                    <div class="common-product-wrap">
-                                        <c:forEach var="vo" items="${list}">
-                                            <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
-                                        </c:forEach>
-                                    </div>
+                                <div class="sale-feature-track common-product-wrap" id="saleFeatureTrack">
+                                    <c:forEach var="vo" items="${list}">
+                                        <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
+                                    </c:forEach>
                                 </div>
                             </div>
 

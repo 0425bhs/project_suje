@@ -28,46 +28,11 @@
 
     <main class="discovery-page">
 
-        <!-- 취향발견 상단 소개 영역 -->
-        <section class="discovery-hero">
-
-            <span>DISCOVERY</span>
-            <h2>취향발견</h2>
-
-            <c:choose>
-                <c:when test="${isFallback}">
-                    <p>
-                        아직 취향 데이터가 부족해서 새롭게 등록된 작품을 먼저 보여드려요.
-                        작품을 둘러볼수록 더 어울리는 작품을 추천할 수 있습니다.
-                    </p>
-                </c:when>
-
-                <c:otherwise>
-                    <p>
-                        최근 둘러본 작품과 관심 카테고리를 바탕으로 어울리는 작품을 추천했어요.
-                    </p>
-                </c:otherwise>
-            </c:choose>
-
-        </section>
-
-
         <!-- 카테고리 바로가기 -->
         <section class="discovery-category-section">
 
             <div class="discovery-section-title">
                 <h3>카테고리로 더 둘러보기</h3>
-                <p>관심 있는 카테고리를 선택해 더 많은 작품을 확인해보세요.</p>
-            </div>
-
-            <div class="discovery-category-tabs">
-
-                <c:forEach var="big" items="${bigCategoryList}">
-                    <a href="/category_list.do?category_id=${big.category_id}">
-                        ${big.name}
-                    </a>
-                </c:forEach>
-
             </div>
 
         </section>
