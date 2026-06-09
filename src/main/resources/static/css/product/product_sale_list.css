@@ -1,6 +1,6 @@
 /* =========================================================
    할인 페이지 전용 CSS
-   - 하단 상품 카드 디자인은 product_card.css에서 관리
+   - 상품 카드 디자인은 product_card.css에서 관리
 ========================================================= */
 
 /* 현재 메뉴 활성화 */
@@ -11,7 +11,6 @@
 .product-nav-inner a.sale-nav-active::after {
     width: 100% !important;
 }
-
 
 /* =========================================================
    상단 할인 슬라이드
@@ -26,7 +25,6 @@
     max-width: 1440px;
     margin: 0 auto;
     padding: 0 44px;
-    text-align: center;
 }
 
 .sale-hero h1 {
@@ -36,6 +34,7 @@
     font-size: 30px;
     font-weight: 950;
     letter-spacing: -0.05em;
+    text-align: center;
 }
 
 .sale-countdown {
@@ -69,6 +68,7 @@
     font-weight: 950;
 }
 
+/* 슬라이드 영역 */
 .sale-feature-wrap {
     position: relative;
     width: 1280px;
@@ -92,80 +92,7 @@
     min-width: 0;
 }
 
-.sale-feature-img {
-    position: relative;
-
-    width: 100%;
-    height: 248px;
-
-    overflow: hidden;
-    border-radius: 8px;
-    background: #f5f5f5;
-}
-
-.sale-feature-img img {
-    width: 100%;
-    height: 100%;
-
-    display: block;
-    object-fit: cover;
-}
-
-.sale-heart {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-
-    width: 28px;
-    height: 28px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.18);
-    color: #fff;
-
-    font-size: 18px;
-    font-weight: 900;
-}
-
-.sale-feature-info {
-    padding-top: 12px;
-    text-align: left;
-}
-
-.sale-feature-name {
-    height: 42px;
-    margin: 0 0 7px;
-
-    color: #333;
-    font-size: 14px;
-    line-height: 1.45;
-
-    overflow: hidden;
-}
-
-.sale-feature-price {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.sale-feature-price em {
-    color: #ff4b3a;
-    font-style: normal;
-    font-size: 15px;
-    font-weight: 900;
-}
-
-.sale-feature-price strong {
-    color: #111;
-    font-size: 15px;
-    font-weight: 900;
-}
-
+/* 슬라이드 화살표 */
 .sale-slide-btn {
     position: absolute;
     top: 104px;
@@ -209,6 +136,7 @@
     pointer-events: none;
 }
 
+/* 슬라이드 점 */
 .sale-feature-dots {
     display: flex;
     justify-content: center;
@@ -266,7 +194,6 @@
     font-size: 15px;
     font-weight: 800;
 }
-
 
 /* =========================================================
    하단 할인 목록
@@ -385,7 +312,6 @@
     font-weight: 700;
 }
 
-
 /* =========================================================
    페이징
 ========================================================= */
@@ -421,7 +347,6 @@
     background: #ff6f4f;
     border-color: #ff6f4f;
 }
-
 
 /* =========================================================
    반응형
