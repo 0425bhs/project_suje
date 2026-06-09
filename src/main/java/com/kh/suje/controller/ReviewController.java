@@ -31,9 +31,10 @@ public class ReviewController {
     }
 
     @GetMapping("/review_form.do")
-    private String reviewForm(Model model, int product_id) {
+    private String reviewForm(Model model, int product_id, int order_item_id) {
         ProductVO product = productDAO.product_one(product_id);
         model.addAttribute("product", product);
+        model.addAttribute("order_item_id", order_item_id);
 
         return "/reviews/review_form";
     }
@@ -43,8 +44,15 @@ public class ReviewController {
         // UserVO user = session.getAttribute("user");
         // Long id = user.getId();
 
-        int userId = 3;
-        review.setUser_id(userId);
+        int user_id = 3;
+        review.setUser_id(user_id);
+
+        System.out.println("=========");
+        System.out.println("user_id      : " + review.getUser_id());
+        System.out.println("product_id   : " + review.getProduct_id());
+        System.out.println("order_item_id: " + review.getOrder_item_id());
+        System.out.println("rating       : " + review.getRating());
+        System.out.println("=========");
 
         int res = reviewDAO.addReview(review);
 

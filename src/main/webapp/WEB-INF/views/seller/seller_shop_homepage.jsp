@@ -45,9 +45,27 @@
                     </div>
                 </div>
 
-                <button type="button" class="wish-shop-btn" onclick="location.href='favorite_shop.do?seller_id=${seller_id}'">
-                    ♡ 작가샵 찜하기
-                </button>
+                <c:choose>
+
+                <c:when test="${favorite eq false}">
+                    <form action="/favorite_shop.do" method="post">
+                        <input type="hidden" name="seller_id" value="${seller_id}">
+                        <button type="submit" class="wish-shop-btn">
+                            ♡ 작가샵 찜하기
+                        </button>
+                    </form>
+                </c:when>
+
+                <c:otherwise>
+                    <form action="/favorite_shop_cancel.do" method="post">
+                        <input type="hidden" name="seller_id" value="${seller_id}">
+                        <button type="submit" class="wish-shop-btn">
+                            ♡ 찜 취소
+                        </button>
+                    </form>
+                </c:otherwise>
+
+                </c:choose>
 
             </section>
 

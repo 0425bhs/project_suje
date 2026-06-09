@@ -9,9 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.kh.suje.dao.CategoryDAO;
+import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.UserVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class SellerController {
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
     private final SellerDAO sellerDAO;
+    private final FavoriteDAO favoriteDAO;
 
     @GetMapping("/seller_dashboard.do")
     public String sellerDashboard(Model model) {
@@ -74,17 +77,32 @@ public class SellerController {
             sort = "rank";
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("seller_id", seller_id);
-        map.put("sort", sort);
+        // UserVO user = session.getAttribute(user);
+        // int user_id = user.getUserId();
+        int user_id = 3;
 
-        List<ProductVO> list = productdao.sellerHomepageProductList(map);
+        Map<String, Object> favoriteMap = new HashMap<>();
+        favoriteMap.put("user_id", user_id);
+        favoriteMap.put("seller_id", seller_id);
 
-        model.addAttribute("list", list);
-        model.addAttribute("seller_id", seller_id);
-        model.addAttribute("sort", sort);
+        int favoriteShop = favoriteDAO.checkFavoriteShop(favoriteMap);
+        boolean favorite = favoriteShop >= 1;
+
+        Map<String, Object> listMap = new HashMap<>();
+        listMap.put("seller_id", seller_id);
+        listMap.put("sort", sort);
+
+        List<ProductVO> list = productdao.sellerHomepageProductList(listMap);
+
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
+        model.addAttribute("favorite", favorite);
+
+        model.addAttribute("seller_id", seller_id);
+        model.addAttribute("sort", sort);
+
+        model.addAttribute("list", list);
 
         return "/seller/seller_shop_homepage";
     } 

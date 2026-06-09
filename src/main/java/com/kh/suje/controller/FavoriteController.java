@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.vo.FavoriteVO;
@@ -23,7 +24,7 @@ public class FavoriteController {
 
     private final FavoriteDAO favoriteDAO;
 
-    @GetMapping("favorite_shop.do")
+    @PostMapping("favorite_shop.do")
     public String favoriteShop(int seller_id) {
         // UserVO user = session.getAttribute("user");
         // int user_id = user.getId();
@@ -35,7 +36,22 @@ public class FavoriteController {
         
         int res = favoriteDAO.addFavorite(map);
 
-        return "redirect:/seller_shop_homepage.do";
+        return "redirect:/seller_shop_homepage.do?seller_id=" + seller_id;
+    }
+
+    @PostMapping("favorite_shop_cancel.do")
+    public String favoriteShopCancel(int seller_id) {
+        // UserVO user = session.getAttribute("user");
+        // int user_id = user.getId();
+        int user_id = 3;
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("user_id", user_id);
+        map.put("seller_id", seller_id);
+        
+        int res = favoriteDAO.delFavorite(map);
+
+        return "redirect:/seller_shop_homepage.do?seller_id=" + seller_id;
     }
 
     @GetMapping("my_favorite_list.do")

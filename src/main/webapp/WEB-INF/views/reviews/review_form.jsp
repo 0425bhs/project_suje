@@ -185,7 +185,7 @@
 
         <form class="community-card">
             <input type="hidden" name="product_id" value="${product.product_id}">
-
+            <input type="hidden" name="order_item_id" value="${order_item_id}">
             <div class="form-layout">
                 <aside class="product-panel">
                     <span>작가 상품</span>

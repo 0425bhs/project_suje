@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="addReview"
             parameterType="review">
         INSERT INTO reviews (user_id, product_id, order_item_id, rating, content)
-        VALUES (#{user_id}, #{product_id}, 1, #{rating}, #{content})
+        VALUES (#{user_id}, #{product_id}, #{order_item_id}, #{rating}, #{content})
     </insert>
 
     <select id="getReviewById"
@@ -14,8 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             resultType="review">
         SELECT r.*, p.name product_name, p.image_s
         FROM reviews r
-        JOIN products p 
-        ON r.product_id = p.product_id
+        JOIN products p ON r.product_id = p.product_id
         WHERE r.review_id = #{review_id}
     </select>
 
@@ -24,8 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             resultType="review">
         SELECT r.*, p.name product_name, p.image_s
         FROM reviews r
-        JOIN products p
-        ON r.product_id = p.product_id
+        JOIN products p ON r.product_id = p.product_id
         WHERE r.user_id = #{id}
         ORDER BY created_at DESC
     </select>
@@ -33,10 +31,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getLiveReviewList"
             parameterType="int"
             resultType="review">
-        SELECT r.*, p.name product_name, p.image_s
+        SELECT r.*, u.name user_name, u.nick_name, p.name product_name, p.image_l
         FROM reviews r
-        JOIN products p
-        ON r.product_id = p.product_id
+        JOIN users u ON r.user_id = u.user_id
+        JOIN products p ON r.product_id = p.product_id
         ORDER BY created_at DESC
         LIMIT 10
     </select>

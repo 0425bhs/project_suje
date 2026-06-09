@@ -103,11 +103,14 @@
             <a href="#" class="disabled">💛 취향발견</a>
 
             <a href="/all_list.do"
-               class="${param.activeMenu eq 'new' ? 'nav-active' : ''}">
-                🆕 최신작품
+               class="${param.activeMenu eq 'new' ? '   ' : ''}">
+                🆕 최신 작품
             </a>
 
-            <a href="#" class="disabled">💬 후기</a>
+            <a href="/live_review_list.do"
+               class="${param.activeMenu eq 'live' ? 'nav-active' : ''}">
+               💬 실시간 후기
+            </a>
 
         </div>
     </nav>

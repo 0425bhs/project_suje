@@ -18,6 +18,9 @@ public class ReviewVO {
     private String content;
     private LocalDateTime created_at;
 
+    //user_id
+    private String user_name, nick_name;
+    
     //product_id    
-    private String product_name, image_s;
+    private String product_name, image_s, image_l;
 }
