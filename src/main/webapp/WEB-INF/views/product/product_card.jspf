@@ -23,6 +23,8 @@
             </c:otherwise>
         </c:choose>
 
+        <span class="sale-heart">♡</span>
+
     </a>
 
     <div class="common-product-info">
