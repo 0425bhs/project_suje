@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ProductVO;
 
@@ -25,6 +28,7 @@ public class ProductController {
 
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
+    private final ReviewDAO reviewdao;
     
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
@@ -36,11 +40,16 @@ public class ProductController {
     }
         
     @GetMapping("/category_list.do")
-    public String product_category_list(Model model, Integer page, Integer category_id) {
+    public String product_category_list(Model model, Integer page, Integer category_id, String sort) {
+
+        // 정렬 기본값
+        if (sort == null || sort.trim().equals("")) {
+            sort = "popular";
+        }
 
         String category_name = categorydao.getCategroyNameById(category_id);
 
-        //소분류면 parent_id를 찾음,대분류면 parent_id가 null
+        // 소분류면 parent_id를 찾음, 대분류면 parent_id가 null
         Integer selectedBigCategoryId = categorydao.find_parent_id(category_id);
 
         // parent_id가 null이면 현재 category_id 자체가 대분류
@@ -63,13 +72,14 @@ public class ProductController {
         map.put("category_id", category_id);
         map.put("start", start);
         map.put("blockList", blockList);
+        map.put("sort", sort);
 
         int rowTotal = productdao.product_category_cnt(map);
 
         List<ProductVO> list = productdao.product_category_list(map);
 
         String pageMenu = Paging.getPaging(
-            "/category_list.do?category_id=" + category_id,
+            "/category_list.do?category_id=" + category_id + "&sort=" + sort,
             nowPage,
             rowTotal,
             blockList,
@@ -80,6 +90,10 @@ public class ProductController {
         model.addAttribute("pageMenu", pageMenu);
         model.addAttribute("category_id", category_id);
         model.addAttribute("category_name", category_name);
+        model.addAttribute("rowTotal", rowTotal);
+
+        // JSP에서 active 표시할 때 사용할 값
+        model.addAttribute("currentSort", sort);
 
         // 카테고리 페이지 왼쪽 메뉴용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
@@ -87,20 +101,125 @@ public class ProductController {
         model.addAttribute("selectedBigCategoryId", selectedBigCategoryId);
 
         return "product/product_category_list";
-    } 
+    }
+
+    @GetMapping("/product_search.do")
+    public String productSearch(Model model, String keyword, Integer page){
+
+        if(keyword == null || keyword.trim().isEmpty()){
+            return "redirect:/all_list.do";
+        }
+
+        keyword = keyword.trim();
+
+        int nowPage = 1;
+        
+        if(page != null){
+            nowPage = page;
+        }
+
+        // ========== 페이징 처리 관련 변수 ==========
+        // blockList: 한 페이지에 보여줄 상품 개수 (10개씩 표시)
+        int blockList = 10;
+        
+        // blockPage: 페이지 네비게이션에서 보여줄 페이지 버튼 개수
+        // 예) 1,2,3,4,5 / 6,7,8,9,10 (각 그룹당 5개씩)
+        int blockPage = 5;
+
+        // start: 데이터베이스 쿼리의 시작 위치 계산
+        // 예) 1페이지(nowPage=1): start = 0       → LIMIT 0, 10 (0~9번째 상품)
+        //     2페이지(nowPage=2): start = 10      → LIMIT 10, 10 (10~19번째 상품)
+        //     3페이지(nowPage=3): start = 20      → LIMIT 20, 10 (20~29번째 상품)
+        int start = (nowPage - 1) * blockList;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("keyword", keyword);
+        map.put("start", start);
+        map.put("blockList", blockList);
+
+        int rowTotaL = productdao.product_search_cnt(map);
+        List<ProductVO> list = productdao.product_search_list(map);
+
+        String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+
+        String pageMenu = Paging.getPaging(
+            "/product_search.do?keyword=" + encodedKeyword,
+            nowPage,
+            rowTotaL,
+            blockList,
+            blockPage
+         );
+
+        model.addAttribute("list", list);
+        model.addAttribute("pageMenu", pageMenu);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("isSearch", true);
+        model.addAttribute("rowTotal", rowTotaL);
+
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
+        return "product/product_new_list";
+    }
    
 
     @GetMapping("/product_detail.do")
-    public String product_detail_form(int product_id,Model model){
-        ProductVO vo=productdao.product_one(product_id);
-        model.addAttribute("vo",vo);
+    public String product_detail_form(int product_id, Model model) {
+
+        ProductVO vo = productdao.product_one(product_id);
+
+        model.addAttribute("vo", vo);
+        model.addAttribute("review_list", reviewdao.getProductReviewList(product_id));
+
+        return "/product/product_detail";
+    }  
+
+    @GetMapping("/product_discovery.do")
+    public String product_discovery_list(Model model) {
+
+        // 로그인 연결 전 임시 user_id
+        int user_id = 1;
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("user_id", user_id);
+        map.put("limit", 30);
+
+
+        // =========================================================
+        // 취향발견 추천 상품 조회
+        // - product_view_log에서 사용자가 자주 본 카테고리를 찾음
+        // - 그 카테고리에 해당하는 상품을 추천 목록으로 가져옴
+        // =========================================================
+        List<ProductVO> list = productdao.product_discovery_list(map);
+
+        boolean isFallback = false;
+
+
+        // =========================================================
+        // 취향 데이터가 없을 때 대체 상품 출력
+        // - 아직 상품 상세를 본 기록이 없으면 추천할 기준이 없음
+        // - 이 경우 최신 상품 목록을 대신 보여줌
+        // =========================================================
+        if (list == null || list.isEmpty()) {
+            list = productdao.product_discovery_fallback_list(map);
+            isFallback = true;
+        }
+
+
+        // 취향발견 JSP로 추천 상품 전달
+        model.addAttribute("list", list);
+
+        // 취향 데이터가 없어서 최신상품으로 대체했는지 여부
+        model.addAttribute("isFallback", isFallback);
+
 
         // 전체 카테고리 헤더용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
-        return "/product/product_detail";
-    }   
+        return "product/product_discovery_list";
+    }
 
     @GetMapping("/product_sale.do")
     public String product_sale_list(Model model,Integer page){

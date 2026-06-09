@@ -52,4 +52,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         DELETE FROM reviews
         WHERE review_id = #{review_id}
     </delete>
+
+    <select id="getProductReviewList" resultType="review">
+        SELECT
+            review_id,
+            user_id,
+            product_id,
+            order_item_id,
+            rating,
+            content,
+            created_at
+        FROM reviews WHERE product_id=#{value} ORDER BY created_at DESC
+    </select>
+
 </mapper>

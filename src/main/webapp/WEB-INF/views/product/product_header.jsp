@@ -68,9 +68,17 @@
 
 
         <!-- 검색창 -->
-        <div class="product-search-box disabled">
-            찾으시는 작가, 작품이 있나요?
-        </div>
+        <form class="product-search-box" action="/product_search.do" method="get">
+
+            <input type="text" 
+                   name="keyword" 
+                   value="${param.keyword}"
+                   placeholder="찾으시는 작가, 작품이 있나요?"
+                   autocomplete="off" />
+
+            <button type="submit" aria-label="검색">🔍</button>
+
+        </form>
 
 
         <!-- 우측 메뉴 -->
@@ -78,7 +86,7 @@
             <a href="/order/my">주문내역</a>
             <a href="/seller_product_list.do">판매자센터</a>
             <a href="#" class="disabled">♡ 관심</a>
-            <a href="#" class="disabled">🛒 장바구니</a>
+            <a href="/cart_list.do">🛒 장바구니</a>
         </div>
 
     </div>
@@ -100,7 +108,10 @@
                 🏆 베스트
             </a>
             
-            <a href="#" class="disabled">💛 취향발견</a>
+            <a href="/product_discovery.do"
+               class="${param.activeMenu eq 'discovery' ? 'nav-active' : ''}">
+                💛 취향발견
+            </a>
 
             <a href="/all_list.do"
                class="${param.activeMenu eq 'new' ? '   ' : ''}">
