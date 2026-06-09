@@ -1,6 +1,8 @@
 package com.kh.suje.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,6 +52,17 @@ public class OrderController {
         } else {
             orderList = orderDAO.selectOrderListByUserIdAndStatus(user_id, status); //상태인 주문만 다시 조회해서 화면에 보여줌
         }
+
+        // 주문별 주문상품 목록
+        Map<Integer, List<OrderItemVO>> orderItemMap = new HashMap<>();
+
+        for (OrderVO order : orderList) {
+            List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order.getOrder_id());
+            orderItemMap.put(order.getOrder_id(), itemList);
+        }
+
+        model.addAttribute("orderItemMap", orderItemMap);
+
 
         model.addAttribute("allOrderList", allOrderList); //전체 주문 목록
         model.addAttribute("orderList", orderList); //현재 화면에 보여줄 주문 목록
