@@ -65,40 +65,10 @@
                             </button>
 
                             <div class="sale-feature-viewport">
-                                <div class="sale-feature-track" id="saleFeatureTrack">
-
+                                <div class="sale-feature-track common-product-wrap" id="saleFeatureTrack">
                                     <c:forEach var="vo" items="${list}">
-                                        <a class="sale-feature-card"
-                                        href="/product_detail.do?product_id=${vo.product_id}">
-
-                                            <div class="sale-feature-img">
-                                                <c:choose>
-                                                    <c:when test="${vo.image_s != null && vo.image_s != 'no_file'}">
-                                                        <img src="${vo.image_s}" alt="${vo.name}">
-                                                    </c:when>
-
-                                                    <c:otherwise>
-                                                        <img src="/images/no_image.png" alt="이미지 없음">
-                                                    </c:otherwise>
-                                                </c:choose>
-
-                                                <span class="sale-heart">♡</span>
-                                            </div>
-
-                                            <div class="sale-feature-info">
-                                                <p class="sale-feature-name">${vo.name}</p>
-
-                                                <div class="sale-feature-price">
-                                                    <em>${vo.sale_rate}%</em>
-                                                    <strong>
-                                                        <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                                    </strong>
-                                                </div>
-                                            </div>
-
-                                        </a>
+                                        <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
                                     </c:forEach>
-
                                 </div>
                             </div>
 

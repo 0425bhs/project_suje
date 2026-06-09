@@ -1,18 +1,15 @@
 /* =========================================================
    할인 페이지 전용 CSS
    - 하단 상품 카드 디자인은 product_card.css에서 관리
+========================================================= */
 
 /* 현재 메뉴 활성화 */
 .sale-nav-active {
     color: #ff6f4f !important;
 }
 
-.product-nav-inner a.nav-active::after {
+.product-nav-inner a.sale-nav-active::after {
     width: 100% !important;
-}
-
-.sale-page {
-    background: #fff;
 }
 
 
@@ -83,22 +80,19 @@
     overflow: hidden;
 }
 
-.sale-feature-track {
+.sale-feature-track.common-product-wrap {
     display: flex;
+    flex-wrap: nowrap;
     gap: 14px;
     transition: transform 0.35s ease;
 }
 
-.sale-feature-card {
+.sale-feature-track.common-product-wrap > * {
     flex: 0 0 calc((100% - 56px) / 5);
-
-    display: block;
-
-    color: inherit;
-    text-decoration: none;
+    min-width: 0;
 }
 
-sale-feature-img {
+.sale-feature-img {
     position: relative;
 
     width: 100%;
@@ -438,7 +432,7 @@ sale-feature-img {
         width: 100%;
     }
 
-    .sale-feature-card {
+    .sale-feature-track.common-product-wrap > * {
         flex: 0 0 calc((100% - 42px) / 4);
     }
 }
@@ -450,7 +444,7 @@ sale-feature-img {
         padding-right: 24px;
     }
 
-    .sale-feature-card {
+    .sale-feature-track.common-product-wrap > * {
         flex: 0 0 calc((100% - 14px) / 2);
     }
 

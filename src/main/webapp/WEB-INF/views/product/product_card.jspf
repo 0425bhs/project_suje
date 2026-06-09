@@ -23,6 +23,8 @@
             </c:otherwise>
         </c:choose>
 
+        <span class="sale-heart" onclick="favoriteToggle(event, ${vo.product_id})">♡</span>
+
     </a>
 
     <div class="common-product-info">

@@ -1,10 +1,10 @@
 
 // 페이지 로딩
 window.addEventListener("load", function () {
-    updateSaleCountdown();
-    setInterval(updateSaleCountdown, 1000); //타이머를 바로 한 번 계산해서 화면에 보여줘.
+    updateSaleCountdown();// 타이머를 바로 한 번 계산해서 화면에 보여줌
+    setInterval(updateSaleCountdown, 1000); // 1초마다 타이머 다시 계산
 
-    initSaleFeatureSlider(); // 1초 마다 타이머를 다시 계산
+    initSaleFeatureSlider(); // 슬라이드 초기 설정
 });
 
 
@@ -54,7 +54,7 @@ function initSaleFeatureSlider() {
 
 
     //상품 카드
-    const cards = track.querySelectorAll(".sale-feature-card");
+    const cards = track.children;
 
     //상품이 없으면 버튼이랑 점을 숨김
     if (cards.length === 0) {
