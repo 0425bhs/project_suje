@@ -1,14 +1,13 @@
 /* =========================================================
    할인 페이지 전용 CSS
    - 하단 상품 카드 디자인은 product_card.css에서 관리
-========================================================= */
 
 /* 현재 메뉴 활성화 */
 .sale-nav-active {
     color: #ff6f4f !important;
 }
 
-.product-nav-inner a.sale-nav-active::after {
+.product-nav-inner a.nav-active::after {
     width: 100% !important;
 }
 
@@ -99,14 +98,14 @@
     text-decoration: none;
 }
 
-.sale-feature-img {
+sale-feature-img {
     position: relative;
 
     width: 100%;
     height: 248px;
 
     overflow: hidden;
-    border-radius: 6px;
+    border-radius: 8px;
     background: #f5f5f5;
 }
 
@@ -332,7 +331,19 @@
 
     font-size: 14px;
     font-weight: 800;
-    cursor: default;
+    cursor: pointer;
+    transition: 0.12s ease;
+}
+
+.sale-filter-row button:hover {
+    border-color: #ff6f4f;
+    color: #ff6f4f;
+}
+
+.sale-filter-row button.active {
+    background: #ff6f4f;
+    border-color: #ff6f4f;
+    color: #fff;
 }
 
 .sale-sort-row {

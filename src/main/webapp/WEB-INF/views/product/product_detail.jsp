@@ -2,211 +2,292 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+<%--
+    상품 상세 페이지
+    unitPrice는 실제 주문 계산에 사용할 단가입니다.
+    할인 가격이 있으면 sale_price, 없으면 price를 사용합니다.
+--%>
+<c:choose>
+    <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
+        <c:set var="unitPrice" value="${vo.sale_price}" />
+    </c:when>
+    <c:otherwise>
+        <c:set var="unitPrice" value="${vo.price}" />
+    </c:otherwise>
+</c:choose>
+
 <!DOCTYPE html>
 <html lang="ko">
 
     <head>
         <meta charset="UTF-8">
-        <title>상품 상세</title>
+        <title>${vo.name}</title>
+
         <link rel="stylesheet" href="/css/product/product_main.css">
+
         <script src="/js/product_main.js" defer></script>
-        <script src="/js/cart.js" defer></script>
+        <script src="/js/product_detail.js" defer></script>
     </head>
 
     <body>
-        <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-            <jsp:param name="activeMenu" value="detail" />
-        </jsp:include>
 
-        <div class="product-detail-page">
+    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
+        <jsp:param name="activeMenu" value="detail" />
+    </jsp:include>
 
-            <div class="product-detail-layout">
+    <div class="store-detail-page">
 
-                <div class="product-detail-panel">
-                    <h2 class="product-detail-title">상품 상세</h2>
+        <div class="store-detail-layout">
 
-                    <div class="product-detail-main">
-                        <div class="product-detail-image-card">
-                            <img class="product-detail-img" src="${vo.image_s}" alt="${vo.name}">
+            <!-- 왼쪽 이미지 영역 -->
+            <section class="store-detail-left">
 
-                            <div class="product-detail-card-info">
-                                <span class="product-badge">무료배송</span>
-                                <h3>${vo.name}</h3>
-                                <p class="product-card-subtitle">${vo.description}</p>
+                <div class="store-main-image-box">
 
-                                <div class="product-detail-price-box">
-                                    <c:choose>
-                                        <c:when test="${vo.sale_price > 0 && vo.sale_price < vo.price}">
-
-                                            <div class="price-top">
-                                                <span class="price-rate">${vo.sale_rate}%</span>
-                                                <span class="origin-price">
-                                                    <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                                </span>
-                                            </div>
-
-                                            <div class="sale-price">
-                                                <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                            </div>
-
-                                        </c:when>
-
-                                        <c:otherwise>
-                                            <div class="sale-price">
-                                                <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                            </div>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
-
-                                <div class="new-review-line">
-                                    <span class="review-star">★</span>
-                                    <span class="review-score">
-                                        <fmt:formatNumber value="${vo.review_avg}" pattern="0.00"/>
-                                    </span>
-                                    <span class="review-dot">·</span>
-                                    <span class="review-count">리뷰 ${vo.review_count}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="product-detail-info">
-                            <div class="product-label">
-                                <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
-                                    ${vo.company_name}샵 보기
-                                </a>
-                            </div>
-
-                            <p>재고: ${vo.stock}개</p>
-                            <p>배송비: <fmt:formatNumber value="${vo.delivery_fee}" pattern="#,###"/>원</p>
-                            <p>무료배송 조건:
-                                <c:choose>
-                                    <c:when test="${vo.free_shipping > 0}">
-                                        <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상 구매 시 무료배송
-                                    </c:when>
-                                    <c:otherwise>
-                                        무료배송 조건 없음
-                                    </c:otherwise>
-                                </c:choose>
-                            </p>
-                            <p>
-                                판매자 : <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">${vo.company_name}</a>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="product-detail-desc">
-                        <strong>상세정보</strong>
-                        <p>${vo.description}</p>
-                    </div>
-                </div>
-
-                <div class="product-order-box">
-                    <h3>주문 선택</h3>
-
-                    <form action="/order/form" method="get">
-                        <input type="hidden" name="product_id" value="${vo.product_id}">
-
-                        <div class="product-summary-line">
-                            <span>수량</span>
-                            <strong>
-                                <input class="product-quantity" id="quantity" type="number" name="quantity" value="1" min="1">
-                            </strong>
-                        </div>
-
-                        <div class="product-summary-line">
-                            <span>배송비</span>
-                            <strong>
-                                <fmt:formatNumber value="${vo.delivery_fee}" pattern="#,###"/>원
-                            </strong>
-                        </div>
-
-                        <div class="product-summary-line">
-                            <span>무료배송</span>
-                            <strong>
-                                <c:choose>
-                                    <c:when test="${vo.free_shipping > 0}">
-                                        <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상
-                                    </c:when>
-
-                                    <c:otherwise>
-                                        조건 없음
-                                    </c:otherwise>
-                                </c:choose>
-                            </strong>
-                        </div>
-
-                        <div class="product-summary-total">
-                            <span>판매가</span>
-                            <strong>
-                                <c:choose>
-                                    <c:when test="${vo.sale_price > 0}">
-                                        <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                    </c:when>
-
-                                    <c:otherwise>
-                                        <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                    </c:otherwise>
-                                </c:choose>
-                            </strong>
-                        </div>
-
-                        <div class="product-btn-row">
-                            <button type="submit" class="product-btn primary full">
-                                주문하기
-                            </button>
-                        </div>
-                    </form>
-
-                    <input type="hidden" id="product_id" value="${vo.product_id}">
-                    <div class="product-btn-row">
-                        <button type="button" class="product-btn primary full" onclick="cartInsert()">
-                            장바구니 담기
-                        </button>
-                    </div>
-
-                    <div class="product-btn-row">
-                        <a class="product-btn light full" href="/product/main.do">
-                            상품 목록으로
-                        </a>
-                    </div>
-                </div>
-
-                <div class="product-review-box">
-                    <strong>리뷰</strong>
+                    <button type="button" class="store-image-nav store-image-prev" id="detailImgPrev">
+                        ‹
+                    </button>
 
                     <c:choose>
-                        <c:when test="${empty review_list}">
-                            <p>아직 등록된 리뷰가 없습니다.</p>
+                        <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
+                            <img id="detailMainImage" src="${vo.image_l}" alt="${vo.name}">
+                        </c:when>
+
+                        <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
+                            <img id="detailMainImage" src="${vo.image_s}" alt="${vo.name}">
                         </c:when>
 
                         <c:otherwise>
-                            <c:forEach var="review" items="${review_list}">
-                                <div class="review-item">
-                                    <div>
-                                        <span class="review-star">★</span>
-                                        <strong>${review.rating}</strong>
-                                    </div>
+                            <img id="detailMainImage" src="/images/no_image.png" alt="이미지 없음">
+                        </c:otherwise>
+                    </c:choose>
 
-                                    <p>${review.content}</p>
-                                    <small>${review.created_at}</small>
-                                </div>
-                            </c:forEach>
+                    <button type="button" class="store-image-nav store-image-next" id="detailImgNext">
+                        ›
+                    </button>
+
+                </div>
+
+                <div class="store-thumb-row">
+                    <c:if test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
+                        <button type="button" class="store-thumb-btn active" data-img="${vo.image_l}">
+                            <img src="${vo.image_l}" alt="${vo.name}">
+                        </button>
+                    </c:if>
+
+                    <c:if test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
+                        <button type="button" class="store-thumb-btn" data-img="${vo.image_s}">
+                            <img src="${vo.image_s}" alt="${vo.name}">
+                        </button>
+                    </c:if>
+                </div>
+
+            </section>
+
+            <!-- 오른쪽 상품 정보 / 주문 영역 -->
+            <section class="store-detail-right">
+
+                <div class="store-seller-line">
+                    <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
+                        판매자 샵 보기
+                    </a>
+                    <span>판매자 번호 ${vo.seller_id}</span>
+                </div>
+
+                <h1 class="store-product-title">${vo.name}</h1>
+
+                <p class="store-product-desc">
+                    ${vo.description}
+                </p>
+
+                <!-- 가격 정보 -->
+                <div class="store-price-box">
+                    <c:choose>
+                        <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
+                            <div class="store-origin-price">
+                                <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
+                            </div>
+
+                            <div class="store-sale-price">
+                                <span>${vo.sale_rate}%</span>
+                                <strong>
+                                    <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
+                                </strong>
+                            </div>
+                        </c:when>
+
+                        <c:otherwise>
+                            <div class="store-sale-price">
+                                <strong>
+                                    <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
+                                </strong>
+                            </div>
                         </c:otherwise>
                     </c:choose>
                 </div>
 
-            </div>
+                <!-- 상품 기본 정보 -->
+                <div class="store-info-table">
+
+                    <div class="store-info-row">
+                        <span>재고</span>
+                        <strong>${vo.stock}개</strong>
+                    </div>
+
+                    <div class="store-info-row">
+                        <span>배송비</span>
+                        <strong>
+                            <c:choose>
+                                <c:when test="${vo.delivery_fee == 0}">
+                                    무료배송
+                                </c:when>
+
+                                <c:otherwise>
+                                    <fmt:formatNumber value="${vo.delivery_fee}" pattern="#,###"/>원
+                                </c:otherwise>
+                            </c:choose>
+                        </strong>
+                    </div>
+
+                    <div class="store-info-row">
+                        <span>무료배송 조건</span>
+                        <strong>
+                            <c:choose>
+                                <c:when test="${vo.free_shipping > 0}">
+                                    <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상 구매 시 무료배송
+                                </c:when>
+
+                                <c:otherwise>
+                                    조건 없음
+                                </c:otherwise>
+                            </c:choose>
+                        </strong>
+                    </div>
+
+                    <div class="store-info-row">
+                        <span>상품 상태</span>
+                        <strong>
+                            <c:choose>
+                                <c:when test="${vo.status eq 'APPROVED'}">판매중</c:when>
+                                <c:when test="${vo.status eq 'HIDDEN'}">판매중지</c:when>
+                                <c:when test="${vo.status eq 'PENDING'}">승인대기</c:when>
+                                <c:when test="${vo.status eq 'REJECTED'}">승인거절</c:when>
+                                <c:otherwise>${vo.status}</c:otherwise>
+                            </c:choose>
+                        </strong>
+                    </div>
+
+                </div>
+
+                <!-- 주문 수량 및 가격 선택 영역 -->
+                <form action="/order/form" method="get" class="store-order-box">
+                    <input type="hidden" name="product_id" value="${vo.product_id}">
+
+                    <div class="store-option-box">
+                        <p class="store-option-name">${vo.name}</p>
+
+                        <div class="store-option-bottom">
+                            <div class="store-quantity-box">
+                                <button type="button" id="qtyMinus">−</button>
+
+                                <input type="number"
+                                    id="detailQuantity"
+                                    name="quantity"
+                                    value="1"
+                                    min="1"
+                                    max="${vo.stock}"
+                                    data-unit-price="${unitPrice}"
+                                    ${vo.stock <= 0 ? 'disabled' : ''}>
+
+                                <button type="button" id="qtyPlus">+</button>
+                            </div>
+
+                            <div class="store-option-price">
+                                <fmt:formatNumber value="${unitPrice}" pattern="#,###"/>원
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="store-total-row">
+                        <span>총 상품금액</span>
+
+                        <strong>
+                            총 <em id="detailTotalCount">1</em>개
+                            <b id="detailTotalPrice">
+                                <fmt:formatNumber value="${unitPrice}" pattern="#,###"/>원
+                            </b>
+                        </strong>
+                    </div>
+
+                    <div class="store-main-buttons">
+                        <button type="button" class="store-cart-btn" disabled>
+                            장바구니 준비중
+                        </button>
+
+                        <c:choose>
+                            <c:when test="${vo.stock > 0 and vo.status eq 'APPROVED'}">
+                                <button type="submit" class="store-order-btn">
+                                    주문하기
+                                </button>
+                            </c:when>
+
+                            <c:otherwise>
+                                <button type="button" class="store-order-btn disabled" disabled>
+                                    주문 불가
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+
+                    <div class="store-sub-buttons">
+                        <button type="button" disabled>♡ 찜하기 준비중</button>
+                        <a href="/qna_form.do?product_id=${vo.product_id}">문의하기</a>
+                    </div>
+                </form>
+
+            </section>
 
         </div>
 
-        <footer class="product-footer">
-            <div class="product-footer-inner">
-                <strong>HANDMADE</strong>
-                <p>작가 상품을 둘러보고 마음에 드는 작품을 주문할 수 있습니다.</p>
-            </div>
-        </footer>
+        <!-- 상세 정보 -->
+        <section class="store-detail-info-section">
+            <h2>상세정보</h2>
+            <p>${vo.description}</p>
+        </section>
+
+        <!-- 리뷰 영역 -->
+        <section class="product-review-box">
+            <strong>리뷰</strong>
+
+            <c:choose>
+                <c:when test="${empty review_list}">
+                    <p>아직 등록된 리뷰가 없습니다.</p>
+                </c:when>
+
+                <c:otherwise>
+                    <c:forEach var="review" items="${review_list}">
+                        <div class="review-item">
+                            <div>
+                                <span class="review-star">★</span>
+                                <strong>${review.rating}</strong>
+                            </div>
+
+                            <p>${review.content}</p>
+                            <small>${review.created_at}</small>
+                        </div>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
+        </section>
+
+    </div>
+
+    <footer class="product-footer">
+        <div class="product-footer-inner">
+            <strong>HANDMADE</strong>
+            <p>작가 상품을 둘러보고 마음에 드는 작품을 주문할 수 있습니다.</p>
+        </div>
+    </footer>
 
     </body>
-
 </html>
