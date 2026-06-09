@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -10,7 +11,7 @@
         <title>내 주문 내역</title>
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/order-payment.css">
-        <link rel="stylesheet" href="/css/payment/order-payment.css">
+
         <script src="/js/product_main.js" defer></script>
         <script src="/js/order-payment.js" defer></script>
     </head>
@@ -21,204 +22,329 @@
             <jsp:param name="activeMenu" value="detail" />
         </jsp:include>
 
-        <c:set var="totalCount" value="0" />
-        <c:set var="pendingCount" value="0" />
-        <c:set var="paidCount" value="0" />
-        <c:set var="deliveryCount" value="0" />
-        <c:set var="cancelCount" value="0" />
+    <c:set var="totalCount" value="0" />
+    <c:set var="pendingCount" value="0" />
+    <c:set var="paidCount" value="0" />
+    <c:set var="preparingCount" value="0" />
+    <c:set var="shippingCount" value="0" />
+    <c:set var="deliveredCount" value="0" />
+    <c:set var="cancelCount" value="0" />
 
-        <c:forEach var="order" items="${allOrderList}">
-            <c:set var="totalCount" value="${totalCount + 1}" />
+    <c:forEach var="order" items="${allOrderList}">
+        <c:set var="totalCount" value="${totalCount + 1}" />
 
-            <c:if test="${order.status eq 'PENDING'}">
-                <c:set var="pendingCount" value="${pendingCount + 1}" />
-            </c:if>
+        <c:if test="${order.status eq 'PENDING'}">
+            <c:set var="pendingCount" value="${pendingCount + 1}" />
+        </c:if>
 
-            <c:if test="${order.status eq 'PAID'}">
-                <c:set var="paidCount" value="${paidCount + 1}" />
-            </c:if>
+        <c:if test="${order.status eq 'PAID'}">
+            <c:set var="paidCount" value="${paidCount + 1}" />
+        </c:if>
 
-            <c:if test="${order.status eq 'PAID' || order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
-                <c:set var="deliveryCount" value="${deliveryCount + 1}" />
-            </c:if>
+        <c:if test="${order.status eq 'PREPARING'}">
+            <c:set var="preparingCount" value="${preparingCount + 1}" />
+        </c:if>
 
-            <c:if test="${order.status eq 'CANCELLED'}">
-                <c:set var="cancelCount" value="${cancelCount + 1}" />
-            </c:if>
-        </c:forEach>
+        <c:if test="${order.status eq 'SHIPPING'}">
+            <c:set var="shippingCount" value="${shippingCount + 1}" />
+        </c:if>
 
-        <section class="page-block soft my-order-page">
-            <div class="block-inner">
+        <c:if test="${order.status eq 'DELIVERED'}">
+            <c:set var="deliveredCount" value="${deliveredCount + 1}" />
+        </c:if>
 
-                <div class="my-order-title">
-                    <div>
-                        <span>MY ORDER</span>
-                        <h2>내 주문 내역</h2>
-                        <p>주문한 상품의 결제 상태와 배송 상태를 확인할 수 있습니다.</p>
+        <c:if test="${order.status eq 'CANCELLED'}">
+            <c:set var="cancelCount" value="${cancelCount + 1}" />
+        </c:if>
+    </c:forEach>
+
+    <section class="myshop-page">
+
+        <div class="myshop-layout">
+
+            <!-- 왼쪽 사이드 메뉴 -->
+            <aside class="myshop-sidebar">
+
+                <div class="myshop-side-card">
+
+                    <a href="/order/my" class="myshop-side-home">
+                        마이쇼핑 홈
+                    </a>
+
+                    <div class="myshop-side-group">
+                        <strong>쇼핑 정보</strong>
+                        <a href="/order/my" class="active">주문/배송내역</a>
+                        <button type="button" disabled>찜한 상품 준비중</button>
                     </div>
+
+                    <div class="myshop-side-group">
+                        <strong>리뷰 관리</strong>
+                        <button type="button">내 리뷰</button>
+                    </div>
+
+                    <div class="myshop-side-group">
+                        <strong>문의 관리</strong>
+                        <button type="button">내 문의</button>
+                    </div>
+
                 </div>
 
-                <div class="order-stat-grid">
-                    <div class="order-stat-card">
-                        <span>전체 주문</span>
-                        <strong>${totalCount}</strong>
-                        <p>지금까지 주문한 전체 내역입니다.</p>
-                    </div>
+            </aside>
 
-                    <div class="order-stat-card">
-                        <span>결제 대기</span>
-                        <strong>${pendingCount}</strong>
-                        <p>아직 결제가 필요한 주문입니다.</p>
-                    </div>
+            <!-- 오른쪽 본문 -->
+            <main class="myshop-content">
 
-                    <div class="order-stat-card">
-                        <span>결제 완료</span>
-                        <strong>${paidCount}</strong>
-                        <p>결제가 완료된 주문입니다.</p>
-                    </div>
+                <!-- 회원 요약 카드 -->
+                <section class="myshop-user-card">
 
-                    <div class="order-stat-card">
-                        <span>배송 확인</span>
-                        <strong>${deliveryCount}</strong>
-                        <p>배송 상태를 확인할 수 있습니다.</p>
-                    </div>
-                </div>
+                    <div class="myshop-user-info">
+                        <div class="myshop-profile-icon">👤</div>
 
-                <div class="order-table-card">
-
-                    <div class="order-table-head">
                         <div>
-                            <h3>최근 주문 내역</h3>
-                            <p>주문번호를 기준으로 상세 정보와 배송 상태를 확인할 수 있습니다.</p>
-                        </div>
-
-                        <div class="order-filter">
-                            <button type="button"
-                                    class="${empty selectedStatus ? 'active' : ''}"
-                                    onclick="location.href='/order/my'">
-                                전체
-                            </button>
-
-                            <button type="button"
-                                    class="${selectedStatus eq 'PAID' ? 'active' : ''}"
-                                    onclick="location.href='/order/my?status=PAID'">
-                                결제완료
-                            </button>
-
-                            <button type="button"
-                                    class="${selectedStatus eq 'PREPARING' ? 'active' : ''}"
-                                    onclick="location.href='/order/my?status=PREPARING'">
-                                준비중
-                            </button>
-
-                            <button type="button"
-                                    class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
-                                    onclick="location.href='/order/my?status=SHIPPING'">
-                                배송중
-                            </button>
-
-                            <button type="button"
-                                    class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
-                                    onclick="location.href='/order/my?status=CANCELLED'">
-                                취소
-                            </button>
+                            <strong>회원님</strong>
+                            <p>주문한 작품의 결제 상태와 배송 상태를 확인할 수 있습니다.</p>
                         </div>
                     </div>
 
-                    <div class="table-wrap">
-                        <table class="order-table">
-                            <thead>
-                                <tr>
-                                    <th>주문번호</th>
-                                    <th>결제금액</th>
-                                    <th>주문상태</th>
-                                    <th>주문일</th>
-                                    <th>확인</th>
-                                </tr>
-                            </thead>
+                    <div class="myshop-order-count">
+                        <span>MY ORDER</span>
+                        <strong>${totalCount}건</strong>
+                    </div>
 
-                            <tbody>
-                                <c:choose>
-                                    <c:when test="${empty orderList}">
-                                        <tr>
-                                            <td colspan="5" class="empty-order">
-                                                아직 주문 내역이 없습니다.
-                                            </td>
-                                        </tr>
-                                    </c:when>
+                </section>
 
-                                    <c:otherwise>
-                                        <c:forEach var="order" items="${orderList}">
-                                            <tr>
-                                                <td>
-                                                    <strong class="order-number">
-                                                        #${order.order_id}
-                                                    </strong>
-                                                </td>
+                <!-- 주문 상태 요약 -->
+                <section class="myshop-status-card">
 
-                                                <td>
-                                                    <strong class="order-amount">
-                                                        <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
-                                                    </strong>
-                                                </td>
+                    <button type="button"
+                            class="${empty selectedStatus ? 'active' : ''}"
+                            onclick="location.href='/order/my'">
+                        <span>전체</span>
+                        <strong>${totalCount}</strong>
+                    </button>
 
-                                                <td>
-                                                    <span class="badge ${order.status}">
-                                                        <c:choose>
-                                                            <c:when test="${order.status eq 'PENDING'}">주문 접수</c:when>
-                                                            <c:when test="${order.status eq 'PAID'}">결제 완료</c:when>
-                                                            <c:when test="${order.status eq 'PREPARING'}">제작 준비중</c:when>
-                                                            <c:when test="${order.status eq 'SHIPPING'}">배송중</c:when>
-                                                            <c:when test="${order.status eq 'DELIVERED'}">배송 완료</c:when>
-                                                            <c:when test="${order.status eq 'CANCELLED'}">주문 취소</c:when>
-                                                            <c:otherwise>${order.status}</c:otherwise>
-                                                        </c:choose>
-                                                    </span>
-                                                </td>
+                    <button type="button"
+                            class="${selectedStatus eq 'PENDING' ? 'active' : ''}"
+                            onclick="location.href='/order/my?status=PENDING'">
+                        <span>결제대기</span>
+                        <strong>${pendingCount}</strong>
+                    </button>
 
-                                                <td>${order.created_at}</td>
+                    <button type="button"
+                            class="${selectedStatus eq 'PAID' ? 'active' : ''}"
+                            onclick="location.href='/order/my?status=PAID'">
+                        <span>결제완료</span>
+                        <strong>${paidCount}</strong>
+                    </button>
 
-                                                <td class="order-actions">
-                                                    <a href="/order/detail?order_id=${order.order_id}">상세보기</a>
+                    <button type="button"
+                            class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
+                            onclick="location.href='/order/my?status=SHIPPING'">
+                        <span>배송중</span>
+                        <strong>${shippingCount}</strong>
+                    </button>
 
-                                                    <c:if test="${order.status eq 'PENDING'}">
-                                                        <a href="/payment/ready?order_id=${order.order_id}">결제하기</a>
+                    <button type="button"
+                            class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}"
+                            onclick="location.href='/order/my?status=DELIVERED'">
+                        <span>배송완료</span>
+                        <strong>${deliveredCount}</strong>
+                    </button>
 
-                                                        <form action="/order/cancel" method="post" class="inline-form">
-                                                            <input type="hidden" name="order_id" value="${order.order_id}">
-                                                            <button type="submit" class="link-button"
-                                                                    onclick="return confirm('주문을 취소하시겠습니까?');">
-                                                                주문취소
-                                                            </button>
-                                                        </form>
-                                                    </c:if>
+                    <button type="button"
+                            class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
+                            onclick="location.href='/order/my?status=CANCELLED'">
+                        <span>취소</span>
+                        <strong>${cancelCount}</strong>
+                    </button>
 
-                                                    <c:if test="${order.status eq 'PAID'}">
-                                                        <a href="/order/delivery?order_id=${order.order_id}">배송조회</a>
+                </section>
 
-                                                        <button type="button"
-                                                                class="link-button"
-                                                                onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
-                                                            결제취소
+                <!-- 빠른 메뉴: 아직 연결 안 함 -->
+                <section class="myshop-quick-card">
+
+                    <button type="button" onclick="location.href='/order/my?status=SHIPPING'">
+                        <span>📦</span>
+                        <strong>배송중</strong>
+                    </button>
+
+                    <button type="button">
+                        <span>⭐</span>
+                        <strong>내 리뷰</strong>
+                    </button>
+
+                    <button type="button">
+                        <span>💬</span>
+                        <strong>내 문의</strong>
+                    </button>
+
+                    <button type="button">
+                        <span>♡</span>
+                        <strong>찜한 상품</strong>
+                    </button>
+
+                </section>
+
+                <!-- 주문/배송내역 -->
+                <section class="myshop-order-section">
+
+                    <div class="myshop-section-head">
+                        <div>
+                            <h2>주문/배송내역</h2>
+                            <p>주문한 작품의 상태를 확인하고 필요한 작업을 진행할 수 있습니다.</p>
+                        </div>
+
+                        <a href="/order/my">전체보기</a>
+                    </div>
+
+                    <c:choose>
+                        <c:when test="${empty orderList}">
+                            <div class="myshop-empty-order">
+                                아직 주문 내역이 없습니다.
+                            </div>
+                        </c:when>
+
+                        <c:otherwise>
+                            <div class="myshop-order-list">
+
+                                <c:forEach var="order" items="${orderList}">
+
+                                    <c:set var="items" value="${orderItemMap[order.order_id]}" />
+                                    <c:set var="mainItem" value="${items[0]}" />
+
+                                    <article class="myshop-order-card">
+
+                                        <div class="myshop-order-top">
+
+                                            <div>
+                                                <strong class="myshop-status-badge ${order.status}">
+                                                    <c:choose>
+                                                        <c:when test="${order.status eq 'PENDING'}">주문 접수</c:when>
+                                                        <c:when test="${order.status eq 'PAID'}">결제 완료</c:when>
+                                                        <c:when test="${order.status eq 'PREPARING'}">제작 준비중</c:when>
+                                                        <c:when test="${order.status eq 'SHIPPING'}">배송중</c:when>
+                                                        <c:when test="${order.status eq 'DELIVERED'}">배송 완료</c:when>
+                                                        <c:when test="${order.status eq 'CANCELLED'}">주문 취소</c:when>
+                                                        <c:otherwise>${order.status}</c:otherwise>
+                                                    </c:choose>
+                                                </strong>
+
+                                                <span>${order.created_at} · 주문번호 #${order.order_id}</span>
+                                            </div>
+
+                                            <a href="/order/detail?order_id=${order.order_id}">
+                                                주문상세 &gt;
+                                            </a>
+
+                                        </div>
+
+                                        <div class="myshop-order-body">
+
+                                            <div class="myshop-product-thumb">
+                                                <c:choose>
+                                                    <c:when test="${not empty mainItem and not empty mainItem.imageS and mainItem.imageS ne 'no_file'}">
+                                                        <img src="${mainItem.imageS}" alt="${mainItem.productName}">
+                                                    </c:when>
+
+                                                    <c:otherwise>
+                                                        <img src="/images/no_image.png" alt="이미지 없음">
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+
+                                            <div class="myshop-product-info">
+                                                <c:choose>
+                                                    <c:when test="${not empty mainItem}">
+                                                        <a href="/product_detail.do?product_id=${mainItem.product_id}">
+                                                            ${mainItem.productName}
+
+                                                            <c:if test="${fn:length(items) > 1}">
+                                                                외 ${fn:length(items) - 1}건
+                                                            </c:if>
+                                                        </a>
+
+                                                        <p>
+                                                            수량 ${mainItem.quantity}개 ·
+                                                            <fmt:formatNumber value="${mainItem.price}" pattern="#,###"/>원
+                                                        </p>
+                                                    </c:when>
+
+                                                    <c:otherwise>
+                                                        <strong>주문 상품 정보 없음</strong>
+                                                        <p>상품 정보를 불러오지 못했습니다.</p>
+                                                    </c:otherwise>
+                                                </c:choose>
+
+                                                <strong>
+                                                    총 결제금액
+                                                    <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
+                                                </strong>
+                                            </div>
+
+                                            <div class="myshop-order-actions">
+
+                                                <a href="/order/detail?order_id=${order.order_id}">
+                                                    상세보기
+                                                </a>
+
+                                                <c:if test="${order.status eq 'PENDING'}">
+                                                    <a href="/payment/ready?order_id=${order.order_id}" class="primary">
+                                                        결제하기
+                                                    </a>
+
+                                                    <form action="/order/cancel" method="post" class="inline-form">
+                                                        <input type="hidden" name="order_id" value="${order.order_id}">
+
+                                                        <button type="submit"
+                                                                onclick="return confirm('주문을 취소하시겠습니까?');">
+                                                            주문취소
                                                         </button>
-                                                    </c:if>
+                                                    </form>
+                                                </c:if>
 
-                                                    <c:if test="${order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
-                                                        <a href="/order/delivery?order_id=${order.order_id}">배송조회</a>
-                                                    </c:if>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
-                            </tbody>
-                        </table>
-                    </div>
+                                                <c:if test="${order.status eq 'PAID' || order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
+                                                    <a href="/order/delivery?order_id=${order.order_id}">
+                                                        배송조회
+                                                    </a>
+                                                </c:if>
 
-                </div>
+                                                <c:if test="${order.status eq 'PAID'}">
+                                                    <button type="button"
+                                                            onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
+                                                        결제취소
+                                                    </button>
+                                                </c:if>
 
-            </div>
-        </section>
+                                                <!-- 아직 연결하지 않는 버튼 -->
+                                                <c:if test="${order.status eq 'DELIVERED'}">
+                                                    <button type="button" class="review">
+                                                        리뷰쓰기
+                                                    </button>
+                                                </c:if>
+
+                                                <button type="button" class="qna">
+                                                    문의하기
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </article>
+
+                                </c:forEach>
+
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+
+                </section>
+
+            </main>
+
+        </div>
+
+    </section>
 
         <!-- 결제취소 모달 -->
         <div class="cancel-modal-wrap" id="cancelModal">
