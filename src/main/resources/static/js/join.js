@@ -69,11 +69,11 @@ function togglePwdVisibility2(e) {
 //닉네임중복체크
 function check_nick() {
 
-    let nickName = document.getElementById("nickName").value.trim();
+    let nick_name = document.getElementById("nick_name").value.trim();
 
-    if (nickName === '') {
+    if (nick_name === '') {
         alert("닉네임을 입력하세요");
-        document.getElementById("nickName").focus();
+        document.getElementById("nick_name").focus();
         return;
     }
 
@@ -82,15 +82,15 @@ function check_nick() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: 'nickName=' + nickName
+        body: 'nick_name=' + nick_name
     }).then(response => response.json())
         .then(data => {
 
             if (data.result === 'no') {
-                alert(data.nickName + "는 이미 사용중입니다");
+                alert(data.nick_name + "는 이미 사용중입니다");
 
             } else {
-                alert(data.nickName + "는 사용 가능합니다");
+                alert(data.nick_name + "는 사용 가능합니다");
                 nickCheck = true;
             }
 
@@ -147,18 +147,18 @@ function authCheck() {
 function send(f) {
 
     let isUserChecked = document.getElementById("user").checked;
-    let nickName = f.nickName.value.trim();
+    let nick_name = f.nick_name.value.trim();
 
-    if (nickName === "") {
+    if (nick_name === "") {
         alert("닉네임을 입력해 주세요.");
-        f.nickName.focus();
+        f.nick_name.focus();
         return;
     }
 
     //닉네임 중복체크를 마쳤는지 확인
     if (!nickCheck) {
         alert("닉네임 중복체크를 하세요");
-        f.nickName.focus();
+        f.nick_name.focus();
         return;
     }
 
@@ -195,7 +195,7 @@ function send(f) {
 
         if (password !== checkPassword) {
             alert("비밀번호가 일치하지 않습니다");
-            f.password.focus(); 
+            f.checkPassword.focus();
             return;
 
         }
@@ -203,29 +203,29 @@ function send(f) {
    if(!isUserChecked) {
 
 
-        if (f.companyName.value.trim() === "") {
+        if (f.company_name.value.trim() === "") {
             alert("상호명을 입력해 주세요.");
-            f.companyName.focus();
+            f.company_name.focus();
             return;
         }
-        if (f.businessNumber.value.trim() === "") {
+        if (f.business_number.value.trim() === "") {
             alert("사업자 등록번호를 입력해 주세요.");
-            f.businessNumber.focus();
+            f.business_number.focus();
             return;
         }
-        if (f.representativeName.value.trim() === "") {
+        if (f.representative_name.value.trim() === "") {
             alert("대표자명을 입력해 주세요.");
-            f.representativeName.focus();
+            f.representative_name.focus();
             return;
         }
-        if (f.openingDate.value === "") {
+        if (f.opening_date.value === "") {
             alert("사업자 개업일자를 선택해 주세요.");
-            f.openingDate.focus();
+            f.opening_date.focus();
             return;
         }
-        if (f.businessAddress.value.trim() === "") {
+        if (f.business_address.value.trim() === "") {
             alert("사업자 주소를 입력해 주세요.");
-            f.businessAddress.focus();
+            f.business_address.focus();
             return;
         }
     }//사업자

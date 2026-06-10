@@ -1,0 +1,160 @@
+body {
+    background-color: #FAFAFA;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* 로그인 전체 상자 */
+.login-container {
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.login-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333333;
+    padding-bottom: 30px;
+    text-align: center;
+}
+
+.label-cell {
+    width: 25%;
+    font-size: 14px;
+    color: #666666;
+    font-weight: 500;
+}
+
+.input-cell {
+    width: 55%;
+    padding: 6px 0;
+}
+
+.btn-cell {
+    width: 20%;
+    padding-left: 8px;
+    vertical-align: middle;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #DCDCDC;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #FF7E36; /* 아이디스 주황색 테두리 */
+}
+
+/* 우측 세로형 메인 로그인 버튼 */
+.loginbtn {
+    width: 100%;
+    height: 94px;
+    background-color: #FF7E36;
+    border: none;
+    border-radius: 6px;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.loginbtn:hover {
+    background-color: #E66A23;
+}
+
+/* -----------------------------------------------------
+    일반 회원가입 버튼 영역
+----------------------------------------------------- */
+.sub-button-container {
+    margin-top: 15px;
+}
+
+.join-btn {
+    width: 100%;
+    height: 44px;
+    background-color: #F5F5F5;
+    border: 1px solid #EAEAEA;
+    border-radius: 6px;
+    color: #666666;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.join-btn:hover {
+    background-color: #EEEEEE;
+    color: #333333;
+}
+
+/* -----------------------------------------------------
+    소셜 로그인 영역 (가로 병렬 동그라미 아이콘)
+----------------------------------------------------- */
+.social-wrap {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px dashed #EAEAEA; 
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px; /* 아이콘끼리의 간격 */
+}
+
+.social-wrap button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px; 
+    height: 46px; 
+    border: none;
+    border-radius: 50%; /* 완전 원형 */
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: transform 0.2s, opacity 0.2s;
+    padding: 0;
+}
+
+.social-wrap button:hover {
+    opacity: 0.9;
+    transform: scale(1.05); /* 마우스 올리면 미세하게 커지는 효과 */
+}
+
+.social-wrap svg {
+    width: 22px;
+    height: 22px;
+}
+
+.btn-kakao { background-color: #FEE500; }
+.btn-kakao svg { fill: #191919; }
+
+.btn-naver { background-color: #03C75A; }
+.btn-naver svg { fill: #FFFFFF; }
+
+.btn-toss { background-color: #0051FF; }
+.btn-toss svg { fill: #FFFFFF; }

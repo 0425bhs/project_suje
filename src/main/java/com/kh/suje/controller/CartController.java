@@ -34,7 +34,7 @@ public class CartController {
             return "redirect:/login.do";
         }
 
-        int user_id=user.getUserId().intValue();
+        int user_id=user.getUser_id();
 
         List<Map<String,Object>> list=cartdao.cartList(user_id);
 
@@ -72,7 +72,7 @@ public class CartController {
             return map;
         }
 
-        int user_id=user.getUserId().intValue();
+        int user_id=user.getUser_id();
 
         vo.setUser_id(user_id);
 

@@ -1,0 +1,262 @@
+body {
+    background-color: #FAFAFA;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* 회원가입 전체 컨테이너 */
+.join-container {
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 550px;
+    margin: 40px 20px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+/* 상단 타이틀 (Caption 대체 스타일) */
+.join-table caption {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333333;
+    margin-bottom: 30px;
+    text-align: center;
+    display: block;
+}
+
+/* 테이블 기본 리셋 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 14px 0;
+    text-align: left;
+    vertical-align: middle;
+}
+
+/* 왼쪽 항목 이름 (Th) */
+th {
+    width: 30%;
+    font-size: 14px;
+    color: #666666;
+    font-weight: 500;
+}
+
+/* 오른쪽 입력 필드 (Td) */
+td {
+    width: 70%;
+}
+
+/* 입력창 기본 스타일 */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+#authInput {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #DCDCDC;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333333;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 포커스 효과 (아이디스 주황색) */
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+#authInput:focus {
+    outline: none;
+    border-color: #FF7E36;
+    box-shadow: 0 0 4px rgba(255, 126, 54, 0.2);
+}
+
+/* 파일 업로드 창 스타일 커스텀 */
+input[type="file"] {
+    font-size: 14px;
+    color: #666666;
+    cursor: pointer;
+}
+
+/* 비활성화 상태 스타일 */
+input[readonly],
+input[disabled] {
+    background-color: #F5F5F5 !important;
+    color: #999999 !important;
+    border-color: #EFEFEF !important;
+    cursor: not-allowed;
+}
+
+/* 가로 정렬 레이아웃 */
+.input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.input-row:last-child {
+    margin-bottom: 0;
+}
+
+.input-row input[type="text"],
+.input-row #authInput {
+    flex: 1; 
+}
+
+/* 라디오 버튼 및 라벨 */
+input[type="radio"] {
+    accent-color: #FF7E36; 
+    margin-right: 4px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+label {
+    font-size: 14px;
+    color: #444444;
+    margin-right: 20px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+/* -----------------------------------------------------
+    BUTTONS (버튼 기본 설정)
+----------------------------------------------------- */
+input[type="button"] {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    box-sizing: border-box;
+}
+
+/* 기능성 서브 버튼 */
+.btn-secondary, 
+input[value="중복체크"], 
+input[value="전송"], 
+input[value="인증"] {
+    height: 44px;
+    padding: 0 16px;
+    background-color: #FFFFFF;
+    border: 1px solid #FF7E36;
+    color: #FF7E36;
+}
+
+.btn-secondary:hover,
+input[value="중복체크"]:hover, 
+input[value="전송"]:hover, 
+input[value="인증"]:hover {
+    background-color: #FFF5F0; 
+}
+
+/* 하단 메인 가입 버튼 */
+.btn-main {
+    height: 50px;
+    width: 140px;
+    background-color: #FF7E36;
+    border: none;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.btn-main:hover {
+    background-color: #E66A23; 
+}
+
+/* 하단 메인 취소 버튼 */
+.btn-cancel {
+    height: 50px;
+    width: 140px;
+    background-color: #EEEEEE;
+    border: none;
+    color: #666666;
+    font-size: 16px;
+}
+
+.btn-cancel:hover {
+    background-color: #DDDDDD;
+    color: #333333;
+}
+
+/* -----------------------------------------------------
+    SOCIAL LOGINS (3사 간편로그인 가로 병렬 배치 버전)
+----------------------------------------------------- */
+.social-wrap {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px dashed #EAEAEA; 
+    
+    /* 가로로 나란히 배치하기 위한 설정 */
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* 가운데 정렬 */
+    gap: 20px; /* 버튼과 버튼 사이의 간격 */
+}
+
+/* 정사각형 모양의 소셜 버튼 공통 스타일 */
+.social-wrap button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* 가로/세로 길이를 똑같이 맞춘 정사각형 스펙 */
+    width: 54px; 
+    height: 54px; 
+    
+    border: none;
+    border-radius: 50%; /* 💡 둥근 사각형을 원하시면 8px~12px로 바꾸시고, 완전 원형을 원하시면 50%로 두세요! */
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: transform 0.2s, opacity 0.2s;
+    padding: 0;
+}
+
+/* 마우스를 올렸을 때 살짝 커지는 세련된 효과 */
+.social-wrap button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+/* 아이콘 크기 정의 (정사각형 버튼에 맞게 최적화) */
+.social-wrap svg {
+    width: 26px;
+    height: 26px;
+}
+
+/* 카카오톡 - 고유 노란색 */
+.btn-kakao {
+    background-color: #FEE500; 
+}
+.btn-kakao svg { fill: #191919; }
+
+/* 네이버 - 고유 초록색 */
+.btn-naver {
+    background-color: #03C75A;
+}
+.btn-naver svg { fill: #FFFFFF; }
+
+/* 토스 - 고유 파란색 */
+.btn-toss {
+    background-color: #0051FF;
+}
+.btn-toss svg { fill: #FFFFFF; }
