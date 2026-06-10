@@ -69,9 +69,9 @@ function togglePwdVisibility2(e) {
 //닉네임중복체크
 function check_nick() {
 
-    let nickName = document.getElementById("nick_name").value.trim();
+    let nick_name = document.getElementById("nick_name").value.trim();
 
-    if (nickName === '') {
+    if (nick_name === '') {
         alert("닉네임을 입력하세요");
         document.getElementById("nick_name").focus();
         return;
