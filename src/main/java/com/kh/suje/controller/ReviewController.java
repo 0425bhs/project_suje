@@ -1,5 +1,6 @@
 package com.kh.suje.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -74,6 +75,16 @@ public class ReviewController {
                 continue;
             }
 
+            //저장경로 지정
+            String savePath = "/Users/kkt/Desktop/KKT/Spring_boot/upload";
+
+            //저장경로가 없다면 생성
+            File dir = new File(savePath);
+
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
             String saveName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
             file.transferTo(new File(uploadPath, saveName));
@@ -83,7 +94,7 @@ public class ReviewController {
             image.setTarget_type("REVIEW");
             image.setTarget_id(review.getReview_id());
             image.setImage_url("");
-            image.setOriginal_name("");
+            image.setOriginal_name(file.getOriginalFilename());
             image.setSort_order(sort_order++);
 
             imageList.add(image);

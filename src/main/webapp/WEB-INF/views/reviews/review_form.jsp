@@ -161,7 +161,6 @@
             color: red;
             cursor: pointer;
         }
-        ㄴ
     </style>
     <script>
         function send(f) {
@@ -301,7 +300,7 @@
                                multiple
                                onchange="addPreview(this)"
                                hidden>
-
+                               
                         <label for="images">
                             +
                         </label>
