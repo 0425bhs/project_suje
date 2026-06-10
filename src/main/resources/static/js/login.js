@@ -1,17 +1,17 @@
 function togglePwdVisibility(e) {
-    e.preventDefault(); // 
-    
+    e.preventDefault();
     let passwordInput = document.getElementById("password");
-    let toggleBtn = document.getElementById("toggleBtn");
+    let icon = document.getElementById("eyeIcon");
 
     if (passwordInput.type === "password") {
         passwordInput.type = "text";
-        toggleBtn.textContent = "🙈"; }
-        else{
+        icon.className = "ti ti-eye";
+    } else {
         passwordInput.type = "password";
-        toggleBtn.textContent = "👁️"; // 비밀번호가 숨겨졌을 때는 눈 이모지
+        icon.className = "ti ti-eye-off";
     }
 }
+
 
 function send(f) {
     let email = f.email.value.trim();
@@ -41,7 +41,7 @@ function send(f) {
     .then(res => res.json())
     .then(data => {
 
-        console.log("=== 📢 서버가 보낸 리얼 데이터 확인 ===");
+        console.log("=== 서버가 보낸 리얼 데이터 확인 ===");
 
 console.log(data); 
 
@@ -58,6 +58,6 @@ console.log(data);
         }
     })
     .catch(err => {
-        console.error("🚨 Fetch 통신 에러 발생:", err);
+        console.error("Fetch 통신 에러 발생:", err);
     });
 }
