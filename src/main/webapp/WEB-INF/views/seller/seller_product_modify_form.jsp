@@ -127,7 +127,7 @@
 
                             <div class="form-row shipping-section">
                                 <label>배송비</label>
-                                <input type="number" name="delivery_fee" value="${vo.delivery_fee}" placeholder="배송비">
+                                <input type="number" id="delivery_fee" name="delivery_fee" value="${vo.delivery_fee}" placeholder="배송비">
                             </div>
 
                         </div>
@@ -135,17 +135,12 @@
                         <div class="form-row free-shipping-row">
                             <label>무료배송 기준 금액</label>
 
-                            <input type="text"
-                                name="free_shipping"
-                                id="free_shipping"
-                                class="free-shipping-input"
-                                value="${vo.free_shipping}"
-                                placeholder="무료배송 기준 금액">
+                            <input type="text" id="free_shipping_view" class="free-shipping-input" value="<fmt:formatNumber value='${vo.free_shipping}' pattern='#,###' />" placeholder="무료배송 기준 금액">
 
-                            <p class="form-help free-shipping-help">
-                                <span id="free_shipping_text">
-                                    <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###" />
-                                </span>원 이상 구매 시 무료배송으로 설정됩니다.
+                            <input type="hidden" name="free_shipping" id="free_shipping" value="${vo.free_shipping}">
+
+                            <p class="form-help free-shipping-help" id="free_shipping_help">
+                                택배비란에 공백이나 0일 경우 무료배송으로 설정됩니다.
                             </p>
                         </div>
 

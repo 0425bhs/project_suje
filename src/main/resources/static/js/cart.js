@@ -118,6 +118,7 @@ function calcCartTotal(){
     setMoneyText("couponTotal", couponTotal, "-");
     setMoneyText("deliveryTotal", deliveryTotal, "+");
     setMoneyText("orderTotal", orderTotal, "");
+    const orderSummaryPreview = document.getElementById("orderSummaryPreview");
 
     const orderCountBadge=document.getElementById("orderCountBadge");
 
@@ -244,4 +245,31 @@ function goProductDetail(row){
     }
 
     location.href = "/product_detail.do?product_id=" + product_id;
+}
+
+function toggleOrderSummary() {
+    const detail = document.getElementById("orderSummaryDetail");
+    const arrow = document.getElementById("orderSummaryArrow");
+
+    if (detail.style.display === "none" || detail.style.display === "") {
+        detail.style.display = "block";
+        arrow.textContent = "∧";
+    } else {
+        detail.style.display = "none";
+        arrow.textContent = "∨";
+    }
+}
+
+function toggleSellerOrderSummary(btn) {
+    const row = btn.closest(".seller-delivery-row");
+    const detail = row.querySelector(".seller-order-detail");
+    const arrow = row.querySelector(".seller-order-arrow");
+
+    if (detail.style.display === "none" || detail.style.display === "") {
+        detail.style.display = "block";
+        arrow.innerText = "∧";
+    } else {
+        detail.style.display = "none";
+        arrow.innerText = "∨";
+    }
 }
