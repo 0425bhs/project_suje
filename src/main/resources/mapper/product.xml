@@ -250,6 +250,122 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             )
     </select>
 
+    <!-- 선물추천 상품 목록 -->
+    <select id="product_gift_list" parameterType="map" resultType="product">
+        SELECT *
+        FROM products
+        WHERE status = 'APPROVED'
+
+        <!-- 카테고리 선택 시: 대분류 또는 해당 대분류의 소분류 상품 조회 -->
+        <if test="category_id != null">
+            AND (
+                category_id = #{category_id}
+                OR category_id IN (
+                    SELECT category_id
+                    FROM categories
+                    WHERE parent_id = #{category_id}
+                )
+            )
+        </if>
+
+        <!-- 가격대 선택 시 -->
+        <if test="priceRange != null and priceRange != ''">
+            <choose>
+                <!-- 1만원 이하 -->
+                <when test="priceRange == 'under10000'">
+                    AND (
+                        CASE
+                            WHEN sale_price IS NOT NULL
+                                AND sale_price &gt; 0
+                                AND sale_price &lt; price
+                            THEN sale_price
+                            ELSE price
+                        END
+                    ) &lt;= 10000
+                </when>
+
+                <!-- 1만원대 -->
+                <when test="priceRange == '10000'">
+                    AND (
+                        CASE
+                            WHEN sale_price IS NOT NULL
+                                AND sale_price &gt; 0
+                                AND sale_price &lt; price
+                            THEN sale_price
+                            ELSE price
+                        END
+                    ) &gt; 10000
+
+                    AND (
+                        CASE
+                            WHEN sale_price IS NOT NULL
+                                AND sale_price &gt; 0
+                                AND sale_price &lt; price
+                            THEN sale_price
+                            ELSE price
+                        END
+                    ) &lt;= 20000
+                </when>
+
+                <!-- 2만원대 -->
+                <when test="priceRange == '20000'">
+                    AND (
+                        CASE
+                            WHEN sale_price IS NOT NULL
+                                AND sale_price &gt; 0
+                                AND sale_price &lt; price
+                            THEN sale_price
+                            ELSE price
+                        END
+                    ) &gt; 20000
+
+                    AND (
+                        CASE
+                            WHEN sale_price IS NOT NULL
+                                AND sale_price &gt; 0
+                                AND sale_price &lt; price
+                            THEN sale_price
+                            ELSE price
+                        END
+                    ) &lt;= 30000
+                </when>
+
+                <!-- 3만원대 이상 -->
+                <when test="priceRange == 'over30000'">
+                    AND (
+                        CASE
+                            WHEN sale_price IS NOT NULL
+                                AND sale_price &gt; 0
+                                AND sale_price &lt; price
+                            THEN sale_price
+                            ELSE price
+                        END
+                    ) &gt; 30000
+                </when>
+            </choose>
+        </if>
+
+        ORDER BY product_id DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 로그인 회원 구매내역 기반 선물추천 -->
+    <select id="product_gift_personal_list" parameterType="map" resultType="product">
+        SELECT DISTINCT p.*
+        FROM products p
+        WHERE p.status = 'APPROVED'
+        AND p.category_id IN (
+                SELECT DISTINCT bp.category_id
+                FROM orders o
+                JOIN order_items oi ON o.order_id = oi.order_id
+                JOIN products bp ON oi.product_id = bp.product_id
+                WHERE o.user_id = #{user_id}
+                AND o.status = 'PAID'
+        )
+        ORDER BY p.product_id DESC
+        LIMIT #{limit}
+    </select>
+
     <!-- 세일 상품 목록 -->
     <select id="product_sale_list" parameterType="map" resultType="product">
         select p.*,s.company_name from products p JOIN sellers s ON p.seller_id = s.seller_id
