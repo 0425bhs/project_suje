@@ -13,4 +13,8 @@ public interface CartDAO {
     int cartInsert(CartVO vo);
 
     int cartQuantityPlus(CartVO vo);
+
+    int cartQuantityUpdate(Map<String, Object> map);
+
+    int cartDeleteSelected(Map<String, Object> map);
 }

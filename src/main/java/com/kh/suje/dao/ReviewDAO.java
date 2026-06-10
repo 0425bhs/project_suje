@@ -15,4 +15,6 @@ public interface ReviewDAO {
     
     int updateReview(ReviewVO review);
     int deleteReview(int review_id);
+
+    List<ReviewVO> productReviewList(int product_id);
 }
