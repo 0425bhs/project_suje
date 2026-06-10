@@ -41,4 +41,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         DELETE FROM QNAS
         WHERE qna_id = #{qna_id}
     </delete>
+
+    <select id="productQnaList" resultType="qna">
+        SELECT *
+        FROM qnas
+        WHERE product_id = #{value}
+        ORDER BY qna_id DESC
+    </select>
 </mapper>

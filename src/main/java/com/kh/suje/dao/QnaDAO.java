@@ -10,4 +10,6 @@ public interface QnaDAO {
     QnaVO getQnaById(int qna_id);
     int updateQna(QnaVO qna);
     int deleteQna(int qna_id);
+
+    List<QnaVO> productQnaList(int product_id);
 }

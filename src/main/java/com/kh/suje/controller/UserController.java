@@ -42,7 +42,7 @@ public class UserController {
 
 
     //회원가입 화면으로
-    @GetMapping(value = { "/join.do" })
+    @GetMapping("/join.do" )
     public String joinForm() {
         return "user/join"; 
     }
@@ -93,9 +93,7 @@ public class UserController {
         String securePwd = pwdSecurity.pwdEncoding(vo.getPassword());
         vo.setPassword(securePwd);
 
-        //저장경로 지정 - 윈도우는 C:\Users\사용자이름\, 맥은 /Users/사용자이름/
-String userHome = System.getProperty("user.home");
-String savePath = userHome + File.separator + "suje_upload" + File.separator;
+    String savePath = "c:" + File.separator + "upload" + File.separator;
 
         //저장경로가 없다면 생성
         File dir = new File(savePath);
@@ -126,7 +124,7 @@ String savePath = userHome + File.separator + "suje_upload" + File.separator;
         vo.setPhoto_name(photo_name);
         int res = userDao.insertUser(vo);        
         
-        return "redirect:/";
+        return "redirect:/login.do";
     }
     
  //사업자회원 가입
@@ -144,7 +142,7 @@ String savePath = userHome + File.separator + "suje_upload" + File.separator;
         int resultS = sellerDao.insertSeller(svo); 
         
         
-        return "redirect:/";
+        return "redirect:/login.do";
     }
 
 
@@ -153,7 +151,7 @@ String savePath = userHome + File.separator + "suje_upload" + File.separator;
     @ResponseBody
     public Map<String, Object> login( UserVO vo ){
 
-        UserVO user = userDao.LoginCheck( vo.getEmail() );
+        UserVO user = userDao.loginCheck( vo.getEmail() );
         boolean isValid = false;
 
         //비밀번호 확인
@@ -188,21 +186,31 @@ String savePath = userHome + File.separator + "suje_upload" + File.separator;
     
     //일반회원 정보수정폼으로
     @GetMapping("/user_modify.do")
-    public String user_modifyForm( Model model, int user_id) {
+    public String user_modifyForm( Model model, HttpSession session) {
 
-        UserVO vo = userDao.selectUser( user_id );
-
-        model.addAttribute("user",vo);
-
-        return "user/user_edit";
+       //로그인한 사람의 정보 꺼내기
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+    
+    //로그인 안 된 상태면 로그인 페이지로
+    if (sessionUser == null) {
+        return "redirect:/login.do";
     }
+    
+    //로그인된 유저의 id로 DB 조회
+    UserVO vo = userDao.selectUser(sessionUser.getUser_id());
+    
+    //JSP 화면
+    model.addAttribute("user", vo);
+    
+    return "user/user_edit";
+}
  
     //일반회원 정보수정
     @PostMapping("/user_modify.do")
     @ResponseBody
     public Map<String, Integer> user_modify( UserVO vo, String ori_photo_name, String del_photo_name ) throws Exception {
 
-        if(vo.getPassword()!=null && vo.getPassword().trim().isEmpty() ){
+        if(vo.getPassword()!=null && !vo.getPassword().trim().isEmpty() ){
         //수정에 사용한 비밀번호 암호화
         String securePwd = pwdSecurity.pwdEncoding(vo.getPassword());
         vo.setPassword(securePwd); 
@@ -213,8 +221,7 @@ String savePath = userHome + File.separator + "suje_upload" + File.separator;
         }
 
         //이미지 저장 폴더
-        String userHome = System.getProperty("user.home");
-        String savePath = userHome + File.separator + "suje_upload" + File.separator;
+        String savePath = "c:" + File.separator + "upload" + File.separator;
 
         File dir = new File(savePath); 
         if( !dir.exists() ){
@@ -243,7 +250,7 @@ String savePath = userHome + File.separator + "suje_upload" + File.separator;
         //3.프로필 이미지를 쓰지 않는다
         vo.setPhoto_name(photo_name);
         
-        int res = userDao.user_modify( vo );
+        int res = userDao.userModify( vo );
 
         //업데이트 후 필요없어진 이미지가 있다면 삭제
         if( res == 1 ){
@@ -267,7 +274,65 @@ String savePath = userHome + File.separator + "suje_upload" + File.separator;
 
 
     
+@PostMapping("/check_currPassword.do")
+    @ResponseBody
+    public Map<String, Object> checkCurrentPassword( String ori_password, HttpSession session ){
+
+        
+        Map<String, Object> map = new HashMap<>();
+boolean isValid = false;
+
+UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+if (sessionUser != null && ori_password != null) {
+       
+        // pwdSecurity.pwdDecoding(평문 입력값, 암호화된 DB값)
+        isValid = pwdSecurity.pwdDecoding(ori_password, sessionUser.getPassword());
+    }
+
+map.put("isValid", isValid);
+
+return map;
+
+    }
+    
+
+     //사업자회원 가입
+ @Transactional
+  @PostMapping("/addSeller.do")
+    public String addSeller(UserVO vo, SellerVO svo) {
+
+        String securePwd = pwdSecurity.pwdEncoding(vo.getPassword());
+        vo.setPassword(securePwd);
+      
+        int result = userDao.insertUser(vo); 
+
+        svo.setUser_id(vo.getUser_id());
+
+        int resultS = sellerDao.insertSeller(svo); 
+        
+        
+        return "redirect:/login.do";
+    }
 
 
+   @GetMapping("/user_mypage.do")
+    public String user_mypage( Model model, HttpSession session) {
 
+       //로그인한 사람의 정보 꺼내기
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+    
+    //로그인 안 된 상태면 로그인 페이지로
+    if (sessionUser == null) {
+        return "redirect:/login.do";
+    }
+    
+    //로그인된 유저의 id로 DB 조회
+    UserVO vo = userDao.selectUser(sessionUser.getUser_id());
+    
+    //JSP 화면
+    model.addAttribute("user", vo);
+    
+    return "user/mypage";
+}
 }

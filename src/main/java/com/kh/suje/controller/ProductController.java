@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ProductVO;
@@ -31,6 +32,7 @@ public class ProductController {
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
     private final ReviewDAO reviewdao;
+    private final QnaDAO qnadao;
     
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
