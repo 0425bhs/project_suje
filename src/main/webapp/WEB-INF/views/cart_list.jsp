@@ -51,12 +51,24 @@
 
                 <div class="cart-left">
 
-                    <label class="cart-all-check">
-                        <input type="checkbox" id="allCheck" checked onclick="allCartCheck()">
-                        <span>전체 선택</span>
-                    </label>
+                    <div class="cart-control-row">
+
+                        <label class="cart-all-check">
+                            <input type="checkbox" id="allCheck" checked onclick="allCartCheck()">
+                            <span>전체 선택</span>
+                        </label>
+
+                        <div class="cart-btns">
+                            <button type="button" class="cart-btn" onclick="deleteSelectedCart()">
+                                선택삭제
+                            </button>
+                        </div>
+
+                    </div>
 
                     <c:forEach var="group" items="${sellerGroupList}">
+
+                        <c:set var="sellerItemTotal" value="0" />
 
                         <div class="seller-cart-box" data-seller-id="${group.seller_id}">
 
@@ -67,7 +79,10 @@
                                 </label>
                             </div>
 
+
                             <c:forEach var="item" items="${group.itemList}">
+
+                                <c:set var="sellerItemTotal" value="${sellerItemTotal + item.item_total}" />
 
                                 <div class="cart-item-row" data-product-id="${item.product_id}" onclick="goProductDetail(this)">
 
@@ -92,14 +107,14 @@
 
                                         <div class="cart-quantity-box">
 
-                                            <button type="button"class="cart-qty-btn"onclick="event.stopPropagation(); cartQtyMinus(this)"${item.stock le 0 ? 'disabled' : ''}>
+                                            <button type="button" class="cart-qty-btn" onclick="event.stopPropagation(); cartQtyMinus(this)"  ${item.stock le 0 ? 'disabled' : ''}>
                                                 −
                                             </button>
 
-                                            <input type="number"class="cart-qty-input"name="quantity"value="${item.quantity}"min="1"max="${item.stock}"
-                                                data-cart-id="${item.cart_id}"onclick="event.stopPropagation();"${item.stock le 0 ? 'disabled' : ''} />
+                                            <input type="number" class="cart-qty-input" name="quantity" value="${item.quantity}" min="1" max="${item.stock}" data-cart-id="${item.cart_id}"
+                                                onclick="event.stopPropagation();" ${item.stock le 0 ? 'disabled' : ''} />
 
-                                            <button type="button"class="cart-qty-btn"onclick="event.stopPropagation(); cartQtyPlus(this)"${item.stock le 0 ? 'disabled' : ''}>
+                                            <button type="button" class="cart-qty-btn" onclick="event.stopPropagation(); cartQtyPlus(this)" ${item.stock le 0 ? 'disabled' : ''}>
                                                 +
                                             </button>
 
@@ -118,34 +133,59 @@
                             </c:forEach>
 
                             <div class="seller-delivery-row">
-                                배송비
-                                <strong>
-                                    <c:choose>
-                                        <c:when test="${group.delivery_fee == 0}">
-                                            무료배송
-                                        </c:when>
-                                        <c:otherwise>
-                                            <fmt:formatNumber value="${group.delivery_fee}" pattern="#,###"/>원
-                                        </c:otherwise>
-                                    </c:choose>
-                                </strong>
 
-                                <input type="hidden" class="seller-delivery-fee" data-seller-id="${group.seller_id}" value="${group.delivery_fee}">
+                                <button type="button"
+                                        class="seller-order-toggle"
+                                        onclick="toggleSellerOrderSummary(this)">
+
+                                    <span class="seller-order-title">예상 주문금액</span>
+
+                                    <span class="seller-order-right">
+                                        <strong>
+                                            <fmt:formatNumber value="${sellerItemTotal + group.delivery_fee}" pattern="#,###"/>원
+                                        </strong>
+                                        <span class="seller-order-arrow">∨</span>
+                                    </span>
+
+                                </button>
+
+                                <div class="seller-order-detail">
+
+                                    <div class="seller-delivery-line">
+                                        <span>
+                                            총 배송비
+                                            <small>?</small>
+                                        </span>
+
+                                        <strong>
+                                            <c:choose>
+                                                <c:when test="${group.delivery_fee == 0}">
+                                                    무료배송
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <fmt:formatNumber value="${group.delivery_fee}" pattern="#,###"/>원
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </strong>
+                                    </div>
+
+                                    <div class="seller-order-line">
+                                        <span>예상 주문금액</span>
+
+                                        <strong>
+                                            <fmt:formatNumber value="${sellerItemTotal + group.delivery_fee}" pattern="#,###"/>원
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                                <input type="hidden" class="seller-delivery-fee" data-seller-id="${group.seller_id}" value="${group.delivery_fee}" />
+
                             </div>
 
                         </div>
 
                     </c:forEach>
-
-                    <div class="cart-btns">
-                        <button type="button" class="cart-btn" onclick="deleteSelectedCart()">
-                            선택삭제
-                        </button>
-
-                        <button type="button" class="cart-btn" onclick="location.href='/product/list.do'">
-                            쇼핑계속하기
-                        </button>
-                    </div>
 
                 </div>
 

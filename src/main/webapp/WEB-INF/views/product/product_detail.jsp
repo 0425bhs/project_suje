@@ -152,18 +152,19 @@
                         <div class="store-info-row">
                             <span>무료배송 조건</span>
                             <strong>
-                                <c:if test="${vo.free_shipping > 0}">
-                                    <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상 구매 시 무료배송
-                                </c:if>
+                                <c:choose>
+                                    <c:when test="${vo.delivery_fee eq 0}">
+                                        조건 없음
+                                    </c:when>
 
-                                <c:if test="${vo.delivery_fee > 0 &&vo.free_shipping = 0}">
-                                    유료배송
-                                </c:if>
+                                    <c:when test="${vo.delivery_fee gt 0 and vo.free_shipping gt 0}">
+                                        <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상 구매 시 무료배송
+                                    </c:when>
 
-                                <c:if test="${vo.delivery_fee = 0}" >
-                                    무료배송
-                                </c:if>
-                                
+                                    <c:otherwise>
+                                        유료배송
+                                    </c:otherwise>
+                                </c:choose>
                             </strong>
                         </div>
 
