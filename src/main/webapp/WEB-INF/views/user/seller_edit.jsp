@@ -6,44 +6,27 @@
 
         <head>
             <meta charset="UTF-8">
-            <title>회원가입</title>
-            <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user/join.css" />
-            <script src="${pageContext.request.contextPath}/js/join.js"></script>
+            <title>내 정보</title>
+            <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user/seller_edit.css" />
+            <script src="${pageContext.request.contextPath}/js/user/seller_edit.js"></script>
         </head>
 
         <body>
             <div class="join-container">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post">
 
-                    <table class="join-table">
-                        <caption>회원가입</caption>
+                  <table class="usertable" id="usertable">
+                        <caption>회원정보 수정</caption>
 
-                        <tr>
-                            <th>회원 구분</th>
-                            <td>
-                                <input type="radio" name="role" value="USER" id="user" 
-                                onclick="toggleForm()" checked>
-                                <label for="user">일반회원</label>
-
-                                <input type="radio" name="role" value="SELLER" id="seller" 
-                                onclick="toggleForm()">
-                                <label for="seller">판매자</label>
-
-
-                            </td>
-                        </tr>
-                    </table>
-
-
-                    <table class="usertable" id="usertable">
+                       
 
                         <tr>
-                            <th>이메일(본인인증)</th>
+                            <th>인증</th>
                             <td>
                                 <div class="input-row">
 
                                     <input name="email" id="authEmail" 
-                                    placeholder="email을 입력하세요" />
+                                    value = "${user.email}" />
 
                                     <input type="button" value="전송" class="btn-secondary"
                                         onclick="mailCheck(this.form)" />
@@ -59,20 +42,13 @@
                             </td>
                         </tr>
 
-                    <tr>
-                        <th>프로필사진</th>
-                        <td>
-                            <input type="file" name="photo" />
-                        </td>
-                    </tr>
-
                         <tr>
-                            <th>아이디</th>
+                            <th>닉네임</th>
                             <td>
                                 <div class="input-row">
 
                                     <input name="nick_name" id="nick_name" onchange="chk()" 
-                                    placeholder="닉네임을 입력하세요" />
+                                     value = "${user.nick_name}" value = "nick_name"/>
 
                                     <input type="button" value="중복체크" class="btn-secondary" 
                                     onclick="check_nick()"/>
@@ -83,7 +59,7 @@
 
                         <tr>
                             <th>이름</th>
-                            <td><input name="name" /></td>
+                            <td><input name="name" value = "${user.name}"/></td>
                         </tr>
 
 
@@ -118,17 +94,19 @@
                         <tr>
                             <th>전화번호</th>
                             <td>
-                                <input name="phone" />
+                                <input name="phone" value = "${user.phone}"/>
                             </td>
                         </tr>
 
                         <tr>
                             <th>성별</th>
                             <td>
-                                <input type="radio" name="gender" value="male" id="male" checked>
+                                <input type="radio" name="gender" value="male" id="male" 
+                                <c:if test="${user.gender == 'male'}">checked</c:if> >
                                 <label for="male">남자</label>
 
-                                <input type="radio" name="gender" value="female" id="female">
+                                <input type="radio" name="gender" value="female" id="female"
+                                <c:if test = "${user.gender == 'female'}">checked</c:if> >
                                 <label for="female">여자</label>
                             </td>
                         </tr>
@@ -173,7 +151,7 @@
                     <table class="join-table">
                         <tr>
                             <td colspan="2" align="center" style="padding-top: 30px;">
-                                <input type="button" value="가입" class="btn-main" 
+                                <input type="button" value="변경" class="btn-main" 
                                 onclick="send(this.form)" />
                                 <input type="button" value="취소" class="btn-cancel" 
                                 onclick="history.back()" />
@@ -182,26 +160,6 @@
                         </tr>
     
                     </table>
-
-<div class="social-wrap">
-    <button type="button" class="btn-kakao" onclick="alert('카카오 간편 회원가입은 현재 준비 중입니다!');" title="카카오톡으로 시작하기">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.558 1.7 4.792 4.27 6.03-.18.663-.65 2.395-.74 2.74-.12.446.15.44.32.327.13-.087 2.11-1.43 2.95-2.003.7.195 1.44.306 2.2.306 4.97 0 9-3.185 9-7.115S16.97 3 12 3z"/>
-        </svg>
-    </button>
-
-    <button type="button" class="btn-naver" onclick="alert('네이버 간편 회원가입은 현재 준비 중입니다!');" title="네이버로 시작하기">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M16.47 2H22v12.35L7.53 22H2v-12.35L16.47 2zM2 2h5.53l6.06 8.52V2H19.1v14.33l-6.06-8.52V22H2V2z"/>
-        </svg>
-    </button>
-
-    <button type="button" class="btn-toss" onclick="alert('토스 간편 회원가입은 현재 준비 중입니다!');" title="토스아이디로 시작하기">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.65 11.65l-4 4c-.2.2-.45.3-.65.3s-.45-.1-.65-.3l-4-4c-.4-.4-.4-1.05 0-1.45s1.05-.4 1.45 0L11 14.55V7c0-.55.45-1 1-1s1 .45 1 1v7.55l2.2-2.2c.4-.4 1.05-.4 1.45 0s.4 1.05 0 1.45z"/>
-        </svg>
-    </button>
-</div>
 
                 </form>
             </div>

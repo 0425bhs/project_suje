@@ -23,7 +23,7 @@ values( #{email}, #{password}, #{name}, #{phone}, #{gender},
 
 
 <!--로그인-->
-<select id = "LoginCheck" parameterType="String"
+<select id = "loginCheck" parameterType="String"
 resultType="user">
 select * from users where email=#{email}	
 </select>		
@@ -38,7 +38,7 @@ select * from users where user_id=#{user_id}
 
 
 <!--정보 수정-->
-<update id = "user_modify" parameterType = "user">
+<update id = "userModify" parameterType = "user">
 
 update users set email=#{email}, password=#{password}, name=#{name},
 phone=#{phone}, gender=#{gender}, nick_name=#{nick_name}, photo_name=#{photo_name}
