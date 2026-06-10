@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -8,6 +9,7 @@
     <meta charset="UTF-8">
     <title>판매자 관리보드 - 내 상품 관리</title>
     
+    <link rel="stylesheet" href="/css/seller/seller_form_common.css">
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
     <script src="/js/seller_product_toggle.js"></script>
 </head>
@@ -33,8 +35,11 @@
             </div>
 
             <div class="header-actions">
-                <a href="/product/main.do" class="btn btn-white">일반 상품 목록</a>
                 <a href="/seller_product_insert.do" class="btn btn-primary">상품 등록</a>
+
+                <button type="button" class="btn btn-secondary" onclick="selectedModify()">선택 수정</button>
+
+                <button type="button" class="btn btn-danger" onclick="selectedDelete()">선택 삭제</button>
             </div>
         </header>
 
@@ -44,9 +49,94 @@
             <div class="product-manage-header">
                 <div>
                     <h2>상품 목록</h2>
-                    <p>판매자가 등록한 상품을 최근 등록순으로 확인할 수 있습니다.</p>
+                    <br/>
                 </div>
             </div>
+
+            <div class="view-switch-buttons">
+
+            <!-- 1번: 이미지 없는 테이블 -->
+            <button type="button"
+                    class="view-icon-btn active"
+                    data-view="noImage"
+                    title="이미지 없는 형태">
+                <span class="view-icon icon-table"></span>
+            </button>
+
+            <!-- 2번: 이미지 있는 테이블 -->
+            <button type="button"
+                    class="view-icon-btn"
+                    data-view="image"
+                    title="이미지 있는 형태">
+                <span class="view-icon icon-list"></span>
+            </button>
+
+            <!-- 3번: 카드형 -->
+            <button type="button"
+                    class="view-icon-btn"
+                    data-view="card"
+                    title="카드형태">
+                <span class="view-icon icon-grid"></span>
+            </button>
+
+        </div>   
+
+            <!-- 필터 / 정렬 영역 -->
+            <div class="filter-box">
+
+                <div class="filter-buttons">
+
+                    <a href="/seller_product_list.do?sort=${sort}"
+                    class="${empty status ? 'active' : ''}">
+                        전체
+                    </a>
+
+                    <a href="/seller_product_list.do?status=APPROVED&sort=${sort}"
+                    class="${status eq 'APPROVED' ? 'active' : ''}">
+                        판매중
+                    </a>
+
+                    <a href="/seller_product_list.do?status=HIDDEN&sort=${sort}"
+                    class="${status eq 'HIDDEN' ? 'active' : ''}">
+                        판매중지
+                    </a>
+
+                    <a href="/seller_product_list.do?status=PENDING&sort=${sort}"
+                    class="${status eq 'PENDING' ? 'active' : ''}">
+                        승인대기
+                    </a>
+
+                    <a href="/seller_product_list.do?status=REJECTED&sort=${sort}"
+                    class="${status eq 'REJECTED' ? 'active' : ''}">
+                        승인거절
+                    </a>
+
+                    <span class="filter-divider"></span>
+
+                    <a href="/seller_product_list.do?status=${status}&sort=new"
+                    class="${sort eq 'new' or empty sort ? 'active' : ''}">
+                        최신순
+                    </a>
+                    
+                    <a href="/seller_product_list.do?status=${status}&sort=lowPrice"
+                    class="${sort eq 'lowPrice' ? 'active' : ''}">
+                        낮은가격순
+                    </a>
+
+                    <a href="/seller_product_list.do?status=${status}&sort=highPrice"
+                    class="${sort eq 'highPrice' ? 'active' : ''}">
+                        높은가격순
+                    </a>
+
+                    <a href="/seller_product_list.do?status=${status}&sort=lowStock"
+                    class="${sort eq 'lowStock' ? 'active' : ''}">
+                        재고적은순
+                    </a>
+
+                </div>
+
+            </div>
+
 
             <c:choose>
                 <c:when test="${empty list}">
@@ -57,11 +147,30 @@
                 </c:when>
 
                 <c:otherwise>
+                    <form id="productManageForm" method="post">
+
+                    <!-- 테이블형: 이미지 없는 버전 / 이미지 있는 버전 둘 다 이 테이블 사용 -->
                     <table class="product-manage-table">
+
+                        <colgroup>
+                            <col class="col-check">
+                            <col class="col-id">
+                            <col class="col-img">
+                            <col class="col-name">
+                            <col class="col-price">
+                            <col class="col-sale">
+                            <col class="col-stock">
+                            <col class="col-delivery">
+                            <col class="col-free">
+                            <col class="col-status">
+                            <col class="col-date">
+                        </colgroup>
+
                         <thead>
                             <tr>
+                                <th><input type="checkbox" id="checkAll" onclick="allCheck(this)"></th>
                                 <th>상품번호</th>
-                                <th>대표 이미지</th>
+                                <th class="image-column">대표 이미지</th>
                                 <th>상품명</th>
                                 <th>가격</th>
                                 <th>세일가격</th>
@@ -69,20 +178,29 @@
                                 <th>배송비</th>
                                 <th>무료배송 기준</th>
                                 <th>상태</th>
-                                <th>관리</th>
+                                <th>등록일/수정일</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             <c:forEach var="vo" items="${list}">
                                 <tr>
+                                    <td>
+                                        <input type="checkbox"
+                                            name="product_id"
+                                            class="product-check table-check"
+                                            value="${vo.product_id}"
+                                            onclick="checkOne()">
+                                    </td>
 
                                     <td class="product-id">#${vo.product_id}</td>
 
-                                    <td>
+                                    <td class="image-column" align="center">
                                         <c:choose>
                                             <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                                <img src="${vo.image_l}" class="product-thumb" alt="${vo.name}">
+                                                <div style="width: 70px;">
+                                                    <img src="${vo.image_l}" class="product-thumb" alt="${vo.name}">
+                                                </div>
                                             </c:when>
 
                                             <c:otherwise>
@@ -100,7 +218,14 @@
                                     </td>
 
                                     <td>
-                                        <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
+                                        <c:choose>
+                                            <c:when test="${vo.sale_price > 0}">
+                                                <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
+                                            </c:when>
+                                            <c:otherwise>
+                                                -
+                                            </c:otherwise>
+                                        </c:choose>
                                     </td>
 
                                     <td>
@@ -133,25 +258,27 @@
 
                                     <td>
                                         <c:if test="${vo.status eq 'APPROVED'}">
-                                            <span id="statusBadge_${vo.product_id}" class="status-badge status-approved">
-                                                활성화
-                                            </span>
+                                            <button type="button"
+                                                    class="status-badge status-approved status-toggle"
+                                                    onclick="productToggle('${vo.product_id}', 'HIDDEN')">
+                                                판매중
+                                            </button>
                                         </c:if>
 
                                         <c:if test="${vo.status eq 'HIDDEN'}">
-                                            <span id="statusBadge_${vo.product_id}" class="status-badge status-hidden">
-                                                비활성화
-                                            </span>
+                                            <button type="button"
+                                                    class="status-badge status-hidden status-toggle"
+                                                    onclick="productToggle('${vo.product_id}', 'APPROVED')">
+                                                판매중지
+                                            </button>
                                         </c:if>
 
-                                        <!-- 판매자가 직접 바꾸는 상태는 아니지만 화면 표시는 유지 -->
                                         <c:if test="${vo.status eq 'PENDING'}">
                                             <span class="status-badge status-pending">
                                                 승인 대기
                                             </span>
                                         </c:if>
 
-                                        <!-- 판매자가 직접 바꾸는 상태는 아니지만 화면 표시는 유지 -->
                                         <c:if test="${vo.status eq 'REJECTED'}">
                                             <span class="status-badge status-rejected">
                                                 승인 거절
@@ -159,35 +286,201 @@
                                         </c:if>
                                     </td>
 
-                                    <td>
-                                        <a href="/seller_product_modify.do?product_id=${vo.product_id}" class="edit-btn">
-                                            수정
-                                        </a>
+                                    <td class="date-info">
+                                        <div>
+                                            <c:choose>
+                                                <c:when test="${not empty vo.created_at}">
+                                                    ${fn:substring(vo.created_at, 0, 10)}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    -
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
 
-                                        <c:if test="${vo.status eq 'APPROVED'}">
-                                            <button type="button"
-                                                    class="toggle-btn toggle-off-btn"
-                                                    onclick="productToggle('${vo.product_id}', 'HIDDEN')">
-                                                비활성화
-                                            </button>
-                                        </c:if>
-
-                                        <c:if test="${vo.status eq 'HIDDEN'}">
-                                            <button type="button"
-                                                    class="toggle-btn toggle-on-btn"
-                                                    onclick="productToggle('${vo.product_id}', 'APPROVED')">
-                                                활성화
-                                            </button>
-                                        </c:if>
-
-                                        <button type="button" class="delete-btn" onclick="productDelete('${vo.product_id}')">
-                                            삭제
-                                        </button>
+                                        <div>
+                                            <c:choose>
+                                                <c:when test="${not empty vo.updated_at}">
+                                                    ${fn:substring(vo.updated_at, 0, 10)}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    -
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
                                     </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
                     </table>
+
+
+                    <!-- 카드형: seller_homepage 느낌 -->
+                    <div class="product-card-view">
+
+                        <c:forEach var="vo" items="${list}">
+                            <div class="seller-product-card">
+
+                                <div class="card-check-area">
+                                    <input type="checkbox"
+                                        name="product_id"
+                                        class="product-check card-check"
+                                        value="${vo.product_id}"
+                                        onclick="checkOne()">
+                                </div>
+
+                                <div class="card-image-box">
+                                    <c:choose>
+                                        <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
+                                            <img src="${vo.image_l}" class="card-product-image" alt="${vo.name}">
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <div class="card-no-image">이미지 없음</div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+
+                                <div class="card-content">
+                                    <div class="card-top">
+                                        <span class="card-product-id">#${vo.product_id}</span>
+
+                                        <c:if test="${vo.status eq 'APPROVED'}">
+                                            <button type="button"
+                                                    class="status-badge status-approved status-toggle"
+                                                    onclick="productToggle('${vo.product_id}', 'HIDDEN')">
+                                                판매중
+                                            </button>
+                                        </c:if>
+
+                                        <c:if test="${vo.status eq 'HIDDEN'}">
+                                            <button type="button"
+                                                    class="status-badge status-hidden status-toggle"
+                                                    onclick="productToggle('${vo.product_id}', 'APPROVED')">
+                                                판매중지
+                                            </button>
+                                        </c:if>
+
+                                        <c:if test="${vo.status eq 'PENDING'}">
+                                            <span class="status-badge status-pending">
+                                                승인 대기
+                                            </span>
+                                        </c:if>
+
+                                        <c:if test="${vo.status eq 'REJECTED'}">
+                                            <span class="status-badge status-rejected">
+                                                승인 거절
+                                            </span>
+                                        </c:if>
+                                    </div>
+
+                                    <div class="card-product-name">
+                                        ${vo.name}
+                                    </div>
+
+                                    <div class="card-price-manage-box">
+
+                                        <div class="price-manage-row">
+                                            <span>정가</span>
+                                            <strong>
+                                                <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
+                                            </strong>
+                                        </div>
+
+                                        <div class="price-manage-row">
+                                            <span>할인가</span>
+                                            <strong>
+                                                <c:choose>
+                                                    <c:when test="${vo.sale_price > 0}">
+                                                        <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        -
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </strong>
+                                        </div>
+
+                                        <div class="price-manage-row">
+                                            <span>할인율</span>
+                                            <strong>
+                                                <c:choose>
+                                                    <c:when test="${vo.sale_price > 0}">
+                                                        ${vo.sale_rate}%
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        -
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </strong>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="card-info-grid">
+                                        <div>
+                                            <span>재고</span>
+                                            <strong>${vo.stock}개</strong>
+                                        </div>
+
+                                        <div>
+                                            <span>배송비</span>
+                                            <strong>
+                                                <c:choose>
+                                                    <c:when test="${vo.delivery_fee == 0}">
+                                                        무료배송
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <fmt:formatNumber value="${vo.delivery_fee}" pattern="#,###"/>원
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </strong>
+                                        </div>
+
+                                        <div>
+                                            <span>무료배송 기준</span>
+                                            <strong>
+                                                <c:choose>
+                                                    <c:when test="${vo.free_shipping > 0}">
+                                                        <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        조건 없음
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </strong>
+                                        </div>
+
+                                        <div>
+                                            <span>등록일/수정일</span>
+                                            <strong>
+                                                <c:choose>
+                                                    <c:when test="${not empty vo.created_at}">
+                                                        ${fn:substring(vo.created_at, 0, 10)}<br/>
+                                                        ${fn:substring(vo.updated_at, 0, 10)}
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        -
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-action-area">
+                                        <a href="/seller_product_modify.do?product_id=${vo.product_id}"
+                                        class="card-modify-btn">
+                                            수정하기
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </c:forEach>
+
+                    </div>
+
+                </form>
                 </c:otherwise>
             </c:choose>
 

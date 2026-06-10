@@ -1,21 +1,26 @@
 package com.kh.suje.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.PaymentDAO;
+import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.UserVO;
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
 import com.kh.suje.vo.payment.PaymentVO;
-import com.kh.suje.dao.ProductDAO;
-import com.kh.suje.vo.ProductVO;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class OrderController {
@@ -30,30 +35,62 @@ public class OrderController {
         this.productDAO = productDAO;
     }
 
+    // 로그인 회원 정보 가져오기
+    private UserVO getLoginUser(HttpSession session) {
+        return (UserVO) session.getAttribute("user");
+    }
+
+    // 로그인 회원 user_id 가져오기
+    private int getLoginUserId(HttpSession session) {
+        UserVO user = getLoginUser(session);
+
+        if (user == null) {
+            return 0;
+        }
+
+        return user.getUser_id();
+    }
+    
     // 내 주문 내역
     // 주소: /order/my
     @GetMapping("/order/my")
     public String myOrderList(
             @RequestParam(value = "status", required = false) String status,
-            Model model
+            Model model,
+            HttpSession session
     ) {
-        int user_id = 1;
-        
-        //user_id가 1인 회원의 모든 주문 목록을 DB에서 조회해서
-        //allOrderList에 담는다
+        UserVO loginUser = getLoginUser(session);
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+        int user_id = getLoginUserId(session);
+
+        // 로그인한 회원의 전체 주문 목록
         List<OrderVO> allOrderList = orderDAO.selectOrderListByUserId(user_id);
 
         List<OrderVO> orderList;
 
         if (status == null || status.trim().isEmpty()) {
-            orderList = allOrderList; //전체 주문을 화면
+            orderList = allOrderList;
         } else {
-            orderList = orderDAO.selectOrderListByUserIdAndStatus(user_id, status); //상태인 주문만 다시 조회해서 화면에 보여줌
+            orderList = orderDAO.selectOrderListByUserIdAndStatus(user_id, status);
         }
 
-        model.addAttribute("allOrderList", allOrderList); //전체 주문 목록
-        model.addAttribute("orderList", orderList); //현재 화면에 보여줄 주문 목록
+        // 주문별 주문상품 목록
+        Map<Integer, List<OrderItemVO>> orderItemMap = new HashMap<>();
+
+        for (OrderVO order : orderList) {
+            List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order.getOrder_id());
+            orderItemMap.put(order.getOrder_id(), itemList);
+        }
+
+        model.addAttribute("loginUser", loginUser);
+        model.addAttribute("allOrderList", allOrderList);
+        model.addAttribute("orderList", orderList);
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("orderItemMap", orderItemMap);
 
         return "order/my_order_list";
     }
@@ -64,8 +101,15 @@ public class OrderController {
     public String orderForm(
             @RequestParam("product_id") int product_id,
             @RequestParam(value = "quantity", defaultValue = "1") int quantity,
-            Model model
+            Model model,
+            HttpSession session
     ) {
+        UserVO loginUser = getLoginUser(session);
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
         ProductVO product = productDAO.product_one(product_id);
 
         if (product == null) {
@@ -73,8 +117,8 @@ public class OrderController {
         }
 
         int price = product.getSale_price() > 0
-            ? product.getSale_price()
-            : product.getPrice();
+                ? product.getSale_price()
+                : product.getPrice();
 
         int item_amount = price * quantity;
 
@@ -86,13 +130,13 @@ public class OrderController {
 
         int total_amount = item_amount + delivery_fee;
 
+        model.addAttribute("loginUser", loginUser);
         model.addAttribute("product", product);
         model.addAttribute("quantity", quantity);
         model.addAttribute("price", price);
         model.addAttribute("item_amount", item_amount);
         model.addAttribute("delivery_fee", delivery_fee);
         model.addAttribute("total_amount", total_amount);
-        
 
         return "order/order_form";
     }
@@ -103,10 +147,19 @@ public class OrderController {
     @Transactional
     public String createOrder(
             @RequestParam("product_id") int product_id,
-            @RequestParam("quantity") int quantity
+            @RequestParam("quantity") int quantity,
+            HttpSession session
     ) {
-        // 로그인/배송지 기능 붙기 전까지 임시 사용
-        int user_id = 1;
+        UserVO loginUser = getLoginUser(session);
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+        // 로그인한 회원 번호 사용
+        int user_id = getLoginUserId(session);
+
+        // 배송지 기능 붙기 전까지 임시 사용
         int address_id = 1;
 
         // product_id로 실제 상품 정보 조회
@@ -172,12 +225,20 @@ public class OrderController {
     @GetMapping("/order/complete")
     public String orderComplete(
             @RequestParam("order_id") int order_id,
-            Model model
+            Model model,
+            HttpSession session
     ) {
+        UserVO loginUser = getLoginUser(session);
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
         OrderVO order = orderDAO.selectOrderById(order_id);
         List<OrderItemVO> orderItemList = orderDAO.selectOrderItemList(order_id);
         PaymentVO payment = paymentDAO.selectPaymentByOrderId(order_id);
 
+        model.addAttribute("loginUser", loginUser);
         model.addAttribute("order", order);
         model.addAttribute("orderItemList", orderItemList);
         model.addAttribute("payment", payment);
@@ -190,12 +251,20 @@ public class OrderController {
     @GetMapping("/order/detail")
     public String orderDetail(
             @RequestParam("order_id") int order_id,
-            Model model
+            Model model,
+            HttpSession session
     ) {
+        UserVO loginUser = getLoginUser(session);
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
         OrderVO order = orderDAO.selectOrderById(order_id);
         List<OrderItemVO> orderItemList = orderDAO.selectOrderItemList(order_id);
         PaymentVO payment = paymentDAO.selectPaymentByOrderId(order_id);
 
+        model.addAttribute("loginUser", loginUser);
         model.addAttribute("order", order);
         model.addAttribute("orderItemList", orderItemList);
         model.addAttribute("payment", payment);
@@ -208,17 +277,33 @@ public class OrderController {
     @GetMapping("/order/delivery")
     public String deliveryStatus(
             @RequestParam("order_id") int order_id,
-            Model model
+            Model model,
+            HttpSession session
     ) {
+        UserVO loginUser = getLoginUser(session);
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
         OrderVO order = orderDAO.selectOrderById(order_id);
 
+        model.addAttribute("loginUser", loginUser);
         model.addAttribute("order", order);
 
         return "order/delivery_status";
     }
 
     @PostMapping("/order/cancel")
-    public String cancelOrder(@RequestParam("order_id") int order_id) {
+    public String cancelOrder(
+            @RequestParam("order_id") int order_id,
+            HttpSession session
+    ) {
+        UserVO loginUser = getLoginUser(session);
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
 
         OrderVO order = orderDAO.selectOrderById(order_id);
 

@@ -1,55 +1,59 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="ko">
-<head></head>
 
-<body>
+    <head>
+        <title>HANDMADE - 신제품</title>
 
-<h2>신제품</h2>
+        <link rel="stylesheet" href="/css/product/product_main.css">
+        <link rel="stylesheet" href="/css/product/product_card.css">
+        <link rel="stylesheet" href="/css/product/product_new_list.css">
 
-<c:forEach var="list" items="${list}">
-    <div>
-        <img src="${list.image_l}" alt="${list.name}"/>
+        <script src="/js/product_main.js" defer></script>
+    </head>
 
-        <div>
-            <a href="/product_detail.do?product_id=${list.product_id}">
-                ${list.name}
-            </a>
+    <body>
+
+    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
+        <jsp:param name="activeMenu" value="new" />
+    </jsp:include>
+
+
+    <main class="new-page">
+
+        <div class="new-page-title">
+            <h2>최신작품</h2>
+            <p>새롭게 등록된 상품을 최신순으로 확인할 수 있습니다.</p>
         </div>
 
-        <c:if test="${list.sale_price==0}">
-            <p>
-                <fmt:formatNumber value="${list.price}" pattern="#,###"/>원
-            </p>
-        </c:if>
+        <c:choose>
 
-        <c:if test="${list.sale_price>0}">
-            <p>
-                <span style="text-decoration: line-through; color: gray;">
-                    <fmt:formatNumber value="${list.price}" pattern="#,###"/>원
-                </span>
-            </p>
+            <c:when test="${empty list}">
+                <div class="new-empty">
+                    등록된 신제품이 없습니다.
+                </div>
+            </c:when>
 
-            <p>
-                <strong>${list.sale_rate}% 할인</strong>
-                <fmt:formatNumber value="${list.sale_price}" pattern="#,###"/>원
-            </p>
-        </c:if>
+            <c:otherwise>
 
-        <c:if test="${list.free_shipping>0}">
-            <p>
-                <fmt:formatNumber value="${list.free_shipping}" pattern="#,###"/>원 이상 무료배송
-            </p>
-        </c:if>
+                <div class="common-product-wrap">
+                    <c:forEach var="vo" items="${list}">
+                        <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
+                    </c:forEach>
+                </div>
 
-        <c:if test="${list.free_shipping==0}">
-            <p>무료배송</p>
-        </c:if>
-    </div>
-</c:forEach>
+            </c:otherwise>
 
-</body>
+        </c:choose>
+
+        <div class="new-page-menu">
+            ${pageMenu}
+        </div>
+
+    </main>
+
+    </body>
 </html>

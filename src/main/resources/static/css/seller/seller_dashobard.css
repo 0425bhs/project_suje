@@ -1,0 +1,130 @@
+/* 대시보드 그리드 레이아웃 */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 20px;
+}
+
+/* 2칸을 차지하는 카드 */
+.dash-card.span-3 {
+    grid-column: span 3;
+}
+
+/* 대시보드 카드 공통 스타일 */
+.dash-card {
+    background: #fff;
+    border: 1px solid #e5e8eb;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 12px;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-header .update-time {
+    font-size: 12px;
+    color: #999;
+}
+
+/* 아이콘 색상 */
+.icon.green { color: #00c73c; }
+.icon.blue { color: #0084ff; }
+.icon.red { color: #ff4a4a; }
+.icon.teal { color: #00aeb5; }
+.icon.orange { color: #ff8a00; }
+
+/* 판매 관리 (퍼널 형태) */
+.sales-funnel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.funnel-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.funnel-step .label {
+    font-size: 14px;
+    color: #555;
+    font-weight: 700;
+}
+
+.funnel-step .count {
+    font-size: 28px;
+    font-weight: 900;
+    color: #222;
+}
+
+.funnel-step .count small {
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 2px;
+}
+
+.funnel-arrow {
+    color: #ddd;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+/* 리스트형 데이터 (정산, 상품관리 등) */
+.list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-item .label {
+    font-size: 14px;
+    color: #555;
+}
+
+.list-item .value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #222;
+}
+
+.list-item .value small {
+    font-size: 13px;
+    margin-left: 2px;
+    font-weight: 600;
+}
+
+/* 데이터가 0일 때 스타일 */
+.list-item .value.zero {
+    color: #cc2525;
+}
+
+/* 강조 데이터 스타일 */
+.list-item .value.highlight {
+    color: #00aeb5;
+}

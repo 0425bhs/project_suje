@@ -14,37 +14,27 @@
 
     <nav class="sidebar-menu">
 
-        <a href="/seller_dashboard.do"
-           class="${param.activeMenu eq 'dashboard' ? 'menu-active' : ''}">
+        <a href="/seller_dashboard.do" class="${param.activeMenu eq 'dashboard' ? 'menu-active':''}">
             판매자 대시보드
         </a>
 
-        <a href="/seller_homepage.do"
-           class="${param.activeMenu eq 'homepage' ? 'menu-active' : ''}">
-            판매자 홈페이지
-        </a>
-
-        <a href="/seller_product_list.do"
-           class="${param.activeMenu eq 'productList' ? 'menu-active' : ''}">
+        <a href="/seller_product_list.do" class="${param.activeMenu eq 'productList' ? 'menu-active':''}">
             내 상품 관리
         </a>
 
-        <a href="/seller_product_insert.do"
-           class="${param.activeMenu eq 'productInsert' ? 'menu-active' : ''}">
+        <a href="/seller_product_insert.do" class="${param.activeMenu eq 'productInsert' ? 'menu-active':''}">
             상품 등록
         </a>
 
-        <a href="/seller_order_list.do"
-           class="${param.activeMenu eq 'orderList' ? 'menu-active' : ''}">
+        <a href="/seller_order_list.do" class="${param.activeMenu eq 'orderList' ? 'menu-active':''}">
             판매자 주문 관리
         </a>
 
-        <a href="/seller_qna_list.do"
-           class="${param.activeMenu eq 'qnaList' ? 'menu-active' : ''}">
+        <a href="/seller_qna_list.do" class="${param.activeMenu eq 'qnaList' ? 'menu-active':''}">
             상품 문의 답변 관리
         </a>
 
-        <a href="#" class="menu-disabled" onclick="return false;">
+        <a href="/seller_statistics.do" class="${param.activeMenu eq 'statisty' ? 'menu-active':''}">
             판매자 매출 통계
         </a>
 
