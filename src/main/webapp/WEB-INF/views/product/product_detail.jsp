@@ -20,8 +20,8 @@
             <span>작가의 손길이 담긴 핸드메이드 마켓</span>
 
             <div class="product-util-menu">
-                <a href="#" class="disabled">로그인</a>
-                <a href="#" class="disabled">회원가입</a>
+                <a href="/login.do">로그인</a>
+                <a href="/join.do">회원가입</a>
                 <a href="#" class="disabled">고객센터</a>
             </div>
         </div>
