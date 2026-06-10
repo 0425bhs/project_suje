@@ -129,6 +129,39 @@
                 flex-direction: column;
             }
         }
+
+
+        #image-preview{
+            display:flex;
+            flex-wrap:wrap;
+            gap:12px;
+        }
+
+        .image-card{
+            width:120px;
+            height:120px;
+            position:relative;
+
+            border-radius:10px;
+            overflow:hidden;
+
+            border:1px solid #ddd;
+        }
+
+        .preview-img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .delete-btn{
+            position: absolute;
+            top: 3px;
+            right: 6px;
+            color: red;
+            cursor: pointer;
+        }
+        ㄴ
     </style>
     <script>
         function send(f) {
@@ -150,6 +183,51 @@
             f.action = "review_form.do";
             f.method = "post";
             f.submit();
+        }
+
+        let previewImageList = [];
+        
+        function addPreview(input) {
+            for (const file of input.files) {
+                previewImageList.push(file);
+            }
+
+            renderPreview();
+        }
+
+        function deletePreview(index){
+            previewImageList.splice(index, 1);
+
+            renderPreview();
+        }
+
+        function renderPreview() {
+            let preview = document.getElementById("image-preview");
+            preview.innerHTML = "";
+
+            for (let i = 0; i < previewImageList.length; i++) {
+                let file = previewImageList[i];
+
+                let card = document.createElement("div");
+                card.classList.add("image-card");
+
+                let del = document.createElement("span");
+                del.innerHTML = "x";
+                del.classList.add("delete-btn");
+
+                del.onclick = function(){
+                    deletePreview(i);
+                };
+
+                let img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                img.classList.add("preview-img");
+
+                card.appendChild(del);
+                card.appendChild(img);
+
+                preview.appendChild(card);
+            }
         }
     </script>
 </head>
@@ -183,7 +261,8 @@
             </div>
         </div>
 
-        <form class="community-card">
+        <form class="community-card"
+              enctype="multipart/form-data">
             <input type="hidden" name="product_id" value="${product.product_id}">
             <input type="hidden" name="order_item_id" value="${order_item_id}">
             <div class="form-layout">
@@ -210,6 +289,25 @@
                             <option value="2">2점 - 아쉬움</option>
                             <option value="1">1점 - 불만족</option>
                         </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label>리뷰 사진</label>
+
+                        <input type="file"
+                               id="images"
+                               name="images"
+                               accept="image/*"
+                               multiple
+                               onchange="addPreview(this)"
+                               hidden>
+
+                        <label for="images">
+                            +
+                        </label>
+
+                        <div class="image-preview" id="image-preview">
+                        </div>
                     </div>
 
                     <div class="btn-row">

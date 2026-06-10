@@ -1,15 +1,20 @@
 package com.kh.suje.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.ReviewDAO;
+import com.kh.suje.vo.ImageVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.ReviewVO;
 
@@ -20,9 +25,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewController {
     @Autowired
-    HttpSession session;
+    HttpSession session; 
 
     private final ReviewDAO reviewDAO;
+    private final OrderDAO orderDAO;
     private final ProductDAO productDAO;
     
     @GetMapping(value={"testmain" ,"/review"})
@@ -31,7 +37,9 @@ public class ReviewController {
     }
 
     @GetMapping("/review_form.do")
-    private String reviewForm(Model model, int product_id, int order_item_id) {
+    private String reviewForm(Model model, int order_item_id) {
+
+        int product_id = orderDAO.getProduct_id(order_item_id);
         ProductVO product = productDAO.product_one(product_id);
         model.addAttribute("product", product);
         model.addAttribute("order_item_id", order_item_id);
@@ -40,21 +48,46 @@ public class ReviewController {
     }
 
     @PostMapping("/review_form.do")
-    private String reviewFormFin(ReviewVO review) {
+    private String reviewFormFin(ReviewVO review, List<MultipartFile> images) {
         // UserVO user = session.getAttribute("user");
         // Long id = user.getId();
 
-        int user_id = 3;
+        int user_id = 2;
         review.setUser_id(user_id);
 
-        System.out.println("=========");
-        System.out.println("user_id      : " + review.getUser_id());
-        System.out.println("product_id   : " + review.getProduct_id());
-        System.out.println("order_item_id: " + review.getOrder_item_id());
-        System.out.println("rating       : " + review.getRating());
-        System.out.println("=========");
-
         int res = reviewDAO.addReview(review);
+
+        List<ImageVO> imageList = new ArrayList<>();
+        
+        // image_id INT AUTO_INCREMENT PRIMARY KEY,
+        // target_type VARCHAR(30) NOT NULL,
+        // target_id INT NOT NULL,
+        // image_url VARCHAR(500) NOT NULL,
+        // original_name VARCHAR(255),
+        // sort_order INT DEFAULT 0,
+        // created_at DATETIME DEFAULT NOW()
+
+        int sort_order = 1;
+
+        for (MultipartFile file : images) {
+            if (file.isEmpty()) {
+                continue;
+            }
+
+            String saveName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+            file.transferTo(new File(uploadPath, saveName));
+
+            ImageVO image = new ImageVO();
+
+            image.setTarget_type("REVIEW");
+            image.setTarget_id(review.getReview_id());
+            image.setImage_url("");
+            image.setOriginal_name("");
+            image.setSort_order(sort_order++);
+
+            imageList.add(image);
+        }
 
         return "redirect:/my_review_list.do";
     }
@@ -64,7 +97,7 @@ public class ReviewController {
         // UserVO user = session.getAttribute("user");
         // int id = user.getId();
 
-        int userId = 3;
+        int userId = 2;
 
         List<ReviewVO> list = reviewDAO.getMyReviewList(userId);
         model.addAttribute("list", list);
