@@ -1,33 +1,34 @@
-window.addEventListener("load", function () {
+window.addEventListener("load",function (){
     initProductDetailImageSlider();
     initProductDetailQuantity();
+    initProductDetailTabs();
 });
 
-function initProductDetailImageSlider() {
+function initProductDetailImageSlider(){
     const imageBox = document.querySelector(".store-main-image-box");
     const mainImage = document.getElementById("detailMainImage");
     const thumbButtons = document.querySelectorAll(".store-thumb-btn");
     const prevBtn = document.getElementById("detailImgPrev");
     const nextBtn = document.getElementById("detailImgNext");
 
-    if (imageBox == null || mainImage == null) {
+    if(imageBox == null || mainImage == null){
         return;
     }
 
     const imageList = [];
 
-    thumbButtons.forEach(function (btn) {
+    thumbButtons.forEach(function (btn){
         const imgSrc = btn.dataset.img;
 
-        if (imgSrc != null && imgSrc !== "" && !imageList.includes(imgSrc)) {
+        if(imgSrc != null && imgSrc !== "" && !imageList.includes(imgSrc)){
             imageList.push(imgSrc);
         }
     });
 
-    if (imageList.length === 0) {
+    if(imageList.length === 0){
         const currentSrc = mainImage.getAttribute("src");
 
-        if (currentSrc != null && currentSrc !== "") {
+        if(currentSrc != null && currentSrc !== ""){
             imageList.push(currentSrc);
         }
     }
@@ -35,38 +36,38 @@ function initProductDetailImageSlider() {
     let currentIndex = 0;
     let isAnimating = false;
 
-    function updateThumbActive() {
-        thumbButtons.forEach(function (btn) {
-            btn.classList.toggle("active", btn.dataset.img === imageList[currentIndex]);
+    function updateThumbActive(){
+        thumbButtons.forEach(function (btn){
+            btn.classList.toggle("active",btn.dataset.img === imageList[currentIndex]);
         });
     }
 
-    function updateNavState() {
-        if (imageList.length <= 1) {
-            if (prevBtn != null) {
+    function updateNavState(){
+        if(imageList.length <= 1){
+            if(prevBtn != null){
                 prevBtn.classList.add("disabled");
             }
 
-            if (nextBtn != null) {
+            if(nextBtn != null){
                 nextBtn.classList.add("disabled");
             }
         }
     }
 
-    function showImage(index, direction) {
-        if (imageList.length <= 1 || isAnimating) {
+    function showImage(index,direction){
+        if(imageList.length <= 1 || isAnimating){
             return;
         }
 
-        if (index < 0) {
+        if(index < 0){
             index = imageList.length - 1;
         }
 
-        if (index >= imageList.length) {
+        if(index >= imageList.length){
             index = 0;
         }
 
-        if (index === currentIndex) {
+        if(index === currentIndex){
             return;
         }
 
@@ -78,39 +79,39 @@ function initProductDetailImageSlider() {
 
         imageBox.classList.add(motionClass);
 
-        setTimeout(function () {
+        setTimeout(function (){
             currentIndex = index;
             mainImage.src = imageList[currentIndex];
 
             updateThumbActive();
 
-            requestAnimationFrame(function () {
+            requestAnimationFrame(function (){
                 imageBox.classList.remove("is-changing-prev");
                 imageBox.classList.remove("is-changing-next");
 
-                setTimeout(function () {
+                setTimeout(function (){
                     isAnimating = false;
-                }, 220);
+                },220);
             });
-        }, 160);
+        },160);
     }
 
-    thumbButtons.forEach(function (btn, index) {
-        btn.addEventListener("click", function () {
+    thumbButtons.forEach(function (btn,index){
+        btn.addEventListener("click",function (){
             const direction = index > currentIndex ? "next" : "prev";
-            showImage(index, direction);
+            showImage(index,direction);
         });
     });
 
-    if (prevBtn != null) {
-        prevBtn.addEventListener("click", function () {
-            showImage(currentIndex - 1, "prev");
+    if(prevBtn != null){
+        prevBtn.addEventListener("click",function (){
+            showImage(currentIndex - 1,"prev");
         });
     }
 
-    if (nextBtn != null) {
-        nextBtn.addEventListener("click", function () {
-            showImage(currentIndex + 1, "next");
+    if(nextBtn != null){
+        nextBtn.addEventListener("click",function (){
+            showImage(currentIndex + 1,"next");
         });
     }
 
@@ -118,54 +119,85 @@ function initProductDetailImageSlider() {
     updateNavState();
 }
 
-function initProductDetailQuantity() {
+function initProductDetailQuantity(){
     const qtyInput = document.getElementById("detailQuantity");
     const minusBtn = document.getElementById("qtyMinus");
     const plusBtn = document.getElementById("qtyPlus");
     const totalCount = document.getElementById("detailTotalCount");
     const totalPrice = document.getElementById("detailTotalPrice");
 
-    if (
-        qtyInput == null ||
-        minusBtn == null ||
-        plusBtn == null ||
-        totalCount == null ||
-        totalPrice == null
-    ) {
+    if( qtyInput == null || minusBtn == null || plusBtn == null || totalCount == null || totalPrice == null ){
         return;
     }
 
     const unitPrice = Number(qtyInput.dataset.unitPrice || 0);
     const maxQty = Number(qtyInput.getAttribute("max") || 1);
 
-    function updateTotal() {
+    function updateTotal(){
         let qty = Number(qtyInput.value || 1);
 
-        if (qty < 1) {
+        if(qty < 1){
             qty = 1;
         }
 
-        if (qty > maxQty) {
+        if(maxQty > 0 && qty > maxQty){
             qty = maxQty;
         }
 
         qtyInput.value = qty;
 
-        totalCount.innerText = qty;
-        totalPrice.innerText = (unitPrice * qty).toLocaleString() + "원";
+        totalCount.innerText=qty;
+        totalPrice.innerText=(unitPrice * qty).toLocaleString() + "원";
     }
 
-    minusBtn.addEventListener("click", function () {
+    minusBtn.addEventListener("click",function(){
         qtyInput.value = Number(qtyInput.value || 1) - 1;
         updateTotal();
     });
 
-    plusBtn.addEventListener("click", function () {
+    plusBtn.addEventListener("click",function(){
         qtyInput.value = Number(qtyInput.value || 1) + 1;
         updateTotal();
     });
 
-    qtyInput.addEventListener("input", updateTotal);
+    qtyInput.addEventListener("input",updateTotal);
 
     updateTotal();
+}
+
+function initProductDetailTabs(){
+    const tabs = document.querySelectorAll(".store-detail-tab[data-tab-target]");
+    const panels = document.querySelectorAll(".store-tab-panel");
+
+    if(tabs.length==0 || panels.length==0){
+        return;
+    }
+
+    function showTab(tab){
+        const targetId=tab.dataset.tabTarget;
+
+        tabs.forEach(function(item){
+            item.classList.remove("active");
+        });
+
+        panels.forEach(function (panel){
+            panel.classList.remove("active");
+        });
+
+        tab.classList.add("active");
+
+        const targetPanel = document.getElementById(targetId);
+
+        if(targetPanel != null){
+            targetPanel.classList.add("active");
+        }
+    }
+
+    tabs.forEach(function (tab){
+        tab.addEventListener("click",function (){
+            showTab(tab);
+        });
+    });
+
+    showTab(tabs[0]);
 }
