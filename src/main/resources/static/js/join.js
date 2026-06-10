@@ -36,32 +36,30 @@ function toggleForm() {
 }
 
 function togglePwdVisibility(e) {
-    e.preventDefault(); // 
-    
+    e.preventDefault();
     let passwordInput = document.getElementById("password");
-    let toggleBtn = document.getElementById("toggleBtn");
+    let icon = document.getElementById("eyeIcon");
 
     if (passwordInput.type === "password") {
         passwordInput.type = "text";
-        toggleBtn.textContent = "🙈"; }
-
-       else{ passwordInput.type = "password";
-        toggleBtn.textContent = "👁️"; // 비밀번호가 숨겨졌을 때는 눈 이모지
+        icon.className = "ti ti-eye";      
+    } else {
+        passwordInput.type = "password";
+        icon.className = "ti ti-eye-off";  
     }
 }
 
 function togglePwdVisibility2(e) {
-    e.preventDefault(); // 
-    
+    e.preventDefault();
     let chPasswordInput = document.getElementById("checkPassword");
-    let toggleBtn2 = document.getElementById("toggleBtn2");
+    let icon = document.getElementById("eyeIcon2");
 
     if (chPasswordInput.type === "password") {
         chPasswordInput.type = "text";
-        toggleBtn2.textContent = "🙈"; }
-
-       else{ chPasswordInput.type = "password";
-        toggleBtn2.textContent = "👁️"; // 비밀번호가 숨겨졌을 때는 눈 이모지
+        icon.className = "ti ti-eye";       
+    } else {
+        chPasswordInput.type = "password";
+        icon.className = "ti ti-eye-off";   
     }
 }
 
@@ -140,6 +138,28 @@ function authCheck() {
         alert("인증번호를 다시 확인하세요");
     }
 
+}
+
+function checkPwdRules() {
+    let password = document.getElementById("password").value;
+    let div = document.getElementById("pwd-rules");
+
+    let messages = [];
+
+    if (password.length < 8) 
+        messages.push("8자 이상이어야 합니다");
+    
+    if (!/[A-Za-z]/.test(password)) 
+        messages.push("영문이 포함되어야 합니다");
+    
+    if (!/[0-9]/.test(password)) 
+        messages.push("숫자가 포함되어야 합니다");
+
+    if (messages.length === 0) {
+        div.innerHTML = "<span style='color:green'>✅ 사용 가능한 비밀번호입니다</span>";
+    } else {
+        div.innerHTML = messages.map(m => `<span style='color:red'>${m}</span>`).join("<br>");
+    }
 }
 
 

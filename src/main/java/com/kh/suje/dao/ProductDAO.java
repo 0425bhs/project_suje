@@ -67,4 +67,11 @@ public interface ProductDAO {
 
     //상품 검색 개수
     int product_search_cnt(Map<String, Object> map);
+
+    // 선물 추천 목록
+    List<ProductVO> product_gift_list(Map<String, Object> map);
+
+    // 로그인 회원 구매내역 기반 선물추천
+    List<ProductVO> product_gift_personal_list(Map<String, Object> map);
+
 }

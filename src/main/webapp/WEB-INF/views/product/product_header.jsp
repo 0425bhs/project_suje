@@ -122,7 +122,7 @@
             <a href="/seller_product_list.do">판매자센터</a>
 
             <a href="#" class="disabled">♡ 관심</a>
-            <a href="#" class="disabled">🛒 장바구니</a>
+            <a href="/cart_list.do">🛒 장바구니</a>
         </div>
 
     </div>
@@ -132,7 +132,8 @@
     <nav class="product-nav-bar">
         <div class="product-nav-inner">
 
-            <a href="#" class="disabled">
+            <a href="/product_gift.do" 
+               class="${param.activeMenu eq 'gift' ? 'nav-active' : ''}">
                 🎁 선물추천
             </a>
 

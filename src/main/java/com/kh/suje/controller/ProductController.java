@@ -20,7 +20,9 @@ import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.UserVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -166,66 +168,111 @@ public class ProductController {
    
 
     @GetMapping("/product_detail.do")
-    public String product_detail_form(int product_id, Model model) {
-
+    public String product_detail_form(
+            int product_id,
+            Model model,
+            HttpSession session
+    ) {
+        // 상품 상세 정보 조회
         ProductVO vo = productdao.product_one(product_id);
-        model.addAttribute("vo", vo);
 
-        model.addAttribute("review_list", reviewdao.productReviewList(product_id));
-        model.addAttribute("qna_list", qnadao.productQnaList(product_id));
-
-        model.addAttribute("bigCategoryList", categorydao.big_category_list());
-        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
-
-        return "/product/product_detail";
-    }  
-
-    @GetMapping("/product_discovery.do")
-    public String product_discovery_list(Model model) {
-
-        // 로그인 연결 전 임시 user_id
-        int user_id = 1;
-
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("user_id", user_id);
-        map.put("limit", 30);
-
-
-        // =========================================================
-        // 취향발견 추천 상품 조회
-        // - product_view_log에서 사용자가 자주 본 카테고리를 찾음
-        // - 그 카테고리에 해당하는 상품을 추천 목록으로 가져옴
-        // =========================================================
-        List<ProductVO> list = productdao.product_discovery_list(map);
-
-        boolean isFallback = false;
-
-
-        // =========================================================
-        // 취향 데이터가 없을 때 대체 상품 출력
-        // - 아직 상품 상세를 본 기록이 없으면 추천할 기준이 없음
-        // - 이 경우 최신 상품 목록을 대신 보여줌
-        // =========================================================
-        if (list == null || list.isEmpty()) {
-            list = productdao.product_discovery_fallback_list(map);
-            isFallback = true;
+        // 상품이 없으면 메인으로 이동
+        if (vo == null) {
+            return "redirect:/product/main.do";
         }
 
+        // 상품 상세 JSP로 상품 정보 전달
+        model.addAttribute("vo", vo);
 
-        // 취향발견 JSP로 추천 상품 전달
-        model.addAttribute("list", list);
+        // 리뷰 목록 전달
+        model.addAttribute("review_list", reviewdao.getProductReviewList(product_id));
 
-        // 취향 데이터가 없어서 최신상품으로 대체했는지 여부
-        model.addAttribute("isFallback", isFallback);
+
+        // =========================================================
+        // 취향발견용 상품 조회 기록 저장
+        // - 로그인한 회원이 상품 상세 페이지에 들어왔을 때만 기록
+        // - user_id = 1 고정 사용하지 않음
+        // - product_view_log에 저장된 기록은 취향발견 추천에 사용
+        // =========================================================
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser != null) {
+            Map<String, Object> viewLogMap = new HashMap<>();
+
+            viewLogMap.put("user_id", loginUser.getUser_id());
+            viewLogMap.put("product_id", vo.getProduct_id());
+            viewLogMap.put("category_id", vo.getCategory_id());
+
+            productdao.insertProductViewLog(viewLogMap);
+        }
 
 
         // 전체 카테고리 헤더용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
-        return "product/product_discovery_list";
+        return "/product/product_detail";
     }
+
+    // 선물추천 페이지
+    @GetMapping("/product_gift.do")
+    public String product_gift_list(
+            Model model,
+            Integer category_id,
+            String priceRange,
+            HttpSession session
+    ) {
+        // 헤더 전체 카테고리 출력용
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
+        // 선택된 카테고리
+        model.addAttribute("selectedCategoryId", category_id);
+
+        // 선택된 가격대
+        model.addAttribute("selectedPriceRange", priceRange);
+
+
+        // =========================================================
+        // 로그인 회원 구매내역 기반 추천
+        // =========================================================
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser != null) {
+        int user_id = loginUser.getUser_id();
+
+        Map<String, Object> personalMap = new HashMap<>();
+        personalMap.put("user_id", user_id);
+        personalMap.put("limit", 7);
+
+        List<ProductVO> personalGiftList = productdao.product_gift_personal_list(personalMap);
+
+        String loginUserName = loginUser.getName();
+
+        if (loginUserName == null || loginUserName.trim().isEmpty()) {
+            loginUserName = loginUser.getNick_name();
+        }
+
+        model.addAttribute("personalGiftList", personalGiftList);
+        model.addAttribute("loginUserName", loginUserName);
+    }
+
+
+        // =========================================================
+        // 선택 조건 상품 목록
+        // =========================================================
+        Map<String, Object> map = new HashMap<>();
+        map.put("category_id", category_id);
+        map.put("priceRange", priceRange);
+        map.put("limit", 14);
+
+        List<ProductVO> giftList = productdao.product_gift_list(map);
+
+        model.addAttribute("giftList", giftList);
+
+        return "product/product_gift_list";
+    }
+
 
     @GetMapping("/product_sale.do")
     public String product_sale_list(Model model,Integer page){
@@ -275,6 +322,40 @@ public class ProductController {
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
         return "product/product_best_list";
+    }
+
+    @GetMapping("/product_discovery.do")
+    public String product_discovery_list(Model model, HttpSession session) {
+
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("limit", 30);
+
+        List<ProductVO> list = null;
+        boolean isFallback = false;
+
+        // 로그인한 회원이면 해당 회원의 취향 기록 기준으로 추천
+        if (loginUser != null) {
+            int user_id = loginUser.getUser_id();
+            map.put("user_id", user_id);
+
+            list = productdao.product_discovery_list(map);
+        }
+
+        // 로그인하지 않았거나 취향 데이터가 없으면 기본 추천 상품 출력
+        if (list == null || list.isEmpty()) {
+            list = productdao.product_discovery_fallback_list(map);
+            isFallback = true;
+        }
+
+        model.addAttribute("list", list);
+        model.addAttribute("isFallback", isFallback);
+
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
+        return "product/product_discovery_list";
     }
 
     @GetMapping("/all_list.do")
