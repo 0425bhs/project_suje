@@ -6,51 +6,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.kh.suje.dao.CartDAO">
 
     <select id="cartList" resultType="map">
-    SELECT
-        c.cart_id,
-        c.user_id,
-        c.product_id,
-        c.quantity,
-        c.created_at,
+        SELECT
+            c.cart_id,
+            c.user_id,
+            c.product_id,
+            c.quantity,
+            c.created_at,
 
-        p.seller_id,
-        s.company_name AS seller_name,
+            p.seller_id,
+            s.company_name AS seller_name,
 
-        p.name AS name,
-        p.price,
-        p.sale_price,
-        p.delivery_fee,
-        p.stock,
-        p.image_l AS image_l,
-        p.status,
+            p.name AS name,
+            p.price,
+            p.sale_price,
+            p.delivery_fee,
+            p.free_shipping,
+            p.stock,
+            p.image_l AS image_l,
+            p.status,
 
-        p.price * c.quantity AS origin_total,
+            p.price * c.quantity AS origin_total,
 
-        CASE
-            WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
-            THEN p.sale_price
-            ELSE p.price
-        END AS item_price,
+            CASE
+                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                THEN p.sale_price
+                ELSE p.price
+            END AS item_price,
 
-        CASE
-            WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
-            THEN p.sale_price * c.quantity
-            ELSE p.price * c.quantity
-        END AS item_total,
+            CASE
+                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                THEN p.sale_price * c.quantity
+                ELSE p.price * c.quantity
+            END AS item_total,
 
-        CASE
-            WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
-            THEN (p.price - p.sale_price) * c.quantity
-            ELSE 0
-        END AS discount_total
+            CASE
+                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                THEN (p.price - p.sale_price) * c.quantity
+                ELSE 0
+            END AS discount_total
 
-    FROM cart_items c
-    JOIN products p ON c.product_id = p.product_id
-    JOIN sellers s ON p.seller_id = s.seller_id
-    WHERE c.user_id = #{value}
-      AND p.status = 'APPROVED'
-    ORDER BY p.seller_id ASC, c.cart_id DESC
-</select>
+        FROM cart_items c
+        JOIN products p ON c.product_id = p.product_id
+        JOIN sellers s ON p.seller_id = s.seller_id
+        WHERE c.user_id = #{value}
+        AND p.status = 'APPROVED'
+        ORDER BY p.seller_id ASC, c.cart_id DESC
+    </select>
 
     <select id="cartCheck" parameterType="cart" resultType="int">
         SELECT COUNT(*)
