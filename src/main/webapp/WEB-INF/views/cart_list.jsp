@@ -87,8 +87,9 @@
                                 <div class="cart-item-row" data-product-id="${item.product_id}" onclick="goProductDetail(this)">
 
                                     <div class="cart-item-check">
-                                        <input type="checkbox" name="cart_id" value="${item.cart_id}" class="cart-check" data-seller-id="${group.seller_id}" data-price="${item.item_total}"
-                                            data-origin-price="${item.origin_total}" data-discount="${item.discount_total}" checked onclick="event.stopPropagation(); calcCartTotal();" />
+                                        <input type="checkbox"name="cart_id"value="${item.cart_id}"class="cart-check"data-seller-id="${group.seller_id}"data-price="${item.item_total}"
+                                            data-origin-price="${item.origin_total}" data-discount="${item.discount_total}"data-delivery-fee="${item.delivery_fee}"
+                                            data-free-shipping="${item.free_shipping}" checked onclick="event.stopPropagation(); calcCartTotal();" />
                                     </div>
 
                                     <div class="cart-item-img-box">
@@ -134,14 +135,29 @@
 
                             <div class="seller-delivery-row">
 
-                                <button type="button"
-                                        class="seller-order-toggle"
-                                        onclick="toggleSellerOrderSummary(this)">
+                                <div class="seller-delivery-main-line">
+                                    <span>
+                                        총 배송비<small>?</small>
+                                    </span>
+
+                                    <strong class="seller-main-delivery-text ${group.delivery_fee == 0 ? 'delivery-free' : ''}">
+                                        <c:choose>
+                                            <c:when test="${group.delivery_fee == 0}">
+                                                무료
+                                            </c:when>
+                                            <c:otherwise>
+                                                <fmt:formatNumber value="${group.delivery_fee}" pattern="#,###"/>원
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </strong>
+                                </div>
+
+                                <button type="button" class="seller-order-toggle" onclick="toggleSellerOrderSummary(this)">
 
                                     <span class="seller-order-title">예상 주문금액</span>
 
                                     <span class="seller-order-right">
-                                        <strong>
+                                        <strong class="seller-summary-total">
                                             <fmt:formatNumber value="${sellerItemTotal + group.delivery_fee}" pattern="#,###"/>원
                                         </strong>
                                         <span class="seller-order-arrow">∨</span>
@@ -151,28 +167,35 @@
 
                                 <div class="seller-order-detail">
 
-                                    <div class="seller-delivery-line">
-                                        <span>
-                                            총 배송비
-                                            <small>?</small>
-                                        </span>
-
-                                        <strong>
-                                            <c:choose>
-                                                <c:when test="${group.delivery_fee == 0}">
-                                                    무료배송
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <fmt:formatNumber value="${group.delivery_fee}" pattern="#,###"/>원
-                                                </c:otherwise>
-                                            </c:choose>
+                                    <div class="seller-order-detail-row">
+                                        <span>선택상품금액</span>
+                                        <strong class="seller-detail-product-total">
+                                            <fmt:formatNumber value="${sellerItemTotal}" pattern="#,###"/>원
                                         </strong>
                                     </div>
 
-                                    <div class="seller-order-line">
-                                        <span>예상 주문금액</span>
+                                    <div class="seller-order-detail-row discount">
+                                        <span>즉시할인예상금액</span>
+                                        <strong>0원</strong>
+                                    </div>
 
-                                        <strong>
+                                    <div class="seller-order-detail-row discount">
+                                        <span>쿠폰할인예상금액</span>
+                                        <strong>0원</strong>
+                                    </div>
+
+                                    <div class="seller-order-detail-row">
+                                        <span>
+                                            배송비(5만원 이상 무료)<small>?</small>
+                                        </span>
+                                        <strong class="seller-detail-delivery-fee">
+                                            <fmt:formatNumber value="${group.delivery_fee}" pattern="#,###"/>원
+                                        </strong>
+                                    </div>
+
+                                    <div class="seller-order-detail-final">
+                                        <span>총 주문금액</span>
+                                        <strong class="seller-detail-final-total">
                                             <fmt:formatNumber value="${sellerItemTotal + group.delivery_fee}" pattern="#,###"/>원
                                         </strong>
                                     </div>
