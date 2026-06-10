@@ -131,7 +131,8 @@
     <nav class="product-nav-bar">
         <div class="product-nav-inner">
 
-            <a href="#" class="disabled">
+            <a href="/product_gift.do" 
+               class="${param.activeMenu eq 'gift' ? 'nav-active' : ''}">
                 🎁 선물추천
             </a>
 
