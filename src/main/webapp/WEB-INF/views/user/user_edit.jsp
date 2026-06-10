@@ -56,18 +56,16 @@
                             <th>현재 비밀번호</th>
                             <td>
                                 <div class="input-row" style="display: flex; align-items: center; gap: 8px;">
-                                    <input name="ori_password" id="ori_password" 
+                                    <input name="ori_password" id="ori_password" maxlength="16"
                                     type="password" oninput="chk2()"
-                                        placeholder="영문, 숫자 포함 8자 이상" />
-                                    <button type="button" id="toggleBtn3" 
-                                    onclick="togglePwdVisibility3(event)" 
-                                    style="background: none; border: none; cursor: pointer; font-size: 18px; 
-             padding: 4px;">
-                                        👁️
-                                    </button>
+                                        placeholder="영문, 숫자 포함 8자 이상 16자 이하" />
+                                    <button type="button" class="eye-btn" onclick="togglePwdVisibility3(event)">
+                <i class="ti ti-eye-off" id="eyeIcon3"></i>
+            </button>
                                     <input type="button" value="확인" class="btn-secondary" 
                                     onclick="check_func()" />
                                 </div>
+                                <div id="pwd-rules" style="font-size:13px; margin-top:6px;"></div>
                             </td>
                         </tr>
 
@@ -75,15 +73,13 @@
                             <th> 새 비밀번호</th>
                             <td>
                                 <div class="input-row" style="display: flex; align-items: center; gap: 8px;">
-                                    <input name="password" id="password" type="password" disabled="disabled"
-                                        placeholder="영문, 숫자 포함 8자 이상" />
-                                    <button type="button" id="toggleBtn"
-                                     onclick="togglePwdVisibility(event)" 
-                                     style="background: none; border: none; cursor: pointer; 
-             font-size: 18px; padding: 4px;">
-                                        👁️
-                                    </button>
+                                    <input name="password" id="password" type="password" disabled="disabled" 
+                                     maxlength="16"   placeholder="영문, 숫자 포함 8자 이상 16자 이하" />
+                                    <button type="button" class="eye-btn" onclick="togglePwdVisibility(event)">
+                <i class="ti ti-eye-off" id="eyeIcon"></i>
+            </button>
                                 </div>
+                                <div id="pwd-rules" style="font-size:13px; margin-top:6px;"></div>
                             </td>
                         </tr>
 
@@ -92,13 +88,11 @@
                             <td>
                                 <div class="input-row" style="display: flex; align-items: center; gap: 8px;">
                                     <input name="checkPassword" id="checkPassword"
-                                     type="password" disabled="disabled"
-                                        placeholder="영문, 숫자 포함 8자 이상" />
-                                    <button type="button" id="toggleBtn2"
-                                     onclick="togglePwdVisibility2(event)" style="background: none; border: none; cursor: pointer; 
-             font-size: 18px; padding: 4px;">
-                                        👁️
-                                    </button>
+                                     type="password" disabled="disabled" maxlength="16"
+                                        placeholder="영문, 숫자 포함 8자 이상 16자 이하" />
+                                    <button type="button" class="eye-btn" onclick="togglePwdVisibility2(event)">
+                <i class="ti ti-eye-off" id="eyeIcon2"></i>
+            </button>
                                 </div>
                             </td>
                         </tr>
@@ -150,7 +144,7 @@
 
 
                                 <input type="button" value="판매자 신청하기" class="btn-main"
-                                    onclick="sellerModify(this.form)" />
+                                    onclick="applySeller(this.form)" />
 
                                 <input type="button" value="취소" class="btn-cancel" onclick="history.back()" />
 

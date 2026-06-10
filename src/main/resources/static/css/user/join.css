@@ -64,18 +64,15 @@ input[type="password"],
 input[type="number"],
 input[type="date"],
 #authInput {
-    width: 100%;
-    height: 44px;
-    padding: 0 14px;
-    border: 1px solid #DCDCDC;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #333333;
-    background-color: #FFFFFF;
-    box-sizing: border-box;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    height: 44px;  /* 전부 44px로 통일 */
 }
 
+.btn-secondary,
+input[value="중복체크"],
+input[value="전송"],
+input[value="인증"] {
+    height: 44px;  /* 버튼도 44px로 통일 */
+}
 /* 포커스 효과 (아이디스 주황색) */
 input[type="text"]:focus,
 input[type="password"]:focus,
@@ -198,21 +195,49 @@ input[value="인증"]:hover {
     color: #333333;
 }
 
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding-right: 44px;
+    box-sizing: border-box;
+}
+
+.eye-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #BBBBBB;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.eye-btn:hover { color: #777; }
+
 /* -----------------------------------------------------
     SOCIAL LOGINS (3사 간편로그인 가로 병렬 배치 버전)
 ----------------------------------------------------- */
 .social-wrap {
-    margin-top: 25px;
-    padding-top: 25px;
-    border-top: 1px dashed #EAEAEA; 
-    
-    /* 가로로 나란히 배치하기 위한 설정 */
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-top: 0;
+    padding-bottom: 25px;
+    border-top: none;
+    border-bottom: 1px dashed #EAEAEA;
     display: flex;
     flex-direction: row;
-    justify-content: center; /* 가운데 정렬 */
-    gap: 20px; /* 버튼과 버튼 사이의 간격 */
+    justify-content: center;
+    gap: 20px;
 }
-
 /* 정사각형 모양의 소셜 버튼 공통 스타일 */
 .social-wrap button {
     display: flex;
