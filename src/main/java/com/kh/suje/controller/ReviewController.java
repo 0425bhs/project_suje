@@ -65,7 +65,7 @@ public class ReviewController {
         int res = reviewDAO.addReview(review);
 
         //저장경로 지정
-        String savePath = "/Users/kkt/Desktop/KKT/Spring_boot/upload";
+        String savePath = "C:\\upload";
 
         //저장경로가 없다면 생성
         File dir = new File(savePath);
@@ -146,6 +146,10 @@ public class ReviewController {
     @GetMapping("/review_update_form.do")
     public String reviewUpdateForm(Model model, int review_id) {
         ReviewVO review = reviewDAO.getReviewById(review_id);
+
+        List<ImageVO> images = imageDAO.getImagesByReviewId(review.getReview_id());
+        review.setImageList(images);
+
         model.addAttribute("review", review);
 
         return "/reviews/review_update_form";

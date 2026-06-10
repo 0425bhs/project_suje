@@ -18,9 +18,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </insert>
 
-    <select id="getImagesByReviewIds"
+    <select id="getImagesByReviewId"
+            parameterType="int"
             resultType="image"
-            parameterType="java.util.List">
+            >
+        SELECT *
+        FROM images
+        WHERE target_type = 'REVIEW'
+        AND target_id = #{id}
+    </select>
+
+    <select id="getImagesByReviewIds"
+            parameterType="java.util.List"
+            resultType="image">
         SELECT *
         FROM images
         WHERE target_type = 'REVIEW'
