@@ -1,17 +1,20 @@
 package com.kh.suje.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.ReviewDAO;
@@ -31,6 +34,7 @@ public class ReviewController {
     private final ReviewDAO reviewDAO;
     private final OrderDAO orderDAO;
     private final ProductDAO productDAO;
+    private final ImageDAO imageDAO;
     
     @GetMapping(value={"testmain" ,"/review"})
     private String main() {
@@ -49,7 +53,8 @@ public class ReviewController {
     }
 
     @PostMapping("/review_form.do")
-    private String reviewFormFin(ReviewVO review, List<MultipartFile> images) {
+    @Transactional(rollbackFor = Exception.class)
+    private String reviewFormFin(ReviewVO review, List<MultipartFile> images) throws IllegalStateException, IOException {
         // UserVO user = session.getAttribute("user");
         // Long id = user.getId();
 
@@ -58,16 +63,16 @@ public class ReviewController {
 
         int res = reviewDAO.addReview(review);
 
-        List<ImageVO> imageList = new ArrayList<>();
-        
-        // image_id INT AUTO_INCREMENT PRIMARY KEY,
-        // target_type VARCHAR(30) NOT NULL,
-        // target_id INT NOT NULL,
-        // image_url VARCHAR(500) NOT NULL,
-        // original_name VARCHAR(255),
-        // sort_order INT DEFAULT 0,
-        // created_at DATETIME DEFAULT NOW()
+        //저장경로 지정
+        String savePath = "/Users/kkt/Desktop/KKT/Spring_boot/upload";
 
+        //저장경로가 없다면 생성
+        File dir = new File(savePath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        List<ImageVO> imageList = new ArrayList<>();
         int sort_order = 1;
 
         for (MultipartFile file : images) {
@@ -75,29 +80,22 @@ public class ReviewController {
                 continue;
             }
 
-            //저장경로 지정
-            String savePath = "/Users/kkt/Desktop/KKT/Spring_boot/upload";
-
-            //저장경로가 없다면 생성
-            File dir = new File(savePath);
-
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
             String saveName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-
-            file.transferTo(new File(uploadPath, saveName));
+            File saveFile = new File(savePath, saveName);
+            file.transferTo(saveFile);
 
             ImageVO image = new ImageVO();
-
             image.setTarget_type("REVIEW");
             image.setTarget_id(review.getReview_id());
-            image.setImage_url("");
+            image.setImage_url(saveName);
             image.setOriginal_name(file.getOriginalFilename());
             image.setSort_order(sort_order++);
 
             imageList.add(image);
+        }
+
+        if (!imageList.isEmpty()) {
+            imageDAO.insertImageList(imageList); 
         }
 
         return "redirect:/my_review_list.do";

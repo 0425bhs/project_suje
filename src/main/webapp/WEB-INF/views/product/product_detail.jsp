@@ -156,7 +156,7 @@
                                     <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상 구매 시 무료배송
                                 </c:if>
 
-                                <c:if test="${vo.delivery_fee > 0 &&vo.free_shipping = 0}">
+                                <c:if test="${vo.delivery_fee > 0 && vo.free_shipping = 0}">
                                     유료배송
                                 </c:if>
 

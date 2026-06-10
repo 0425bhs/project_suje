@@ -2,7 +2,19 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.kh.suje.dao.ImageDAO">
-    
+    <insert id="insertImageList"
+            parameterType="">
+        INSERT INTO images (target_type, target_id, image_url, original_name, sort_order)
+        VALUE
+        <foreach collection="list" item="image" separator=",">
+            (
+                #{image.target_type}, 
+                #{image.target_id}, 
+                #{image.image_url}, 
+                #{image.original_name}, 
+                #{image.sort_order}
+            )
+        </foreach>
+    </insert>
 </mapper>    
