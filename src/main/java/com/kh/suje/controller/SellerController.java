@@ -13,7 +13,6 @@ import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.vo.ProductVO;
-import com.kh.suje.vo.UserVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

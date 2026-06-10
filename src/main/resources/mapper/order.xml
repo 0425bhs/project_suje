@@ -115,7 +115,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE order_id = #{order_id}
     </update>
 
-    <select id="getProduct_id"
+    <select id="getProductId"
             parameterType="int">
         SELECT product_id
         FROM order_items

@@ -37,15 +37,16 @@ public class ReviewController {
     private final ImageDAO imageDAO;
     
     @GetMapping(value={"testmain" ,"/review"})
-    private String main() {
+    public String main() {
         return "/testmain";
     }
 
     @GetMapping("/review_form.do")
-    private String reviewForm(Model model, int order_item_id) {
+    public String reviewForm(Model model, int order_item_id) {
 
-        int product_id = orderDAO.getProduct_id(order_item_id);
+        int product_id = orderDAO.getProductId(order_item_id);
         ProductVO product = productDAO.product_one(product_id);
+
         model.addAttribute("product", product);
         model.addAttribute("order_item_id", order_item_id);
 
@@ -54,7 +55,7 @@ public class ReviewController {
 
     @PostMapping("/review_form.do")
     @Transactional(rollbackFor = Exception.class)
-    private String reviewFormFin(ReviewVO review, List<MultipartFile> images) throws IllegalStateException, IOException {
+    public String reviewFormFin(ReviewVO review, List<MultipartFile> images) throws IllegalStateException, IOException {
         // UserVO user = session.getAttribute("user");
         // Long id = user.getId();
 
@@ -102,20 +103,40 @@ public class ReviewController {
     }
 
     @GetMapping("/my_review_list.do")
-    private String myReviewList(Model model) {
+    public String myReviewList(Model model) {
         // UserVO user = session.getAttribute("user");
         // int id = user.getId();
 
         int userId = 2;
 
         List<ReviewVO> list = reviewDAO.getMyReviewList(userId);
+
+        if (list != null && !list.isEmpty()) {
+            List<Integer> reviewIds = new ArrayList<>();
+            for (ReviewVO review : list) {
+                reviewIds.add(review.getReview_id()); 
+            }
+
+            List<ImageVO> images = imageDAO.getImagesByReviewIds(reviewIds);
+            
+            for (ReviewVO review : list) {
+                List<ImageVO> matchedImages = new ArrayList<>();
+                for (ImageVO image : images) {
+                    if (review.getReview_id() == image.getTarget_id()) {
+                        matchedImages.add(image);
+                    }
+                }
+                review.setImageList(matchedImages);
+            }
+        }
+
         model.addAttribute("list", list);
 
         return "/reviews/my_review_list";
     }
 
     @GetMapping("/live_review_list.do")
-    private String liveReviewList(Model model) {
+    public String liveReviewList(Model model) {
         List<ReviewVO> list = reviewDAO.getLiveReviewList();
         model.addAttribute("list", list);
 
@@ -123,7 +144,7 @@ public class ReviewController {
     }
 
     @GetMapping("/review_update_form.do")
-    private String reviewUpdateForm(Model model, int review_id) {
+    public String reviewUpdateForm(Model model, int review_id) {
         ReviewVO review = reviewDAO.getReviewById(review_id);
         model.addAttribute("review", review);
 
@@ -131,14 +152,14 @@ public class ReviewController {
     }
 
     @PostMapping("/review_update_form.do")
-    private String reviewUpdateFormFin(ReviewVO review) {
+    public String reviewUpdateFormFin(ReviewVO review) {
         int res = reviewDAO.updateReview(review);
 
         return "redirect:/my_review_list.do";
     }
 
     @GetMapping("/review_delete.do")
-    private String reviewDelete(int review_id) {
+    public String reviewDelete(int review_id) {
         int res = reviewDAO.deleteReview(review_id);
 
         return "redirect:/my_review_list.do";

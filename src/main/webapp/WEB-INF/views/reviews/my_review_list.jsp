@@ -17,6 +17,7 @@
             background: #fff;
             border: 1px solid #f0e5dc;
             padding: 26px;
+            border-radius: 8px; /* 카드 모서리 부드럽게 */
         }
 
         .review-list {
@@ -27,11 +28,13 @@
         .review-item {
             display: grid;
             grid-template-columns: 112px minmax(0, 1fr) auto;
-            gap: 20px;
-            align-items: center;
+            gap: 24px;
+            align-items: start; /* 썸네일이 상단에 맞춰지도록 변경 */
             padding: 20px;
             border: 1px solid #f0e5dc;
             background: #fff;
+            border-radius: 8px; /* 아이템 모서리 부드럽게 */
+            transition: background 0.2s ease;
         }
 
         .review-item:hover {
@@ -45,10 +48,17 @@
             display: block;
             background: #f6f6f6;
             border: 1px solid #f0e5dc;
+            border-radius: 8px; /* 썸네일 둥글게 */
+        }
+
+        .review-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* 요소들 사이 간격 균일화 */
         }
 
         .review-body h3 {
-            margin: 0 0 8px;
+            margin: 0;
             color: #2b2b2b;
             font-size: 18px;
             font-weight: 900;
@@ -56,11 +66,28 @@
         }
 
         .review-body p {
-            margin: 0 0 12px;
+            margin: 0;
             color: #555;
             font-size: 14px;
             line-height: 1.7;
             word-break: keep-all;
+        }
+
+        /* 리뷰 첨부 이미지 목록 스타일 추가 */
+        .review-photo-list {
+            display: flex;
+            flex-wrap: wrap; /* 창이 좁아지면 자연스럽게 줄바꿈 */
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .review-photo-item {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #eaeaec;
+            background: #fafafa;
         }
 
         .review-meta {
@@ -89,11 +116,13 @@
             display: flex;
             gap: 8px;
             white-space: nowrap;
+            padding-top: 4px; /* 버튼 위치 살짝 조정 */
         }
 
         .review-actions .btn {
             height: 40px;
             padding: 0 16px;
+            border-radius: 6px;
         }
 
         .empty-box {
@@ -105,11 +134,13 @@
             font-weight: 800;
             border: 1px solid #f0e5dc;
             background: #fffaf7;
+            border-radius: 8px;
         }
 
         @media (max-width: 820px) {
             .review-item {
                 grid-template-columns: 88px minmax(0, 1fr);
+                gap: 16px;
             }
 
             .review-thumb {
@@ -120,6 +151,7 @@
             .review-actions {
                 grid-column: 1 / -1;
                 justify-content: flex-end;
+                margin-top: 8px;
             }
         }
 
@@ -141,6 +173,11 @@
             .review-actions .btn {
                 flex: 1;
             }
+            
+            .review-photo-item {
+                width: 68px; /* 모바일에서는 사진 크기 약간 축소 */
+                height: 68px;
+            }
         }
     </style>
     <script>
@@ -148,7 +185,6 @@
             if (!confirm("삭제하시겠습니까?")) {
                 return;
             }
-
             location.href = "/review_delete.do?review_id=" + review_id;
         }
     </script>
@@ -181,7 +217,6 @@
                 <h2>내 후기 목록</h2>
                 <p>작성한 상품 후기를 확인하고 수정할 수 있습니다.</p>
             </div>
-
             <a class="btn light" href="/live_review_list.do">실시간 리뷰 보기</a>
         </div>
 
@@ -195,11 +230,20 @@
                     <div class="review-list">
                         <c:forEach var="review" items="${list}">
                             <article class="review-item">
+                                
                                 <img class="review-thumb" src="${review.image_s}" alt="${review.product_name}">
-
+                                
                                 <div class="review-body">
                                     <h3>${review.product_name}</h3>
                                     <p>${review.content}</p>
+
+                                    <c:if test="${not empty review.imageList}">
+                                        <div class="review-photo-list">
+                                            <c:forEach var="image" items="${review.imageList}">
+                                                <img class="review-photo-item" src="/upload/${image.image_url}" alt="리뷰 사진">
+                                            </c:forEach>
+                                        </div>
+                                    </c:if>
 
                                     <div class="review-meta">
                                         <span class="rating-pill">별점 ${review.rating}점</span>

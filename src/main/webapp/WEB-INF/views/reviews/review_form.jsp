@@ -188,7 +188,12 @@
         
         function addPreview(input) {
             for (const file of input.files) {
-                previewImageList.push(file);
+                if (previewImageList.length < 5) {
+                    previewImageList.push(file);
+                } else {
+                    alert("등록 가능한 이미지은 최대 5개입니다.");
+                    return;
+                }
             }
 
             renderPreview();

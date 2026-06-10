@@ -6,4 +6,5 @@ import com.kh.suje.vo.ImageVO;
 
 public interface ImageDAO {
     int insertImageList(List<ImageVO> imageList);
+    List<ImageVO> getImagesByReviewIds(List<Integer> review_id);
 }

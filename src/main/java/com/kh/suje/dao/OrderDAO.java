@@ -38,5 +38,5 @@ public interface OrderDAO {
     // 결제취소 시 주문 상태, 취소 사유, 취소 일시 변경
     int updateOrderCancelInfo(OrderVO vo);
 
-    int getProduct_id(int order_id);
+    int getProductId(int order_id);
 }

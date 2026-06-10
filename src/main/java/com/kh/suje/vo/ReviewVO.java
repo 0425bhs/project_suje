@@ -1,6 +1,7 @@
 package com.kh.suje.vo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
@@ -23,4 +24,6 @@ public class ReviewVO {
     
     //product_id    
     private String product_name, image_s, image_l;
+
+    private List<ImageVO> imageList;
 }
