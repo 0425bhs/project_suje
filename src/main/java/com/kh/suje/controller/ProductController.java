@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ProductVO;
@@ -29,6 +30,7 @@ public class ProductController {
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
     private final ReviewDAO reviewdao;
+    private final QnaDAO qnadao;
     
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
@@ -167,9 +169,13 @@ public class ProductController {
     public String product_detail_form(int product_id, Model model) {
 
         ProductVO vo = productdao.product_one(product_id);
-
         model.addAttribute("vo", vo);
-        model.addAttribute("review_list", reviewdao.getProductReviewList(product_id));
+
+        model.addAttribute("review_list", reviewdao.productReviewList(product_id));
+        model.addAttribute("qna_list", qnadao.productQnaList(product_id));
+
+        model.addAttribute("bigCategoryList", categorydao.big_category_list());
+        model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
         return "/product/product_detail";
     }  
