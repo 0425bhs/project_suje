@@ -252,15 +252,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 선물추천 상품 목록 -->
     <select id="product_gift_list" parameterType="map" resultType="product">
-        SELECT *
-        FROM products
-        WHERE status = 'APPROVED'
+        SELECT 
+            p.*,
+            s.company_name
+        FROM products p
+        JOIN sellers s 
+        ON p.seller_id = s.seller_id
+        WHERE p.status = 'APPROVED'
 
         <!-- 카테고리 선택 시: 대분류 또는 해당 대분류의 소분류 상품 조회 -->
         <if test="category_id != null">
             AND (
-                category_id = #{category_id}
-                OR category_id IN (
+                p.category_id = #{category_id}
+                OR p.category_id IN (
                     SELECT category_id
                     FROM categories
                     WHERE parent_id = #{category_id}
@@ -275,11 +279,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <when test="priceRange == 'under10000'">
                     AND (
                         CASE
-                            WHEN sale_price IS NOT NULL
-                                AND sale_price &gt; 0
-                                AND sale_price &lt; price
-                            THEN sale_price
-                            ELSE price
+                            WHEN p.sale_price IS NOT NULL
+                                AND p.sale_price &gt; 0
+                                AND p.sale_price &lt; p.price
+                            THEN p.sale_price
+                            ELSE p.price
                         END
                     ) &lt;= 10000
                 </when>
@@ -288,21 +292,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <when test="priceRange == '10000'">
                     AND (
                         CASE
-                            WHEN sale_price IS NOT NULL
-                                AND sale_price &gt; 0
-                                AND sale_price &lt; price
-                            THEN sale_price
-                            ELSE price
+                            WHEN p.sale_price IS NOT NULL
+                                AND p.sale_price &gt; 0
+                                AND p.sale_price &lt; p.price
+                            THEN p.sale_price
+                            ELSE p.price
                         END
                     ) &gt; 10000
 
                     AND (
                         CASE
-                            WHEN sale_price IS NOT NULL
-                                AND sale_price &gt; 0
-                                AND sale_price &lt; price
-                            THEN sale_price
-                            ELSE price
+                            WHEN p.sale_price IS NOT NULL
+                                AND p.sale_price &gt; 0
+                                AND p.sale_price &lt; p.price
+                            THEN p.sale_price
+                            ELSE p.price
                         END
                     ) &lt;= 20000
                 </when>
@@ -311,21 +315,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <when test="priceRange == '20000'">
                     AND (
                         CASE
-                            WHEN sale_price IS NOT NULL
-                                AND sale_price &gt; 0
-                                AND sale_price &lt; price
-                            THEN sale_price
-                            ELSE price
+                            WHEN p.sale_price IS NOT NULL
+                                AND p.sale_price &gt; 0
+                                AND p.sale_price &lt; p.price
+                            THEN p.sale_price
+                            ELSE p.price
                         END
                     ) &gt; 20000
 
                     AND (
                         CASE
-                            WHEN sale_price IS NOT NULL
-                                AND sale_price &gt; 0
-                                AND sale_price &lt; price
-                            THEN sale_price
-                            ELSE price
+                            WHEN p.sale_price IS NOT NULL
+                                AND p.sale_price &gt; 0
+                                AND p.sale_price &lt; p.price
+                            THEN p.sale_price
+                            ELSE p.price
                         END
                     ) &lt;= 30000
                 </when>
@@ -334,31 +338,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <when test="priceRange == 'over30000'">
                     AND (
                         CASE
-                            WHEN sale_price IS NOT NULL
-                                AND sale_price &gt; 0
-                                AND sale_price &lt; price
-                            THEN sale_price
-                            ELSE price
+                            WHEN p.sale_price IS NOT NULL
+                                AND p.sale_price &gt; 0
+                                AND p.sale_price &lt; p.price
+                            THEN p.sale_price
+                            ELSE p.price
                         END
                     ) &gt; 30000
                 </when>
             </choose>
         </if>
 
-        ORDER BY product_id DESC
+        ORDER BY p.product_id DESC
         LIMIT #{limit}
     </select>
 
     <!-- 로그인 회원 구매내역 기반 선물추천 -->
     <select id="product_gift_personal_list" parameterType="map" resultType="product">
-        SELECT DISTINCT p.*
+        SELECT DISTINCT 
+            p.*,
+            s.company_name
         FROM products p
+        JOIN sellers s
+        ON p.seller_id = s.seller_id
         WHERE p.status = 'APPROVED'
         AND p.category_id IN (
                 SELECT DISTINCT bp.category_id
                 FROM orders o
-                JOIN order_items oi ON o.order_id = oi.order_id
-                JOIN products bp ON oi.product_id = bp.product_id
+                JOIN order_items oi 
+                ON o.order_id = oi.order_id
+                JOIN products bp 
+                ON oi.product_id = bp.product_id
                 WHERE o.user_id = #{user_id}
                 AND o.status = 'PAID'
         )
@@ -504,10 +514,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 취향발견 추천 상품 목록 -->
     <select id="product_discovery_list" parameterType="map" resultType="product">
-        SELECT *
-        FROM products
-        WHERE status = 'APPROVED'
-        AND category_id IN (
+        SELECT 
+            p.*,
+            s.company_name
+        FROM products p
+        JOIN sellers s 
+        ON p.seller_id = s.seller_id
+        WHERE p.status = 'APPROVED'
+        AND p.category_id IN (
                 SELECT category_id
                 FROM (
                     SELECT category_id
@@ -518,17 +532,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     LIMIT 5
                 ) favorite_category
         )
-        ORDER BY product_id DESC
+        ORDER BY p.product_id DESC
         LIMIT #{limit}
     </select>
 
 
     <!-- 취향 데이터가 없을 때 보여줄 최신 상품 목록 -->
     <select id="product_discovery_fallback_list" parameterType="map" resultType="product">
-        SELECT *
-        FROM products
-        WHERE status = 'APPROVED'
-        ORDER BY product_id DESC
+        SELECT 
+            p.*,
+            s.company_name
+        FROM products p
+        JOIN sellers s 
+        ON p.seller_id = s.seller_id
+        WHERE p.status = 'APPROVED'
+        ORDER BY p.product_id DESC
         LIMIT #{limit}
     </select>
 

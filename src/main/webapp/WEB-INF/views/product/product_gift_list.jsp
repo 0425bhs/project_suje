@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -9,9 +9,10 @@
         <title>선물추천</title>
 
         <link rel="stylesheet" href="/css/product/product_main.css">
+        <link rel="stylesheet" href="/css/product/product_card.css">
         <link rel="stylesheet" href="/css/product/product_gift.css?v=2">
 
-        <script src="/js/product/product_main.js" defer></script>
+        <script src="/js/product_main.js" defer></script>
     </head>
 
     <body>
@@ -179,56 +180,10 @@
                             </div>
                         </div>
 
-                        <div class="gift-product-grid">
+                        <div class="common-product-wrap">
 
                             <c:forEach var="vo" items="${personalGiftList}">
-                                <a class="gift-product-card" href="/product_detail.do?product_id=${vo.product_id}">
-
-                                    <div class="gift-product-img">
-                                        <c:choose>
-                                            <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
-                                                <img src="${vo.image_s}" alt="${vo.name}">
-                                            </c:when>
-
-                                            <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                                <img src="${vo.image_l}" alt="${vo.name}">
-                                            </c:when>
-
-                                            <c:otherwise>
-                                                <img src="/images/no_image.png" alt="이미지 없음">
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </div>
-
-                                    <div class="gift-product-info">
-                                        <em>구매 기반 추천</em>
-
-                                        <strong>${vo.name}</strong>
-
-                                        <p>${vo.description}</p>
-
-                                        <div class="gift-product-price">
-                                            <c:choose>
-                                                <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
-                                                    <span>
-                                                        <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                                    </span>
-
-                                                    <b>
-                                                        <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                                    </b>
-                                                </c:when>
-
-                                                <c:otherwise>
-                                                    <b>
-                                                        <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                                    </b>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </div>
-                                    </div>
-
-                                </a>
+                                <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
                             </c:forEach>
 
                         </div>
@@ -269,56 +224,10 @@
                         </c:when>
 
                         <c:otherwise>
-                            <div class="gift-product-grid">
+                            <div class="common-product-wrap">
 
                                 <c:forEach var="vo" items="${giftList}">
-                                    <a class="gift-product-card" href="/product_detail.do?product_id=${vo.product_id}">
-
-                                        <div class="gift-product-img">
-                                            <c:choose>
-                                                <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
-                                                    <img src="${vo.image_s}" alt="${vo.name}">
-                                                </c:when>
-
-                                                <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                                    <img src="${vo.image_l}" alt="${vo.name}">
-                                                </c:when>
-
-                                                <c:otherwise>
-                                                    <img src="/images/no_image.png" alt="이미지 없음">
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </div>
-
-                                        <div class="gift-product-info">
-                                            <em>작가 상품</em>
-
-                                            <strong>${vo.name}</strong>
-
-                                            <p>${vo.description}</p>
-
-                                            <div class="gift-product-price">
-                                                <c:choose>
-                                                    <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
-                                                        <span>
-                                                            <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                                        </span>
-
-                                                        <b>
-                                                            <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                                        </b>
-                                                    </c:when>
-
-                                                    <c:otherwise>
-                                                        <b>
-                                                            <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                                        </b>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </div>
-                                        </div>
-
-                                    </a>
+                                    <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
                                 </c:forEach>
 
                             </div>
