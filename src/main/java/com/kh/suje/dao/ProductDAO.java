@@ -31,7 +31,7 @@ public interface ProductDAO {
     List<ProductVO> product_sale_list(Map<String, Object> map);
 
     // 세일 상품 개수
-    int product_sale_cnt();
+    int product_sale_cnt(Map<String, Object> map);
 
     //베스트 상품
     List<ProductVO> product_best_all_list();
@@ -73,5 +73,7 @@ public interface ProductDAO {
 
     // 로그인 회원 구매내역 기반 선물추천
     List<ProductVO> product_gift_personal_list(Map<String, Object> map);
+
+    
 
 }

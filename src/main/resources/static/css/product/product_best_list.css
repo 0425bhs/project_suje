@@ -32,7 +32,7 @@ html {
     gap: 28px;
 
     height: 48px;
-    overflow-x: auto;
+    overflow: visible;
 }
 
 .best-category-inner a {

@@ -36,10 +36,53 @@ public class ProductController {
     
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
-    public String main(Model model){
+    public String main(Model model, HttpSession session){
 
+        // 전체 카테고리 헤더용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
+        // 1. 작가 상품 둘러보기 - 최신 상품
+        Map<String, Object> mainMap = new HashMap<>();
+        mainMap.put("start", 0);
+        mainMap.put("blockList", 10);
+
+        List<ProductVO> mainProductList = productdao.product_list(mainMap);
+        model.addAttribute("mainProductList", mainProductList);
+
+        // 2. 추천 작가 상품 - 베스트 상품
+        List<ProductVO> recommendList = productdao.product_best_all_list();
+        model.addAttribute("recommendList", recommendList);
+
+        // 3. 카테고리 베스트 - 기본 비누 카테고리
+        Map<String, Object> categoryMap = new HashMap<>();
+        categoryMap.put("category_id", 23); // 비누 카테고리 번호
+        categoryMap.put("start", 0);
+        categoryMap.put("blockList", 8);
+        categoryMap.put("sort", "popular");
+
+        List<ProductVO> categoryBestList = productdao.product_category_list(categoryMap);
+        model.addAttribute("categoryBestList", categoryBestList);
+
+        // 4. 취향 발견
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        Map<String, Object> discoveryMap = new HashMap<>();
+        discoveryMap.put("limit", 4);
+
+        List<ProductVO> discoveryList = null;
+
+        if (loginUser != null) {
+            discoveryMap.put("user_id", loginUser.getUser_id());
+            discoveryList = productdao.product_discovery_list(discoveryMap);
+        }
+
+        if (discoveryList == null || discoveryList.isEmpty()) {
+            discoveryList = productdao.product_discovery_fallback_list(discoveryMap);
+        }
+
+        model.addAttribute("discoveryList", discoveryList);
+
         return "main";
     }
         
@@ -274,40 +317,63 @@ public class ProductController {
     }
 
 
-    @GetMapping("/product_sale.do")
-    public String product_sale_list(Model model,Integer page){
+   @GetMapping("/product_sale.do")
+    public String product_sale_list(
+            Model model,
+            Integer page,
+            String sort,
+            String saleType) {
+
         int nowPage = 1;
 
         if (page != null) {
             nowPage = page;
         }
 
+        // 정렬 기본값
+        if (sort == null || sort.trim().equals("")) {
+            sort = "popular";
+        }
+
+        // 할인 유형 기본값
+        if (saleType == null || saleType.trim().equals("")) {
+            saleType = "all";
+        }
+
         int blockList = 10;
         int blockPage = 5;
 
-        int rowTotal = productdao.product_sale_cnt();
         int start = (nowPage - 1) * blockList;
 
         Map<String, Object> map = new HashMap<>();
         map.put("start", start);
         map.put("blockList", blockList);
+        map.put("sort", sort);
+        map.put("saleType", saleType);
 
+        int rowTotal = productdao.product_sale_cnt(map);
         List<ProductVO> list = productdao.product_sale_list(map);
 
+        String pageUrl = "/product_sale.do?saleType=" + saleType + "&sort=" + sort;
+
         String pageMenu = Paging.getPaging(
-            "/product/sale_list.do",
-            nowPage,
-            rowTotal,
-            blockList,
-            blockPage
+                pageUrl,
+                nowPage,
+                rowTotal,
+                blockList,
+                blockPage
         );
 
         model.addAttribute("list", list);
         model.addAttribute("pageMenu", pageMenu);
+        model.addAttribute("saleCount", rowTotal);
 
-        // 전체 카테고리용 데이터
+        model.addAttribute("currentSort", sort);
+        model.addAttribute("currentSaleType", saleType);
+
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
         return "product/product_sale_list";
     }
 
