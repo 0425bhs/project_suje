@@ -68,7 +68,9 @@
 
                     <c:forEach var="group" items="${sellerGroupList}">
 
+                        <c:set var="sellerOriginTotal" value="0" />
                         <c:set var="sellerItemTotal" value="0" />
+                        <c:set var="sellerDiscountTotal" value="0" />
 
                         <div class="seller-cart-box" data-seller-id="${group.seller_id}">
 
@@ -82,7 +84,9 @@
 
                             <c:forEach var="item" items="${group.itemList}">
 
+                                <c:set var="sellerOriginTotal" value="${sellerOriginTotal + item.origin_total}" />
                                 <c:set var="sellerItemTotal" value="${sellerItemTotal + item.item_total}" />
+                                <c:set var="sellerDiscountTotal" value="${sellerDiscountTotal + item.discount_total}" />
 
                                 <div class="cart-item-row" data-product-id="${item.product_id}" onclick="goProductDetail(this)">
 
@@ -136,10 +140,28 @@
                             <div class="seller-delivery-row">
 
                                 <div class="seller-delivery-main-line">
-                                    <span>
-                                        총 배송비<small>?</small>
-                                    </span>
+                                    <span class="delivery-tip-wrap">
+                                        총 배송비
 
+                                        <button type="button"
+                                                class="delivery-tip-btn"
+                                                onclick="toggleDeliveryTip(event, this)">
+                                            ?
+                                        </button>
+
+                                        <div class="delivery-tip-box">
+                                            <button type="button"
+                                                    class="delivery-tip-close"
+                                                    onclick="closeDeliveryTip(event, this)">
+                                                ×
+                                            </button>
+
+                                            <strong>업체 배송</strong>
+
+                                            <p>합배송 물품중에 무료배송 물품이 포함되면 무료배송</p>
+                                            <p>무료배송 상품이 없다면 높은 택배비로 지불됩니다.</p>
+                                        </div>
+                                    </span>
                                     <strong class="seller-main-delivery-text ${group.delivery_fee == 0 ? 'delivery-free' : ''}">
                                         <c:choose>
                                             <c:when test="${group.delivery_fee == 0}">
@@ -170,13 +192,15 @@
                                     <div class="seller-order-detail-row">
                                         <span>선택상품금액</span>
                                         <strong class="seller-detail-product-total">
-                                            <fmt:formatNumber value="${sellerItemTotal}" pattern="#,###"/>원
+                                            <fmt:formatNumber value="${sellerOriginTotal}" pattern="#,###"/>원
                                         </strong>
                                     </div>
 
                                     <div class="seller-order-detail-row discount">
                                         <span>즉시할인예상금액</span>
-                                        <strong>0원</strong>
+                                        <strong class="seller-detail-discount-total">
+                                            -<fmt:formatNumber value="${sellerDiscountTotal}" pattern="#,###"/>원
+                                        </strong>
                                     </div>
 
                                     <div class="seller-order-detail-row discount">
@@ -186,7 +210,7 @@
 
                                     <div class="seller-order-detail-row">
                                         <span>
-                                            배송비(5만원 이상 무료)<small>?</small>
+                                            배송비
                                         </span>
                                         <strong class="seller-detail-delivery-fee">
                                             <fmt:formatNumber value="${group.delivery_fee}" pattern="#,###"/>원

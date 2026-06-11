@@ -339,24 +339,6 @@ input[type="checkbox"] {
     font-weight: 700;
 }
 
-.seller-delivery-main-line small,
-.seller-order-detail-row small {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 13px;
-    height: 13px;
-    margin-left: 2px;
-
-    border: 1px solid #aaa;
-    border-radius: 50%;
-
-    color: #999;
-    font-size: 10px;
-    font-weight: 800;
-}
-
 .seller-delivery-main-line strong {
     color: #111;
     font-size: 14px;
@@ -477,6 +459,97 @@ input[type="checkbox"] {
     color: #111;
     font-size: 16px;
     font-weight: 950;
+}
+
+/* =========================================================
+   배송비 안내 박스
+========================================================= */
+
+.delivery-tip-wrap {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.delivery-tip-btn {
+    width: 14px;
+    height: 14px;
+    padding: 0;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid #aaa;
+    border-radius: 50%;
+    background: #fff;
+
+    color: #999;
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.delivery-tip-box {
+    display: none;
+
+    position: absolute;
+    left: 0;
+    top: 24px;
+    z-index: 50;
+
+    width: 260px;
+    padding: 14px 16px 13px;
+
+    border: 1px solid #333;
+    border-radius: 7px;
+    background: #fff;
+
+    color: #111;
+    text-align: left;
+}
+
+.delivery-tip-wrap.is-open .delivery-tip-box {
+    display: block;
+}
+
+.delivery-tip-box strong {
+    display: block;
+    margin-bottom: 10px;
+
+    color: #111;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.delivery-tip-box p {
+    margin: 5px 0;
+
+    color: #111;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.delivery-tip-close {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    color: #999;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1;
+
+    cursor: pointer;
 }
 
 /* =========================================================
@@ -650,6 +723,8 @@ input[type="checkbox"] {
         flex-wrap: wrap;
         gap: 8px;
 
+        transform: none;
+
         font-size: 12px;
         white-space: normal;
     }
@@ -691,6 +766,10 @@ input[type="checkbox"] {
 
     .seller-cart-box {
         padding: 16px 14px 0;
+    }
+
+    .delivery-tip-box {
+        width: 230px;
     }
 }
 
