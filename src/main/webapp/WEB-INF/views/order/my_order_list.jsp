@@ -1,14 +1,14 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
     <html lang="ko">
 
     <head>
         <meta charset="UTF-8">
-        <title>내 주문 내역</title>
+        <title>마이쇼핑</title>
 
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/order-payment.css?v=3">
@@ -64,51 +64,63 @@
 
         <div class="myshop-layout">
 
-            <!-- 왼쪽 사이드 메뉴 -->
+            <!-- 왼쪽 사이드바 -->
             <aside class="myshop-sidebar">
-
                 <div class="myshop-side-card">
 
                     <a href="/order/my" class="myshop-side-home">
-                        마이쇼핑 홈
+                        마이쇼핑
                     </a>
 
                     <div class="myshop-side-group">
-                        <strong>쇼핑 정보</strong>
+                        <strong>주문 관리</strong>
+                        <a href="/order/my" class="active">주문/배송내역</a>
+                        <button type="button" onclick="alert('취소/환불내역은 준비중입니다.');">
+                            취소/환불내역
+                        </button>
+                    </div>
 
-                        <a href="/order/my" class="active">
-                            주문/배송내역
-                        </a>
-
-                        <!-- 준비중: 찜한 상품 -->
-                        <button type="button"
-                                onclick="alert('찜한 상품 기능은 준비중입니다.');">
+                    <div class="myshop-side-group">
+                        <strong>관심 상품</strong>
+                        <button type="button" onclick="alert('찜한 상품은 준비중입니다.');">
                             찜한 상품
+                        </button>
+                        <button type="button" onclick="alert('최근 본 상품은 준비중입니다.');">
+                            최근 본 상품
                         </button>
                     </div>
 
                     <div class="myshop-side-group">
                         <strong>리뷰 관리</strong>
-
-                        <!-- 준비중: 내 리뷰 -->
-                        <button type="button"
-                                onclick="alert('내 리뷰 기능은 준비중입니다.');">
-                            내 리뷰
+                        <button type="button" onclick="alert('작성 가능한 리뷰는 준비중입니다.');">
+                            작성 가능한 리뷰
+                        </button>
+                        <button type="button" onclick="alert('내가 작성한 리뷰는 준비중입니다.');">
+                            내가 작성한 리뷰
                         </button>
                     </div>
 
                     <div class="myshop-side-group">
                         <strong>문의 관리</strong>
-
-                        <!-- 준비중: 내 문의 -->
-                        <button type="button"
-                                onclick="alert('내 문의 기능은 준비중입니다.');">
+                        <button type="button" onclick="alert('내 문의는 준비중입니다.');">
                             내 문의
+                        </button>
+                        <button type="button" onclick="alert('상품 Q&A는 준비중입니다.');">
+                            상품 Q&amp;A
+                        </button>
+                    </div>
+
+                    <div class="myshop-side-group">
+                        <strong>내 정보</strong>
+                        <button type="button" onclick="alert('회원 정보 수정은 준비중입니다.');">
+                            회원 정보 수정
+                        </button>
+                        <button type="button" onclick="alert('배송지 관리는 준비중입니다.');">
+                            배송지 관리
                         </button>
                     </div>
 
                 </div>
-
             </aside>
 
             <!-- 오른쪽 본문 -->
@@ -223,28 +235,28 @@
                     <!-- 중요: 배송중 필터 -->
                     <button type="button" onclick="location.href='/order/my?status=SHIPPING'">
                         <span>📦</span>
-                        <strong>배송중</strong>
+                        <strong>주문/배송조회</strong>
                     </button>
 
                     <!-- 준비중: 내 리뷰 -->
                     <button type="button"
                             onclick="alert('내 리뷰 기능은 준비중입니다.');">
                         <span>⭐</span>
-                        <strong>내 리뷰</strong>
+                        <strong>리뷰관리</strong>
                     </button>
 
                     <!-- 준비중: 내 문의 -->
                     <button type="button"
                             onclick="alert('내 문의 기능은 준비중입니다.');">
                         <span>💬</span>
-                        <strong>내 문의</strong>
+                        <strong>문의내역</strong>
                     </button>
 
                     <!-- 준비중: 찜한 상품 -->
                     <button type="button"
                             onclick="alert('찜한 상품 기능은 준비중입니다.');">
                         <span>♡</span>
-                        <strong>찜한 상품</strong>
+                        <strong>찜한상품</strong>
                     </button>
 
                 </section>
