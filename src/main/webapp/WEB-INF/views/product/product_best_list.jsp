@@ -11,11 +11,14 @@
         <!-- 메인 상단바 공통 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
 
+        <link rel="stylesheet" href="/css/product/product_card.css">
         <!-- 베스트 전용 CSS -->
         <link rel="stylesheet" href="/css/product/product_best_list.css">
 
         <!-- 전체 카테고리 열고 닫는 JS -->
-        <script src="/js/product_main.js" defer></script>     
+        <script src="/js/product_main.js" defer></script>
+        <script src="/js/product_best_list.js" defer></script>
+
 
     </head>
 
@@ -58,7 +61,7 @@
                     </a>
                 </div>
 
-                <div class="best-product-grid">
+                <div class="common-product-wrap">
 
                     <c:set var="rank" value="0" />
 
@@ -76,69 +79,7 @@
 
                             <c:set var="rank" value="${rank + 1}" />
 
-                            <a class="best-product-card"
-                            href="/product_detail.do?product_id=${vo.product_id}">
-
-                                <div class="best-product-img">
-
-                                    <span class="best-rank">${rank}</span>
-
-                                    <c:choose>
-                                        <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                            <img src="${vo.image_l}" alt="${vo.name}">
-                                        </c:when>
-
-                                        <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
-                                            <img src="${vo.image_s}" alt="${vo.name}">
-                                        </c:when>
-
-                                        <c:otherwise>
-                                            <img src="/images/no_image.png" alt="이미지 없음">
-                                        </c:otherwise>
-                                    </c:choose>
-
-                                    <span class="best-heart">♡</span>
-
-                                </div>
-
-                                <div class="best-product-info">
-
-                                    <p class="best-product-name">
-                                        ${vo.name}
-                                    </p>
-
-                                    <c:choose>
-
-                                        <c:when test="${vo.sale_price > 0}">
-                                            <p class="best-origin-price">
-                                                <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                            </p>
-
-                                            <p class="best-sale-price">
-                                                <span>${vo.sale_rate}%</span>
-                                                <strong>
-                                                    <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                                </strong>
-                                            </p>
-                                        </c:when>
-
-                                        <c:otherwise>
-                                            <p class="best-normal-price">
-                                                <strong>
-                                                    <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                                </strong>
-                                            </p>
-                                        </c:otherwise>
-
-                                    </c:choose>
-
-                                    <p class="best-review">
-                                        후기 준비중
-                                    </p>
-
-                                </div>
-
-                            </a>
+                            <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
 
                         </c:if>
 

@@ -356,3 +356,37 @@ function toggleSellerOrderSummary(btn){
 window.addEventListener("load", function(){
     calcCartTotal();
 });
+
+function toggleDeliveryTip(event, btn) {
+    event.stopPropagation();
+
+    const wrap = btn.closest(".delivery-tip-wrap");
+
+    if (wrap == null) {
+        return;
+    }
+
+    document.querySelectorAll(".delivery-tip-wrap.is-open").forEach(item => {
+        if (item !== wrap) {
+            item.classList.remove("is-open");
+        }
+    });
+
+    wrap.classList.toggle("is-open");
+}
+
+function closeDeliveryTip(event, btn) {
+    event.stopPropagation();
+
+    const wrap = btn.closest(".delivery-tip-wrap");
+
+    if (wrap != null) {
+        wrap.classList.remove("is-open");
+    }
+}
+
+document.addEventListener("click", function () {
+    document.querySelectorAll(".delivery-tip-wrap.is-open").forEach(item => {
+        item.classList.remove("is-open");
+    });
+});

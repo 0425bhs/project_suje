@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core"%>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -11,6 +11,8 @@
 
         <!-- 메인 상단바 공통 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
+        
+        <link rel="stylesheet" href="/css/product/product_card.css">
 
         <!-- 취향발견 전용 CSS -->
         <link rel="stylesheet" href="/css/product/product_discovery_list.css">
@@ -66,90 +68,11 @@
 
                 <c:otherwise>
 
-                    <div class="discovery-product-grid">
+                    <div class="common-product-wrap">
 
                         <c:forEach var="vo" items="${list}">
 
-                            <a class="discovery-product-card"
-                            href="/product_detail.do?product_id=${vo.product_id}">
-
-                                <div class="discovery-product-img">
-
-                                    <c:choose>
-                                        <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                            <img src="${vo.image_l}" alt="${vo.name}">
-                                        </c:when>
-
-                                        <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
-                                            <img src="${vo.image_s}" alt="${vo.name}">
-                                        </c:when>
-
-                                        <c:otherwise>
-                                            <img src="/images/no_image.png" alt="이미지 없음">
-                                        </c:otherwise>
-                                    </c:choose>
-
-                                    <span class="discovery-heart">♡</span>
-
-                                </div>
-
-                                <div class="discovery-product-info">
-
-                                    <div class="discovery-seller">
-                                        HANDMADE 작가
-                                    </div>
-
-                                    <p class="discovery-product-name">
-                                        ${vo.name}
-                                    </p>
-
-                                    <c:choose>
-
-                                        <c:when test="${vo.sale_price > 0}">
-                                            <p class="discovery-origin-price">
-                                                <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                            </p>
-
-                                            <p class="discovery-sale-price">
-                                                <span>${vo.sale_rate}%</span>
-                                                <strong>
-                                                    <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
-                                                </strong>
-                                            </p>
-                                        </c:when>
-
-                                        <c:otherwise>
-                                            <p class="discovery-normal-price">
-                                                <strong>
-                                                    <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
-                                                </strong>
-                                            </p>
-                                        </c:otherwise>
-
-                                    </c:choose>
-
-
-                                    <c:choose>
-                                        <c:when test="${vo.delivery_fee == 0}">
-                                            <p class="discovery-delivery">무료배송</p>
-                                        </c:when>
-
-                                        <c:when test="${vo.free_shipping > 0}">
-                                            <p class="discovery-delivery">
-                                                <fmt:formatNumber value="${vo.free_shipping}" pattern="#,###"/>원 이상 무료배송
-                                            </p>
-                                        </c:when>
-
-                                        <c:otherwise>
-                                            <p class="discovery-delivery">
-                                                배송비 <fmt:formatNumber value="${vo.delivery_fee}" pattern="#,###"/>원
-                                            </p>
-                                        </c:otherwise>
-                                    </c:choose>
-
-                                </div>
-
-                            </a>
+                            <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
 
                         </c:forEach>
 
