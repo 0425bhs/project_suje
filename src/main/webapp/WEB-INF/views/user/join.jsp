@@ -11,74 +11,31 @@
 <body>
 <div class="join-container">
     <form method="post" enctype="multipart/form-data">
-
-        <table class="join-table">
-            <caption>회원가입</caption>
-        </table>
-
-        <%-- 소셜 버튼 위쪽으로 이동 --%>
-        <div class="social-wrap">
-            <button type="button" class="btn-kakao" onclick="alert('카카오 간편 회원가입은 현재 준비 중입니다!');" title="카카오톡으로 시작하기">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.558 1.7 4.792 4.27 6.03-.18.663-.65 2.395-.74 2.74-.12.446.15.44.32.327.13-.087 2.11-1.43 2.95-2.003.7.195 1.44.306 2.2.306 4.97 0 9-3.185 9-7.115S16.97 3 12 3z"/>
-                </svg>
-            </button>
-            <button type="button" class="btn-naver" onclick="alert('네이버 간편 회원가입은 현재 준비 중입니다!');" title="네이버로 시작하기">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M16.47 2H22v12.35L7.53 22H2v-12.35L16.47 2zM2 2h5.53l6.06 8.52V2H19.1v14.33l-6.06-8.52V22H2V2z"/>
-                </svg>
-            </button>
-            <button type="button" class="btn-toss" onclick="alert('토스 간편 회원가입은 현재 준비 중입니다!');" title="토스아이디로 시작하기">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.65 11.65l-4 4c-.2.2-.45.3-.65.3s-.45-.1-.65-.3l-4-4c-.4-.4-.4-1.05 0-1.45s1.05-.4 1.45 0L11 14.55V7c0-.55.45-1 1-1s1 .45 1 1v7.55l2.2-2.2c.4-.4 1.05-.4 1.45 0s.4 1.05 0 1.45z"/>
-                </svg>
-            </button>
-        </div>
-
-        <table class="join-table">
-            <tr>
-                <th>회원 구분</th>
-                <td>
-                    <input type="radio" name="role" value="USER" id="user" onclick="toggleForm()" checked>
-                    <label for="user">일반회원</label>
-                    <input type="radio" name="role" value="SELLER" id="seller" onclick="toggleForm()">
-                    <label for="seller">판매자</label>
-                </td>
-            </tr>
-        </table>
+        <input type="hidden" name="role" id="role" value="${role}" />
 
         <table class="usertable" id="usertable">
-            <tr>
-                <th>이메일(본인인증)</th>
-                <td>
-                    <div class="input-row">
-                        <input name="email" id="authEmail" placeholder="email을 입력하세요" />
-                        <input type="button" value="전송" class="btn-secondary" onclick="mailCheck(this.form)" />
-                    </div>
-                    <div class="input-row">
-                        <input id="authInput" placeholder="인증번호 6자리" maxlength="6" disabled="disabled" />
-                        <input type="button" value="인증" class="btn-secondary" />
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th>프로필사진</th>
-                <td><input type="file" name="photo" /></td>
-            </tr>
+
             <tr>
                 <th>아이디</th>
                 <td>
                     <div class="input-row">
-                        <input name="nick_name" id="nick_name" onchange="chk()" placeholder="닉네임을 입력하세요" />
+                        <input name="login_id" id="login_id" onchange="chkid()" placeholder="아이디를 입력하세요" />
+                        <input type="button" value="중복체크" class="btn-secondary" onclick="check_loginId()" />
+                    </div>
+                </td>
+            </tr>
+
+             <tr>
+                <th>닉네임</th>
+                <td>
+                    <div class="input-row">
+                        <input name="nick_name" id="nick_name" onchange="chknick()" placeholder="닉네임을 입력하세요" />
                         <input type="button" value="중복체크" class="btn-secondary" onclick="check_nick()" />
                     </div>
                 </td>
             </tr>
+
             <tr>
-                <th>이름</th>
-                <td><input name="name" /></td>
-            </tr>
-<tr>
     <th>비밀번호</th>
     <td>
         <div class="input-wrapper">
@@ -95,18 +52,36 @@
     <th>비밀번호 확인</th>
     <td>
         <div class="input-wrapper">
-            <input name="checkPassword" id="checkPassword" type="password"
+            <input name="checkPassword" id="checkPassword" type="password" oninput="checkPwdMatch()"
                maxlength="16" placeholder="영문, 숫자 포함 8자 이상 16자 이하" />
             <button type="button" class="eye-btn" onclick="togglePwdVisibility2(event)">
                 <i class="ti ti-eye-off" id="eyeIcon2"></i>
             </button>
         </div>
+        <div id="pwd-match" style="font-size:13px; margin-top:6px;"></div>
     </td>
 </tr>
+
             <tr>
-                <th>전화번호</th>
-                <td><input name="phone" /></td>
+                <th>이메일(본인인증)</th>
+                <td>
+                    <div class="input-row">
+                        <input name="email" id="authEmail" placeholder="email을 입력하세요" />
+                        <input type="button" value="전송" class="btn-secondary" onclick="mailCheck(this.form)" />
+                    </div>
+                    <div class="input-row">
+                        <input id="authInput" placeholder="인증번호 6자리" maxlength="6" disabled="disabled" />
+                        <input type="button" value="인증" class="btn-secondary" />
+                    </div>
+                </td>
             </tr>
+            
+            
+            <tr>
+                <th>이름</th>
+                <td><input name="name" /></td>
+            </tr>
+
             <tr>
                 <th>성별</th>
                 <td>
@@ -116,9 +91,21 @@
                     <label for="female">여자</label>
                 </td>
             </tr>
+
+            <tr>
+                <th>전화번호</th>
+                <td><input name="phone" placeholder="'-'없이 입력"/></td>
+            </tr>
+
+            <tr>
+                <th>프로필사진</th>
+                <td><input type="file" name="photo" /></td>
+            </tr>
+            
         </table>
 
-        <table id="sellertable" class="sellertable" style="display: none;">
+        <c:if test="${role == 'SELLER'}">
+        <table id="sellertable" class="sellertable" >
             <tr>
                 <th>상호</th>
                 <td><input name="company_name" /></td>
@@ -140,6 +127,7 @@
                 <td><input name="business_address" /></td>
             </tr>
         </table>
+        </c:if>
 
         <table class="join-table">
             <tr>

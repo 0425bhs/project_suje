@@ -6,9 +6,15 @@ public interface UserDAO {
 
     int insertUser( UserVO vo); //회원가입
 
-    UserVO userNickCheck(String nick_name); //중복체크
+    UserVO userNickCheck(String nick_name); //닉네임 중복체크
 
-    UserVO loginCheck(String email); //로그인
+    UserVO userLoginIdCheck(String login_id); //아이디 중복체크
+
+    UserVO loginCheck(UserVO vo); //아이디로그인
+
+    UserVO findLoginId(UserVO vo); //아이디찾기
+
+    UserVO findPwd(UserVO vo); //패스워드찾기
 
     UserVO selectUser(int user_id); //내정보 갖고오기
 

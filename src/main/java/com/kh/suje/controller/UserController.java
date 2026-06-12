@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,15 +42,21 @@ public class UserController {
     }
 
 
-    //회원가입 화면으로
+    //회원가입 첫화면으로
     @GetMapping("/join.do" )
-    public String joinForm() {
+    public String joinSelect() {
+        return "user/join_select"; 
+    }
+
+    //회원가입폼 화면으로
+    @GetMapping("/joinForm.do" )
+    public String joinForm(@RequestParam String role, Model model) {
+        model.addAttribute("role", role);
         return "user/join"; 
     }
 
 
-
-      // 아이디 중복체크
+      // 닉네임 중복체크
     @PostMapping("/checkNick.do")
     @ResponseBody
     public Map<String, String> nickCheck(String nick_name) {
@@ -65,6 +72,28 @@ public class UserController {
         Map<String, String> map = new HashMap<>();
         map.put("result", res);
         map.put("nick_name", nick_name);
+
+        return map;
+
+    }
+
+
+          // 아이디 중복체크
+    @PostMapping("/checkLoginId.do")
+    @ResponseBody
+    public Map<String, String> userLoginIdCheck(String login_id) {
+
+        UserVO vo = userDao.userLoginIdCheck(login_id);
+        String res = "no";
+
+        // 사용이 가능한 상태
+        if (vo == null) {
+            res = "yes";
+        }
+
+        Map<String, String> map = new HashMap<>();
+        map.put("result", res);
+        map.put("login_id", login_id);
 
         return map;
 
@@ -146,25 +175,25 @@ public class UserController {
     }
 
 
-//로그인
-    @PostMapping("/login.do")
+//아이디로그인
+    @PostMapping("/idLogin.do")
     @ResponseBody
-    public Map<String, Object> login( UserVO vo ){
+    public Map<String, Object> idLogin( UserVO vo ){
 
-        UserVO user = userDao.loginCheck( vo.getEmail() );
+        UserVO user = userDao.loginCheck( vo);
         boolean isValid = false;
 
         //비밀번호 확인
-        if( user != null && user.getEmail() != null ){
+        if( user != null && user.getLogin_id() != null ){
         isValid = pwdSecurity.pwdDecoding( vo.getPassword(), user.getPassword() );
     }
 
-        String param = "noEmail";
+        String param = "noLoginId";
         int user_id = 0;
 
-       if( user == null || user.getEmail() == null ){ //이메일이 존재하지 않을 때
-            param = "noEmail";
-        }else if( !isValid ){ //이메일은 있으나 비밀번호 불일치
+       if( user == null || user.getLogin_id() == null ){ //아이디가 존재하지 않을 때
+            param = "noLoginId";
+        }else if( !isValid ){ //아이디는 있으나 비밀번호 불일치
             param = "noPassword";
         }else{
             //로그인이 가능한 상태
@@ -182,7 +211,105 @@ public class UserController {
 
        return map; 
     }    
- 
+
+
+
+    //이메일, 비번찾기
+    @GetMapping("/findInfo.do")
+    public String findInfo( @RequestParam String type, Model model) {
+    
+    model.addAttribute("type", type);
+    
+    return "user/findInfo";
+}
+
+/* 
+ @PostMapping("/findEmail.do")
+  @ResponseBody
+    public Map<String, Object> findEmail( UserVO vo) {
+  
+        UserVO user = userDao.findEmail(vo);
+
+        String param = "no";
+        String user_email = "";
+
+       if( user == null ){ //존재하지 않을 때
+            param = "no";
+        }else{
+            //메일 찾은 상태
+            param = "clear";
+            user_email = user.getEmail();       
+        }
+
+        //콜백으로 결과 반환
+        Map<String, Object> map = new HashMap<>();
+        map.put("param", param);
+        map.put("user_email", user_email);
+
+       return map; 
+}
+
+*/
+
+//아이디 찾기
+ @PostMapping("/findLoginId.do")
+  @ResponseBody
+    public Map<String, Object> findLoginId( UserVO vo) {
+  
+        UserVO user = userDao.findLoginId(vo);
+
+        String param = "no";
+        String login_id = "";
+
+       if( user == null ){ //존재하지 않을 때
+            param = "no";
+        }else{
+            //아이디 찾은 상태
+            param = "clear";
+            login_id = user.getLogin_id();       
+        }
+
+        //콜백으로 결과 반환
+        Map<String, Object> map = new HashMap<>();
+        map.put("param", param);
+        map.put("login_id", login_id);
+
+       return map; 
+}
+
+
+@PostMapping("/findPwd.do")
+  @ResponseBody
+    public Map<String, Object> findPassword( UserVO vo) {
+  
+        UserVO user = userDao.findPwd(vo);
+        boolean isValid = false;
+
+       
+        String param = "noEmail";
+        String user_password = "";
+
+       if( user == null || user.getEmail() == null ){ //이메일이 존재하지 않을 때
+            param = "noEmail";
+        }else if( !isValid ){ //이메일은 있으나 폰 불일치
+            param = "noPhone";
+        }else{
+            //메일,폰 일치 상태
+            param = "clear";
+            user_password = user.getPassword();
+
+        }
+
+        //콜백으로 결과 반환
+        Map<String, Object> map = new HashMap<>();
+        map.put("param", param);
+        map.put("user_password", user_password);
+
+       return map; 
+}
+
+
+
     
     //일반회원 정보수정폼으로
     @GetMapping("/user_modify.do")
@@ -335,4 +462,15 @@ return map;
     
     return "user/mypage";
 }
+
+
+
+ //로그아웃
+    @GetMapping("/logout.do")
+    public String logout(){
+        session.invalidate();
+         return "redirect:/login.do";}
+
+
+
 }
