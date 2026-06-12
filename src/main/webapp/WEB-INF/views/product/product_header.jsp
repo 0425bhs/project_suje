@@ -122,7 +122,19 @@
             <a href="/seller_product_list.do">판매자센터</a>
 
             <a href="#" class="disabled">♡ 관심</a>
-            <a href="/cart_list.do">🛒 장바구니</a>
+            <a href="/cart_list.do" class="header-cart-link">
+
+                <span class="header-cart-icon-wrap">
+                    <span class="header-cart-icon">🛒</span>
+
+                    <c:if test="${not empty sessionScope.user and cartCount > 0}">
+                        <span class="header-cart-badge">${cartCount}</span>
+                    </c:if>
+                </span>
+
+                <span class="header-cart-text">장바구니</span>
+
+            </a>
         </div>
 
     </div>
@@ -157,7 +169,7 @@
                 🆕 최신작품
             </a>
 
-            <a href="#" class="disabled">
+            <a href="/my_review_list.do" class="${param.activeMenu eq 'new' ? 'nav-active' : ''}">
                 💬 후기
             </a>
 

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html>
@@ -28,27 +29,65 @@
                 </div>
 
                 <form action="/order/create" method="post">
-                    <input type="hidden" name="product_id" value="${product.product_id}">
-                    <input type="hidden" name="quantity" value="${quantity}">
-
+                    
                     <div class="order-layout">
                         <div class="panel">
                             <h3 class="panel-title">주문 상품</h3>
 
-                            <div class="order-item">
-                                <img src="${product.image_s}" alt="상품 이미지">
+                            <c:forEach var="vo" items="${orderItemList}">
 
-                                <div class="item-info">
-                                    <div class="creator-line">작가 상품</div>
-                                    <strong>${product.name}</strong>
-                                    <p>가격 <fmt:formatNumber value="${price}" pattern="#,###" />원</p>
-                                    <p>수량 ${quantity}개</p>
-                                </div>
+                                <input type="hidden" name="product_id" value="${vo.product_id}">
+                                <input type="hidden" name="quantity" value="${vo.quantity}">
+                                <input type="hidden" name="cart_id" value="${vo.cart_id}">
 
-                                <div class="item-price">
-                                    <fmt:formatNumber value="${item_amount}" pattern="#,###" />원
+                                <div class="order-item">
+                                    <img src="${vo.image_l}" alt="상품 이미지" onerror="this.src='/images/no_image.png'">
+
+                                    <div class="item-info">
+                                        <div class="creator-line">작가 상품</div>
+                                        <strong>${vo.name}</strong>
+
+                                        <c:choose>
+                                            <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
+
+                                                <div class="order-price-box">
+                                                    <p class="order-origin-price">
+                                                        <fmt:formatNumber value="${vo.price}" pattern="#,###" />원
+                                                    </p>
+
+                                                    <p class="order-sale-price">
+                                                        가격
+                                                        <strong>
+                                                            <fmt:formatNumber value="${vo.item_price}" pattern="#,###" />원
+                                                        </strong>
+                                                    </p>
+                                                </div>
+
+                                            </c:when>
+
+                                            <c:otherwise>
+
+                                                <p class="order-normal-price">
+                                                    가격
+                                                    <strong>
+                                                        <fmt:formatNumber value="${vo.item_price}" pattern="#,###" />원
+                                                    </strong>
+                                                </p>
+
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                        <p>수량 ${vo.quantity}개</p>
+                                    </div>
+
+                                    <div class="item-price">
+                                        <strong>
+                                            <fmt:formatNumber value="${vo.item_total}" pattern="#,###" />원
+                                        </strong>
+                                    </div>
                                 </div>
-                            </div>
+                            </c:forEach>
+
 
                             <div class="artist-note">
                                 <strong>작가 안내</strong>
@@ -60,18 +99,39 @@
                             <h3 class="panel-title">결제 요약</h3>
 
                             <div class="summary-line">
+                                <span>총 상품금액</span>
+                                <strong><fmt:formatNumber value="${totalOriginPrice}" pattern="#,###" />원</strong>
+                            </div>
+
+                            <div class="summary-line discount">
+                                <span>즉시 할인금액</span>
+                                <strong>
+                                    -<fmt:formatNumber value="${totalDiscountPrice}" pattern="#,###" />원
+                                </strong>
+                            </div>
+
+                            <div class="summary-line discount">
+                                <span>쿠폰 할인금액</span>
+                                <strong>
+                                    -<fmt:formatNumber value="${couponPrice}" pattern="#,###" />원
+                                </strong>
+                            </div>
+
+                            <div class="summary-line">
                                 <span>상품 금액</span>
-                                <strong><fmt:formatNumber value="${item_amount}" pattern="#,###" />원</strong>
+                                <strong>
+                                    <fmt:formatNumber value="${totalItemPrice}" pattern="#,###" />원
+                                </strong>
                             </div>
 
                             <div class="summary-line">
                                 <span>배송비</span>
-                                <strong><fmt:formatNumber value="${delivery_fee}" pattern="#,###" />원</strong>
+                                <strong><fmt:formatNumber value="${totalDeliveryFee}" pattern="#,###" />원</strong>
                             </div>
 
                             <div class="summary-total">
                                 <span>총 결제금액</span>
-                                <strong><fmt:formatNumber value="${total_amount}" pattern="#,###" />원</strong>
+                                <strong><fmt:formatNumber value="${paymentPrice}" pattern="#,###" />원</strong>
                             </div>
 
                             <div class="btn-row">
@@ -80,11 +140,6 @@
                                 </button>
                             </div>
 
-                            <div class="btn-row">
-                                <a class="btn light full" href="/product/list.do">
-                                    상품 목록으로
-                                </a>
-                            </div>
                         </aside>
                     </div>
                 </form>
