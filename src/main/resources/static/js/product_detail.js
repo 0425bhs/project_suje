@@ -191,40 +191,80 @@ function initProductDetailQuantity(){
 }
 
 function initProductDetailTabs(){
-    const tabs = document.querySelectorAll(".store-detail-tab[data-tab-target]");
-    const panels = document.querySelectorAll(".store-tab-panel");
+    const tabWrap = document.querySelector(".store-detail-tab-wrap");
+    const tabs = Array.from(document.querySelectorAll(".store-detail-tab[data-tab-target]"));
+    const panels = Array.from(document.querySelectorAll(".store-tab-panel"));
 
-    if(tabs.length==0 || panels.length==0){
+    if(tabs.length == 0 || panels.length == 0){
         return;
     }
 
-    function showTab(tab){
-        const targetId=tab.dataset.tabTarget;
+    // 모든 내용 항상 보이게
+    panels.forEach(function(panel){
+        panel.style.display = "block";
+    });
 
-        tabs.forEach(function(item){
-            item.classList.remove("active");
-        });
+    function getScrollOffset(){
+        let offset = 90;
 
-        panels.forEach(function (panel){
-            panel.classList.remove("active");
-        });
-
-        tab.classList.add("active");
-
-        const targetPanel = document.getElementById(targetId);
-
-        if(targetPanel != null){
-            targetPanel.classList.add("active");
+        if(tabWrap != null){
+            offset += tabWrap.offsetHeight;
         }
+
+        return offset;
     }
 
-    tabs.forEach(function (tab){
-        tab.addEventListener("click",function (){
-            showTab(tab);
+    function setActiveTab(targetId){
+        tabs.forEach(function(tab){
+            tab.classList.remove("active");
+
+            if(tab.dataset.tabTarget === targetId){
+                tab.classList.add("active");
+            }
+        });
+    }
+
+    function moveToSection(targetId){
+        const targetPanel = document.getElementById(targetId);
+
+        if(targetPanel == null){
+            return;
+        }
+
+        const targetTop = targetPanel.getBoundingClientRect().top + window.pageYOffset - getScrollOffset();
+
+        window.scrollTo({
+            top: targetTop,
+            behavior: "smooth"
+        });
+
+        setActiveTab(targetId);
+    }
+
+    tabs.forEach(function(tab){
+        tab.addEventListener("click", function(){
+            const targetId = tab.dataset.tabTarget;
+            moveToSection(targetId);
         });
     });
 
-    showTab(tabs[0]);
+    function updateActiveByScroll(){
+        const scrollPoint = window.pageYOffset + getScrollOffset() + 20;
+        let currentId = panels[0].id;
+
+        panels.forEach(function(panel){
+            if(panel.offsetTop <= scrollPoint){
+                currentId = panel.id;
+            }
+        });
+
+        setActiveTab(currentId);
+    }
+
+    window.addEventListener("scroll", updateActiveByScroll);
+    window.addEventListener("resize", updateActiveByScroll);
+
+    updateActiveByScroll();
 }
 
 function initSellerWishButton(){
