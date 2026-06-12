@@ -1,0 +1,232 @@
+/* ===== HANDMADE - findInfo.css ===== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #f5f5f5;
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* ===== 카드 컨테이너 ===== */
+.login-container {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px 36px 36px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== 로고 ===== */
+.logo {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #222222;
+    margin-bottom: 28px;
+}
+
+.logo span {
+    color: #FF6B00;
+}
+
+/* ===== 탭 토글 ===== */
+.login-toggle {
+    display: flex;
+    border-bottom: 1.5px solid #e0e0e0;
+    margin-bottom: 24px;
+}
+
+.toggle-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #999999;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.toggle-btn.active {
+    color: #FF6B00;
+    border-bottom-color: #FF6B00;
+    font-weight: 700;
+}
+
+.toggle-btn:hover:not(.active) {
+    color: #555555;
+}
+
+/* ===== 입력 필드 ===== */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.input-wrapper input {
+    width: 100%;
+    height: 50px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0 44px 0 16px;
+    font-size: 14px;
+    color: #333333;
+    background: #fafafa;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.input-wrapper input::placeholder {
+    color: #bbbbbb;
+}
+
+.input-wrapper input:focus {
+    border-color: #FF6B00;
+    background: #ffffff;
+}
+
+/* 인풋 내부 아이콘 버튼 (눈 아이콘 등) */
+.input-wrapper button[type="button"] {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaaaaa;
+    font-size: 18px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper button[type="button"]:hover {
+    color: #FF6B00;
+}
+
+/* ===== 액션 버튼 (로그인/찾기/변경 등) ===== */
+.btn-primary {
+    width: 100%;
+    height: 52px;
+    background-color: #FF6B00;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #e05e00;
+}
+
+.btn-primary:active {
+    background-color: #c95500;
+}
+
+/* ===== 링크 행 (이메일 찾기 / 비밀번호 찾기 / 회원가입) ===== */
+.find-links {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin: 8px 0 16px;
+}
+
+.find-links a {
+    font-size: 12px;
+    color: #888888;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.find-links a:hover {
+    color: #FF6B00;
+    text-decoration: underline;
+}
+
+/* ===== 간편 로그인 구분선 ===== */
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 16px;
+    color: #cccccc;
+    font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e8e8e8;
+}
+
+/* ===== 소셜 로그인 버튼 ===== */
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.social-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: transform 0.15s, opacity 0.15s;
+}
+
+.social-btn:hover {
+    transform: scale(1.08);
+    opacity: 0.9;
+}
+
+.social-btn.kakao {
+    background-color: #FEE500;
+    color: #3C1E1E;
+}
+
+.social-btn.naver {
+    background-color: #03C75A;
+    color: #ffffff;
+}
+
+.social-btn.other {
+    background-color: #1A73E8;
+    color: #ffffff;
+}
+
+/* ===== 섹션 구분 (이메일/패스워드 영역) ===== */
+#emailFind,
+#pwdFind {
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

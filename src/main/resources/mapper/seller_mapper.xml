@@ -8,11 +8,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id = "insertSeller" 
             parameterType="seller">
         insert into sellers( user_id,
-            company_name, business_number, seller_status, 
+            company_name, business_number,  
             representative_name, opening_date, business_address)
-        values( #{userId}, #{companyName}, #{businessNumber}, 
-                #{sellerStatus},  #{representativeName}, 
-                #{openingDate}, #{businessAddress} )
+        values( #{user_id}, #{company_name}, #{business_number}, 
+                 #{representative_name}, 
+                #{opening_date}, #{business_address} )
     </insert>
         
     <select id="getOrderStatusCounts"
