@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.ImageDAO">
+    <insert id="insertImageList"
+            parameterType="image">
+        INSERT INTO images (target_type, target_id, image_url, original_name, sort_order)
+        VALUE
+        <foreach collection="list" item="image" separator=",">
+        (
+            #{image.target_type}, 
+            #{image.target_id}, 
+            #{image.image_url}, 
+            #{image.original_name}, 
+            #{image.sort_order}
+        )
+        </foreach>
+    </insert>
+
+    <select id="getImagesByReviewId"
+            parameterType="int"
+            resultType="image"
+            >
+        SELECT *
+        FROM images
+        WHERE target_type = 'REVIEW'
+        AND target_id = #{id}
+    </select>
+
+    <select id="getImagesByReviewIds"
+            parameterType="java.util.List"
+            resultType="image">
+        SELECT *
+        FROM images
+        WHERE target_type = 'REVIEW'
+        AND target_id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+</mapper>    

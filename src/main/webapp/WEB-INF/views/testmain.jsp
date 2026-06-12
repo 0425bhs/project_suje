@@ -9,7 +9,7 @@
     <title>테스트 메뉴</title>
 </head>
 <body>
-    <input type="button" value="후기 작성(1번 상품)" onclick="location.href='review_form.do?product_id=1'">
+    <input type="button" value="후기 작성(1번 상품)" onclick="location.href='review_form.do?order_item_id=1'">
     <input type="button" value="내 후기 목록" onclick="location.href='my_review_list.do'">
     <input type="button" value="실시간 후기" onclick="location.href='live_review_list.do'">
     <hr>
@@ -21,6 +21,8 @@
     <input type="button" value="상품 신고" onclick="location.href='report_form.do?target_type=PRODUCT&target_id=1'">
     <input type="button" value="후기 신고" onclick="location.href='report_form.do?target_type=REVIEW&target_id=1'">
     <input type="button" value="문의 신고" onclick="location.href='report_form.do?target_type=QNA&target_id=1'">
+    <hr>
+    <input type="button" value="내 찜 목록" onclick="location.href='my_favorite_list.do'">
     <hr>
     <input type="button" value="간편 로그인" onclick="location.href='login.do'">
     <hr>

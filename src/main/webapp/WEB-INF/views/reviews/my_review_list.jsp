@@ -7,16 +7,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>내 후기 목록</title>
-    <link rel="stylesheet" href="/css/order-payment.css">
-    <style>
-        .community-page {
-            min-height: calc(100vh - 153px);
-        }
 
-        .community-card {
+    <link rel="stylesheet" href="/css/product/product_main.css">
+    <link rel="stylesheet" href="/css/order-payment.css?v=3">
+
+    <style>
+        .review-list-card {
             background: #fff;
             border: 1px solid #f0e5dc;
-            padding: 26px;
+            border-radius: 18px;
+            padding: 24px;
         }
 
         .review-list {
@@ -27,15 +27,18 @@
         .review-item {
             display: grid;
             grid-template-columns: 112px minmax(0, 1fr) auto;
-            gap: 20px;
-            align-items: center;
+            gap: 24px;
+            align-items: start;
             padding: 20px;
             border: 1px solid #f0e5dc;
             background: #fff;
+            border-radius: 16px;
+            transition: background 0.2s ease, transform 0.2s ease;
         }
 
         .review-item:hover {
             background: #fffaf7;
+            transform: translateY(-2px);
         }
 
         .review-thumb {
@@ -45,10 +48,17 @@
             display: block;
             background: #f6f6f6;
             border: 1px solid #f0e5dc;
+            border-radius: 14px;
+        }
+
+        .review-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .review-body h3 {
-            margin: 0 0 8px;
+            margin: 0;
             color: #2b2b2b;
             font-size: 18px;
             font-weight: 900;
@@ -56,11 +66,27 @@
         }
 
         .review-body p {
-            margin: 0 0 12px;
+            margin: 0;
             color: #555;
             font-size: 14px;
             line-height: 1.7;
             word-break: keep-all;
+        }
+
+        .review-photo-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .review-photo-item {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #eaeaec;
+            background: #fafafa;
         }
 
         .review-meta {
@@ -89,14 +115,16 @@
             display: flex;
             gap: 8px;
             white-space: nowrap;
+            padding-top: 4px;
         }
 
         .review-actions .btn {
             height: 40px;
             padding: 0 16px;
+            border-radius: 999px;
         }
 
-        .empty-box {
+        .empty-review {
             min-height: 180px;
             display: flex;
             align-items: center;
@@ -105,11 +133,13 @@
             font-weight: 800;
             border: 1px solid #f0e5dc;
             background: #fffaf7;
+            border-radius: 16px;
         }
 
         @media (max-width: 820px) {
             .review-item {
                 grid-template-columns: 88px minmax(0, 1fr);
+                gap: 16px;
             }
 
             .review-thumb {
@@ -120,6 +150,7 @@
             .review-actions {
                 grid-column: 1 / -1;
                 justify-content: flex-end;
+                margin-top: 8px;
             }
         }
 
@@ -141,8 +172,14 @@
             .review-actions .btn {
                 flex: 1;
             }
+
+            .review-photo-item {
+                width: 68px;
+                height: 68px;
+            }
         }
     </style>
+
     <script>
         function del(review_id) {
             if (!confirm("삭제하시겠습니까?")) {
@@ -155,70 +192,149 @@
 </head>
 
 <body>
-<header class="site-header">
-    <div class="header-inner">
-        <a class="brand" href="/main.do">HAND<span>MADE</span></a>
 
-        <nav class="main-nav">
-            <a href="/product/main.do">상품보기</a>
-            <a href="/live_review_list.do">후기</a>
-            <a href="/my_qna_list.do">문의</a>
-            <a href="/notice_list.do">공지사항</a>
-        </nav>
+<jsp:include page="/WEB-INF/views/product/product_header.jsp">
+    <jsp:param name="activeMenu" value="review" />
+</jsp:include>
 
-        <div class="header-actions">
-            <a href="/my_review_list.do">내 후기</a>
-            <a href="/order/my">주문내역</a>
-        </div>
-    </div>
-</header>
+<section class="myshop-page">
+    <div class="myshop-layout">
 
-<main class="page-block soft community-page">
-    <div class="block-inner">
-        <div class="page-title-row">
-            <div>
-                <span>MY REVIEW</span>
-                <h2>내 후기 목록</h2>
-                <p>작성한 상품 후기를 확인하고 수정할 수 있습니다.</p>
+        <!-- 왼쪽 사이드바 -->
+        <jsp:include page="/WEB-INF/views/order/common/myshop_sidebar.jsp" />
+        
+<!-- 
+        <aside class="myshop-sidebar">
+            <div class="myshop-side-card">
+
+                <a href="/order/my" class="myshop-side-home">
+                    마이쇼핑
+                </a>
+
+                <div class="myshop-side-group">
+                    <strong>주문 관리</strong>
+                    <a href="/order/my">주문/배송내역</a>
+                    <button type="button" onclick="alert('취소/환불내역은 준비중입니다.');">
+                        취소/환불내역
+                    </button>
+                </div>
+
+                <div class="myshop-side-group">
+                    <strong>리뷰 관리</strong>
+                    <a href="/my_review_list.do" class="active">내가 작성한 리뷰</a>
+                </div>
+
+                <div class="myshop-side-group">
+                    <strong>문의 관리</strong>
+                    <a href="/my_qna_list.do">내 문의</a>
+                    <button type="button" onclick="alert('상품 Q&A는 준비중입니다.');">
+                        상품 Q&amp;A
+                    </button>
+                </div>
+
+                <div class="myshop-side-group">
+                    <strong>내 정보</strong>
+                    <button type="button" onclick="alert('회원 정보 수정은 준비중입니다.');">
+                        회원 정보 수정
+                    </button>
+                    <button type="button" onclick="alert('배송지 관리는 준비중입니다.');">
+                        배송지 관리
+                    </button>
+                </div>
             </div>
+        </aside> -->
 
-            <a class="btn light" href="/live_review_list.do">실시간 리뷰 보기</a>
-        </div>
+        <main class="myshop-content">
 
-        <section class="community-card">
-            <c:choose>
-                <c:when test="${empty list}">
-                    <div class="empty-box">아직 작성한 후기가 없습니다.</div>
-                </c:when>
+            <!-- 회원 요약 카드 -->
+            <jsp:include page="/WEB-INF/views/order/common/myshop_user_card.jsp">
+                <jsp:param name="label" value="MY REVIEW" />
+                <jsp:param name="count" value="${totalCount}" />
+            </jsp:include>
 
-                <c:otherwise>
-                    <div class="review-list">
-                        <c:forEach var="review" items="${list}">
-                            <article class="review-item">
-                                <img class="review-thumb" src="${review.image_s}" alt="${review.product_name}">
+            <!-- 빠른 메뉴 -->
+            <jsp:include page="/WEB-INF/views/order/common/myshop_quick_card.jsp" />
 
-                                <div class="review-body">
-                                    <h3>${review.product_name}</h3>
-                                    <p>${review.content}</p>
+            <section class="myshop-review-section">
 
-                                    <div class="review-meta">
-                                        <span class="rating-pill">별점 ${review.rating}점</span>
-                                        <span>${review.created_at}</span>
-                                    </div>
-                                </div>
-
-                                <div class="review-actions">
-                                    <button type="button" class="btn light" onclick="location.href='review_update_form.do?review_id=${review.review_id}'">수정</button>
-                                    <button type="button" class="btn dark" onclick="del('${review.review_id}')">삭제</button>
-                                </div>
-                            </article>
-                        </c:forEach>
+                <div class="myshop-section-head">
+                    <div>
+                        <h2>내 후기 목록</h2>
+                        <p>내가 작성한 상품 후기와 첨부 이미지를 확인할 수 있습니다.</p>
                     </div>
-                </c:otherwise>
-            </c:choose>
-        </section>
+
+                    <a href="/live_review_list.do">실시간 리뷰 보기</a>
+                </div>
+
+                <section class="review-list-card">
+                    <c:choose>
+                        <c:when test="${empty list}">
+                            <div class="empty-review">
+                                아직 작성한 후기가 없습니다.
+                            </div>
+                        </c:when>
+
+                        <c:otherwise>
+                            <div class="review-list">
+                                <c:forEach var="review" items="${list}">
+                                    <article class="review-item">
+
+                                        <c:choose>
+                                            <c:when test="${not empty review.image_s}">
+                                                <img class="review-thumb" src="${review.image_s}" alt="${review.product_name}">
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <img class="review-thumb" src="/images/no_image.png" alt="이미지 없음">
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                        <div class="review-body">
+                                            <h3>${review.product_name}</h3>
+
+                                            <p>${review.content}</p>
+
+                                            <c:if test="${not empty review.imageList}">
+                                                <div class="review-photo-list">
+                                                    <c:forEach var="image" items="${review.imageList}">
+                                                        <img class="review-photo-item" src="/upload/${image.image_url}" alt="리뷰 사진">
+                                                    </c:forEach>
+                                                </div>
+                                            </c:if>
+
+                                            <div class="review-meta">
+                                                <span class="rating-pill">별점 ${review.rating}점</span>
+                                                <span>${review.created_at}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="review-actions">
+                                            <button type="button"
+                                                    class="btn light"
+                                                    onclick="location.href='review_update_form.do?review_id=${review.review_id}'">
+                                                수정
+                                            </button>
+
+                                            <button type="button"
+                                                    class="btn dark"
+                                                    onclick="del('${review.review_id}')">
+                                                삭제
+                                            </button>
+                                        </div>
+
+                                    </article>
+                                </c:forEach>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </section>
+
+            </section>
+
+        </main>
+
     </div>
-</main>
+</section>
 
 <footer class="site-footer">
     <div class="footer-inner">
@@ -226,5 +342,6 @@
         <p>작가 상품을 둘러보고 구매 경험을 공유할 수 있습니다.</p>
     </div>
 </footer>
+
 </body>
 </html>

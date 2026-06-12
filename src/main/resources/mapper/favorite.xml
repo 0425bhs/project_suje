@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kh.suje.dao.FavoriteDAO">
+    <select id="getFavoriteList"
+            parameterType="int"
+            resultType="favorite">
+        SELECT *
+        FROM favorites_seller
+        WHERE user_id = #{user_id}
+    </select>
+    
+    <insert id="addFavorite"
+            parameterType="java.util.Map">
+        INSERT IGNORE INTO favorites_seller (user_id, seller_id)
+        VALUES (#{user_id}, #{seller_id})
+    </insert>
+
+    <delete id="delFavorite"
+            parameterType="java.util.Map">
+        DELETE FROM favorites_seller
+        WHERE user_id = #{user_id}
+        AND seller_id = #{seller_id}
+    </delete>
+
+    <select id="checkFavoriteShop"
+            parameterType="java.util.Map"
+            resultType="int">
+        SELECT EXISTS (
+            SELECT 1
+            FROM favorites_seller
+            WHERE user_id = #{user_id}
+            AND seller_id = #{seller_id}
+        )
+    </select>
+</mapper>
