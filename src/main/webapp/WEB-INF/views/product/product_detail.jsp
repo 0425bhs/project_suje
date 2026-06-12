@@ -94,6 +94,11 @@
                         </a>
                         <br/>
                         <span>판매자 번호 ${vo.seller_id}</span>
+
+                        <button type="button" class="wish-shop-btn" id="sellerWishBtn" data-seller-id="${vo.seller_id}">
+                            <span class="wish-shop-heart">♡</span>
+                            <span class="wish-shop-text">작가샵 찜하기</span>
+                        </button>
                     </div>
 
                     <h1 class="store-product-title">${vo.name}</h1>

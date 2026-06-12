@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.kh.suje.dao.CartDAO;
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.PaymentDAO;
 import com.kh.suje.dao.ProductDAO;
@@ -28,11 +29,13 @@ public class OrderController {
     private final OrderDAO orderDAO;
     private final PaymentDAO paymentDAO;
     private final ProductDAO productDAO;
+    private final CartDAO cartdao;
 
-    public OrderController(OrderDAO orderDAO, PaymentDAO paymentDAO, ProductDAO productDAO) {
+    public OrderController(OrderDAO orderDAO, PaymentDAO paymentDAO, ProductDAO productDAO,CartDAO cartdao) {
         this.orderDAO = orderDAO;
         this.paymentDAO = paymentDAO;
         this.productDAO = productDAO;
+        this.cartdao=cartdao;
     }
 
     // 로그인 회원 정보 가져오기
@@ -120,7 +123,9 @@ public class OrderController {
                 ? product.getSale_price()
                 : product.getPrice();
 
+        int originTotal = product.getPrice() * quantity;
         int item_amount = price * quantity;
+        int discountTotal = originTotal - item_amount;
 
         int delivery_fee = product.getDelivery_fee();
 
@@ -128,15 +133,38 @@ public class OrderController {
             delivery_fee = 0;
         }
 
-        int total_amount = item_amount + delivery_fee;
+        
+
+        Map<String, Object> item = new HashMap<>();
+        item.put("product_id", product.getProduct_id());
+        item.put("name", product.getName());
+        item.put("image_l", product.getImage_l());
+        item.put("price", product.getPrice());
+        item.put("sale_price", product.getSale_price());
+        item.put("item_price", price);
+        item.put("quantity", quantity);
+        item.put("origin_total", originTotal);
+        item.put("item_total", item_amount);
+        item.put("discount_total", discountTotal);
+        item.put("delivery_fee", delivery_fee);
+        item.put("cart_id", 0);
+
+        List<Map<String, Object>> orderItemList = new java.util.ArrayList<>();
+        orderItemList.add(item);
 
         model.addAttribute("loginUser", loginUser);
-        model.addAttribute("product", product);
-        model.addAttribute("quantity", quantity);
-        model.addAttribute("price", price);
-        model.addAttribute("item_amount", item_amount);
-        model.addAttribute("delivery_fee", delivery_fee);
-        model.addAttribute("total_amount", total_amount);
+
+        int couponPrice = 0;
+
+        int total_amount = item_amount + delivery_fee - couponPrice;
+
+        model.addAttribute("orderItemList", orderItemList);
+        model.addAttribute("totalOriginPrice", originTotal);
+        model.addAttribute("totalDiscountPrice", discountTotal);
+        model.addAttribute("totalItemPrice", item_amount);
+        model.addAttribute("totalDeliveryFee", delivery_fee);
+        model.addAttribute("paymentPrice", total_amount);
+        model.addAttribute("couponPrice", couponPrice);
 
         return "order/order_form";
     }
@@ -326,5 +354,103 @@ public class OrderController {
         }
 
         return "redirect:/order/my";
+    }
+
+    @PostMapping("/order_cart_form.do")
+    public String orderCartForm(
+            @RequestParam(value = "cart_id", required = false) int[] cart_id,
+            Model model,
+            HttpSession session
+    ) {
+        UserVO loginUser = getLoginUser(session);
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+        if (cart_id == null || cart_id.length == 0) {
+            return "redirect:/cart_list.do";
+        }
+
+        int user_id = getLoginUserId(session);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("user_id", user_id);
+        map.put("cart_id", cart_id);
+
+        List<Map<String, Object>> orderCartList = cartdao.cartOrderList(map);
+
+        int totalOriginPrice = 0;
+        int totalDiscountPrice = 0;
+        int totalItemPrice = 0;
+
+        Map<Integer, Integer> sellerMaxDeliveryMap = new HashMap<>();
+        Map<Integer, Boolean> sellerFreeDeliveryMap = new HashMap<>();
+
+        for (Map<String, Object> item : orderCartList) {
+
+            int seller_id = ((Number) item.get("seller_id")).intValue();
+
+            int origin_total = ((Number) item.get("origin_total")).intValue();
+            int discount_total = ((Number) item.get("discount_total")).intValue();
+            int item_total = ((Number) item.get("item_total")).intValue();
+
+            int delivery_fee = ((Number) item.get("delivery_fee")).intValue();
+            int free_shipping = ((Number) item.get("free_shipping")).intValue();
+
+            totalOriginPrice += origin_total;
+            totalDiscountPrice += discount_total;
+            totalItemPrice += item_total;
+
+            boolean isFreeDelivery = false;
+
+            // 배송비가 0원이면 무료배송 상품
+            if (delivery_fee == 0) {
+                isFreeDelivery = true;
+            }
+
+            // 무료배송 조건 금액을 달성했으면 무료배송
+            if (free_shipping > 0 && item_total >= free_shipping) {
+                isFreeDelivery = true;
+            }
+
+            // 같은 판매자 상품 중 하나라도 무료배송이면 판매자 전체 배송비 0원
+            if (isFreeDelivery) {
+                sellerFreeDeliveryMap.put(seller_id, true);
+            }
+
+            // 무료배송이 하나도 없을 때 적용할 판매자별 최대 배송비 저장
+            int currentMaxDeliveryFee = sellerMaxDeliveryMap.getOrDefault(seller_id, 0);
+
+            if (delivery_fee > currentMaxDeliveryFee) {
+                sellerMaxDeliveryMap.put(seller_id, delivery_fee);
+            }
+        }
+
+        int totalDeliveryFee = 0;
+
+        for (Integer seller_id : sellerMaxDeliveryMap.keySet()) {
+
+            boolean sellerFreeDelivery = sellerFreeDeliveryMap.getOrDefault(seller_id, false);
+
+            if (!sellerFreeDelivery) {
+                totalDeliveryFee += sellerMaxDeliveryMap.get(seller_id);
+            }
+        }
+
+        int couponPrice = 0;
+
+        int paymentPrice = totalItemPrice + totalDeliveryFee - couponPrice;
+
+        model.addAttribute("loginUser", loginUser);
+        model.addAttribute("orderItemList", orderCartList);
+        model.addAttribute("totalOriginPrice", totalOriginPrice);
+        model.addAttribute("totalDiscountPrice", totalDiscountPrice);
+        model.addAttribute("totalItemPrice", totalItemPrice);
+        model.addAttribute("totalDeliveryFee", totalDeliveryFee);
+        model.addAttribute("paymentPrice", paymentPrice);
+        model.addAttribute("couponPrice", couponPrice);
+
+        return "order/order_form";
     }
 }
