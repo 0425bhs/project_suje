@@ -280,7 +280,7 @@
 
             </div>
 
-            <section class="store-detail-info-section store-tab-panel active" id="detailInfo">
+            <section class="store-detail-info-section store-tab-panel" id="detailInfo">
                 <h2>상세정보</h2>
                 <p>${vo.description}</p>
             </section>
@@ -305,7 +305,6 @@
                         </div>
                     </c:forEach>
                 </c:if>
-
             </section>
 
             <section class="product-qna-box store-tab-panel" id="qnaBox">
