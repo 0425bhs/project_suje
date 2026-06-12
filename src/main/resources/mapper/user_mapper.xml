@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.suje.dao.UserDAO">
 
-<!--아이디 중복체크-->
+<!--닉네임 중복체크-->
 <select id = "userNickCheck" parameterType = "String"
 resultType = "user">
 
@@ -12,20 +12,28 @@ select * from users where nick_name=#{nick_name}
 
 </select>
 
+<!--아이디 중복체크-->
+<select id = "userLoginIdCheck" parameterType = "String"
+resultType = "user">
+
+select * from users where login_id=#{login_id}
+
+</select>
+
 <!--가입-->
 <insert id = "insertUser" parameterType="user"  
 useGeneratedKeys="true" keyProperty="user_id">
 insert into users( email, password, name,
-phone, gender, role, nick_name, photo_name )
+phone, gender, role, nick_name, photo_name, login_id )
 values( #{email}, #{password}, #{name}, #{phone}, #{gender}, 
-#{role}, #{nick_name}, #{photo_name} )
+#{role}, #{nick_name}, #{photo_name}, #{login_id} )
 </insert>
 
 
 <!--로그인-->
 <select id = "loginCheck" parameterType="String"
 resultType="user">
-select * from users where email=#{email}	
+select * from users where login_id=#{login_id}	
 </select>		
 
 
@@ -37,10 +45,26 @@ select * from users where user_id=#{user_id}
 </select>
 
 
+<!--아이디찾기, 이름과 이메일로 조회 -->
+<select id = "findLoginId" parameterType="user"
+resultType="user">
+
+select * from users where name=#{name} and email=#{email}
+</select>
+
+
+<!--패스워드찾기, 메일과 폰으로 조회 -->
+<select id = "findPwd" parameterType="user"
+resultType="user">
+
+select * from users where email=#{email} and phone=#{phone}
+</select>
+
+
 <!--정보 수정-->
 <update id = "userModify" parameterType = "user">
 
-update users set email=#{email}, password=#{password}, name=#{name},
+update users set email=#{email}, password=#{password}, name=#{name}, login_id=#{login_id},
 phone=#{phone}, gender=#{gender}, nick_name=#{nick_name}, photo_name=#{photo_name}
 where user_id=#{user_id}
 

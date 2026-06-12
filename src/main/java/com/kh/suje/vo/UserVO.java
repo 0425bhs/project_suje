@@ -25,6 +25,8 @@ public class UserVO {
 
     private String nick_name; // nick_name VARCHAR(255), Not null
 
+    private String login_id; // login_id VARCHAR(100), Not null, unique
+
     private MultipartFile photo;
     private String photo_name;
 }

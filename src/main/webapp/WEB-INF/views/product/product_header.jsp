@@ -34,8 +34,7 @@
                         </c:choose>
                     </span>
 
-                    <a href="#"
-                       onclick="alert('로그아웃 기능은 아직 연결되지 않았습니다.'); return false;">
+                    <a href="/logout.do">
                         로그아웃
                     </a>
                 </c:if>

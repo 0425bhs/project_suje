@@ -1,5 +1,6 @@
 
 let nickCheck = false;
+let idCheck = false;
 
 
 //이메일 인증관련 변수들
@@ -7,8 +8,13 @@ let authNumber;
 let email_valid = false;
 
 
-function chk() {
+function chknick() {
     nickCheck = false;
+
+}
+
+function chkid() {
+    idCheck = false;
 
 }
 
@@ -95,6 +101,36 @@ function check_nick() {
         })
 }
 
+//아이디중복체크
+function check_loginId() {
+
+    let login_id = document.getElementById("login_id").value.trim();
+
+    if (login_id === '') {
+        alert("아이디를 입력하세요");
+        document.getElementById("login_id").focus();
+        return;
+    }
+
+    fetch('/checkLoginId.do', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'login_id=' + login_id
+    }).then(response => response.json())
+        .then(data => {
+
+            if (data.result === 'no') {
+                alert(data.login_id + "는 이미 사용중입니다");
+
+            } else {
+                alert(data.login_id + "는 사용 가능합니다");
+                idCheck = true;
+            }
+
+        })
+}
 
 
 /*//메일주소 보내고 인증번호 확인
@@ -162,12 +198,45 @@ function checkPwdRules() {
     }
 }
 
+function checkPwdMatch() {
+    let password = document.getElementById("password").value;
+    let checkPassword = document.getElementById("checkPassword").value;
+    let div = document.getElementById("pwd-match");
+
+    let messages = [];
+
+    if ( password === checkPassword) {
+   
+        div.innerHTML = "<span style='color:green'>✅ 일치합니다</span>";
+    } else {
+        div.innerHTML ="<span style='color:red'> 비밀번호가 일치하지 않습니다 </span>";
+    }
+}
+
+
+
 
 //가입
 function send(f) {
 
-    let isUserChecked = document.getElementById("user").checked;
+    let role = document.getElementById("role").value;
+    let isUserChecked = (role === 'USER');
     let nick_name = f.nick_name.value.trim();
+    let login_id = f.login_id.value.trim();
+
+    if (login_id === "") {
+        alert("아이디를 입력해 주세요.");
+        f.login_id.focus();
+        return;
+    }
+
+    //아이디 중복체크를 마쳤는지 확인
+    if (!idCheck) {
+        alert("아이디 중복체크를 하세요");
+        f.nick_name.focus();
+        return;
+    }
+
 
     if (nick_name === "") {
         alert("닉네임을 입력해 주세요.");
@@ -219,7 +288,21 @@ function send(f) {
             return;
 
         }
-    
+    //이메일 유효성 검사
+ let email = f.email.value.trim();
+     let emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+     if (email === '') {
+        alert("email을 입력하세요");
+        return;
+    }
+
+        if (!emailReg.test(email)) {
+    alert("이메일 형식이 올바르지 않습니다");
+    return;
+}
+
+
    if(!isUserChecked) {
 
 
