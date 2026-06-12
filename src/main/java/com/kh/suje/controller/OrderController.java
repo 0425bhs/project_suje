@@ -88,6 +88,10 @@ public class OrderController {
             List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order.getOrder_id());
             orderItemMap.put(order.getOrder_id(), itemList);
         }
+        
+        //allOrderList : 로그인 유저의 전체 주문 목록
+        //orderList : 주문내역 ㄴ
+        //orderItemMap :
 
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("allOrderList", allOrderList);

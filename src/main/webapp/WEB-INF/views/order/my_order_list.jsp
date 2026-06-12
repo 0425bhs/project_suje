@@ -65,122 +65,19 @@
         <div class="myshop-layout">
 
             <!-- 왼쪽 사이드바 -->
-            <aside class="myshop-sidebar">
-                <div class="myshop-side-card">
-
-                    <a href="/order/my" class="myshop-side-home">
-                        마이쇼핑
-                    </a>
-
-                    <div class="myshop-side-group">
-                        <strong>주문 관리</strong>
-                        <a href="/order/my" class="active">주문/배송내역</a>
-                        <button type="button" onclick="alert('취소/환불내역은 준비중입니다.');">
-                            취소/환불내역
-                        </button>
-                    </div>
-
-                    <div class="myshop-side-group">
-                        <strong>관심 상품</strong>
-                        <button type="button" onclick="alert('찜한 상품은 준비중입니다.');">
-                            찜한 상품
-                        </button>
-                        <button type="button" onclick="alert('최근 본 상품은 준비중입니다.');">
-                            최근 본 상품
-                        </button>
-                    </div>
-
-                    <div class="myshop-side-group">
-                        <strong>리뷰 관리</strong>
-                        <button type="button" onclick="alert('작성 가능한 리뷰는 준비중입니다.');">
-                            작성 가능한 리뷰
-                        </button>
-                        <button type="button" onclick="alert('내가 작성한 리뷰는 준비중입니다.');">
-                            내가 작성한 리뷰
-                        </button>
-                    </div>
-
-                    <div class="myshop-side-group">
-                        <strong>문의 관리</strong>
-                        <button type="button" onclick="alert('내 문의는 준비중입니다.');">
-                            내 문의
-                        </button>
-                        <button type="button" onclick="alert('상품 Q&A는 준비중입니다.');">
-                            상품 Q&amp;A
-                        </button>
-                    </div>
-
-                    <div class="myshop-side-group">
-                        <strong>내 정보</strong>
-                        <button type="button" onclick="alert('회원 정보 수정은 준비중입니다.');">
-                            회원 정보 수정
-                        </button>
-                        <button type="button" onclick="alert('배송지 관리는 준비중입니다.');">
-                            배송지 관리
-                        </button>
-                    </div>
-
-                </div>
-            </aside>
+            <jsp:include page="/WEB-INF/views/order/common/myshop_sidebar.jsp" />
 
             <!-- 오른쪽 본문 -->
             <main class="myshop-content">
 
                 <!-- 회원 요약 카드 -->
-                <section class="myshop-user-card">
+                <jsp:include page="/WEB-INF/views/order/common/myshop_user_card.jsp">
+                    <jsp:param name="label" value="MY ORDER" />
+                    <jsp:param name="count" value="${totalCount}" />
+                </jsp:include>
 
-                    <div class="myshop-user-info">
-                        <div class="myshop-profile-icon">👤</div>
-
-                        <div>
-                            <!-- 중요: 로그인 계정 이름 표시 -->
-                            <strong>
-                                <c:choose>
-                                    <c:when test="${not empty loginUser.name}">
-                                        ${loginUser.name}님
-                                    </c:when>
-
-                                    <c:when test="${not empty loginUser.nick_name}">
-                                        ${loginUser.nick_name}님
-                                    </c:when>
-
-                                    <c:when test="${not empty sessionScope.user.name}">
-                                        ${sessionScope.user.name}님
-                                    </c:when>
-
-                                    <c:when test="${not empty sessionScope.user.nick_name}">
-                                        ${sessionScope.user.nick_name}님
-                                    </c:when>
-
-                                    <c:otherwise>
-                                        회원님
-                                    </c:otherwise>
-                                </c:choose>
-                            </strong>
-
-                            <!-- 중요: 로그인 계정 이메일 표시 -->
-                            <c:choose>
-                                <c:when test="${not empty loginUser.email}">
-                                    <p>${loginUser.email}</p>
-                                </c:when>
-
-                                <c:when test="${not empty sessionScope.user.email}">
-                                    <p>${sessionScope.user.email}</p>
-                                </c:when>
-
-                                <c:otherwise>
-                                    <p>로그인 후 내 쇼핑 정보를 확인할 수 있습니다.</p>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
-                    </div>
-
-                    <div class="myshop-order-count">
-                        <span>MY ORDER</span>
-                        <strong>${totalCount}건</strong>
-                    </div>
-
-                </section>
+                <!-- 빠른 메뉴 -->
+                <jsp:include page="/WEB-INF/views/order/common/myshop_quick_card.jsp" />
 
                 <!-- 주문 상태 요약 -->
                 <section class="myshop-status-card">
@@ -225,38 +122,6 @@
                             onclick="location.href='/order/my?status=CANCELLED'">
                         <span>취소</span>
                         <strong>${cancelCount}</strong>
-                    </button>
-
-                </section>
-
-                <!-- 빠른 메뉴 -->
-                <section class="myshop-quick-card">
-
-                    <!-- 중요: 배송중 필터 -->
-                    <button type="button" onclick="location.href='/order/my?status=SHIPPING'">
-                        <span>📦</span>
-                        <strong>주문/배송조회</strong>
-                    </button>
-
-                    <!-- 준비중: 내 리뷰 -->
-                    <button type="button"
-                            onclick="alert('내 리뷰 기능은 준비중입니다.');">
-                        <span>⭐</span>
-                        <strong>리뷰관리</strong>
-                    </button>
-
-                    <!-- 준비중: 내 문의 -->
-                    <button type="button"
-                            onclick="alert('내 문의 기능은 준비중입니다.');">
-                        <span>💬</span>
-                        <strong>문의내역</strong>
-                    </button>
-
-                    <!-- 준비중: 찜한 상품 -->
-                    <button type="button"
-                            onclick="alert('찜한 상품 기능은 준비중입니다.');">
-                        <span>♡</span>
-                        <strong>찜한상품</strong>
                     </button>
 
                 </section>

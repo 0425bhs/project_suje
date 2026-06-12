@@ -1,0 +1,32 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
+
+<section class="myshop-quick-card">
+
+    <!-- 중요: 배송중 필터 -->
+    <button type="button" onclick="location.href='/order/my?status=SHIPPING'">
+        <span>📦</span>
+        <strong>주문/배송조회</strong>
+    </button>
+
+    <!-- 준비중: 내 리뷰 -->
+    <button type="button"
+            onclick="location.href='/my_review_list.do'">
+        <span>⭐</span>
+        <strong>리뷰관리</strong>
+    </button>
+
+    <!-- 준비중: 내 문의 -->
+    <button type="button"
+            onclick="location.href='/my_qna_list.do'">
+        <span>💬</span>
+        <strong>문의내역</strong>
+    </button>
+
+    <!-- 준비중: 찜한 상품 -->
+    <button type="button"
+            onclick="alert('찜한 상품 기능은 준비중입니다.');">
+        <span>♡</span>
+        <strong>찜한상품</strong>
+    </button>
+
+</section>
