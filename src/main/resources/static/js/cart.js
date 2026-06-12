@@ -390,3 +390,15 @@ document.addEventListener("click", function () {
         item.classList.remove("is-open");
     });
 });
+
+function cartOrderCheck() {
+
+    const checkedList = document.querySelectorAll(".cart-check:checked");
+
+    if (checkedList.length === 0) {
+        alert("주문할 상품을 선택해주세요.");
+        return false;
+    }
+
+    return true;
+}

@@ -115,14 +115,26 @@
 
             <!-- 로그인 후에만 주문내역 표시 -->
             <c:if test="${not empty sessionScope.user}">
-                <a href="/order/my">주문내역</a>
+                <a href="/order/my">마이쇼핑</a>
             </c:if>
 
             <!-- 판매자센터는 현재 그대로 노출 -->
             <a href="/seller_product_list.do">판매자센터</a>
 
             <a href="#" class="disabled">♡ 관심</a>
-            <a href="/cart_list.do">🛒 장바구니</a>
+            <a href="/cart_list.do" class="header-cart-link">
+
+                <span class="header-cart-icon-wrap">
+                    <span class="header-cart-icon">🛒</span>
+
+                    <c:if test="${not empty sessionScope.user and cartCount > 0}">
+                        <span class="header-cart-badge">${cartCount}</span>
+                    </c:if>
+                </span>
+
+                <span class="header-cart-text">장바구니</span>
+
+            </a>
         </div>
 
     </div>

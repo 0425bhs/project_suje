@@ -45,24 +45,49 @@
     overflow: hidden;
 }
 
-.store-main-image-box img {
+/* 메인 이미지 슬라이드 */
+.store-slide-track {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    transition: transform 0.65s ease;
+    will-change: transform;
+}
+
+.store-slide-item {
+    width: 100%;
+    height: 100%;
+
+    flex: 0 0 100%;
+}
+
+.store-slide-item img {
     width: 100%;
     height: 100%;
 
     display: block;
     object-fit: cover;
-
-    transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
-.store-main-image-box.is-changing-next img {
-    opacity: 0;
-    transform: translateX(-18px) scale(0.98);
-}
+/* JS 실행 전 기본 이미지 */
+.store-main-image-box > #detailMainImage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
 
-.store-main-image-box.is-changing-prev img {
-    opacity: 0;
-    transform: translateX(18px) scale(0.98);
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    object-fit: cover;
 }
 
 /* 이미지 오른쪽 위 하트 */
@@ -809,4 +834,62 @@
     .product-qna-box {
         scroll-margin-top: var(--header-scroll-margin-mobile, 80px);
     }
+}
+
+/* =========================================================
+   작가샵 찜하기 버튼
+========================================================= */
+
+.store-seller-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.wish-shop-btn {
+    min-width: 145px;
+    height: 42px;
+    padding: 0 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    border: 1px solid #bfc8d6;
+    border-radius: 4px;
+    background: #fff;
+    color: #111;
+
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+
+    transition: 0.18s ease;
+}
+
+.wish-shop-btn:hover {
+    border-color: #ff6f4f;
+    background: #fff7f3;
+    color: #ff6f4f;
+}
+
+.wish-shop-btn.active {
+    border-color: #ff6f4f;
+    background: #fff;
+    color: #ff6f4f;
+}
+
+.wish-shop-heart {
+    color: inherit;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.wish-shop-btn:disabled {
+    opacity: 0.65;
+    cursor: wait;
 }

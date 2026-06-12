@@ -45,7 +45,7 @@
 
     <c:if test="${not empty sellerGroupList}">
 
-        <form action="/order_form.do" method="post" name="cartForm">
+        <form action="/order_cart_form.do" method="post" name="cartForm" onsubmit="return cartOrderCheck();">
 
             <div class="cart-layout">
 
@@ -106,9 +106,35 @@
                                             ${item.name}
                                         </div>
 
-                                        <div class="cart-product-price">
-                                            <fmt:formatNumber value="${item.item_price}" pattern="#,###"/>원
-                                        </div>
+                                        <c:choose>
+                                            <c:when test="${item.sale_price > 0 and item.sale_price < item.price}">
+
+                                                <div class="cart-price-box">
+
+                                                    <p class="cart-origin-price">
+                                                        <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
+                                                    </p>
+
+                                                    <p class="cart-sale-price">
+                                                        <span>${item.sale_rate}%</span>
+
+                                                        <strong>
+                                                            <fmt:formatNumber value="${item.sale_price}" pattern="#,###"/>원
+                                                        </strong>
+                                                    </p>
+
+                                                </div>
+
+                                            </c:when>
+
+                                            <c:otherwise>
+
+                                                <p class="cart-normal-price">
+                                                    <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
+                                                </p>
+
+                                            </c:otherwise>
+                                        </c:choose>
 
                                         <div class="cart-quantity-box">
 

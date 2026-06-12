@@ -164,3 +164,27 @@ function initSaleFeatureSlider() {
     renderDots();
     moveSlider();
 }
+
+// 할인 페이지 정렬/탭 클릭 후 스크롤 위치 유지
+document.addEventListener("DOMContentLoaded", function () {
+
+    // 저장된 스크롤 위치가 있으면 복원
+    const savedScrollY = sessionStorage.getItem("salePageScrollY");
+
+    if (savedScrollY !== null) {
+        window.scrollTo(0, parseInt(savedScrollY, 10));
+        sessionStorage.removeItem("salePageScrollY");
+    }
+
+    // 할인 유형 탭, 정렬 링크 클릭 시 현재 스크롤 위치 저장
+    const keepScrollLinks = document.querySelectorAll(
+        ".sale-type-tabs a, .sale-sort-left a"
+    );
+
+    keepScrollLinks.forEach(function (link) {
+        link.addEventListener("click", function () {
+            sessionStorage.setItem("salePageScrollY", window.scrollY);
+        });
+    });
+
+});

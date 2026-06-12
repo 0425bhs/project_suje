@@ -1,10 +1,14 @@
 package com.kh.suje.controller;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.kh.suje.dao.CartDAO;
 import com.kh.suje.dao.CategoryDAO;
+import com.kh.suje.vo.UserVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @ControllerAdvice
@@ -12,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class HeaderControllerAdvice {
 
     private final CategoryDAO categorydao;
+    private final CartDAO cartdao;
 
     @ModelAttribute("bigCategoryList")
     public Object bigCategoryList(){
@@ -21,5 +26,19 @@ public class HeaderControllerAdvice {
     @ModelAttribute("smallCategoryList")
     public Object smallCategoryList(){
         return categorydao.small_category_all_list();
+    }
+
+    @ModelAttribute
+     public void headerCartCount(HttpSession session, Model model) {
+
+        int cartCount = 0;
+
+        UserVO user = (UserVO) session.getAttribute("user");
+
+        if (user != null) {
+            cartCount = cartdao.cartCount(user.getUser_id());
+        }
+
+        model.addAttribute("cartCount", cartCount);
     }
 }

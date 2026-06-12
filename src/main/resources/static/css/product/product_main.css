@@ -1276,3 +1276,66 @@ button {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================================
+   헤더 장바구니 개수 뱃지
+========================================================= */
+
+.header-cart-link {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    color: #111;
+    text-decoration: none;
+}
+
+.header-cart-icon-wrap {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 24px;
+    height: 24px;
+}
+
+.header-cart-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.header-cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: #f04438;
+
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1;
+
+    z-index: 2;
+}
+
+.header-cart-text {
+    position: relative;
+    z-index: 1;
+
+    font-size: 14px;
+    font-weight: 800;
+}

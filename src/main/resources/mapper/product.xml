@@ -378,14 +378,147 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 세일 상품 목록 -->
     <select id="product_sale_list" parameterType="map" resultType="product">
-        select p.*,s.company_name from products p JOIN sellers s ON p.seller_id = s.seller_id
-        where p.status = 'APPROVED' AND p.sale_price > 0
-        ORDER BY p.sale_price_updated_at DESC, p.product_id DESC LIMIT #{start}, #{blockList}
+        SELECT
+            p.*,
+            s.company_name,
+
+            FLOOR(((p.price - p.sale_price) / p.price) * 100) AS sale_rate,
+
+            IFNULL(fv.favorite_count, 0) AS favorite_count,
+            IFNULL(rv.review_count, 0) AS review_count,
+            IFNULL(sa.sales_count, 0) AS sales_count
+
+        FROM products p
+
+        JOIN sellers s
+        ON p.seller_id = s.seller_id
+
+        LEFT JOIN (
+            SELECT product_id, COUNT(*) AS favorite_count
+            FROM favorites
+            GROUP BY product_id
+        ) fv
+        ON p.product_id = fv.product_id
+
+        LEFT JOIN (
+            SELECT product_id, COUNT(*) AS review_count
+            FROM reviews
+            GROUP BY product_id
+        ) rv
+        ON p.product_id = rv.product_id
+
+        LEFT JOIN (
+            SELECT
+                oi.product_id,
+                SUM(oi.quantity) AS sales_count
+            FROM order_items oi
+            JOIN orders o
+            ON oi.order_id = o.order_id
+            WHERE o.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED')
+            GROUP BY oi.product_id
+        ) sa
+        ON p.product_id = sa.product_id
+
+        WHERE p.status = 'APPROVED'
+        AND p.sale_price IS NOT NULL
+        AND p.sale_price &gt; 0
+        AND p.sale_price &lt; p.price
+
+        <choose>
+            <!-- 인기순: 찜 + 후기 + 판매수 합산 -->
+            <when test="sort == 'popular'">
+                ORDER BY
+                    (
+                        IFNULL(fv.favorite_count, 0)
+                        + IFNULL(rv.review_count, 0)
+                        + IFNULL(sa.sales_count, 0)
+                    ) DESC,
+                    p.product_id DESC
+            </when>
+
+            <!-- 최신순 -->
+            <when test="sort == 'new'">
+                ORDER BY p.product_id DESC
+            </when>
+
+            <!-- 찜 많은순 -->
+            <when test="sort == 'likes'">
+                ORDER BY IFNULL(fv.favorite_count, 0) DESC, p.product_id DESC
+            </when>
+
+            <!-- 구매후기 많은순 -->
+            <when test="sort == 'reviews'">
+                ORDER BY IFNULL(rv.review_count, 0) DESC, p.product_id DESC
+            </when>
+
+            <!-- 판매수 많은순 -->
+            <when test="sort == 'sales'">
+                ORDER BY IFNULL(sa.sales_count, 0) DESC, p.product_id DESC
+            </when>
+
+            <!-- 할인율 높은순 -->
+            <when test="sort == 'discount'">
+                ORDER BY ((p.price - p.sale_price) / p.price) DESC, p.product_id DESC
+            </when>
+
+            <!-- 낮은 가격순 -->
+            <when test="sort == 'lowPrice'">
+                ORDER BY p.sale_price ASC, p.product_id DESC
+            </when>
+
+            <!-- 높은 가격순 -->
+            <when test="sort == 'highPrice'">
+                ORDER BY p.sale_price DESC, p.product_id DESC
+            </when>
+
+            <otherwise>
+                ORDER BY p.product_id DESC
+            </otherwise>
+        </choose>
+
+        LIMIT #{start}, #{blockList}
     </select>
 
+
     <!-- 세일 상품 개수 -->
-    <select id="product_sale_cnt" resultType="int"> 
-        select COUNT(*) from products where status='APPROVED' AND sale_price > 0
+    <select id="product_sale_cnt" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM products p
+        WHERE p.status = 'APPROVED'
+        AND p.sale_price IS NOT NULL
+        AND p.sale_price &gt; 0
+        AND p.sale_price &lt; p.price
+
+        <choose>
+            <!-- 기간 할인 -->
+            <when test="saleType == 'period'">
+                AND p.sale_start_at IS NOT NULL
+                AND p.sale_end_at IS NOT NULL
+                AND NOW() BETWEEN p.sale_start_at AND p.sale_end_at
+            </when>
+
+            <!-- 상시 할인 -->
+            <when test="saleType == 'always'">
+                AND p.sale_start_at IS NULL
+                AND p.sale_end_at IS NULL
+            </when>
+
+            <!-- 전체 할인 -->
+            <otherwise>
+                AND (
+                    (
+                        p.sale_start_at IS NULL
+                        AND p.sale_end_at IS NULL
+                    )
+                    OR
+                    (
+                        p.sale_start_at IS NOT NULL
+                        AND p.sale_end_at IS NOT NULL
+                        AND NOW() BETWEEN p.sale_start_at AND p.sale_end_at
+                    )
+                )
+            </otherwise>
+        </choose>
     </select>
 
     <!-- 베스트 상품 -->
