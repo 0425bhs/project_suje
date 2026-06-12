@@ -13,6 +13,7 @@ import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.UserVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SellerController {
 
-    @Autowired
-    HttpSession session;
+    private final HttpSession session;
 
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
@@ -76,16 +76,19 @@ public class SellerController {
             sort = "rank";
         }
 
-        // UserVO user = session.getAttribute(user);
-        // int user_id = user.getUserId();
-        int user_id = 3;
+        boolean favorite = false;
+        UserVO user = (UserVO) session.getAttribute("user");
 
-        Map<String, Object> favoriteMap = new HashMap<>();
-        favoriteMap.put("user_id", user_id);
-        favoriteMap.put("seller_id", seller_id);
+        if (user != null) {
+            int user_id = user.getUser_id();
 
-        int favoriteShop = favoriteDAO.checkFavoriteShop(favoriteMap);
-        boolean favorite = favoriteShop >= 1;
+            Map<String, Object> favoriteMap = new HashMap<>();
+            favoriteMap.put("user_id", user_id);
+            favoriteMap.put("seller_id", seller_id);
+
+            int favoriteShop = favoriteDAO.checkFavoriteShop(favoriteMap);
+            favorite = favoriteShop >= 1;
+        }
 
         Map<String, Object> listMap = new HashMap<>();
         listMap.put("seller_id", seller_id);

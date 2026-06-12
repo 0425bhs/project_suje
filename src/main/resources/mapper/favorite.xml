@@ -8,19 +8,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             parameterType="int"
             resultType="favorite">
         SELECT *
-        FROM favorite_shop
+        FROM favorites_seller
         WHERE user_id = #{user_id}
     </select>
     
     <insert id="addFavorite"
             parameterType="java.util.Map">
-        INSERT IGNORE INTO favorite_shop (user_id, seller_id)
+        INSERT IGNORE INTO favorites_seller (user_id, seller_id)
         VALUES (#{user_id}, #{seller_id})
     </insert>
 
     <delete id="delFavorite"
             parameterType="java.util.Map">
-        DELETE FROM favorite_shop 
+        DELETE FROM favorites_seller
         WHERE user_id = #{user_id}
         AND seller_id = #{seller_id}
     </delete>
@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             resultType="int">
         SELECT EXISTS (
             SELECT 1
-            FROM favorite_shop
+            FROM favorites_seller
             WHERE user_id = #{user_id}
             AND seller_id = #{seller_id}
         )
