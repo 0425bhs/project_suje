@@ -99,10 +99,10 @@ public class ReviewController {
             imageDAO.insertImageList(imageList); 
         }
 
-        return "redirect:/my_review_list.do";
+        return "redirect:/mypage/review";
     }
 
-    @GetMapping("/my_review_list.do")
+    @GetMapping("/mypage/review")
     public String myReviewList(Model model) {
         // UserVO user = session.getAttribute("user");
         // int id = user.getId();
@@ -132,7 +132,7 @@ public class ReviewController {
 
         model.addAttribute("list", list);
 
-        return "/reviews/my_review_list";
+        return "/user/my_page";
     }
 
     @GetMapping("/live_review_list.do")
@@ -159,13 +159,13 @@ public class ReviewController {
     public String reviewUpdateFormFin(ReviewVO review) {
         int res = reviewDAO.updateReview(review);
 
-        return "redirect:/my_review_list.do";
+        return "redirect:/mypage/review";
     }
 
     @GetMapping("/review_delete.do")
     public String reviewDelete(int review_id) {
         int res = reviewDAO.deleteReview(review_id);
 
-        return "redirect:/my_review_list.do";
+        return "redirect:/mypage/review";
     }
 }

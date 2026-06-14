@@ -70,13 +70,13 @@ public class OrderController {
 
         int user_id = getLoginUserId(session);
 
-        // 로그인한 회원의 전체 주문 목록
-        List<OrderVO> allOrderList = orderDAO.selectOrderListByUserId(user_id);
-
+        // 1. 상태별 개수를 DB에서 한 번에 가져옴 (위의 CASE WHEN 쿼리 실행)
+        Map<String, Object> statusCounts = orderDAO.selectOrderStatusCounts(user_id);
+        
         List<OrderVO> orderList;
 
         if (status == null || status.trim().isEmpty()) {
-            orderList = allOrderList;
+            orderList = orderDAO.selectOrderListByUserId(user_id);
         } else {
             orderList = orderDAO.selectOrderListByUserIdAndStatus(user_id, status);
         }
@@ -89,12 +89,11 @@ public class OrderController {
             orderItemMap.put(order.getOrder_id(), itemList);
         }
         
-        //allOrderList : 로그인 유저의 전체 주문 목록
-        //orderList : 주문내역 ㄴ
-        //orderItemMap :
-
         model.addAttribute("loginUser", loginUser);
-        model.addAttribute("allOrderList", allOrderList);
+        
+        // model에 Map의 값들을 통째로 넘겨줌
+        model.addAllAttributes(statusCounts);
+        
         model.addAttribute("orderList", orderList);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);

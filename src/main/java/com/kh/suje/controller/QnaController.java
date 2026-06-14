@@ -42,7 +42,7 @@ public class QnaController {
         qna.setUser_id(user_id);
         int res = qnaDAO.addQna(qna);
 
-        return "redirect:/my_qna_list.do";
+        return "redirect:/mypage/qna";
     }
 
     @GetMapping("qna_update_form.do")
@@ -64,10 +64,10 @@ public class QnaController {
     public String qnaDelete(int qna_id) {
         int res = qnaDAO.deleteQna(qna_id);
 
-        return "redirect:/my_qna_list.do";
+        return "redirect:/mypage/qna";
     }
 
-    @GetMapping("my_qna_list.do")
+    @GetMapping("/mypage/qna")
     public String myQnaList(Model model) {
         // UserVO user = session.getAttribute("user");
         // int userId = user.getId();

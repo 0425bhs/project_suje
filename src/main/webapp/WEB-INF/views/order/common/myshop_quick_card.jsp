@@ -10,14 +10,14 @@
 
     <!-- 준비중: 내 리뷰 -->
     <button type="button"
-            onclick="location.href='/my_review_list.do'">
+            onclick="location.href='/mypage/review'">
         <span>⭐</span>
         <strong>리뷰관리</strong>
     </button>
 
     <!-- 준비중: 내 문의 -->
     <button type="button"
-            onclick="location.href='/my_qna_list.do'">
+            onclick="location.href='/mypage/qna'">
         <span>💬</span>
         <strong>문의내역</strong>
     </button>

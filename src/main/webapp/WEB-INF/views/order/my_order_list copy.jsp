@@ -23,6 +23,43 @@
         <jsp:param name="activeMenu" value="order" />
     </jsp:include>
 
+    <!-- 중요: 주문 상태별 개수 계산 -->
+    <c:set var="totalCount" value="0" />
+    <c:set var="pendingCount" value="0" />
+    <c:set var="paidCount" value="0" />
+    <c:set var="preparingCount" value="0" />
+    <c:set var="shippingCount" value="0" />
+    <c:set var="deliveredCount" value="0" />
+    <c:set var="cancelCount" value="0" />
+
+    <c:forEach var="order" items="${allOrderList}">
+        <c:set var="totalCount" value="${totalCount + 1}" />
+
+        <c:if test="${order.status eq 'PENDING'}">
+            <c:set var="pendingCount" value="${pendingCount + 1}" />
+        </c:if>
+
+        <c:if test="${order.status eq 'PAID'}">
+            <c:set var="paidCount" value="${paidCount + 1}" />
+        </c:if>
+
+        <c:if test="${order.status eq 'PREPARING'}">
+            <c:set var="preparingCount" value="${preparingCount + 1}" />
+        </c:if>
+
+        <c:if test="${order.status eq 'SHIPPING'}">
+            <c:set var="shippingCount" value="${shippingCount + 1}" />
+        </c:if>
+
+        <c:if test="${order.status eq 'DELIVERED'}">
+            <c:set var="deliveredCount" value="${deliveredCount + 1}" />
+        </c:if>
+
+        <c:if test="${order.status eq 'CANCELLED'}">
+            <c:set var="cancelCount" value="${cancelCount + 1}" />
+        </c:if>
+    </c:forEach>
+
     <section class="myshop-page">
 
         <div class="myshop-layout">
