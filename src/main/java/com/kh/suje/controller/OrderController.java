@@ -22,8 +22,10 @@ import com.kh.suje.vo.order.OrderVO;
 import com.kh.suje.vo.payment.PaymentVO;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderDAO orderDAO;
@@ -31,12 +33,7 @@ public class OrderController {
     private final ProductDAO productDAO;
     private final CartDAO cartdao;
 
-    public OrderController(OrderDAO orderDAO, PaymentDAO paymentDAO, ProductDAO productDAO,CartDAO cartdao) {
-        this.orderDAO = orderDAO;
-        this.paymentDAO = paymentDAO;
-        this.productDAO = productDAO;
-        this.cartdao=cartdao;
-    }
+    
 
     // 로그인 회원 정보 가져오기
     private UserVO getLoginUser(HttpSession session) {

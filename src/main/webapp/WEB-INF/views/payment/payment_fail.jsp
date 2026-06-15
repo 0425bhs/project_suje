@@ -5,31 +5,18 @@
     <head>
         <meta charset="UTF-8">
         <title>결제 실패</title>
+        
+        <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/order-payment.css">
+
+        <script src="/js/product_main.js" defer></script>
     </head>
 
     <body>
 
-    <header class="site-header">
-        <div class="header-inner">
-            <div class="brand">HAND<span>MADE</span></div>
-
-            <nav class="main-nav">
-                <a href="/product/main.do">상품보기</a>
-                <a href="#">선물추천</a>
-                <a href="#">베스트</a>
-                <a href="#">취향발견</a>
-                <a href="#">최신작품</a>
-                <a href="#">작가</a>
-            </nav>
-
-            <div class="header-actions">
-                <a href="/order/my">주문내역</a>
-                <a href="#">관심</a>
-                <a href="#">장바구니</a>
-            </div>
-        </div>
-    </header>
+        <jsp:include page="/WEB-INF/views/product/product_header.jsp">
+            <jsp:param name="activeMenu" value="payment_fail" />
+        </jsp:include>
 
     <section class="page-block soft">
         <div class="block-inner">
