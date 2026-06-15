@@ -24,7 +24,7 @@
             </nav>
 
             <div class="header-actions">
-                <a href="/order/my">주문내역</a>
+                <a href="/myshop/orders">주문내역</a>
                 <a href="#">관심</a>
                 <a href="#">장바구니</a>
             </div>
@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="btn-row">
-                    <a class="btn light full" href="/order/my">
+                    <a class="btn light full" href="/myshop/orders">
                         내 주문 내역으로 이동
                     </a>
 

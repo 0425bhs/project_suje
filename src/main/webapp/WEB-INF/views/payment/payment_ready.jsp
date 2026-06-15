@@ -140,7 +140,7 @@
                     </div>
 
                     <div class="btn-row">
-                        <a href="/order/my" class="btn light full">
+                        <a href="/myshop/orders" class="btn light full">
                             주문내역으로
                         </a>
                     </div>

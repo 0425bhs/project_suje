@@ -55,8 +55,8 @@ public class OrderController {
     }
     
     // 내 주문 내역
-    // 주소: /order/my
-    @GetMapping("/order/my")
+    // 주소: /myshop/orders
+    @GetMapping("/myshop/orders")
     public String myOrderList(
             @RequestParam(value = "status", required = false) String status,
             Model model,
@@ -98,7 +98,10 @@ public class OrderController {
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);
 
-        return "order/my_order_list";
+        String contentPage = "/myshop/order_list";
+        model.addAttribute("contentPage", contentPage);
+
+        return "myshop/myshop_main";
     }
 
     // 주문서 작성 화면
@@ -339,7 +342,7 @@ public class OrderController {
         OrderVO order = orderDAO.selectOrderById(order_id);
 
         if (order == null) {
-            return "redirect:/order/my";
+            return "redirect:/myshop/orders";
         }
 
         // 결제 전 주문만 여기서 바로 취소
@@ -356,7 +359,7 @@ public class OrderController {
             paymentDAO.updatePaymentCancel(paymentVO);
         }
 
-        return "redirect:/order/my";
+        return "redirect:/myshop/orders";
     }
 
     @PostMapping("/order_cart_form.do")

@@ -163,7 +163,7 @@
 
         <div class="header-actions">
             <a href="/mypage/qna">내 문의</a>
-            <a href="/order/my">주문내역</a>
+            <a href="/myshop/orders">주문내역</a>
         </div>
     </div>
 </header>

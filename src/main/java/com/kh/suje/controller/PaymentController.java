@@ -407,7 +407,7 @@ public class PaymentController {
                     productDAO.increaseStock(item);
                 }
 
-                return "redirect:/order/my?status=CANCELLED";
+                return "redirect:/myshop/orders?status=CANCELLED";
             }
 
             model.addAttribute("order_id", order_id);

@@ -84,42 +84,42 @@
 
                     <button type="button"
                             class="${empty selectedStatus ? 'active' : ''}"
-                            onclick="location.href='/order/my'">
+                            onclick="location.href='/myshop/orders'">
                         <span>전체</span>
                         <strong>${totalCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'PENDING' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=PENDING'">
+                            onclick="location.href='/myshop/orders?status=PENDING'">
                         <span>결제대기</span>
                         <strong>${pendingCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'PAID' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=PAID'">
+                            onclick="location.href='/myshop/orders?status=PAID'">
                         <span>결제완료</span>
                         <strong>${paidCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=SHIPPING'">
+                            onclick="location.href='/myshop/orders?status=SHIPPING'">
                         <span>배송중</span>
                         <strong>${shippingCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=DELIVERED'">
+                            onclick="location.href='/myshop/orders?status=DELIVERED'">
                         <span>배송완료</span>
                         <strong>${deliveredCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=CANCELLED'">
+                            onclick="location.href='/myshop/orders?status=CANCELLED'">
                         <span>취소</span>
                         <strong>${cancelCount}</strong>
                     </button>
@@ -135,7 +135,7 @@
                             <p>주문한 작품의 상태를 확인하고 필요한 작업을 진행할 수 있습니다.</p>
                         </div>
 
-                        <a href="/order/my">전체보기</a>
+                        <a href="/myshop/orders">전체보기</a>
                     </div>
 
                     <c:choose>

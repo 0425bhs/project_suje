@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -22,20 +21,16 @@ import com.kh.suje.vo.ImageVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.ReviewVO;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class ReviewController {
-    @Autowired
-    HttpSession session; 
-
     private final ReviewDAO reviewDAO;
     private final OrderDAO orderDAO;
     private final ProductDAO productDAO;
     private final ImageDAO imageDAO;
-    
+
     @GetMapping(value={"testmain" ,"/review"})
     public String main() {
         return "/testmain";
@@ -44,7 +39,7 @@ public class ReviewController {
     @GetMapping("/review_form.do")
     public String reviewForm(Model model, int order_item_id) {
 
-        int product_id = orderDAO.getProductId(order_item_id);
+        Integer product_id = orderDAO.getProductId(order_item_id);
         ProductVO product = productDAO.product_one(product_id);
 
         model.addAttribute("product", product);
@@ -62,10 +57,11 @@ public class ReviewController {
         int user_id = 2;
         review.setUser_id(user_id);
 
-        int res = reviewDAO.addReview(review);
+        reviewDAO.addReview(review);
 
         //저장경로 지정
         String savePath = "C:\\upload";
+        // String savePath = "/Users/kkt/Desktop/KKT/Spring_boot/upload";
 
         //저장경로가 없다면 생성
         File dir = new File(savePath);
@@ -157,14 +153,14 @@ public class ReviewController {
 
     @PostMapping("/review_update_form.do")
     public String reviewUpdateFormFin(ReviewVO review) {
-        int res = reviewDAO.updateReview(review);
+        reviewDAO.updateReview(review);
 
         return "redirect:/mypage/review";
     }
 
     @GetMapping("/review_delete.do")
     public String reviewDelete(int review_id) {
-        int res = reviewDAO.deleteReview(review_id);
+        reviewDAO.deleteReview(review_id);
 
         return "redirect:/mypage/review";
     }
