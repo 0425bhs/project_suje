@@ -570,26 +570,32 @@ public class ProductController {
         return "product/product_best_list";
     }
 
-    @GetMapping("/product_discovery.do")
+   @GetMapping("/product_discovery.do")
     public String product_discovery_list(Model model, HttpSession session) {
 
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
         Map<String, Object> map = new HashMap<>();
-        map.put("limit", 30);
+        map.put("limit", 20);
 
         List<ProductVO> list = null;
         boolean isFallback = false;
 
-        // 로그인한 회원이면 해당 회원의 취향 기록 기준으로 추천
         if (loginUser != null) {
-            int user_id = loginUser.getUser_id();
-            map.put("user_id", user_id);
 
-            list = productdao.product_discovery_list(map);
+            int user_id = loginUser.getUser_id();
+
+            List<Integer> categoryIds = productdao.product_discovery_category_list(user_id);
+
+            if (categoryIds != null && !categoryIds.isEmpty()) {
+
+                map.put("user_id", user_id);
+                map.put("categoryIds", categoryIds);
+
+                list = productdao.product_discovery_list(map);
+            }
         }
 
-        // 로그인하지 않았거나 취향 데이터가 없으면 기본 추천 상품 출력
         if (list == null || list.isEmpty()) {
             list = productdao.product_discovery_fallback_list(map);
             isFallback = true;
@@ -597,7 +603,6 @@ public class ProductController {
 
         model.addAttribute("list", list);
         model.addAttribute("isFallback", isFallback);
-
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
@@ -605,34 +610,42 @@ public class ProductController {
     }
 
     @GetMapping("/all_list.do")
-    String allProductList(Model model,Integer page){
-        
+    public String allProductList(Model model, Integer page) {
+
         int nowPage = 1;
 
         if (page != null) {
-            nowPage=page;
+            nowPage = page;
         }
 
-        int blockList=10;
-        int blockPage=5;
+        int blockList = 10;
+        int blockPage = 5;
 
         int rowTotal = productdao.product_cnt();
-        int start=(nowPage - 1)*blockList;
+        int start = (nowPage - 1) * blockList;
 
         Map<String, Object> map = new HashMap<>();
-        map.put("start",start);
-        map.put("blockList",blockList);
+        map.put("start", start);
+        map.put("blockList", blockList);
 
-        List<ProductVO> list=productdao.product_list(map);
+        List<ProductVO> list = productdao.product_list(map);
 
-        String pageMenu=Paging.getPaging("/all_list.do",nowPage,rowTotal,blockList,blockPage);
+        String pageMenu = Paging.getPaging(
+                "/all_list.do",
+                nowPage,
+                rowTotal,
+                blockList,
+                blockPage
+        );
 
-        model.addAttribute("list",list);
-        model.addAttribute("pageMenu",pageMenu);
+        model.addAttribute("list", list);
+        model.addAttribute("pageMenu", pageMenu);
+        model.addAttribute("rowTotal", rowTotal);
+        model.addAttribute("isSearch", false);
 
-        // 전체 카테고리용 데이터  
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
+
         return "product/product_new_list";
     }
 

@@ -711,12 +711,75 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 베스트 상품 -->
     <select id="product_best_all_list" resultType="product">
-        SELECT p.*, s.company_name
+        SELECT
+            p.*,
+            s.company_name,
+
+            CASE
+                WHEN p.sale_price IS NOT NULL
+                AND p.sale_price &gt; 0
+                AND p.sale_price &lt; p.price
+                THEN FLOOR(((p.price - p.sale_price) / p.price) * 100)
+                ELSE 0
+            END AS sale_rate,
+
+            IFNULL(fv.favorite_count, 0) AS favorite_count,
+            IFNULL(rv.review_count, 0) AS review_count,
+            IFNULL(sa.sales_count, 0) AS sales_count,
+
+            (
+                IFNULL(sa.sales_count, 0) * 5
+                + IFNULL(rv.review_count, 0) * 3
+                + IFNULL(fv.favorite_count, 0)
+            ) AS best_score
+
         FROM products p
-        JOIN sellers s 
+
+        JOIN sellers s
         ON p.seller_id = s.seller_id
+
+        LEFT JOIN (
+            SELECT 
+                product_id, 
+                COUNT(*) AS favorite_count
+            FROM favorites
+            GROUP BY product_id
+        ) fv
+        ON p.product_id = fv.product_id
+
+        LEFT JOIN (
+            SELECT 
+                product_id, 
+                COUNT(*) AS review_count
+            FROM reviews
+            GROUP BY product_id
+        ) rv
+        ON p.product_id = rv.product_id
+
+        LEFT JOIN (
+            SELECT
+                oi.product_id,
+                SUM(oi.quantity) AS sales_count
+            FROM order_items oi
+
+            JOIN orders o
+            ON oi.order_id = o.order_id
+
+            WHERE o.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED')
+
+            GROUP BY oi.product_id
+        ) sa
+        ON p.product_id = sa.product_id
+
         WHERE p.status = 'APPROVED'
-        ORDER BY p.product_id DESC
+
+        ORDER BY
+            (
+                IFNULL(sa.sales_count, 0) * 5
+                + IFNULL(rv.review_count, 0) * 3
+                + IFNULL(fv.favorite_count, 0)
+            ) DESC,
+            p.product_id DESC
     </select>
 
     <!-- 판매자 내 상품 목록 -->
@@ -845,41 +908,168 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
 
-    <!-- 취향발견 추천 상품 목록 -->
+    <!-- =========================================================
+     취향발견 - 추천 상품 목록
+    ========================================================= -->
     <select id="product_discovery_list" parameterType="map" resultType="product">
-        SELECT 
+        SELECT
             p.*,
-            s.company_name
+            s.company_name,
+
+            CASE
+                WHEN p.sale_price IS NOT NULL
+                AND p.sale_price &gt; 0
+                AND p.sale_price &lt; p.price
+                THEN FLOOR(((p.price - p.sale_price) / p.price) * 100)
+                ELSE 0
+            END AS sale_rate
+
         FROM products p
-        JOIN sellers s 
+
+        JOIN sellers s
         ON p.seller_id = s.seller_id
+
         WHERE p.status = 'APPROVED'
-        AND p.category_id IN (
-            SELECT category_id
-            FROM (
-                SELECT category_id
-                FROM product_view_log
-                WHERE user_id = #{user_id}
-                GROUP BY category_id
-                ORDER BY COUNT(*) DESC, MAX(viewed_at) DESC
-                LIMIT 5
-            ) favorite_category
+        AND p.stock &gt; 0
+
+        AND p.category_id IN
+        <foreach collection="categoryIds" item="category_id" open="(" separator="," close=")">
+            #{category_id}
+        </foreach>
+
+        <!-- 이미 구매한 상품은 추천에서 제외 -->
+        AND NOT EXISTS (
+            SELECT 1
+            FROM orders o
+
+            JOIN order_items oi
+            ON o.order_id = oi.order_id
+
+            WHERE o.user_id = #{user_id}
+            AND o.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED')
+            AND oi.product_id = p.product_id
         )
-        ORDER BY p.product_id DESC
+
+        ORDER BY
+            FIELD(
+                p.category_id,
+                <foreach collection="categoryIds" item="category_id" separator=",">
+                    #{category_id}
+                </foreach>
+            ),
+            p.product_id DESC
+
         LIMIT #{limit}
     </select>
 
+    <!-- =========================================================
+     취향발견 - 유저 취향 카테고리 TOP 5
+     기준: 구매 × 5 + 찜 × 4 + 장바구니 × 3 + 최근조회 × 2
+    ========================================================= -->
+    <select id="product_discovery_category_list" parameterType="int" resultType="int">
+        SELECT
+            category_id
+        FROM (
+            SELECT
+                p.category_id,
+                COUNT(*) * 5 AS score
+            FROM orders o
 
-    <!-- 취향 데이터가 없을 때 보여줄 최신 상품 목록 -->
+            JOIN order_items oi
+            ON o.order_id = oi.order_id
+
+            JOIN products p
+            ON oi.product_id = p.product_id
+
+            WHERE o.user_id = #{value}
+            AND o.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED')
+
+            GROUP BY p.category_id
+
+
+            UNION ALL
+
+
+            SELECT
+                p.category_id,
+                COUNT(*) * 4 AS score
+            FROM favorites f
+
+            JOIN products p
+            ON f.product_id = p.product_id
+
+            WHERE f.user_id = #{value}
+
+            GROUP BY p.category_id
+
+
+            UNION ALL
+
+
+            SELECT
+                p.category_id,
+                COUNT(*) * 3 AS score
+            FROM cart c
+
+            JOIN products p
+            ON c.product_id = p.product_id
+
+            WHERE c.user_id = #{value}
+
+            GROUP BY p.category_id
+
+
+            UNION ALL
+
+
+            SELECT
+                p.category_id,
+                COUNT(*) * 2 AS score
+            FROM product_view_log pv
+
+            JOIN products p
+            ON pv.product_id = p.product_id
+
+            WHERE pv.user_id = #{value}
+
+            GROUP BY p.category_id
+
+        ) taste
+
+        GROUP BY category_id
+
+        ORDER BY SUM(score) DESC
+
+        LIMIT 5
+    </select>
+
+
+    <!-- =========================================================
+     취향발견 - 취향 데이터 없을 때 기본 추천
+    ========================================================= -->
     <select id="product_discovery_fallback_list" parameterType="map" resultType="product">
-        SELECT 
+        SELECT
             p.*,
-            s.company_name
+            s.company_name,
+
+            CASE
+                WHEN p.sale_price IS NOT NULL
+                AND p.sale_price &gt; 0
+                AND p.sale_price &lt; p.price
+                THEN FLOOR(((p.price - p.sale_price) / p.price) * 100)
+                ELSE 0
+            END AS sale_rate
+
         FROM products p
-        JOIN sellers s 
+
+        JOIN sellers s
         ON p.seller_id = s.seller_id
+
         WHERE p.status = 'APPROVED'
+        AND p.stock &gt; 0
+
         ORDER BY p.product_id DESC
+
         LIMIT #{limit}
     </select>
 
