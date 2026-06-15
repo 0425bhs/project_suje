@@ -21,13 +21,15 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class CartController {
-    @Autowired
-    HttpSession session;
+    
+    
 
     private final CartDAO cartdao;
 
+    private final HttpSession session;
+    
     @GetMapping("/cart_list.do")
-public String cartList(Model model){
+    public String cartList(Model model){
 
     UserVO user=(UserVO)session.getAttribute("user");
 
