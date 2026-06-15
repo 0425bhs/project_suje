@@ -121,4 +121,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM order_items
         WHERE order_item_id = #{order_item_id}
     </select>
+
+    <select id="selectOrderStatusCounts" resultType="java.util.Map" parameterType="int">
+        SELECT 
+            COUNT(*) AS totalCount,
+            COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pendingCount,
+            COUNT(CASE WHEN status = 'PAID' THEN 1 END) AS paidCount,
+            COUNT(CASE WHEN status = 'PREPARING' THEN 1 END) AS preparingCount,
+            COUNT(CASE WHEN status = 'SHIPPING' THEN 1 END) AS shippingCount,
+            COUNT(CASE WHEN status = 'DELIVERED' THEN 1 END) AS deliveredCount,
+            COUNT(CASE WHEN status = 'CANCELLED' THEN 1 END) AS cancelCount
+        FROM orders 
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

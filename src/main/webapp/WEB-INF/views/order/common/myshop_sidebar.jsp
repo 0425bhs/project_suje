@@ -3,25 +3,25 @@
 <aside class="myshop-sidebar">
     <div class="myshop-side-card">
 
-        <a href="/order/my" class="myshop-side-home">
+        <a href="/myshop/orders" class="myshop-side-home">
             마이쇼핑
         </a>
 
         <div class="myshop-side-group">
-            <strong>주문 관리</strong>
-            <a href="/order/my" class="active">주문/배송내역</a>
-            <button type="button" onclick="alert('취소/환불내역은 준비중입니다.');">
-                취소/환불내역
+            <strong>내 정보</strong>
+            <button type="button" onclick="alert('회원 정보 수정은 준비중입니다.');">
+                회원 정보 수정
+            </button>
+            <button type="button" onclick="alert('배송지 관리는 준비중입니다.');">
+                배송지 관리
             </button>
         </div>
-
+        
         <div class="myshop-side-group">
-            <strong>관심 상품</strong>
-            <button type="button" onclick="alert('찜한 상품은 준비중입니다.');">
-                찜한 상품
-            </button>
-            <button type="button" onclick="alert('최근 본 상품은 준비중입니다.');">
-                최근 본 상품
+            <strong>주문 관리</strong>
+            <a href="/myshop/orders" class="active">주문/배송내역</a>
+            <button type="button" onclick="alert('취소/환불내역은 준비중입니다.');">
+                취소/환불내역
             </button>
         </div>
 
@@ -46,14 +46,13 @@
         </div>
 
         <div class="myshop-side-group">
-            <strong>내 정보</strong>
-            <button type="button" onclick="alert('회원 정보 수정은 준비중입니다.');">
-                회원 정보 수정
+            <strong>관심 상품</strong>
+            <button type="button" onclick="alert('찜한 상품은 준비중입니다.');">
+                찜한 상품
             </button>
-            <button type="button" onclick="alert('배송지 관리는 준비중입니다.');">
-                배송지 관리
+            <button type="button" onclick="alert('최근 본 상품은 준비중입니다.');">
+                최근 본 상품
             </button>
         </div>
-
     </div>
 </aside>

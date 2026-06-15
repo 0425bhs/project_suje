@@ -51,8 +51,8 @@ public class OrderController {
     }
     
     // 내 주문 내역
-    // 주소: /order/my
-    @GetMapping("/order/my")
+    // 주소: /myshop/orders
+    @GetMapping("/myshop/orders")
     public String myOrderList(
             @RequestParam(value = "status", required = false) String status,
             Model model,
@@ -66,13 +66,13 @@ public class OrderController {
 
         int user_id = getLoginUserId(session);
 
-        // 로그인한 회원의 전체 주문 목록
-        List<OrderVO> allOrderList = orderDAO.selectOrderListByUserId(user_id);
-
+        // 1. 상태별 개수를 DB에서 한 번에 가져옴 (위의 CASE WHEN 쿼리 실행)
+        Map<String, Object> statusCounts = orderDAO.selectOrderStatusCounts(user_id);
+        
         List<OrderVO> orderList;
 
         if (status == null || status.trim().isEmpty()) {
-            orderList = allOrderList;
+            orderList = orderDAO.selectOrderListByUserId(user_id);
         } else {
             orderList = orderDAO.selectOrderListByUserIdAndStatus(user_id, status);
         }
@@ -85,17 +85,19 @@ public class OrderController {
             orderItemMap.put(order.getOrder_id(), itemList);
         }
         
-        //allOrderList : 로그인 유저의 전체 주문 목록
-        //orderList : 주문내역 ㄴ
-        //orderItemMap :
-
         model.addAttribute("loginUser", loginUser);
-        model.addAttribute("allOrderList", allOrderList);
+        
+        // model에 Map의 값들을 통째로 넘겨줌
+        model.addAllAttributes(statusCounts);
+        
         model.addAttribute("orderList", orderList);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);
 
-        return "order/my_order_list";
+        String contentPage = "/myshop/order_list";
+        model.addAttribute("contentPage", contentPage);
+
+        return "myshop/myshop_main";
     }
 
     // 주문서 작성 화면
@@ -446,7 +448,7 @@ public class OrderController {
         OrderVO order = orderDAO.selectOrderById(order_id);
 
         if (order == null) {
-            return "redirect:/order/my";
+            return "redirect:/myshop/orders";
         }
 
         // 결제 전 주문만 여기서 바로 취소
@@ -463,7 +465,7 @@ public class OrderController {
             paymentDAO.updatePaymentCancel(paymentVO);
         }
 
-        return "redirect:/order/my";
+        return "redirect:/myshop/orders";
     }
 
     @PostMapping("/order_cart_form.do")

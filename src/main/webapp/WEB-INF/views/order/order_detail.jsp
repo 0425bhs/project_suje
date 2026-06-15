@@ -128,7 +128,7 @@
                         </div>
 
                         <div class="btn-row">
-                            <a class="btn light full" href="/order/my">목록으로</a>
+                            <a class="btn light full" href="/myshop/orders">목록으로</a>
                         </div>
 
                         <div class="btn-row">
