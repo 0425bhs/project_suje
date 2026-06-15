@@ -3,21 +3,23 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<!DOCTYPE html>
 <html lang="ko">
 
     <head>
         <meta charset="UTF-8">
         <title>HANDMADE - 취향발견</title>
 
-        <!-- 메인 상단바 공통 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
-        
+
         <link rel="stylesheet" href="/css/product/product_card.css">
 
-        <!-- 취향발견 전용 CSS -->
-        <link rel="stylesheet" href="/css/product/product_discovery_list.css">
+        <link rel="stylesheet" href="/css/product/product_discovery_list.css?v=2">
 
-        <!-- 전체 카테고리 열고 닫는 JS -->
         <script src="/js/product_main.js" defer></script>
     </head>
 
@@ -27,24 +29,33 @@
         <jsp:param name="activeMenu" value="discovery" />
     </jsp:include>
 
-
     <main class="discovery-page">
 
-        <!-- 카테고리 바로가기 -->
-        <section class="discovery-category-section">
-
-            <div class="discovery-section-title">
-                <h3>카테고리로 더 둘러보기</h3>
-            </div>
-
-        </section>
-
-
-        <!-- 추천 상품 목록 -->
         <section class="discovery-list-section">
 
-            <c:choose>
+            <div class="discovery-section-title">
+                <h3>
+                    <c:choose>
+                        <c:when test="${isFallback}">
+                            지금 둘러보기 좋은 상품
+                        </c:when>
+                        <c:otherwise>
+                            회원님을 위한 추천 상품
+                        </c:otherwise>
+                    </c:choose>
+                </h3>
 
+                <c:choose>
+                    <c:when test="${isFallback}">
+                    </c:when>
+
+                    <c:otherwise>
+                        <p>구매, 찜, 장바구니, 최근 조회 기록을 기준으로 추천된 상품입니다.</p>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+
+            <c:choose>
                 <c:when test="${empty list}">
                     <div class="discovery-empty">
                         추천할 상품이 없습니다.
@@ -52,19 +63,12 @@
                 </c:when>
 
                 <c:otherwise>
-
                     <div class="common-product-wrap">
-
                         <c:forEach var="vo" items="${list}">
-
                             <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
-
                         </c:forEach>
-
                     </div>
-
                 </c:otherwise>
-
             </c:choose>
 
         </section>
