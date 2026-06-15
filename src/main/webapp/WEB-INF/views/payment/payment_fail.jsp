@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="btn-row">
-                    <a class="btn light full" href="/order/my">
+                    <a class="btn light full" href="/myshop/orders">
                         내 주문 내역으로 이동
                     </a>
 

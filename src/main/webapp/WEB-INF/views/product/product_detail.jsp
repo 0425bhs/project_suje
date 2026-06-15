@@ -302,6 +302,13 @@
 
                             <p>${review.content}</p>
                             <small>${review.created_at}</small>
+                            <c:if test="${not empty review.imageList}">
+                                <div class="review-photo-list">
+                                    <c:forEach var="image" items="${review.imageList}">
+                                        <img class="review-photo-item" src="/upload/${image.image_url}" alt="리뷰 사진" width="100">
+                                    </c:forEach>
+                                </div>
+                            </c:if>
                         </div>
                     </c:forEach>
                 </c:if>

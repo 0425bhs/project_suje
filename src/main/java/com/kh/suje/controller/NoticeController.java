@@ -2,7 +2,6 @@ package com.kh.suje.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,14 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.kh.suje.dao.NoticeDAO;
 import com.kh.suje.vo.NoticeVO;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class NoticeController {
-    @Autowired
-    HttpSession session;
+    
+    // private final HttpSession session;
 
     private final NoticeDAO noticeDAO;
 
@@ -30,7 +28,7 @@ public class NoticeController {
 
     @PostMapping("/notice_form.do")
     private String noticeFormFin(NoticeVO notice) {
-        int res = noticeDAO.addNotice(notice);
+        noticeDAO.addNotice(notice);
 
         return "redirect:/notice_list.do";
     }
@@ -46,7 +44,7 @@ public class NoticeController {
 
     @PostMapping("/notice_update_form.do")
     private String noticeUpdateFormFin(NoticeVO notice) {
-        int res = noticeDAO.updateNotice(notice);
+        noticeDAO.updateNotice(notice);
 
         return "redirect:/notice_detail.do?notice_id="+notice.getNotice_id();
     }
@@ -71,7 +69,7 @@ public class NoticeController {
 
     @GetMapping("/notice_delete.do")
     private String noticeDelete(Model model, int notice_id) {
-        int res = noticeDAO.deleteNotice(notice_id);
+        noticeDAO.deleteNotice(notice_id);
         
         return "redirect:/notice_list.do";
     }

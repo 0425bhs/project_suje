@@ -1,6 +1,7 @@
 package com.kh.suje.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -39,4 +40,7 @@ public interface OrderDAO {
     int updateOrderCancelInfo(OrderVO vo);
 
     int getProductId(int order_id);
+
+    // 상태별 주문 개수 조회
+    Map<String, Object> selectOrderStatusCounts(int userId);
 }
