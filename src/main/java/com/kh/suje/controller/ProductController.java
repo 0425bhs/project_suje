@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +36,7 @@ public class ProductController {
     private final CategoryDAO categorydao;
     private final ReviewDAO reviewdao;
     private final QnaDAO qnadao;
-    
+
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
     public String main(Model model, HttpSession session){
@@ -262,7 +264,8 @@ public class ProductController {
     @GetMapping("/product_gift.do")
     public String product_gift_list(
             Model model,
-            Integer category_id,
+            String occasion,
+            String target,
             String priceRange,
             HttpSession session
     ) {
@@ -270,11 +273,161 @@ public class ProductController {
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
-        // 선택된 카테고리
-        model.addAttribute("selectedCategoryId", category_id);
-
-        // 선택된 가격대
+        // 선택값 유지용
+        model.addAttribute("selectedOccasion", occasion);
+        model.addAttribute("selectedTarget", target);
         model.addAttribute("selectedPriceRange", priceRange);
+
+
+        // =========================================================
+        // 선택값 이름 / 안내 문구
+        // =========================================================
+        String occasionName = "";
+        String targetName = "";
+        String priceName = "";
+
+        if ("birthday".equals(occasion)) {
+            occasionName = "생일";
+        } else if ("house".equals(occasion)) {
+            occasionName = "집들이·개업";
+        } else if ("thanks".equals(occasion)) {
+            occasionName = "감사·답례";
+        } else if ("couple".equals(occasion)) {
+            occasionName = "커플·기념일";
+        } else if ("pet".equals(occasion)) {
+            occasionName = "반려동물";
+        } else if ("self".equals(occasion)) {
+            occasionName = "나를 위한 선물";
+        }
+
+        if ("friend".equals(target)) {
+            targetName = "친구";
+        } else if ("lover".equals(target)) {
+            targetName = "연인";
+        } else if ("parents".equals(target)) {
+            targetName = "부모님";
+        } else if ("coworker".equals(target)) {
+            targetName = "직장동료";
+        } else if ("petOwner".equals(target)) {
+            targetName = "반려동물 집사";
+        } else if ("me".equals(target)) {
+            targetName = "나";
+        }
+
+        if ("under10000".equals(priceRange)) {
+            priceName = "1만원 이하";
+        } else if ("10000".equals(priceRange)) {
+            priceName = "1만원대";
+        } else if ("20000".equals(priceRange)) {
+            priceName = "2만원대";
+        } else if ("over30000".equals(priceRange)) {
+            priceName = "3만원 이상";
+        }
+
+        model.addAttribute("selectedOccasionName", occasionName);
+        model.addAttribute("selectedTargetName", targetName);
+        model.addAttribute("selectedPriceRangeName", priceName);
+
+
+        // =========================================================
+        // 추천 카테고리 결정
+        // 교집합 X
+        // 상황이 있으면 상황 기준
+        // 상황이 없으면 대상 기준
+        // 실제 DB 카테고리 번호 기준
+        // =========================================================
+        List<Integer> categoryIds = new ArrayList<>();
+
+        if ("birthday".equals(occasion)) {
+            // 생일: 주얼리, 키링, 인테리어 소품, 향수
+            categoryIds.addAll(Arrays.asList(7, 26, 13, 24));
+
+        } else if ("house".equals(occasion)) {
+            // 집들이/개업: 홈리빙 대분류, 생활용품, 인테리어 소품
+            categoryIds.addAll(Arrays.asList(2, 12, 13));
+
+        } else if ("thanks".equals(occasion)) {
+            // 감사/답례: 공예 대분류, 비누, 키링, 식품 대분류
+            categoryIds.addAll(Arrays.asList(5, 23, 26, 4));
+
+        } else if ("couple".equals(occasion)) {
+            // 커플/기념일: 주얼리, 향수, 인테리어 소품
+            categoryIds.addAll(Arrays.asList(7, 24, 13));
+
+        } else if ("pet".equals(occasion)) {
+            // 반려동물: 반려동물 대분류
+            categoryIds.add(6);
+
+        } else if ("self".equals(occasion)) {
+            // 나를 위한 선물: 패션/주얼리, 홈리빙, 뷰티, 공예
+            categoryIds.addAll(Arrays.asList(1, 2, 3, 5));
+        }
+
+
+        // 상황을 선택하지 않았을 때만 대상 기준 사용
+        if (categoryIds.isEmpty()) {
+
+            if ("friend".equals(target)) {
+                // 친구: 키링, 주얼리, 인테리어 소품, 공예
+                categoryIds.addAll(Arrays.asList(26, 7, 13, 5));
+
+            } else if ("lover".equals(target)) {
+                // 연인: 주얼리, 향수, 인테리어 소품
+                categoryIds.addAll(Arrays.asList(7, 24, 13));
+
+            } else if ("parents".equals(target)) {
+                // 부모님: 홈리빙, 식품, 공예, 생활용품, 비누
+                categoryIds.addAll(Arrays.asList(2, 4, 5, 12, 23));
+
+            } else if ("coworker".equals(target)) {
+                // 직장동료: 생활용품, 인테리어 소품, 베이커리, 비누
+                categoryIds.addAll(Arrays.asList(12, 13, 22, 23));
+
+            } else if ("petOwner".equals(target)) {
+                // 반려동물 집사
+                categoryIds.add(6);
+
+            } else if ("me".equals(target)) {
+                // 나
+                categoryIds.addAll(Arrays.asList(1, 2, 3, 5));
+            }
+        }
+
+
+        // 중복 제거
+        categoryIds = new ArrayList<>(new java.util.LinkedHashSet<>(categoryIds));
+
+
+        // =========================================================
+        // 추천 안내 문구
+        // =========================================================
+        String giftGuideText = "조건을 선택하면 상황에 맞는 선물을 추천해드려요.";
+
+        if ("birthday".equals(occasion)) {
+            giftGuideText = "생일 선물은 취향이 드러나는 주얼리, 뷰티, 작은 소품이 잘 어울려요.";
+        } else if ("house".equals(occasion)) {
+            giftGuideText = "집들이·개업 선물은 오래 두고 쓰기 좋은 홈리빙, 생활용품, 식품 선물이 좋아요.";
+        } else if ("thanks".equals(occasion)) {
+            giftGuideText = "감사·답례 선물은 부담스럽지 않으면서 정성이 느껴지는 식품, 비누, 공예품이 좋아요.";
+        } else if ("couple".equals(occasion)) {
+            giftGuideText = "커플·기념일 선물은 오래 간직할 수 있는 주얼리, 향수, 공예 작품이 잘 어울려요.";
+        } else if ("pet".equals(occasion)) {
+            giftGuideText = "반려동물 선물은 함께 쓰거나 기억에 남길 수 있는 반려동물 카테고리 작품을 추천해요.";
+        } else if ("self".equals(occasion)) {
+            giftGuideText = "나를 위한 선물은 취향에 맞는 소품, 뷰티, 홈리빙 작품을 편하게 골라보세요.";
+        } else if ("parents".equals(target)) {
+            giftGuideText = "부모님께는 실용적이고 부담 없는 식품, 뷰티, 생활 선물이 잘 어울려요.";
+        } else if ("friend".equals(target)) {
+            giftGuideText = "친구에게는 가격 부담이 적고 취향이 드러나는 키링, 소품, 간식 선물이 좋아요.";
+        } else if ("lover".equals(target)) {
+            giftGuideText = "연인에게는 오래 간직할 수 있는 주얼리, 향수, 공예 작품이 잘 어울려요.";
+        } else if ("coworker".equals(target)) {
+            giftGuideText = "직장동료에게는 부담 없는 식품, 생활소품, 공예 선물이 무난해요.";
+        } else if ("petOwner".equals(target)) {
+            giftGuideText = "반려동물 집사에게는 반려동물과 함께 즐길 수 있는 작품을 추천해요.";
+        }
+
+        model.addAttribute("giftGuideText", giftGuideText);
 
 
         // =========================================================
@@ -283,30 +436,34 @@ public class ProductController {
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
         if (loginUser != null) {
-        int user_id = loginUser.getUser_id();
+            int user_id = loginUser.getUser_id();
 
-        Map<String, Object> personalMap = new HashMap<>();
-        personalMap.put("user_id", user_id);
-        personalMap.put("limit", 7);
+            Map<String, Object> personalMap = new HashMap<>();
+            personalMap.put("user_id", user_id);
+            personalMap.put("limit", 4);
 
-        List<ProductVO> personalGiftList = productdao.product_gift_personal_list(personalMap);
+            List<ProductVO> personalGiftList = productdao.product_gift_personal_list(personalMap);
 
-        String loginUserName = loginUser.getName();
+            String loginUserName = loginUser.getName();
 
-        if (loginUserName == null || loginUserName.trim().isEmpty()) {
-            loginUserName = loginUser.getNick_name();
+            if (loginUserName == null || loginUserName.trim().isEmpty()) {
+                loginUserName = loginUser.getNick_name();
+            }
+
+            model.addAttribute("personalGiftList", personalGiftList);
+            model.addAttribute("loginUserName", loginUserName);
         }
 
-        model.addAttribute("personalGiftList", personalGiftList);
-        model.addAttribute("loginUserName", loginUserName);
-    }
-
 
         // =========================================================
-        // 선택 조건 상품 목록
+        // 추천 결과 상품 목록
         // =========================================================
         Map<String, Object> map = new HashMap<>();
-        map.put("category_id", category_id);
+
+        if (!categoryIds.isEmpty()) {
+            map.put("categoryIds", categoryIds);
+        }
+
         map.put("priceRange", priceRange);
         map.put("limit", 14);
 
@@ -341,6 +498,26 @@ public class ProductController {
             saleType = "all";
         }
 
+
+        // =========================================================
+        // 상단 대표 할인 슬라이드용 상품
+        // - 하단 정렬/페이징과 분리
+        // - 항상 전체 할인 중 할인율 높은 상품 기준으로 출력
+        // =========================================================
+        Map<String, Object> featureMap = new HashMap<>();
+
+        featureMap.put("start", 0);
+        featureMap.put("blockList", 10);
+        featureMap.put("sort", "discount");
+        featureMap.put("saleType", "all");
+
+        List<ProductVO> saleFeatureList = productdao.product_sale_list(featureMap);
+
+
+        // =========================================================
+        // 하단 할인 목록
+        // - 사용자가 선택한 saleType, sort, page 적용
+        // =========================================================
         int blockList = 10;
         int blockPage = 5;
 
@@ -364,6 +541,8 @@ public class ProductController {
                 blockList,
                 blockPage
         );
+
+        model.addAttribute("saleFeatureList", saleFeatureList);
 
         model.addAttribute("list", list);
         model.addAttribute("pageMenu", pageMenu);
