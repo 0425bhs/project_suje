@@ -10,233 +10,293 @@
 
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/product/product_card.css">
-        <link rel="stylesheet" href="/css/product/product_gift.css?v=2">
+        <link rel="stylesheet" href="/css/product/product_gift.css?v=9">
 
         <script src="/js/product_main.js" defer></script>
     </head>
 
     <body>
-        <jsp:include page="product_header.jsp">
-            <jsp:param name="activeMenu" value="gift" />
-        </jsp:include>
 
-        <main class="gift-page">
+    <jsp:include page="product_header.jsp">
+        <jsp:param name="activeMenu" value="gift" />
+    </jsp:include>
 
-            <!-- 선물추천 필터 영역 -->
-            <section class="gift-filter-section">
-                <div class="gift-inner">
+    <main class="gift-page">
 
-                    <div class="gift-filter-card">
+        <!-- 선물찾기 선택 영역 -->
+        <section class="gift-finder-section">
+            <div class="gift-inner">
 
-                        <div class="gift-filter-title">
-                            <strong>선물추천</strong>
-                            <p>카테고리와 가격대를 선택해서 선물하기 좋은 작품을 찾아보세요.</p>
+                <div class="gift-main-title">
+                    <h1>선물추천</h1>
+                </div>
+
+                <div class="gift-finder-area">
+
+                    <!-- 상황 선택 -->
+                    <div class="gift-finder-group">
+                        <div class="gift-finder-label">
+                            어떤 선물인가요?
                         </div>
 
-                        <!-- 카테고리 필터 -->
-                        <div class="gift-filter-row">
-                            <div class="gift-filter-label">
-                                카테고리
-                            </div>
+                        <div class="gift-finder-options">
 
-                            <div class="gift-filter-options">
+                            <a href="/product_gift.do?target=${selectedTarget}&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${empty selectedOccasion ? 'active' : ''}">
+                                전체
+                            </a>
 
-                                <c:url var="allCategoryUrl" value="/product_gift.do">
-                                    <c:if test="${not empty selectedPriceRange}">
-                                        <c:param name="priceRange" value="${selectedPriceRange}" />
-                                    </c:if>
-                                </c:url>
+                            <a href="/product_gift.do?occasion=birthday&amp;target=${selectedTarget}&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedOccasion eq 'birthday' ? 'active' : ''}">
+                                생일
+                            </a>
 
-                                <a href="${allCategoryUrl}"
-                                   class="gift-filter-chip ${empty selectedCategoryId ? 'active' : ''}">
-                                    전체
-                                </a>
+                            <a href="/product_gift.do?occasion=house&amp;target=${selectedTarget}&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedOccasion eq 'house' ? 'active' : ''}">
+                                집들이·개업
+                            </a>
 
-                                <c:forEach var="category" items="${bigCategoryList}">
+                            <a href="/product_gift.do?occasion=thanks&amp;target=${selectedTarget}&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedOccasion eq 'thanks' ? 'active' : ''}">
+                                감사·답례
+                            </a>
 
-                                    <c:url var="categoryUrl" value="/product_gift.do">
-                                        <c:param name="category_id" value="${category.category_id}" />
+                            <a href="/product_gift.do?occasion=couple&amp;target=${selectedTarget}&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedOccasion eq 'couple' ? 'active' : ''}">
+                                커플·기념일
+                            </a>
 
-                                        <c:if test="${not empty selectedPriceRange}">
-                                            <c:param name="priceRange" value="${selectedPriceRange}" />
-                                        </c:if>
-                                    </c:url>
+                            <a href="/product_gift.do?occasion=pet&amp;target=${selectedTarget}&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedOccasion eq 'pet' ? 'active' : ''}">
+                                반려동물
+                            </a>
 
-                                    <a href="${categoryUrl}"
-                                       class="gift-filter-chip ${selectedCategoryId eq category.category_id ? 'active' : ''}">
-                                        ${category.name}
-                                    </a>
+                            <a href="/product_gift.do?occasion=self&amp;target=${selectedTarget}&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedOccasion eq 'self' ? 'active' : ''}">
+                                나를 위한 선물
+                            </a>
 
-                                </c:forEach>
+                        </div>
+                    </div>
 
-                            </div>
+
+                    <!-- 대상 선택 -->
+                    <div class="gift-finder-group">
+                        <div class="gift-finder-label">
+                            누구에게 선물하나요?
                         </div>
 
+                        <div class="gift-finder-options">
 
-                        <!-- 가격대 필터 -->
-                        <div class="gift-filter-row">
-                            <div class="gift-filter-label">
-                                가격대
-                            </div>
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${empty selectedTarget ? 'active' : ''}">
+                                전체
+                            </a>
 
-                            <div class="gift-filter-options">
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=friend&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedTarget eq 'friend' ? 'active' : ''}">
+                                친구
+                            </a>
 
-                                <c:url var="allPriceUrl" value="/product_gift.do">
-                                    <c:if test="${not empty selectedCategoryId}">
-                                        <c:param name="category_id" value="${selectedCategoryId}" />
-                                    </c:if>
-                                </c:url>
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=lover&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedTarget eq 'lover' ? 'active' : ''}">
+                                연인
+                            </a>
 
-                                <a href="${allPriceUrl}"
-                                   class="gift-filter-chip ${empty selectedPriceRange ? 'active' : ''}">
-                                    전체
-                                </a>
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=parents&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedTarget eq 'parents' ? 'active' : ''}">
+                                부모님
+                            </a>
 
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=coworker&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedTarget eq 'coworker' ? 'active' : ''}">
+                                직장동료
+                            </a>
 
-                                <c:url var="under10000Url" value="/product_gift.do">
-                                    <c:if test="${not empty selectedCategoryId}">
-                                        <c:param name="category_id" value="${selectedCategoryId}" />
-                                    </c:if>
-                                    <c:param name="priceRange" value="under10000" />
-                                </c:url>
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=petOwner&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedTarget eq 'petOwner' ? 'active' : ''}">
+                                반려동물 집사
+                            </a>
 
-                                <a href="${under10000Url}"
-                                   class="gift-filter-chip ${selectedPriceRange eq 'under10000' ? 'active' : ''}">
-                                    1만원 이하
-                                </a>
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=me&amp;priceRange=${selectedPriceRange}"
+                            class="gift-finder-chip ${selectedTarget eq 'me' ? 'active' : ''}">
+                                나
+                            </a>
 
-
-                                <c:url var="price10000Url" value="/product_gift.do">
-                                    <c:if test="${not empty selectedCategoryId}">
-                                        <c:param name="category_id" value="${selectedCategoryId}" />
-                                    </c:if>
-                                    <c:param name="priceRange" value="10000" />
-                                </c:url>
-
-                                <a href="${price10000Url}"
-                                   class="gift-filter-chip ${selectedPriceRange eq '10000' ? 'active' : ''}">
-                                    1만원대
-                                </a>
+                        </div>
+                    </div>
 
 
-                                <c:url var="price20000Url" value="/product_gift.do">
-                                    <c:if test="${not empty selectedCategoryId}">
-                                        <c:param name="category_id" value="${selectedCategoryId}" />
-                                    </c:if>
-                                    <c:param name="priceRange" value="20000" />
-                                </c:url>
-
-                                <a href="${price20000Url}"
-                                   class="gift-filter-chip ${selectedPriceRange eq '20000' ? 'active' : ''}">
-                                    2만원대
-                                </a>
-
-
-                                <c:url var="over30000Url" value="/product_gift.do">
-                                    <c:if test="${not empty selectedCategoryId}">
-                                        <c:param name="category_id" value="${selectedCategoryId}" />
-                                    </c:if>
-                                    <c:param name="priceRange" value="over30000" />
-                                </c:url>
-
-                                <a href="${over30000Url}"
-                                   class="gift-filter-chip ${selectedPriceRange eq 'over30000' ? 'active' : ''}">
-                                    3만원대 이상
-                                </a>
-
-                            </div>
+                    <!-- 예산 선택 -->
+                    <div class="gift-finder-group">
+                        <div class="gift-finder-label">
+                            예산은 어느 정도인가요?
                         </div>
 
+                        <div class="gift-finder-options">
+
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=${selectedTarget}"
+                            class="gift-finder-chip ${empty selectedPriceRange ? 'active' : ''}">
+                                전체
+                            </a>
+
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=${selectedTarget}&amp;priceRange=under10000"
+                            class="gift-finder-chip ${selectedPriceRange eq 'under10000' ? 'active' : ''}">
+                                1만원 이하
+                            </a>
+
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=${selectedTarget}&amp;priceRange=10000"
+                            class="gift-finder-chip ${selectedPriceRange eq '10000' ? 'active' : ''}">
+                                1만원대
+                            </a>
+
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=${selectedTarget}&amp;priceRange=20000"
+                            class="gift-finder-chip ${selectedPriceRange eq '20000' ? 'active' : ''}">
+                                2만원대
+                            </a>
+
+                            <a href="/product_gift.do?occasion=${selectedOccasion}&amp;target=${selectedTarget}&amp;priceRange=over30000"
+                            class="gift-finder-chip ${selectedPriceRange eq 'over30000' ? 'active' : ''}">
+                                3만원 이상
+                            </a>
+
+                        </div>
                     </div>
 
                 </div>
-            </section>
 
 
-            <!-- 로그인 회원 구매내역 기반 추천 -->
-            <c:if test="${not empty personalGiftList}">
-                <section class="gift-personal-section">
-                    <div class="gift-inner">
+                <!-- 선택 조건 요약 -->
+                <div class="gift-selected-box">
 
-                        <div class="gift-section-head">
-                            <div>
-                                <span>FOR YOU</span>
+                    <div class="gift-selected-tags">
 
-                                <h2>
-                                    <c:choose>
-                                        <c:when test="${not empty loginUserName}">
-                                            ${loginUserName}님이 구매한 상품과 비슷한 선물
-                                        </c:when>
+                        <c:choose>
+                            <c:when test="${empty selectedOccasionName and empty selectedTargetName and empty selectedPriceRangeName}">
+                                <span>전체 선물</span>
+                            </c:when>
 
-                                        <c:otherwise>
-                                            최근 구매와 비슷한 선물
-                                        </c:otherwise>
-                                    </c:choose>
-                                </h2>
+                            <c:otherwise>
+                                <c:if test="${not empty selectedOccasionName}">
+                                    <span>${selectedOccasionName}</span>
+                                </c:if>
 
-                                <p class="gift-section-desc">
-                                    결제 완료한 상품의 카테고리를 기준으로 추천해드려요.
-                                </p>
-                            </div>
-                        </div>
+                                <c:if test="${not empty selectedTargetName}">
+                                    <span>${selectedTargetName}</span>
+                                </c:if>
 
-                        <div class="common-product-wrap">
-
-                            <c:forEach var="vo" items="${personalGiftList}">
-                                <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
-                            </c:forEach>
-
-                        </div>
+                                <c:if test="${not empty selectedPriceRangeName}">
+                                    <span>${selectedPriceRangeName}</span>
+                                </c:if>
+                            </c:otherwise>
+                        </c:choose>
 
                     </div>
-                </section>
-            </c:if>
+
+                    <p>${giftGuideText}</p>
+
+                </div>
 
 
-            <!-- 선택 조건 상품 목록 -->
-            <section class="gift-product-section">
+                <!-- 인기 선물 키워드 -->
+                <div class="gift-keyword-row">
+                    <strong>인기 선물 키워드</strong>
+
+                    <div>
+                        <a href="/product_gift.do?occasion=thanks&amp;priceRange=10000">수제 디저트</a>
+                        <a href="/product_gift.do?occasion=couple">향수</a>
+                        <a href="/product_gift.do?target=friend&amp;priceRange=10000">키링</a>
+                        <a href="/product_gift.do?occasion=birthday">주얼리</a>
+                        <a href="/product_gift.do?occasion=house">생활소품</a>
+                        <a href="/product_gift.do?target=petOwner">반려동물 용품</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- 로그인 회원 구매내역 기반 추천 -->
+        <c:if test="${not empty personalGiftList}">
+            <section class="gift-personal-section">
                 <div class="gift-inner">
 
                     <div class="gift-section-head">
                         <div>
-                            <span>GIFT ITEMS</span>
+                            <span>FOR YOU</span>
 
                             <h2>
                                 <c:choose>
-                                    <c:when test="${not empty selectedCategoryId or not empty selectedPriceRange}">
-                                        선택한 조건의 선물 추천
+                                    <c:when test="${not empty loginUserName}">
+                                        ${loginUserName}님이 구매한 상품과 비슷한 선물
                                     </c:when>
 
                                     <c:otherwise>
-                                        선물하기 좋은 작품
+                                        최근 구매와 비슷한 선물
                                     </c:otherwise>
                                 </c:choose>
                             </h2>
+
+                            <p class="gift-section-desc">
+                                결제 완료한 상품의 카테고리를 기준으로 추천해드려요.
+                            </p>
                         </div>
                     </div>
 
-                    <c:choose>
-                        <c:when test="${empty giftList}">
-                            <div class="gift-ready-box">
-                                <strong>상품이 없습니다</strong>
-                                <p>선택한 조건에 맞는 상품이 없습니다.</p>
-                            </div>
-                        </c:when>
-
-                        <c:otherwise>
-                            <div class="common-product-wrap">
-
-                                <c:forEach var="vo" items="${giftList}">
-                                    <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
-                                </c:forEach>
-
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
+                    <div class="common-product-wrap">
+                        <c:forEach var="vo" items="${personalGiftList}">
+                            <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
+                        </c:forEach>
+                    </div>
 
                 </div>
             </section>
+        </c:if>
 
-        </main>
+
+        <!-- 추천 결과 상품 목록 -->
+        <section class="gift-product-section">
+            <div class="gift-inner">
+
+                <div class="gift-section-head">
+                    <div>
+                        <span>GIFT RESULT</span>
+
+                        <h2>
+                            <c:choose>
+                                <c:when test="${not empty selectedOccasionName or not empty selectedTargetName or not empty selectedPriceRangeName}">
+                                    선택한 조건에 맞는 선물
+                                </c:when>
+
+                                <c:otherwise>
+                                    지금 선물하기 좋은 작품
+                                </c:otherwise>
+                            </c:choose>
+                        </h2>
+                    </div>
+                </div>
+
+                <c:choose>
+                    <c:when test="${empty giftList}">
+                        <div class="gift-ready-box">
+                            <strong>상품이 없습니다</strong>
+                            <p>선택한 조건에 맞는 상품이 없습니다.</p>
+                        </div>
+                    </c:when>
+
+                    <c:otherwise>
+                        <div class="common-product-wrap">
+                            <c:forEach var="vo" items="${giftList}">
+                                <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
+                            </c:forEach>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+
+            </div>
+        </section>
+
+    </main>
+
     </body>
 </html>
