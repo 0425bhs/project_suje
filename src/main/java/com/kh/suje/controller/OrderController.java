@@ -33,7 +33,6 @@ public class OrderController {
     private final ProductDAO productDAO;
     private final CartDAO cartdao;
 
-    
 
     // 로그인 회원 정보 가져오기
     private UserVO getLoginUser(HttpSession session) {
@@ -293,6 +292,8 @@ public class OrderController {
             paymentVO.setTransaction_id(null);
 
             paymentDAO.insertPayment(paymentVO);
+
+            cartdao.cartDeleteSelected(map);
 
             return "redirect:/payment/ready?order_id=" + orderVO.getOrder_id();
         }
