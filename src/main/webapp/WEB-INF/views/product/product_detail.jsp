@@ -3,11 +3,24 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<fmt:formatDate var="today" value="<%= new java.util.Date() %>" pattern="yyyy-MM-dd" />
+
+<c:set var="saleStartDate" value="${empty vo.sale_start_at ? '' : fn:substring(vo.sale_start_at, 0, 10)}" />
+<c:set var="saleEndDate" value="${empty vo.sale_end_at ? '' : fn:substring(vo.sale_end_at, 0, 10)}" />
+
+<c:set var="isAlwaysSale"
+       value="${vo.price > 0 and vo.sale_price > 0 and vo.sale_price < vo.price and empty saleStartDate and empty saleEndDate}" />
+
+<c:set var="isPeriodSale"
+       value="${vo.price > 0 and vo.sale_price > 0 and vo.sale_price < vo.price and not empty saleStartDate and not empty saleEndDate and today ge saleStartDate and today le saleEndDate}" />
+
+<c:set var="isSaleActive" value="${isAlwaysSale or isPeriodSale}" />
 
 <c:choose>
-    <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
+    <c:when test="${isSaleActive}">
         <c:set var="unitPrice" value="${vo.sale_price}" />
     </c:when>
+
     <c:otherwise>
         <c:set var="unitPrice" value="${vo.price}" />
     </c:otherwise>
@@ -50,11 +63,11 @@
                         </button>
 
                         <c:choose>
-                            <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
+                            <c:when test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
                                 <img id="detailMainImage" src="${vo.image_l}" alt="${vo.name}">
                             </c:when>
 
-                            <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
+                            <c:when test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
                                 <img id="detailMainImage" src="${vo.image_s}" alt="${vo.name}">
                             </c:when>
 
@@ -70,13 +83,13 @@
                     </div>
 
                     <div class="store-thumb-row">
-                        <c:if test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
+                        <c:if test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
                             <button type="button" class="store-thumb-btn active" data-img="${vo.image_l}">
                                 <img src="${vo.image_l}" alt="${vo.name}">
                             </button>
                         </c:if>
 
-                        <c:if test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
+                        <c:if test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
                             <button type="button" class="store-thumb-btn" data-img="${vo.image_s}">
                                 <img src="${vo.image_s}" alt="${vo.name}">
                             </button>
@@ -110,13 +123,16 @@
                     <!-- 가격 정보 -->
                     <div class="store-price-box">
                         <c:choose>
-                            <c:when test="${vo.sale_price>0 and vo.price>vo.sale_price}">
+                            <c:when test="${isSaleActive}">
                                 <div class="store-origin-price">
                                     <fmt:formatNumber value="${vo.price}" pattern="#,###"/>원
                                 </div>
 
                                 <div class="store-sale-price">
-                                    <span>${vo.sale_rate}%</span>
+                                    <span>
+                                        <fmt:formatNumber value="${((vo.price - vo.sale_price) / vo.price) * 100}" pattern="0"/>%
+                                    </span>
+
                                     <strong>
                                         <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>원
                                     </strong>
@@ -145,7 +161,7 @@
                             <span>배송비</span>
                             <strong>
                                 <c:if test="${vo.delivery_fee == 0}">
-                                        무료배송
+                                    무료배송
                                 </c:if>
 
                                 <c:if test="${vo.delivery_fee > 0}">
@@ -201,8 +217,14 @@
                                         −
                                     </button>
 
-                                    <input type="number" id="detailQuantity" name="quantity" value="1" min="1" max="${vo.stock}" data-unit-price="${unitPrice}"
-                                        ${vo.stock le 0 or vo.status ne 'APPROVED' ? 'disabled' : ''} />
+                                    <input type="number"
+                                           id="detailQuantity"
+                                           name="quantity"
+                                           value="1"
+                                           min="1"
+                                           max="${vo.stock}"
+                                           data-unit-price="${unitPrice}"
+                                           ${vo.stock le 0 or vo.status ne 'APPROVED' ? 'disabled' : ''} />
 
                                     <button type="button" id="qtyPlus" ${vo.stock le 0 or vo.status ne 'APPROVED' ? 'disabled' : ''}>
                                         +
@@ -229,8 +251,7 @@
                         <div class="store-main-buttons">
 
                             <c:choose>
-
-                                <c:when test="${vo.status ne 'APPROVED' || (vo.status ne 'APPROVED' && vo.stock le 0)}">
+                                <c:when test="${vo.status ne 'APPROVED'}">
                                     <button type="button" class="store-cart-btn disabled" disabled>
                                         판매중지
                                     </button>
@@ -251,12 +272,10 @@
                                         주문하기
                                     </button>
                                 </c:otherwise>
-
                             </c:choose>
 
                         </div>
 
-                        
                     </form>
 
                 </section>

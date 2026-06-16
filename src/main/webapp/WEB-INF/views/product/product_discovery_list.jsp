@@ -1,9 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
-<!DOCTYPE html>
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -14,12 +9,16 @@
         <meta charset="UTF-8">
         <title>HANDMADE - 취향발견</title>
 
+        <!-- 상품 페이지 공통 레이아웃 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
 
+        <!-- 공통 상품 카드 디자인 CSS -->
         <link rel="stylesheet" href="/css/product/product_card.css">
 
+        <!-- 취향발견 페이지 전용 CSS -->
         <link rel="stylesheet" href="/css/product/product_discovery_list.css?v=2">
 
+        <!-- 상품 공통 헤더, 카테고리 메뉴 관련 JS -->
         <script src="/js/product_main.js" defer></script>
     </head>
 

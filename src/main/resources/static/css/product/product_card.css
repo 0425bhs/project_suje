@@ -137,6 +137,16 @@
     font-weight: 950;
 }
 
+/* 할인 페이지에서만 출력되는 할인 기간 문구 */
+.common-sale-period {
+    margin: 3px 0 0;
+
+    color: #ff654f;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.4;
+}
+
 /* 배송 */
 .common-delivery {
     margin: 4px 0 0;
