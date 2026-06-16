@@ -9,32 +9,43 @@
         <meta charset="UTF-8">
         <title>HANDMADE - 할인</title>
 
+        <!-- 상품 페이지 공통 레이아웃 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
+
+        <!-- 공통 상품 카드 디자인 CSS -->
         <link rel="stylesheet" href="/css/product/product_card.css">
+
+        <!-- 할인 상품 페이지 전용 CSS -->
         <link rel="stylesheet" href="/css/product/product_sale_list.css?v=14">
 
+        <!-- 상품 공통 헤더, 카테고리 메뉴 관련 JS -->
         <script src="/js/product_main.js" defer></script>
+
+        <!-- 할인 슬라이드, 카운트다운 관련 JS -->
         <script src="/js/product_sale_list.js" defer></script>
     </head>
 
     <body>
 
+    <!-- 상품 공통 헤더에서 할인 메뉴를 활성화 -->
     <jsp:include page="/WEB-INF/views/product/product_header.jsp">
         <jsp:param name="activeMenu" value="sale" />
     </jsp:include>
 
+    <!-- 정렬, 할인 유형, 총 상품 수 기본값 설정 -->
     <c:set var="sortValue" value="${empty currentSort ? 'popular' : currentSort}" />
     <c:set var="saleTypeValue" value="${empty currentSaleType ? 'all' : currentSaleType}" />
     <c:set var="totalSaleCount" value="${saleCount == null ? 0 : saleCount}" />
 
     <div class="sale-page">
 
-        <!-- 상단 할인 슬라이드 -->
+        <!-- 상단 대표 할인 상품 슬라이드 영역 -->
         <section class="sale-hero">
             <div class="sale-hero-inner">
 
                 <h1>지금 진행 중인 특별 할인</h1>
 
+                <!-- 할인 카운트다운 표시 영역 -->
                 <div class="sale-countdown">
                     <strong id="saleHour">00</strong>
                     <span>:</span>
@@ -53,14 +64,17 @@
                     <c:otherwise>
                         <div class="sale-feature-wrap">
 
+                            <!-- 할인 상품 슬라이드 이전 버튼 -->
                             <button type="button" class="sale-slide-btn sale-slide-prev" id="salePrevBtn">
                                 ‹
                             </button>
 
+                            <!-- 할인 상품 슬라이드 다음 버튼 -->
                             <button type="button" class="sale-slide-btn sale-slide-next" id="saleNextBtn">
                                 ›
                             </button>
 
+                            <!-- 상단 대표 할인 상품 목록 -->
                             <div class="sale-feature-viewport">
                                 <div class="sale-feature-track common-product-wrap" id="saleFeatureTrack">
                                     <c:forEach var="vo" items="${saleFeatureList}">
@@ -69,8 +83,10 @@
                                 </div>
                             </div>
 
+                            <!-- 슬라이드 페이지 점 표시 영역 -->
                             <div class="sale-feature-dots" id="saleFeatureDots"></div>
 
+                            <!-- 하단 할인 목록으로 이동 -->
                             <a href="#saleList" class="sale-more-btn">
                                 할인작품 더보기 〉
                             </a>
@@ -83,7 +99,7 @@
         </section>
 
 
-        <!-- 할인 유형 탭 -->
+        <!-- 할인 유형 탭: 전체 할인 / 기간 할인 / 상시 할인 -->
         <section class="sale-type-section">
             <div class="sale-type-tabs">
 
@@ -106,11 +122,12 @@
         </section>
 
 
-        <!-- 하단 할인 목록 -->
+        <!-- 하단 할인 상품 목록 영역 -->
         <section class="sale-list-section" id="saleList">
 
             <div class="sale-sort-row">
 
+                <!-- 현재 할인 유형은 유지하고 정렬 기준만 변경 -->
                 <div class="sale-sort-left">
 
                     <c:choose>
@@ -203,6 +220,7 @@
 
             </div>
 
+            <!-- 현재 조건에 맞는 할인 상품 총 개수 -->
             <p class="sale-count-text">
                 총 <fmt:formatNumber value="${totalSaleCount}" pattern="#,###"/>개
             </p>
@@ -223,6 +241,7 @@
                 </c:otherwise>
             </c:choose>
 
+            <!-- 할인 상품 목록 페이징 -->
             <div class="sale-page-menu">
                 ${pageMenu}
             </div>

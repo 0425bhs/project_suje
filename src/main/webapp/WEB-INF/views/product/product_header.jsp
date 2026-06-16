@@ -44,7 +44,6 @@
     </div>
 
 
-
     <!-- 로고 / 전체 카테고리 / 검색창 / 우측 메뉴 -->
     <div class="product-header-inner">
 
@@ -120,7 +119,7 @@
             <!-- 판매자센터는 현재 그대로 노출 -->
             <a href="/seller_dashboard.do">판매자센터</a>
 
-            <a href="#" class="disabled">♡ 관심</a>
+            <!-- 장바구니 -->
             <a href="/cart_list.do" class="header-cart-link">
 
                 <span class="header-cart-icon-wrap">
@@ -164,7 +163,7 @@
             </a>
 
             <a href="/all_list.do"
-               class="${param.activeMenu eq 'new' ? '   ' : ''}">
+               class="${param.activeMenu eq 'new' ? 'nav-active' : ''}">
                 🆕 최신 작품
             </a>
 

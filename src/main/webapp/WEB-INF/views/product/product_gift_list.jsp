@@ -8,22 +8,29 @@
         <meta charset="UTF-8">
         <title>선물추천</title>
 
+        <!-- 상품 페이지 공통 레이아웃 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
+
+        <!-- 공통 상품 카드 디자인 CSS -->
         <link rel="stylesheet" href="/css/product/product_card.css">
+
+        <!-- 선물추천 페이지 전용 CSS -->
         <link rel="stylesheet" href="/css/product/product_gift.css?v=9">
 
+        <!-- 상품 공통 헤더, 카테고리 메뉴 관련 JS -->
         <script src="/js/product_main.js" defer></script>
     </head>
 
     <body>
 
+    <!-- 상품 공통 헤더에서 선물추천 메뉴 활성화 -->
     <jsp:include page="product_header.jsp">
         <jsp:param name="activeMenu" value="gift" />
     </jsp:include>
 
     <main class="gift-page">
 
-        <!-- 선물찾기 선택 영역 -->
+        <!-- 선물 조건 선택 영역 -->
         <section class="gift-finder-section">
             <div class="gift-inner">
 
@@ -166,7 +173,7 @@
                 </div>
 
 
-                <!-- 선택 조건 요약 -->
+                <!-- 선택한 조건 요약 -->
                 <div class="gift-selected-box">
 
                     <div class="gift-selected-tags">
@@ -216,7 +223,7 @@
         </section>
 
 
-        <!-- 로그인 회원 구매내역 기반 추천 -->
+        <!-- 로그인 회원의 구매내역 기반 개인 추천 영역 -->
         <c:if test="${not empty personalGiftList}">
             <section class="gift-personal-section">
                 <div class="gift-inner">
@@ -243,6 +250,7 @@
                         </div>
                     </div>
 
+                    <!-- 개인 추천 상품 목록 -->
                     <div class="common-product-wrap">
                         <c:forEach var="vo" items="${personalGiftList}">
                             <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
@@ -254,7 +262,7 @@
         </c:if>
 
 
-        <!-- 추천 결과 상품 목록 -->
+        <!-- 선택 조건에 맞는 선물 추천 결과 -->
         <section class="gift-product-section">
             <div class="gift-inner">
 
