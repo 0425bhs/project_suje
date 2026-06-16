@@ -64,7 +64,7 @@ public class QnaController {
         return "redirect:/mypage/qna";
     }
 
-    @GetMapping("/mypage/qna")
+    @GetMapping("/myshop/qnas")
     public String myQnaList(Model model) {
         // UserVO user = session.getAttribute("user");
         // int userId = user.getId();
@@ -73,7 +73,10 @@ public class QnaController {
         List<QnaVO> list = qnaDAO.getMyQnaList(user_id);
         model.addAttribute("list", list);
 
-        return "/qna/my_qna_list";
+        model.addAttribute("activeMenu", "qna");
+        model.addAttribute("contentPage", "/myshop/qna_list");
+
+        return "/myshop/myshop_main";
     }
 
     @GetMapping("qna_detail.do")

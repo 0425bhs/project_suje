@@ -30,15 +30,15 @@
             <button type="button" onclick="alert('작성 가능한 리뷰는 준비중입니다.');">
                 작성 가능한 리뷰
             </button>
-            <a href="/mypage/review" class="${param.activeMenu eq 'review' ? 'active' : ''}">내가 작성한 리뷰</a>
+            <a href="/myshop/reviews" class="${param.activeMenu eq 'review' ? 'active' : ''}">내가 작성한 리뷰</a>
         </div>
 
         <div class="myshop-side-group">
             <strong>문의 관리</strong>
-            <a href="/mypage/qna" class="${param.activeMenu eq 'qna' ? 'active' : ''}">내 문의</a>
-            <button type="button" onclick="alert('상품 Q&A는 준비중입니다.');">
+            <a href="/myshop/qnas" class="${param.activeMenu eq 'qna' ? 'active' : ''}">내 문의</a>
+            <!-- <button type="button" onclick="alert('상품 Q&A는 준비중입니다.');">
                 상품 Q&amp;A
-            </button>
+            </button> -->
         </div>
 
         <div class="myshop-side-group">
