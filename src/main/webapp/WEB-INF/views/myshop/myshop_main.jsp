@@ -11,27 +11,26 @@
     <title>마이쇼핑 - HANDMADE</title>
 
     <link rel="stylesheet" href="/css/product/product_main.css">
-
-    <!-- 마이쇼핑 / 주문 관련 공통 CSS -->
-    <link rel="stylesheet" href="/css/order-payment.css?v=5">
-
-    <!-- 대시보드 전용 CSS -->
-    <link rel="stylesheet" href="/css/myshop-dashboard.css?v=1">
-
+    <link rel="stylesheet" href="/css/order-payment.css?v=3">
+    <link rel="stylesheet" href="/css/myshop/myshop.css?v=1">
+    
     <script src="/js/product_main.js" defer></script>
     <script src="/js/order-payment.js" defer></script>
 </head>
 
 <body>
 
-    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-        <jsp:param name="activeMenu" value="order" />
-    </jsp:include>
+<jsp:include page="/WEB-INF/views/product/product_header.jsp">
+    <jsp:param name="activeMenu" value="" />
+</jsp:include>
 
     <section class="myshop-page">
         <div class="myshop-layout">
 
-            <jsp:include page="/WEB-INF/views/order/common/myshop_sidebar.jsp" />
+        <!-- 왼쪽 사이드바 -->
+        <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" >
+            <jsp:param name="activeMenu" value="${activeMenu}" />
+        </jsp:include>
 
             <main class="myshop-content">
                 <jsp:include page="/WEB-INF/views${contentPage}.jsp" />

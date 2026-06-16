@@ -3,7 +3,7 @@
 <aside class="myshop-sidebar">
     <div class="myshop-side-card">
 
-        <a href="/myshop/orders" class="myshop-side-home">
+        <a href="/myshop" class="myshop-side-home">
             마이쇼핑
         </a>
 
@@ -19,7 +19,7 @@
         
         <div class="myshop-side-group">
             <strong>주문 관리</strong>
-            <a href="/myshop/orders" class="active">주문/배송내역</a>
+            <a href="/myshop/orders" class="${param.activeMenu eq 'order' ? 'active' : ''}">주문/배송내역</a>
             <button type="button" onclick="alert('취소/환불내역은 준비중입니다.');">
                 취소/환불내역
             </button>
@@ -30,16 +30,12 @@
             <button type="button" onclick="alert('작성 가능한 리뷰는 준비중입니다.');">
                 작성 가능한 리뷰
             </button>
-            <button type="button" onclick="alert('내가 작성한 리뷰는 준비중입니다.');">
-                내가 작성한 리뷰
-            </button>
+            <a href="/mypage/review" class="${param.activeMenu eq 'review' ? 'active' : ''}">내가 작성한 리뷰</a>
         </div>
 
         <div class="myshop-side-group">
             <strong>문의 관리</strong>
-            <button type="button" onclick="alert('내 문의는 준비중입니다.');">
-                내 문의
-            </button>
+            <a href="/mypage/qna" class="${param.activeMenu eq 'qna' ? 'active' : ''}">내 문의</a>
             <button type="button" onclick="alert('상품 Q&A는 준비중입니다.');">
                 상품 Q&amp;A
             </button>

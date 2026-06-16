@@ -27,7 +27,6 @@
 
         <div class="new-page-title">
             <h2>최신작품</h2>
-            <p>새롭게 등록된 상품을 최신순으로 확인할 수 있습니다.</p>
         </div>
 
         <c:choose>
