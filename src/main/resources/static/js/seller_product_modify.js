@@ -3,8 +3,55 @@ window.onload = function(){
     const bigCategory = document.getElementById("big_category_id");
     const smallCategory = document.getElementById("category_id");
 
+    const deliveryFee = document.getElementById("delivery_fee");
+    const freeShippingView = document.getElementById("free_shipping_view");
+    const freeShipping = document.getElementById("free_shipping");
+    const freeShippingHelp = document.getElementById("free_shipping_help");
+
+    const discountRadios = document.querySelectorAll("input[name='sale_discount_type']");
+    const saleStartAt = document.querySelector("input[name='sale_start_at']");
+    const saleEndAt = document.querySelector("input[name='sale_end_at']");
+
+    function getDiscountType(){
+        const checked = document.querySelector("input[name='sale_discount_type']:checked");
+
+        if(checked == null){
+            return "none";
+        }
+
+        return checked.value;
+    }
+
+    function updateDiscountPeriodInput(){
+        if(saleStartAt == null || saleEndAt == null){
+            return;
+        }
+
+        let discountType = getDiscountType();
+
+        if(discountType == "period"){
+            saleStartAt.disabled = false;
+            saleEndAt.disabled = false;
+        } else {
+            saleStartAt.value = "";
+            saleEndAt.value = "";
+            saleStartAt.disabled = true;
+            saleEndAt.disabled = true;
+        }
+    }
+
+    if(discountRadios != null){
+        discountRadios.forEach(function(radio){
+            radio.addEventListener("change", function(){
+                updateDiscountPeriodInput();
+            });
+        });
+
+        updateDiscountPeriodInput();
+    }
+
     if(bigCategory != null && smallCategory != null){
-        bigCategory.addEventListener("change",function(){
+        bigCategory.addEventListener("change", function(){
             let parentId = this.value;
 
             smallCategory.innerHTML = "<option value=''>하위 카테고리 선택</option>";
@@ -14,9 +61,9 @@ window.onload = function(){
             }
 
             fetch("/sub.do?parent_id=" + parentId)
-                .then(res=>res.json())
-                .then(data=>{
-                    data.forEach(category=>{
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(category => {
                         let option = document.createElement("option");
 
                         option.value = category.category_id;
@@ -27,11 +74,6 @@ window.onload = function(){
                 });
         });
     }
-
-    const deliveryFee = document.getElementById("delivery_fee");
-    const freeShippingView = document.getElementById("free_shipping_view");
-    const freeShipping = document.getElementById("free_shipping");
-    const freeShippingHelp = document.getElementById("free_shipping_help");
 
     function updateShippingHelp(){
         if(freeShippingHelp == null){
@@ -81,7 +123,7 @@ window.onload = function(){
 
     if(deliveryFee != null && freeShippingView != null && freeShipping != null){
 
-        freeShippingView.addEventListener("input",function(){
+        freeShippingView.addEventListener("input", function(){
             let value = this.value.replace(/,/g, "");
 
             if(value == ""){
@@ -91,8 +133,6 @@ window.onload = function(){
                 return;
             }
 
-            // 글자가 들어오면 여기서 지우지 않음
-            // 수정 버튼 눌렀을 때 alert 띄우기 위함
             if(isNaN(value)){
                 freeShipping.value = "0";
                 updateShippingHelp();
@@ -107,11 +147,10 @@ window.onload = function(){
             updateShippingHelp();
         });
 
-        deliveryFee.addEventListener("input",function(){
+        deliveryFee.addEventListener("input", function(){
             checkDeliveryFeeInput();
         });
 
-        // 수정 페이지는 기존 DB 값이 들어와 있으니까 처음 열릴 때도 체크
         checkDeliveryFeeInput();
     }
 };
@@ -156,10 +195,66 @@ function send(f){
         return;
     }
 
-    if(salePrice > 0 && salePrice >= price){
-        alert("세일 가격은 상품 가격보다 낮아야 합니다.");
-        f.sale_price.focus();
-        return;
+    const checkedDiscount = f.querySelector("input[name='sale_discount_type']:checked");
+    let discountType = checkedDiscount == null ? "none" : checkedDiscount.value;
+
+    let saleStartAt = f.sale_start_at.value;
+    let saleEndAt = f.sale_end_at.value;
+
+    if(discountType == "none"){
+        salePrice = 0;
+        f.sale_price.value = "0";
+        f.sale_start_at.value = "";
+        f.sale_end_at.value = "";
+    }
+
+    if(discountType == "always"){
+        if(salePrice <= 0){
+            alert("상시 할인을 선택한 경우 세일 가격을 입력해야 합니다.");
+            f.sale_price.focus();
+            return;
+        }
+
+        if(salePrice >= price){
+            alert("세일 가격은 상품 가격보다 낮아야 합니다.");
+            f.sale_price.focus();
+            return;
+        }
+
+        f.sale_start_at.value = "";
+        f.sale_end_at.value = "";
+    }
+
+    if(discountType == "period"){
+        if(salePrice <= 0){
+            alert("기간 할인을 선택한 경우 세일 가격을 입력해야 합니다.");
+            f.sale_price.focus();
+            return;
+        }
+
+        if(salePrice >= price){
+            alert("세일 가격은 상품 가격보다 낮아야 합니다.");
+            f.sale_price.focus();
+            return;
+        }
+
+        if(saleStartAt == ""){
+            alert("할인 시작일을 선택하세요.");
+            f.sale_start_at.focus();
+            return;
+        }
+
+        if(saleEndAt == ""){
+            alert("할인 종료일을 선택하세요.");
+            f.sale_end_at.focus();
+            return;
+        }
+
+        if(saleEndAt < saleStartAt){
+            alert("할인 종료일은 시작일보다 빠를 수 없습니다.");
+            f.sale_end_at.focus();
+            return;
+        }
     }
 
     let deliveryFeeValue = f.delivery_fee.value.trim();
@@ -212,7 +307,6 @@ function send(f){
         return;
     }
 
-    
     let productPriceForShipping = price;
 
     if(salePrice > 0){
@@ -237,7 +331,9 @@ function send(f){
 
     let formData = new FormData(f);
 
-    fetch("/seller_product_modify.do",{method:"post",body:formData}).then(res=>res.json()).then(data=>{
+    fetch("/seller_product_modify.do", { method: "post", body: formData })
+        .then(res => res.json())
+        .then(data => {
             if(data.result == 1){
                 alert("상품을 수정하셨습니다.");
                 location.href = "/product_detail.do?product_id=" + data.product_id;
