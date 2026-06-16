@@ -33,7 +33,6 @@ public class OrderController {
     private final ProductDAO productDAO;
     private final CartDAO cartdao;
 
-    
 
     // 로그인 회원 정보 가져오기
     private UserVO getLoginUser(HttpSession session) {
@@ -83,6 +82,7 @@ public class OrderController {
 
         for (OrderVO order : orderList) {
             List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order.getOrder_id());
+
             orderItemMap.put(order.getOrder_id(), itemList);
         }
         
@@ -95,7 +95,7 @@ public class OrderController {
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);
 
-        model.addAttribute("activeMenu", "order");
+        model.addAttribute("activeMenu", "orders");
         model.addAttribute("contentPage", "/myshop/order_list");
 
         return "myshop/myshop_main";
@@ -295,6 +295,8 @@ public class OrderController {
             paymentVO.setTransaction_id(null);
 
             paymentDAO.insertPayment(paymentVO);
+
+            cartdao.cartDeleteSelected(map);
 
             return "redirect:/payment/ready?order_id=" + orderVO.getOrder_id();
         }

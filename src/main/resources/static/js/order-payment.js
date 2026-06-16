@@ -1,26 +1,21 @@
 function openCancelModal(orderId, amount) {
-    // 결제취소 모달 전체 영역
     const modal = document.getElementById("cancelModal");
-
-    // form으로 서버에 보낼 주문번호 hidden input
     const orderIdInput = document.getElementById("cancelOrderId");
-
-    // 모달 화면에 보여줄 주문번호 영역
     const orderIdText = document.getElementById("cancelOrderIdText");
-
-    // 모달 화면에 보여줄 결제금액 영역
     const amountText = document.getElementById("cancelAmountText");
-
-    // 취소 사유 select
     const reason = document.getElementById("cancelReason");
-
-    // 상세 사유 textarea
     const detail = document.getElementById("cancelDetail");
-
-    // 안내사항 확인 체크박스
     const agree = document.getElementById("cancelAgree");
 
-    if (modal == null) {
+    if (
+        modal == null ||
+        orderIdInput == null ||
+        orderIdText == null ||
+        amountText == null ||
+        reason == null ||
+        detail == null ||
+        agree == null
+    ) {
         return;
     }
 
@@ -42,7 +37,6 @@ function openCancelModal(orderId, amount) {
     modal.classList.add("open");
 }
 
-
 function closeCancelModal() {
     const modal = document.getElementById("cancelModal");
 
@@ -51,23 +45,22 @@ function closeCancelModal() {
     }
 }
 
-
 function submitCancelForm() {
-    
-    // 취소 사유 select
     const reason = document.getElementById("cancelReason");
-
-    // 상세 사유 textarea
     const detail = document.getElementById("cancelDetail");
-
-    // 안내사항 확인 체크박스
     const agree = document.getElementById("cancelAgree");
-
-    // 서버로 보낼 취소 사유 hidden input
     const reasonInput = document.getElementById("cancelReasonInput");
-
-    // 실제로 submit 되는 form
     const form = document.getElementById("cancelForm");
+
+    if (
+        reason == null ||
+        detail == null ||
+        agree == null ||
+        reasonInput == null ||
+        form == null
+    ) {
+        return;
+    }
 
     if (reason.value === "") {
         alert("취소 사유를 선택해주세요.");
@@ -104,9 +97,36 @@ function submitCancelForm() {
     form.submit();
 }
 
-
 window.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
         closeCancelModal();
     }
 });
+
+function toggleOrderItems(button) {
+    if (button == null) {
+        return;
+    }
+
+    const panel = button.nextElementSibling;
+
+    if (panel == null) {
+        return;
+    }
+
+    const count = button.dataset.count;
+    const text = button.querySelector(".toggle-text");
+
+    panel.classList.toggle("open");
+    button.classList.toggle("active");
+
+    const isOpen = panel.classList.contains("open");
+
+    if (text != null) {
+        if (isOpen) {
+            text.textContent = "총 " + count + "건 주문 접기";
+        } else {
+            text.textContent = "총 " + count + "건 주문 펼쳐보기";
+        }
+    }
+}

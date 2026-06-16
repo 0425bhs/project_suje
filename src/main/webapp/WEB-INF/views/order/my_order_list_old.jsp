@@ -21,9 +21,9 @@
 
     <body>
 
-    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-        <jsp:param name="activeMenu" value="order" />
-    </jsp:include>
+        <jsp:include page="/WEB-INF/views/product/product_header.jsp">
+            <jsp:param name="activeMenu" value="order" />
+        </jsp:include>
 
     <!-- 중요: 주문 상태별 개수 계산 -->
     <c:set var="totalCount" value="0" />
@@ -64,13 +64,13 @@
 
     <section class="myshop-page">
 
-        <div class="myshop-layout">
+            <div class="myshop-layout">
 
             <!-- 왼쪽 사이드바 -->
             <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" />
 
-            <!-- 오른쪽 본문 -->
-            <main class="myshop-content">
+                <!-- 오른쪽 본문 -->
+                <main class="myshop-content">
 
                 <!-- 회원 요약 카드 -->
                 <jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">

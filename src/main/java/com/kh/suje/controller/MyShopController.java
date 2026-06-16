@@ -41,7 +41,11 @@ public class MyShopController {
 
         model.addAttribute("activeMenu", "myshop");
         model.addAttribute("contentPage", "/myshop/dashboard");
-        
-        return "/myshop/myshop_main";
+
+        model.addAttribute("activeMenu", "dashboard");
+
+        return "myshop/myshop_main";
     }
+
+    
 }

@@ -8,55 +8,57 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>마이쇼핑 대시보드 - HANDMADE</title>
+    <title>마이쇼핑 - HANDMADE</title>
 
     <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/myshop/common.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/card.css?v=1">
 
     <c:if test="${contentPage eq '/myshop/dashboard'}">
-        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
         <link rel="stylesheet" href="/css/myshop/dashboard.css?v=1">
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/order_list'}">
-        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/cancleModal.css?v=1">
         <link rel="stylesheet" href="/css/myshop/order.css?v=1">
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/review_list'}">
-        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
         <link rel="stylesheet" href="/css/myshop/review.css?v=1">
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/qna_list'}">
-        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
         <link rel="stylesheet" href="/css/myshop/qna.css?v=1">
     </c:if>
     
     <script src="/js/product_main.js" defer></script>
-    <script src="/js/order-payment.js" defer></script>
+    <c:if test="${contentPage eq '/myshop/order_list'}">
+        <script src="/js/cart.js" defer></script>
+        <script src="/js/order-payment.js" defer></script>
+    </c:if>
 </head>
 
 <body>
 
 <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-    <jsp:param name="activeMenu" value="" />
+    <jsp:param name="activeMenu" value="myshop" />
 </jsp:include>
 
-<section class="myshop-page">
-    <div class="myshop-layout">
+    <section class="myshop-page">
+        <div class="myshop-layout">
 
         <!-- 왼쪽 사이드바 -->
         <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" >
             <jsp:param name="activeMenu" value="${activeMenu}" />
         </jsp:include>
 
-        <!-- 오른쪽 본문 -->
-        <main class="myshop-content myshop-dashboard-content">
-            <jsp:include page="/WEB-INF/views/${contentPage}.jsp" />
-        </main>
-    </div>
-</section>
+            <main class="myshop-content">
+                <jsp:include page="/WEB-INF/views${contentPage}.jsp" />
+            </main>
+
+        </div>
+    </section>
 
 </body>
+
 </html>
