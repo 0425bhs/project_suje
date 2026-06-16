@@ -97,13 +97,13 @@
         <nav class="main-nav">
             <a href="/product/main.do">상품보기</a>
             <a href="/live_review_list.do">후기</a>
-            <a href="/my_qna_list.do">문의</a>
+            <a href="/mypage/qna">문의</a>
             <a href="/notice_list.do">공지사항</a>
         </nav>
 
         <div class="header-actions">
-            <a href="/my_review_list.do">내 후기</a>
-            <a href="/order/my">주문내역</a>
+            <a href="/myshop/reviews">내 후기</a>
+            <a href="/myshop/orders">주문내역</a>
         </div>
     </div>
 </header>
@@ -117,7 +117,7 @@
                 <p>최근 등록된 상품 후기를 한눈에 확인할 수 있습니다.</p>
             </div>
 
-            <a class="btn light" href="/my_review_list.do">내 후기 보기</a>
+            <a class="btn light" href="/myshop/reviews">내 후기 보기</a>
         </div>
 
         <section class="community-card">

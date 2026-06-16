@@ -1,6 +1,7 @@
 package com.kh.suje.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +18,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
+import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.util.Paging;
+import com.kh.suje.vo.ImageVO;
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.vo.UserVO;
 
 import jakarta.servlet.http.HttpSession;
@@ -302,9 +306,28 @@ public class ProductController {
         // 상품 상세 JSP로 상품 정보 전달
         model.addAttribute("vo", vo);
 
+        List<ReviewVO> list = reviewdao.getProductReviewList(product_id);
         // 리뷰 목록 전달
-        model.addAttribute("review_list", reviewdao.getProductReviewList(product_id));
+        model.addAttribute("review_list", list);
 
+        if (list != null && !list.isEmpty()) {
+            List<Integer> reviewIds = new ArrayList<>();
+            for (ReviewVO review : list) {
+                reviewIds.add(review.getReview_id()); 
+            }
+
+            List<ImageVO> images = imageDAO.getImagesByReviewIds(reviewIds);
+            
+            for (ReviewVO review : list) {
+                List<ImageVO> matchedImages = new ArrayList<>();
+                for (ImageVO image : images) {
+                    if (review.getReview_id() == image.getTarget_id()) {
+                        matchedImages.add(image);
+                    }
+                }
+                review.setImageList(matchedImages);
+            }
+        }
 
         // =========================================================
         // 취향발견용 상품 조회 기록 저장

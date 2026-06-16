@@ -133,7 +133,7 @@ function check_loginId() {
 }
 
 
-/*//메일주소 보내고 인증번호 확인
+//메일주소 보내고 인증번호 확인
 function mailCheck(f) {
 
     let formData = new FormData(f);
@@ -159,17 +159,23 @@ function mailCheck(f) {
 
 }
 
-*/
+
 function authCheck() {
     let authInput =
-        document.getElementById("authInput").value;
+        document.getElementById("authInput").value.trim();
 
-    if (authInput == authNumber) {
+        if (!authNumber) {
+        alert("먼저 이메일 전송 버튼을 눌러 인증번호를 받아주세요.");
+        return;
+    }
+
+    if (authInput == String(authNumber).trim()) {
         alert("인증완료");
         email_valid = true;
 
         // 인증 완료되면 인증메일 입력창도 수정 못하게 잠가버리기
         document.getElementById("authEmail").readOnly = true;
+        document.getElementById("authInput").disabled = true;
     } else {
         alert("인증번호를 다시 확인하세요");
     }
@@ -251,14 +257,14 @@ function send(f) {
         return;
     }
 
-    /*
+    
     //메일이 인증된 상태인지 확인
    
         if (!email_valid) {
             alert("이메일 인증을 완료해주세요");
             return;
         }
-*/
+
         // 이름 입력 확인
         if (f.name.value.trim() === "") {
             alert("이름을 입력해 주세요.");

@@ -103,13 +103,13 @@
         <nav class="main-nav">
             <a href="/product/main.do">상품보기</a>
             <a href="/live_review_list.do">후기</a>
-            <a href="/my_qna_list.do">문의</a>
+            <a href="/mypage/qna">문의</a>
             <a href="/notice_list.do">공지사항</a>
         </nav>
 
         <div class="header-actions">
             <a href="/notice_list.do">고객센터</a>
-            <a href="/order/my">주문내역</a>
+            <a href="/myshop/orders">주문내역</a>
         </div>
     </div>
 </header>

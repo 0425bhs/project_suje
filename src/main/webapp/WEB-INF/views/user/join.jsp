@@ -71,7 +71,7 @@
                     </div>
                     <div class="input-row">
                         <input id="authInput" placeholder="인증번호 6자리" maxlength="6" disabled="disabled" />
-                        <input type="button" value="인증" class="btn-secondary" />
+                        <input type="button" value="인증" onclick="authCheck()" class="btn-secondary" />
                     </div>
                 </td>
             </tr>

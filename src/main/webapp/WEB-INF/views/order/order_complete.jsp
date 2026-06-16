@@ -76,7 +76,7 @@
                         <a class="btn light full" href="/order/detail?order_id=${order.order_id}">
                             주문 상세 보기
                         </a>
-                        <a class="btn primary full" href="/order/my">
+                        <a class="btn primary full" href="/myshop/orders">
                             내 주문 내역 보기
                         </a>
                     </div>

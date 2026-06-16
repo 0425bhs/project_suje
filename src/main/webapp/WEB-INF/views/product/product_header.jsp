@@ -113,7 +113,7 @@
 
             <!-- 로그인 후에만 주문내역 표시 -->
             <c:if test="${not empty sessionScope.user}">
-                <a href="/order/my">마이쇼핑</a>
+                <a href="/myshop">마이쇼핑</a>
             </c:if>
 
             <!-- 판매자센터 -->

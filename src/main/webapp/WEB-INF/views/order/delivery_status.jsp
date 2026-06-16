@@ -109,7 +109,7 @@
                         <a class="btn light" href="/order/detail?order_id=${order.order_id}">
                             주문 상세로
                         </a>
-                        <a class="btn primary" href="/order/my">
+                        <a class="btn primary" href="/myshop/orders">
                             내 주문 내역으로
                         </a>
                     </div>

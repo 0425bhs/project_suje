@@ -12,6 +12,8 @@
 
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/order-payment.css?v=3">
+        <link rel="stylesheet" href="/css/myshop/common.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
 
         <script src="/js/product_main.js" defer></script>
         <script src="/js/order-payment.js" defer></script>
@@ -19,9 +21,9 @@
 
     <body>
 
-    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-        <jsp:param name="activeMenu" value="order" />
-    </jsp:include>
+        <jsp:include page="/WEB-INF/views/product/product_header.jsp">
+            <jsp:param name="activeMenu" value="order" />
+        </jsp:include>
 
     <!-- 중요: 주문 상태별 개수 계산 -->
     <c:set var="totalCount" value="0" />
@@ -62,64 +64,64 @@
 
     <section class="myshop-page">
 
-        <div class="myshop-layout">
+            <div class="myshop-layout">
 
             <!-- 왼쪽 사이드바 -->
-            <jsp:include page="/WEB-INF/views/order/common/myshop_sidebar.jsp" />
+            <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" />
 
-            <!-- 오른쪽 본문 -->
-            <main class="myshop-content">
+                <!-- 오른쪽 본문 -->
+                <main class="myshop-content">
 
                 <!-- 회원 요약 카드 -->
-                <jsp:include page="/WEB-INF/views/order/common/myshop_user_card.jsp">
+                <jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
                     <jsp:param name="label" value="MY ORDER" />
                     <jsp:param name="count" value="${totalCount}" />
                 </jsp:include>
 
                 <!-- 빠른 메뉴 -->
-                <jsp:include page="/WEB-INF/views/order/common/myshop_quick_card.jsp" />
+                <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
                 <!-- 주문 상태 요약 -->
                 <section class="myshop-status-card">
 
                     <button type="button"
                             class="${empty selectedStatus ? 'active' : ''}"
-                            onclick="location.href='/order/my'">
+                            onclick="location.href='/myshop/orders'">
                         <span>전체</span>
                         <strong>${totalCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'PENDING' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=PENDING'">
+                            onclick="location.href='/myshop/orders?status=PENDING'">
                         <span>결제대기</span>
                         <strong>${pendingCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'PAID' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=PAID'">
+                            onclick="location.href='/myshop/orders?status=PAID'">
                         <span>결제완료</span>
                         <strong>${paidCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=SHIPPING'">
+                            onclick="location.href='/myshop/orders?status=SHIPPING'">
                         <span>배송중</span>
                         <strong>${shippingCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=DELIVERED'">
+                            onclick="location.href='/myshop/orders?status=DELIVERED'">
                         <span>배송완료</span>
                         <strong>${deliveredCount}</strong>
                     </button>
 
                     <button type="button"
                             class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
-                            onclick="location.href='/order/my?status=CANCELLED'">
+                            onclick="location.href='/myshop/orders?status=CANCELLED'">
                         <span>취소</span>
                         <strong>${cancelCount}</strong>
                     </button>
@@ -127,7 +129,7 @@
                 </section>
 
                 <!-- 주문/배송내역 -->
-                <section class="myshop-order-section">
+                <section class="myshop-list-section">
 
                     <div class="myshop-section-head">
                         <div>
@@ -135,7 +137,7 @@
                             <p>주문한 작품의 상태를 확인하고 필요한 작업을 진행할 수 있습니다.</p>
                         </div>
 
-                        <a href="/order/my">전체보기</a>
+                        <a href="/myshop/orders">전체보기</a>
                     </div>
 
                     <c:choose>
@@ -146,7 +148,7 @@
                         </c:when>
 
                         <c:otherwise>
-                            <div class="myshop-order-list">
+                            <div class="myshop-list">
 
                                 <c:forEach var="order" items="${orderList}">
 
@@ -154,9 +156,9 @@
                                     <c:set var="items" value="${orderItemMap[order.order_id]}" />
                                     <c:set var="mainItem" value="${items[0]}" />
 
-                                    <article class="myshop-order-card">
+                                    <article class="myshop-list-card">
 
-                                        <div class="myshop-order-top">
+                                        <div class="myshop-list-top">
 
                                             <div>
                                                 <strong class="myshop-status-badge ${order.status}">
@@ -180,7 +182,7 @@
 
                                         </div>
 
-                                        <div class="myshop-order-body">
+                                        <div class="myshop-list-body">
 
                                             <div class="myshop-product-thumb">
                                                 <c:choose>
@@ -223,7 +225,7 @@
                                                 </strong>
                                             </div>
 
-                                            <div class="myshop-order-actions">
+                                            <div class="myshop-list-actions">
 
                                                 <a href="/order/detail?order_id=${order.order_id}">
                                                     상세보기

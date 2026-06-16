@@ -10,6 +10,9 @@
 
     <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/order-payment.css?v=3">
+    <link rel="stylesheet" href="/css/myshop/common.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/card.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/review.css?v=1">
 
     <style>
         .review-list-card {
@@ -201,59 +204,18 @@
     <div class="myshop-layout">
 
         <!-- 왼쪽 사이드바 -->
-        <jsp:include page="/WEB-INF/views/order/common/myshop_sidebar.jsp" />
-        
-<!-- 
-        <aside class="myshop-sidebar">
-            <div class="myshop-side-card">
-
-                <a href="/order/my" class="myshop-side-home">
-                    마이쇼핑
-                </a>
-
-                <div class="myshop-side-group">
-                    <strong>주문 관리</strong>
-                    <a href="/order/my">주문/배송내역</a>
-                    <button type="button" onclick="alert('취소/환불내역은 준비중입니다.');">
-                        취소/환불내역
-                    </button>
-                </div>
-
-                <div class="myshop-side-group">
-                    <strong>리뷰 관리</strong>
-                    <a href="/my_review_list.do" class="active">내가 작성한 리뷰</a>
-                </div>
-
-                <div class="myshop-side-group">
-                    <strong>문의 관리</strong>
-                    <a href="/my_qna_list.do">내 문의</a>
-                    <button type="button" onclick="alert('상품 Q&A는 준비중입니다.');">
-                        상품 Q&amp;A
-                    </button>
-                </div>
-
-                <div class="myshop-side-group">
-                    <strong>내 정보</strong>
-                    <button type="button" onclick="alert('회원 정보 수정은 준비중입니다.');">
-                        회원 정보 수정
-                    </button>
-                    <button type="button" onclick="alert('배송지 관리는 준비중입니다.');">
-                        배송지 관리
-                    </button>
-                </div>
-            </div>
-        </aside> -->
+        <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" />
 
         <main class="myshop-content">
 
             <!-- 회원 요약 카드 -->
-            <jsp:include page="/WEB-INF/views/order/common/myshop_user_card.jsp">
+            <jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
                 <jsp:param name="label" value="MY REVIEW" />
                 <jsp:param name="count" value="${totalCount}" />
             </jsp:include>
 
             <!-- 빠른 메뉴 -->
-            <jsp:include page="/WEB-INF/views/order/common/myshop_quick_card.jsp" />
+            <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
             <section class="myshop-review-section">
 
