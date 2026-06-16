@@ -16,35 +16,8 @@
         <link rel="stylesheet" href="/css/seller/seller_shop_homepage.css">
 
         <script src="/js/product_main.js" defer></script>
-        <script>
-            function addFavorite(f) {
-                // let formData = new FormData(f);
-                
-                // fetch("/favorite_shop.do", {
-                //     method: "POST",
-                //     body: formData
-                // })
-                // .then(res => res.json())
-                // .then(data => {
-                //     if (data.result != "success") {
-                //         alert("로그인이 필요합니다.");
-                //         location.href="/login.do";
-                //     }
-                // })
-            }
-
-            function delFavorite(f) {
-                // let formData = new FormData(f);
-
-                // fetch("/favorite_shop_cancel.do", {
-                //     method: "POST",
-                //     body: formData
-                // })
-                // .then(res => res.json())
-                // .then(data => {
-                // })
-            }
-        </script>
+        <script src="/js/seller_shop_homepage.js" defer></script>
+        
     </head>
 
     <body>
@@ -69,32 +42,21 @@
                     </div>
 
                     <div>
-                        <h1>판매자샵</h1>
-                        <p>작가의 손길이 담긴 핸드메이드 상품을 만나보세요.</p>
+                        <h1>판매자샵 </h1>  
+                        <strong class="seller-interest-count">
+                            관심 <span id="sellerFavoriteCount">${favoriteCount}</span>
+                        </strong>
                     </div>
                 </div>
 
-                <c:choose>
-
-                <c:when test="${favorite eq false}">
-                    <form>
-                        <input type="hidden" name="seller_id" value="${seller_id}">
-                        <input type="button" class="wish-shop-btn"
-                               onclick="addFavorite(this.form)"
-                               value="♡ 작가샵 찜하기">
-                    </form>
-                </c:when>
-
-                <c:otherwise>
-                    <form>
-                        <input type="hidden" name="seller_id" value="${seller_id}">
-                        <input type="button" class="wish-shop-btn"
-                               onclick="delFavorite(this.form)"
-                               value="♡ 찜 취소"/>
-                    </form>
-                </c:otherwise>
-
-                </c:choose>
+                <button type="button" class="wish-shop-btn ${favorite ? 'active' : ''}" id="sellerWishBtn" data-seller-id="${seller_id}">
+                    <span class="wish-shop-heart">
+                        ${favorite ? '♥' : '♡'}
+                    </span>
+                    <span class="wish-shop-text">
+                        ${favorite ? '찜 취소' : '작가샵 찜하기'}
+                    </span>
+                </button>
 
             </section>
 

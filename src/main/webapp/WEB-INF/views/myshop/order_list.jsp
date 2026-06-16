@@ -180,10 +180,6 @@
                                     </c:otherwise>
                                 </c:choose>
 
-                                <!-- 추가: 여러 상품 주문이면 대표 이미지에 상품 개수 표시 -->
-                                <c:if test="${itemCount gt 1}">
-                                    <span class="myshop-thumb-count">${itemCount}</span>
-                                </c:if>
                             </div>
 
                             <div class="myshop-product-info">
@@ -352,7 +348,7 @@
                                             </c:if>
                                             
 
-                                            <button type="button" onclick="location.href='/qna_form.do?product_id=${mainItem.product_id}'">
+                                            <button type="button" onclick="location.href='/qna_form.do?product_id=${item.product_id}'">
                                                 문의하기
                                             </button>
 

@@ -1,9 +1,12 @@
 /* =========================================================
    order_list.css
    - 주문/배송내역 전용 CSS
-   - 주문 카드
-   - 여러 상품 펼쳐보기
-   - 결제취소 모달
+   - 상단 회원카드 / 빠른메뉴 / 상태요약은 myshop_common.css 유지
+   - 여기서는 주문/배송내역 박스부터 디자인
+========================================================= */
+
+/* =========================================================
+   주문/배송내역 전체 박스
 ========================================================= */
 
 .myshop-order-section {
@@ -15,44 +18,67 @@
     box-shadow: 0 8px 24px rgba(80, 45, 25, 0.04);
 }
 
+/* 주문 목록 배경 */
+.myshop-order,
+.myshop-order-list {
+    padding: 22px;
+
+    display: grid;
+    gap: 20px;
+
+    background: #fff;
+}
+
 /* =========================================================
    주문 카드
 ========================================================= */
 
-.myshop-order-list {
-    display: grid;
-}
-
 .myshop-order-card {
-    padding: 0 30px;
+    overflow: hidden;
+
     background: #fff;
+    border: 1px solid #ead8cf;
+    border-radius: 18px;
+    box-shadow: 0 8px 22px rgba(80, 45, 25, 0.055);
 }
 
 .myshop-order-card + .myshop-order-card {
-    margin-top: 4px;
-    border-top: 1px solid #eeeeee;
+    margin-top: 0;
 }
 
+/* =========================================================
+   주문 카드 상단
+   - 상태 배지
+   - 주문상세 링크
+========================================================= */
+
 .myshop-order-top {
-    padding: 18px 0 2px;
+    min-height: 58px;
+    padding: 16px 22px;
 
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
+    align-items: center;
+    gap: 18px;
+
+    background: linear-gradient(90deg, #fff7f3 0%, #ffffff 75%);
+    border-bottom: 1px solid #f0e4dc;
 }
 
 .myshop-order-top > div {
     min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
 
 .myshop-order-top > a {
-    margin-left: auto;
     flex-shrink: 0;
 
-    color: #777;
+    color: #555;
     font-size: 13px;
-    font-weight: 850;
+    font-weight: 900;
     text-decoration: none;
 }
 
@@ -60,17 +86,23 @@
     color: #ff6f4f;
 }
 
+/* =========================================================
+   주문 상태 배지
+========================================================= */
+
 .myshop-status-badge {
+    height: 30px;
+    padding: 0 14px;
+
     display: inline-flex;
     align-items: center;
-
-    margin-bottom: 6px;
-    padding: 6px 12px;
+    justify-content: center;
 
     border-radius: 999px;
 
     font-size: 13px;
     font-weight: 950;
+    white-space: nowrap;
 }
 
 .myshop-status-badge.PENDING {
@@ -106,33 +138,37 @@
 .myshop-order-top span {
     display: block;
 
-    color: #888;
+    color: #777;
     font-size: 13px;
+    font-weight: 750;
 }
 
 /* =========================================================
    주문 카드 본문
+   - 대표 이미지
+   - 날짜 / 상품명 / 총 결제금액
+   - 버튼 영역
 ========================================================= */
 
 .myshop-order-body {
-    padding: 6px 0 24px;
+    padding: 22px;
 
     display: grid;
     grid-template-columns: 92px minmax(0, 1fr) 300px;
-    gap: 20px;
+    gap: 22px;
     align-items: center;
+
+    background: #fff;
 }
 
 .myshop-product-thumb {
-    position: relative;
-
     width: 92px;
     height: 92px;
 
     overflow: hidden;
 
     border: 1px solid #eeeeee;
-    border-radius: 12px;
+    border-radius: 13px;
     background: #f6f6f6;
 }
 
@@ -140,32 +176,21 @@
     width: 100%;
     height: 100%;
 
+    display: block;
     object-fit: cover;
 }
 
+/* 이미지 안 주문수량 숫자 제거 */
 .myshop-thumb-count {
-    position: absolute;
-    right: 7px;
-    bottom: 7px;
-
-    min-width: 25px;
-    height: 25px;
-    padding: 0 7px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.62);
-
-    color: #fff;
-    font-size: 13px;
-    font-weight: 950;
+    display: none !important;
 }
 
 .myshop-product-info {
     min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .myshop-order-date-text {
@@ -174,9 +199,10 @@
 
     color: #888;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 750;
 }
 
+/* 단일 상품명 / 여러 상품 대표명 공통 */
 .myshop-product-name-text {
     display: block;
     margin-bottom: 2px;
@@ -184,20 +210,20 @@
     color: #111;
     font-size: 16px;
     font-weight: 950;
-    line-height: 1.2;
+    line-height: 1.18;
 
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+/* 여러 상품일 때 상품명 버튼 */
 .myshop-product-open-btn {
     width: 100%;
     padding: 0;
-    margin-top: 8px;
-    margin-bottom: 0;
+    margin: 0 0 2px;
 
-    border: none;
+    border: 0;
     background: transparent;
 
     text-align: left;
@@ -210,7 +236,12 @@
     color: #ff6f4f;
 }
 
+/* 포함 총 n건 */
 .myshop-product-count-text {
+    position: relative;
+    top: -1px;
+
+    display: inline-block;
     margin-left: 4px;
 
     color: #ff6f4f;
@@ -218,29 +249,31 @@
     font-weight: 500;
 }
 
+/* 총 결제금액 */
 .myshop-product-info > strong {
     display: block;
     margin-top: 0;
 
-    color: #222;
+    color: #111;
     font-size: 15px;
     font-weight: 950;
-    line-height: 1.25;
+    line-height: 1.2;
 }
 
 .myshop-product-open-btn + strong {
-    margin-top: -2px;
+    margin-top: 0;
 }
 
 /* =========================================================
-   주문 카드 버튼
+   주문 카드 오른쪽 버튼
 ========================================================= */
 
 .myshop-order-actions {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 7px;
+    gap: 8px;
 }
 
 .myshop-order-actions .inline-form {
@@ -250,21 +283,21 @@
 
 .myshop-order-actions a,
 .myshop-order-actions button {
-    min-width: 82px;
-    height: 36px;
-    padding: 0 12px;
+    min-width: 86px;
+    height: 38px;
+    padding: 0 14px;
 
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
     border: 1px solid #ead8cf;
-    border-radius: 8px;
+    border-radius: 9px;
     background: #fff;
 
     color: #444;
     font-size: 12px;
-    font-weight: 850;
+    font-weight: 900;
     text-decoration: none;
 
     cursor: pointer;
@@ -302,25 +335,25 @@
 }
 
 /* =========================================================
-   여러 상품 주문 펼쳐보기
+   여러 상품 주문 펼쳐보기 버튼
 ========================================================= */
 
 .myshop-order-toggle {
-    width: 100%;
-    min-height: 52px;
-    margin: 0 0 24px;
+    width: calc(100% - 44px);
+    min-height: 48px;
+    margin: 0 22px 22px;
 
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
 
-    border: 1px solid #d8dee8;
-    border-radius: 10px;
-    background: #fff;
+    border: 1px solid #f0d6c7;
+    border-radius: 12px;
+    background: #fff8f5;
 
-    color: #111;
-    font-size: 15px;
+    color: #ff6f4f;
+    font-size: 14px;
     font-weight: 950;
 
     cursor: pointer;
@@ -329,35 +362,41 @@
 
 .myshop-order-toggle:hover {
     border-color: #ff6f4f;
-    background: #fff8f5;
-    color: #ff6f4f;
+    background: #fff1eb;
 }
 
 .toggle-arrow {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
 
     border-right: 2px solid currentColor;
     border-bottom: 2px solid currentColor;
 
     transform: rotate(45deg);
-    margin-top: -5px;
+    margin-top: -4px;
 
     transition: transform 0.18s ease, margin-top 0.18s ease;
 }
 
 .myshop-order-toggle.active .toggle-arrow {
     transform: rotate(-135deg);
-    margin-top: 5px;
+    margin-top: 4px;
 }
+
+/* =========================================================
+   펼쳐진 상품 목록 패널
+========================================================= */
 
 .myshop-order-items-panel {
     display: none;
 
-    margin: -8px 0 24px;
-    padding-top: 4px;
+    width: calc(100% - 44px);
+    margin: -8px 22px 22px;
+    padding: 12px 18px;
 
-    border-top: 1px solid #f3e7df;
+    border: 1px solid #f0d6c7;
+    border-radius: 14px;
+    background: #fffaf7;
 }
 
 .myshop-order-items-panel.open {
@@ -366,12 +405,12 @@
 
 .myshop-order-item-row {
     display: grid;
-    grid-template-columns: 78px minmax(0, 1fr) 128px;
-    gap: 16px;
+    grid-template-columns: 64px minmax(0, 1fr) 148px;
+    gap: 14px;
     align-items: center;
 
-    padding: 16px 0;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 14px 0;
+    border-bottom: 1px dashed #e8d8cf;
 }
 
 .myshop-order-item-row:last-child {
@@ -379,15 +418,14 @@
 }
 
 .myshop-order-item-thumb {
-    width: 78px;
-    height: 78px;
+    width: 64px;
+    height: 64px;
 
     display: block;
-    flex-shrink: 0;
     overflow: hidden;
 
     border: 1px solid #eeeeee;
-    border-radius: 12px;
+    border-radius: 10px;
     background: #f6f6f6;
 }
 
@@ -409,7 +447,7 @@
     color: #111;
     font-size: 14px;
     font-weight: 950;
-    line-height: 1.45;
+    line-height: 1.3;
     text-decoration: none;
 
     overflow: hidden;
@@ -422,21 +460,25 @@
 }
 
 .myshop-order-item-info p {
-    margin: 7px 0 0;
+    margin: 6px 0 0;
 
     color: #777;
     font-size: 13px;
 }
 
+/* =========================================================
+   펼친 상품 목록 오른쪽 버튼
+========================================================= */
+
 .myshop-order-item-actions {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
 }
 
 .myshop-order-item-actions a,
 .myshop-order-item-actions button {
-    height: 34px;
+    height: 32px;
     padding: 0 10px;
 
     display: flex;
@@ -732,14 +774,38 @@
         grid-column: 1 / -1;
         justify-content: flex-end;
     }
+
+    .myshop-order-item-row {
+        grid-template-columns: 64px minmax(0, 1fr);
+    }
+
+    .myshop-order-item-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
 }
 
 @media (max-width: 720px) {
-    .myshop-order-card {
-        padding: 0 18px;
+    .myshop-order,
+    .myshop-order-list {
+        padding: 14px;
+        gap: 14px;
+    }
+
+    .myshop-order-top {
+        padding: 14px 16px;
+        align-items: flex-start;
+    }
+
+    .myshop-order-top > div {
+        display: grid;
+        gap: 8px;
     }
 
     .myshop-order-body {
+        padding: 16px;
         grid-template-columns: 76px minmax(0, 1fr);
         gap: 14px;
     }
@@ -749,31 +815,31 @@
         height: 76px;
     }
 
+    .myshop-order-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+
     .myshop-order-actions a,
     .myshop-order-actions button {
         min-width: 76px;
     }
 
+    .myshop-order-toggle,
+    .myshop-order-items-panel {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
     .myshop-order-item-row {
-        grid-template-columns: 64px minmax(0, 1fr);
+        grid-template-columns: 56px minmax(0, 1fr);
         gap: 12px;
     }
 
     .myshop-order-item-thumb {
-        width: 64px;
-        height: 64px;
-    }
-
-    .myshop-order-item-actions {
-        grid-column: 1 / -1;
-        flex-direction: row;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-    }
-
-    .myshop-order-item-actions a,
-    .myshop-order-item-actions button {
-        min-width: 82px;
+        width: 56px;
+        height: 56px;
     }
 
     .cancel-modal-actions {
@@ -786,3 +852,4 @@
         width: 100%;
     }
 }
+
