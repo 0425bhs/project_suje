@@ -31,7 +31,7 @@ values( #{email}, #{password}, #{name}, #{phone}, #{gender},
 
 
 <!--로그인-->
-<select id = "loginCheck" parameterType="String"
+<select id = "loginCheck" parameterType="user"
 resultType="user">
 select * from users where login_id=#{login_id}	
 </select>		
@@ -59,6 +59,12 @@ resultType="user">
 
 select * from users where email=#{email} and phone=#{phone}
 </select>
+
+
+<update id = "updatePwd" parameterType = "java.util.Map">
+
+update users set password=#{newPwd} where user_id = #{user_id}
+</update>
 
 
 <!--정보 수정-->
