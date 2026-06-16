@@ -276,3 +276,37 @@ input[type="button"] {
 
 .btn-toss { background-color: #0051FF; }
 .btn-toss svg { fill: #FFFFFF; }
+
+
+
+/* 1. 일반 회원 테이블에서 아이디, 비밀번호, 비밀번호 확인, 이메일, 이름, 성별, 전화번호 지정 */
+#usertable tr:nth-child(1) th::after,  /* 아이디 */
+#usertable tr:nth-child(3) th::after,  /* 비밀번호 */
+#usertable tr:nth-child(4) th::after,  /* 비밀번호 확인 */
+#usertable tr:nth-child(5) th::after,  /* 이메일 */
+#usertable tr:nth-child(6) th::after,  /* 이름 */
+#usertable tr:nth-child(7) th::after,  /* 성별 */
+#usertable tr:nth-child(8) th::after { /* 전화번호 */
+     content: " *";
+    color: #FF3B30;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 2px;
+ 
+}
+
+
+/* 2. 사업자 회원 테이블은 모든 항목이 필수이므로 전체 적용 */
+#sellertable th::after {
+    content: " *";
+    color: #FF3B30;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+
+/* 버튼 가운데 정렬 */
+.join-table td {
+    text-align: center;
+}

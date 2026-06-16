@@ -159,11 +159,39 @@ public class UserController {
  //사업자회원 가입
  @Transactional
   @PostMapping("/joinSeller.do")
-    public String joinSeller(UserVO vo, SellerVO svo) {
+    public String joinSeller(UserVO vo, SellerVO svo) throws Exception {
 
         String securePwd = pwdSecurity.pwdEncoding(vo.getPassword());
         vo.setPassword(securePwd);
-      
+        String savePath = "c:" + File.separator + "upload" + File.separator;
+
+        //저장경로가 없다면 생성
+        File dir = new File(savePath);
+        if( !dir.exists() ){
+            dir.mkdirs();
+        }
+
+        MultipartFile photo = vo.getPhoto();
+        String photo_name = "no_file";
+
+        //업로드할 파일 선택여부 확인
+        if( photo != null && !photo.isEmpty() ){
+
+            photo_name = photo.getOriginalFilename();
+            File saveFile = new File( savePath, photo_name );
+
+            //파일명 중복 방지
+            if( saveFile.exists() ){
+                long time = System.currentTimeMillis();
+                photo_name = String.format("%d_%s", time, photo_name);
+                saveFile = new File(savePath, photo_name);
+            }
+
+            photo.transferTo(saveFile);
+            
+        }//if
+
+        vo.setPhoto_name(photo_name);
         int result = userDao.insertUser(vo); 
 
         svo.setUser_id(vo.getUser_id());
@@ -223,7 +251,7 @@ public class UserController {
     return "user/findInfo";
 }
 
-/* 
+/*
  @PostMapping("/findEmail.do")
   @ResponseBody
     public Map<String, Object> findEmail( UserVO vo) {
@@ -249,7 +277,8 @@ public class UserController {
        return map; 
 }
 
-*/
+ */
+
 
 //아이디 찾기
  @PostMapping("/findLoginId.do")
@@ -278,37 +307,53 @@ public class UserController {
 }
 
 
-@PostMapping("/findPwd.do")
+@PostMapping("/phoneMailCheck.do")
   @ResponseBody
     public Map<String, Object> findPassword( UserVO vo) {
   
         UserVO user = userDao.findPwd(vo);
-        boolean isValid = false;
+        
+        String param = "no";
 
-       
-        String param = "noEmail";
-        String user_password = "";
-
-       if( user == null || user.getEmail() == null ){ //이메일이 존재하지 않을 때
-            param = "noEmail";
-        }else if( !isValid ){ //이메일은 있으나 폰 불일치
-            param = "noPhone";
-        }else{
-            //메일,폰 일치 상태
-            param = "clear";
-            user_password = user.getPassword();
-
-        }
-
+      if( user == null ){
+    param = "no"; // 일치하는 정보 없음
+}else{
+    param = "clear"; // 일치
+}
         //콜백으로 결과 반환
         Map<String, Object> map = new HashMap<>();
         map.put("param", param);
-        map.put("user_password", user_password);
+        map.put("user", user );
 
        return map; 
 }
 
 
+
+// 임시비번발송
+@PostMapping("/newPwdSend.do")
+  @ResponseBody
+    
+  
+  //newPassword(String email, Integer user_id)로 변경 권장
+    public Map<String, Object> newPassword(String email, int user_id) {
+
+        String newPwd = mss.newPwdEmail(email);
+
+       newPwd = pwdSecurity.pwdEncoding(newPwd);
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("newPwd", newPwd);
+        paramMap.put("user_id", user_id);
+
+        int res = userDao.updatePwd(paramMap);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("res", res);
+
+        return map;
+
+    }
 
     
     //일반회원 정보수정폼으로
@@ -384,7 +429,7 @@ public class UserController {
             File del_photo = new File(savePath, del_photo_name);
 
             //새로운 사진이 등록되었거나 사진을 등록하지 않은 경우
-            if( !photo.isEmpty() || ori_photo_name.equals("no_file") ){
+            if ( (photo != null && !photo.isEmpty()) || ori_photo_name.equals("no_file") ){
                 if( del_photo.exists() ){ 
                     del_photo.delete(); 
                 }
@@ -412,17 +457,19 @@ boolean isValid = false;
 UserVO sessionUser = (UserVO) session.getAttribute("user");
 
 if (sessionUser != null && ori_password != null) {
-       
-        // pwdSecurity.pwdDecoding(평문 입력값, 암호화된 DB값)
-        isValid = pwdSecurity.pwdDecoding(ori_password, sessionUser.getPassword());
-    }
-
-map.put("isValid", isValid);
-
-return map;
-
-    }
+ 
+    UserVO dbUser = userDao.selectUser(sessionUser.getUser_id()); 
     
+    if(dbUser != null) {
+        // DB에 있는 최신 암호화 비밀번호와 유저의 입력값을 비교하므로 100% 정확합니다.
+        isValid = pwdSecurity.pwdDecoding(ori_password, dbUser.getPassword());
+
+    }
+    map.put("isValid", isValid);
+   
+}
+ return map;
+    }
 
      //사업자회원 가입
  @Transactional
