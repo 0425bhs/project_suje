@@ -8,6 +8,7 @@
     <head>
         <title>HANDMADE - 신제품</title>
 
+        
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/product/product_card.css">
         <link rel="stylesheet" href="/css/product/product_new_list.css">

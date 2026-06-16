@@ -11,7 +11,7 @@
         <title>마이쇼핑</title>
 
         <link rel="stylesheet" href="/css/product/product_main.css">
-        <link rel="stylesheet" href="/css/order-payment.css?v=3">
+        <link rel="stylesheet" href="/css/order-payment.css?v=4">
 
         <script src="/js/product_main.js" defer></script>
         <script src="/js/order-payment.js" defer></script>
@@ -22,43 +22,6 @@
         <jsp:include page="/WEB-INF/views/product/product_header.jsp">
             <jsp:param name="activeMenu" value="order" />
         </jsp:include>
-
-        <!-- 중요: 주문 상태별 개수 계산 -->
-        <c:set var="totalCount" value="0" />
-        <c:set var="pendingCount" value="0" />
-        <c:set var="paidCount" value="0" />
-        <c:set var="preparingCount" value="0" />
-        <c:set var="shippingCount" value="0" />
-        <c:set var="deliveredCount" value="0" />
-        <c:set var="cancelCount" value="0" />
-
-        <c:forEach var="order" items="${allOrderList}">
-            <c:set var="totalCount" value="${totalCount + 1}" />
-
-            <c:if test="${order.status eq 'PENDING'}">
-                <c:set var="pendingCount" value="${pendingCount + 1}" />
-            </c:if>
-
-            <c:if test="${order.status eq 'PAID'}">
-                <c:set var="paidCount" value="${paidCount + 1}" />
-            </c:if>
-
-            <c:if test="${order.status eq 'PREPARING'}">
-                <c:set var="preparingCount" value="${preparingCount + 1}" />
-            </c:if>
-
-            <c:if test="${order.status eq 'SHIPPING'}">
-                <c:set var="shippingCount" value="${shippingCount + 1}" />
-            </c:if>
-
-            <c:if test="${order.status eq 'DELIVERED'}">
-                <c:set var="deliveredCount" value="${deliveredCount + 1}" />
-            </c:if>
-
-            <c:if test="${order.status eq 'CANCELLED'}">
-                <c:set var="cancelCount" value="${cancelCount + 1}" />
-            </c:if>
-        </c:forEach>
 
         <section class="myshop-page">
 
@@ -84,49 +47,49 @@
 
                         <button type="button"
                                 class="${empty selectedStatus ? 'active' : ''}"
-                                onclick="location.href='/order/my'">
+                                onclick="location.href='/myshop/orders'">
                             <span>전체</span>
                             <strong>${totalCount}</strong>
                         </button>
 
                         <button type="button"
                                 class="${selectedStatus eq 'PENDING' ? 'active' : ''}"
-                                onclick="location.href='/order/my?status=PENDING'">
+                                onclick="location.href='/myshop/orders?status=PENDING'">
                             <span>결제대기</span>
                             <strong>${pendingCount}</strong>
                         </button>
 
                         <button type="button"
                                 class="${selectedStatus eq 'PAID' ? 'active' : ''}"
-                                onclick="location.href='/order/my?status=PAID'">
+                                onclick="location.href='/myshop/orders?status=PAID'">
                             <span>결제완료</span>
                             <strong>${paidCount}</strong>
                         </button>
 
                         <button type="button"
                                 class="${selectedStatus eq 'PREPARING' ? 'active' : ''}"
-                                onclick="location.href='/order/my?status=PREPARING'">
+                                onclick="location.href='/myshop/orders?status=PREPARING'">
                             <span>제작 준비중</span>
                             <strong>${preparingCount}</strong>
                         </button>
 
                         <button type="button"
                                 class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
-                                onclick="location.href='/order/my?status=SHIPPING'">
+                                onclick="location.href='/myshop/orders?status=SHIPPING'">
                             <span>배송중</span>
                             <strong>${shippingCount}</strong>
                         </button>
 
                         <button type="button"
                                 class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}"
-                                onclick="location.href='/order/my?status=DELIVERED'">
+                                onclick="location.href='/myshop/orders?status=DELIVERED'">
                             <span>배송완료</span>
                             <strong>${deliveredCount}</strong>
                         </button>
 
                         <button type="button"
                                 class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
-                                onclick="location.href='/order/my?status=CANCELLED'">
+                                onclick="location.href='/myshop/orders?status=CANCELLED'">
                             <span>취소</span>
                             <strong>${cancelCount}</strong>
                         </button>
@@ -139,10 +102,10 @@
                         <div class="myshop-section-head">
                             <div>
                                 <h2>주문/배송내역</h2>
-                                <p>주문한 작품의 상태를 확인하고 필요한 작업을 진행할 수 있습니다.</p>
+                                <p>주문한 작품의 결제 상태와 배송 상태를 확인할 수 있습니다.</p>
                             </div>
 
-                            <a href="/order/my">전체보기</a>
+                            <a href="/myshop/orders">전체보기</a>
                         </div>
 
                         <c:choose>
@@ -163,227 +126,203 @@
 
                                         <article class="myshop-order-card">
 
-    <!-- 추가: 주문 1건 안에 들어있는 상품 개수 계산 -->
-    <!-- 이유: 상품이 1개면 기존처럼 보이고, 여러 개면 펼쳐보기 버튼을 보여주기 위해서 -->
-    <c:set var="itemCount" value="${fn:length(items)}" />
+                                            <c:set var="itemCount" value="${fn:length(items)}" />
 
-    <div class="myshop-order-top">
+                                            <div class="myshop-order-top">
 
-        <div>
-            <strong class="myshop-status-badge ${order.status}">
-                <c:choose>
-                    <c:when test="${order.status eq 'PENDING'}">주문 접수</c:when>
-                    <c:when test="${order.status eq 'PAID'}">결제 완료</c:when>
-                    <c:when test="${order.status eq 'PREPARING'}">제작 준비중</c:when>
-                    <c:when test="${order.status eq 'SHIPPING'}">배송중</c:when>
-                    <c:when test="${order.status eq 'DELIVERED'}">배송 완료</c:when>
-                    <c:when test="${order.status eq 'CANCELLED'}">주문 취소</c:when>
-                    <c:otherwise>${order.status}</c:otherwise>
-                </c:choose>
-            </strong>
+                                                <div>
+                                                    <strong class="myshop-status-badge ${order.status}">
+                                                        <c:choose>
+                                                            <c:when test="${order.status eq 'PENDING'}">주문 접수</c:when>
+                                                            <c:when test="${order.status eq 'PAID'}">결제 완료</c:when>
+                                                            <c:when test="${order.status eq 'PREPARING'}">제작 준비중</c:when>
+                                                            <c:when test="${order.status eq 'SHIPPING'}">배송중</c:when>
+                                                            <c:when test="${order.status eq 'DELIVERED'}">배송 완료</c:when>
+                                                            <c:when test="${order.status eq 'CANCELLED'}">주문 취소</c:when>
+                                                            <c:otherwise>${order.status}</c:otherwise>
+                                                        </c:choose>
+                                                    </strong>
 
-            <span>${order.created_at} · 주문번호 #${order.order_id}</span>
-        </div>
+                                                    <span>${order.created_at} · 주문번호 #${order.order_id}</span>
+                                                </div>
 
-        <a href="/order/detail?order_id=${order.order_id}">
-            주문상세 &gt;
-        </a>
+                                                <a href="/order/detail?order_id=${order.order_id}">
+                                                    주문상세 &gt;
+                                                </a>
 
-    </div>
+                                            </div>
 
-    <div class="myshop-order-body">
+                                            <div class="myshop-order-body">
 
-        <div class="myshop-product-thumb">
-            <c:choose>
-                <c:when test="${not empty mainItem and not empty mainItem.imageS and mainItem.imageS ne 'no_file'}">
-                    <img src="${mainItem.imageS}" alt="${mainItem.productName}">
-                </c:when>
+                                                <div class="myshop-product-thumb">
+                                                    <c:choose>
+                                                        <c:when test="${not empty mainItem and not empty mainItem.imageS and mainItem.imageS ne 'no_file'}">
+                                                            <img src="${mainItem.imageS}" alt="${mainItem.productName}">
+                                                        </c:when>
 
-                <c:otherwise>
-                    <img src="/images/no_image.png" alt="이미지 없음">
-                </c:otherwise>
-            </c:choose>
+                                                        <c:otherwise>
+                                                            <img src="/images/no_image.png" alt="이미지 없음">
+                                                        </c:otherwise>
+                                                    </c:choose>
 
-            <!-- 추가: 여러 상품 주문이면 대표 이미지에 개수 표시 -->
-            <!-- 이유: 대표 이미지 하나만 보여도 여러 상품 주문이라는 걸 알 수 있게 하기 위해서 -->
-            <c:if test="${itemCount gt 1}">
-                <span class="myshop-thumb-count">${itemCount}</span>
-            </c:if>
-        </div>
+                                                    <c:if test="${itemCount gt 1}">
+                                                        <span class="myshop-thumb-count">${itemCount}</span>
+                                                    </c:if>
+                                                </div>
 
-        <div class="myshop-product-info">
-            <c:choose>
-                <c:when test="${not empty mainItem}">
+                                                <div class="myshop-product-info">
+                                                    <c:choose>
+                                                        <c:when test="${not empty mainItem}">
 
-                    <!-- 변경: 상품명을 클릭하면 상품 상세페이지로 이동 -->
-                    <!-- 이유: 구매자가 주문 목록에서 바로 상품 상세를 볼 수 있게 하기 위해서 -->
-                    <a class="myshop-product-name-link"
-                       href="/product_detail.do?product_id=${mainItem.product_id}">
-                        ${mainItem.productName}
+                                                            <c:choose>
+                                                                <c:when test="${itemCount eq 1}">
+                                                                    <strong class="myshop-product-name-text">
+                                                                        ${mainItem.productName}
+                                                                    </strong>
+                                                                </c:when>
 
-                        <!-- 변경: 여러 상품 주문이면 전체 주문 상품 수 표시 -->
-                        <!-- 이유: 사진처럼 이 주문에 총 몇 개 상품이 있는지 보여주기 위해서 -->
-                        <c:if test="${itemCount gt 1}">
-                            포함 총 ${itemCount}건
-                        </c:if>
-                    </a>
+                                                                <c:otherwise>
+                                                                    <button type="button"
+                                                                            class="myshop-product-name-text myshop-product-open-btn"
+                                                                            onclick="toggleOrderItems(this.closest('.myshop-order-card').querySelector('.myshop-order-toggle'))">
+                                                                        ${mainItem.productName} 포함 총 ${itemCount}건
+                                                                    </button>
+                                                                </c:otherwise>
+                                                            </c:choose>
 
-                    <p>
-                        대표상품 수량 ${mainItem.quantity}개 ·
-                        <fmt:formatNumber value="${mainItem.price}" pattern="#,###"/>원
-                    </p>
+                                                            <p>
+                                                                대표상품 수량 ${mainItem.quantity}개 ·
+                                                                <fmt:formatNumber value="${mainItem.price}" pattern="#,###"/>원
+                                                            </p>
 
-                </c:when>
+                                                        </c:when>
 
-                <c:otherwise>
-                    <strong>주문 상품 정보 없음</strong>
-                    <p>상품 정보를 불러오지 못했습니다.</p>
-                </c:otherwise>
-            </c:choose>
+                                                        <c:otherwise>
+                                                            <strong>주문 상품 정보 없음</strong>
+                                                            <p>상품 정보를 불러오지 못했습니다.</p>
+                                                        </c:otherwise>
+                                                    </c:choose>
 
-            <strong>
-                총 결제금액
-                <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
-            </strong>
-        </div>
+                                                    <strong>
+                                                        총 결제금액
+                                                        <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
+                                                    </strong>
+                                                </div>
+                                                <div class="myshop-order-actions">
 
-        <div class="myshop-order-actions">
+                                                    <a href="/order/detail?order_id=${order.order_id}">
+                                                        상세보기
+                                                    </a>
 
-            <a href="/order/detail?order_id=${order.order_id}">
-                상세보기
-            </a>
+                                                    <c:if test="${order.status eq 'PENDING'}">
+                                                        <a href="/payment/ready?order_id=${order.order_id}" class="primary">
+                                                            결제하기
+                                                        </a>
 
-            <!-- 유지: 결제대기 상태에서는 구매자가 결제 진행 가능 -->
-            <!-- 이유: 아직 결제 전이라 판매자 제작 단계에 들어가지 않았기 때문 -->
-            <c:if test="${order.status eq 'PENDING'}">
-                <a href="/payment/ready?order_id=${order.order_id}" class="primary">
-                    결제하기
-                </a>
+                                                        <form action="/order/cancel" method="post" class="inline-form">
+                                                            <input type="hidden" name="order_id" value="${order.order_id}">
 
-                <!-- 유지: 결제 전 주문은 구매자가 주문취소 가능 -->
-                <!-- 이유: 결제 완료 전이므로 제작/배송 상태 변경과는 다른 구매자 기능이기 때문 -->
-                <form action="/order/cancel" method="post" class="inline-form">
-                    <input type="hidden" name="order_id" value="${order.order_id}">
+                                                            <button type="submit"
+                                                                    onclick="return confirm('주문을 취소하시겠습니까?');">
+                                                                주문취소
+                                                            </button>
+                                                        </form>
+                                                    </c:if>
+                                                    
+                                                    <c:if test="${order.status eq 'PAID'}">
+                                                        <button type="button"
+                                                                onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
+                                                            결제취소
+                                                        </button>
+                                                    </c:if>
 
-                    <button type="submit"
-                            onclick="return confirm('주문을 취소하시겠습니까?');">
-                        주문취소
-                    </button>
-                </form>
-            </c:if>
+                                                    <c:if test="${order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
+                                                        <a href="/order/delivery?order_id=${order.order_id}">
+                                                            배송조회
+                                                        </a>
+                                                    </c:if>
 
-            <!-- 변경: 결제취소는 PAID 상태에서만 표시 -->
-            <!-- 이유: 결제완료 후 제작 준비중으로 넘어가기 전까지만 구매자가 취소할 수 있게 하기 위해서 -->
-            <c:if test="${order.status eq 'PAID'}">
-                <button type="button"
-                        onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
-                    결제취소
-                </button>
-            </c:if>
+                                                    <c:if test="${order.status eq 'DELIVERED'}">
+                                                        <button type="button"
+                                                                class="review"
+                                                                onclick="alert('리뷰 작성 기능은 준비중입니다.');">
+                                                            리뷰쓰기
+                                                        </button>
+                                                    </c:if>
 
-            <!-- 변경: 배송조회는 제작 준비중 이후부터 표시 -->
-            <!-- 이유: PAID 상태는 아직 배송 조회할 단계가 아니고, PREPARING부터 배송 흐름에 들어가기 때문 -->
-            <c:if test="${order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
-                <a href="/order/delivery?order_id=${order.order_id}">
-                    배송조회
-                </a>
-            </c:if>
+                                                    <button type="button"
+                                                            class="qna"
+                                                            onclick="alert('문의 기능은 준비중입니다.');">
+                                                        문의하기
+                                                    </button>
 
-            <!-- 유지: 배송완료 상태에서만 리뷰쓰기 표시 -->
-            <!-- 이유: 상품을 받은 후에 리뷰를 작성하는 흐름이 자연스럽기 때문 -->
-            <c:if test="${order.status eq 'DELIVERED'}">
-                <button type="button"
-                        class="review"
-                        onclick="alert('리뷰 작성 기능은 준비중입니다.');">
-                    리뷰쓰기
-                </button>
-            </c:if>
+                                                </div>
 
-            <!-- 유지: 문의하기는 상태 변경 기능이 아니라 구매자 문의 기능 -->
-            <button type="button"
-                    class="qna"
-                    onclick="alert('문의 기능은 준비중입니다.');">
-                문의하기
-            </button>
+                                            </div>
 
-        </div>
+                                            <c:if test="${itemCount gt 1}">
 
-    </div>
+                                                <button type="button"
+                                                        class="myshop-order-toggle"
+                                                        data-count="${itemCount}"
+                                                        onclick="toggleOrderItems(this)">
+                                                    <span class="toggle-text">총 ${itemCount}건 주문 펼쳐보기</span>
+                                                    <span class="toggle-arrow"></span>
+                                                </button>
 
-    <!-- 추가: 여러 상품 주문일 때만 펼쳐보기 버튼 표시 -->
-    <!-- 이유: 상품이 1개일 때는 기존 디자인 그대로 두고, 여러 개일 때만 주문 목록을 펼치기 위해서 -->
-    <c:if test="${itemCount gt 1}">
+                                                <div class="myshop-order-items-panel">
 
-        <button type="button"
-                class="myshop-order-toggle"
-                data-count="${itemCount}"
-                onclick="toggleOrderItems(this)">
-            <span class="toggle-text">총 ${itemCount}건 주문 펼쳐보기</span>
-            <span class="toggle-arrow"></span>
-        </button>
+                                                    <c:forEach var="item" items="${items}">
 
-        <!-- 추가: 펼쳐보기 버튼 클릭 시 보일 주문 상품 목록 -->
-        <!-- 이유: 한 주문 안에 들어있는 모든 상품을 확인할 수 있게 하기 위해서 -->
-        <div class="myshop-order-items-panel">
+                                                        <div class="myshop-order-item-row">
 
-            <c:forEach var="item" items="${items}">
+                                                            <div class="myshop-order-item-thumb">
+                                                                <c:choose>
+                                                                    <c:when test="${not empty item.imageS and item.imageS ne 'no_file'}">
+                                                                        <img src="${item.imageS}" alt="${item.productName}">
+                                                                    </c:when>
 
-                <div class="myshop-order-item-row">
+                                                                    <c:otherwise>
+                                                                        <img src="/images/no_image.png" alt="이미지 없음">
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </div>
 
-                    <!-- 추가: 펼친 목록의 상품 이미지 클릭 시 상품 상세 이동 -->
-                    <a class="myshop-order-item-thumb"
-                       href="/product_detail.do?product_id=${item.product_id}">
-                        <c:choose>
-                            <c:when test="${not empty item.imageS and item.imageS ne 'no_file'}">
-                                <img src="${item.imageS}" alt="${item.productName}">
-                            </c:when>
+                                                            <div class="myshop-order-item-info">
 
-                            <c:otherwise>
-                                <img src="/images/no_image.png" alt="이미지 없음">
-                            </c:otherwise>
-                        </c:choose>
-                    </a>
+                                                                <span class="myshop-order-item-name-text">
+                                                                    ${item.productName}
+                                                                </span>
 
-                    <div class="myshop-order-item-info">
+                                                                <p>
+                                                                    수량 ${item.quantity}개 ·
+                                                                    <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
+                                                                </p>
 
-                        <!-- 추가: 펼친 목록의 각 상품명 클릭 시 상품 상세 이동 -->
-                        <!-- 이유: 여러 상품 중 원하는 상품 상세페이지로 바로 넘어가기 위해서 -->
-                        <a href="/product_detail.do?product_id=${item.product_id}">
-                            ${item.productName}
-                        </a>
+                                                            </div>
 
-                        <p>
-                            수량 ${item.quantity}개 ·
-                            <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
-                        </p>
+                                                            <div class="myshop-order-item-actions">
 
-                    </div>
+                                                                <a href="/order/detail?order_id=${order.order_id}">
+                                                                    주문상세
+                                                                </a>
 
-                    <div class="myshop-order-item-actions">
+                                                                <button type="button"
+                                                                        onclick="alert('문의 기능은 준비중입니다.');">
+                                                                    문의하기
+                                                                </button>
 
-                        <!-- 추가: 펼친 상품별 상세보기 버튼 -->
-                        <a href="/product_detail.do?product_id=${item.product_id}">
-                            상세보기
-                        </a>
+                                                            </div>
 
-                        <!-- 추가: 펼친 상품별 문의 버튼 -->
-                        <!-- 이유: 구매자 페이지에서는 상태 변경이 아니라 문의 정도만 가능하게 하기 위해서 -->
-                        <button type="button"
-                                onclick="alert('문의 기능은 준비중입니다.');">
-                            문의하기
-                        </button>
+                                                        </div>
 
-                    </div>
+                                                    </c:forEach>
 
-                </div>
+                                                </div>
 
-            </c:forEach>
+                                            </c:if>
 
-        </div>
-
-    </c:if>
-
-</article>
+                                        </article>
 
                                     </c:forEach>
 

@@ -37,6 +37,13 @@
     </button>
 
     <button type="button"
+            class="${selectedStatus eq 'PREPARING' ? 'active' : ''}"
+            onclick="location.href='/myshop/orders?status=PREPARING'">
+        <span>제작 준비중</span>
+        <strong>${preparingCount}</strong>
+    </button>
+
+    <button type="button"
             class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
             onclick="location.href='/myshop/orders?status=SHIPPING'">
         <span>배송중</span>
@@ -65,7 +72,7 @@
     <div class="myshop-section-head">
         <div>
             <h2>주문/배송내역</h2>
-            <p>주문한 작품의 상태를 확인하고 필요한 작업을 진행할 수 있습니다.</p>
+            <p>주문한 작품의 결제 상태와 배송 상태를 확인할 수 있습니다.</p>
         </div>
 
         <a href="/myshop/orders">전체보기</a>
@@ -86,6 +93,7 @@
                     <!-- 중요: 주문별 상품 목록 -->
                     <c:set var="items" value="${orderItemMap[order.order_id]}" />
                     <c:set var="mainItem" value="${items[0]}" />
+                    <c:set var="itemCount" value="${fn:length(items)}" />
 
                     <article class="myshop-order-card">
 
@@ -125,23 +133,37 @@
                                         <img src="/images/no_image.png" alt="이미지 없음">
                                     </c:otherwise>
                                 </c:choose>
+
+                                <!-- 추가: 여러 상품 주문이면 대표 이미지에 상품 개수 표시 -->
+                                <c:if test="${itemCount gt 1}">
+                                    <span class="myshop-thumb-count">${itemCount}</span>
+                                </c:if>
                             </div>
 
                             <div class="myshop-product-info">
                                 <c:choose>
                                     <c:when test="${not empty mainItem}">
-                                        <a href="/product_detail.do?product_id=${mainItem.product_id}">
-                                            ${mainItem.productName}
 
-                                            <c:if test="${fn:length(items) > 1}">
-                                                외 ${fn:length(items) - 1}건
-                                            </c:if>
-                                        </a>
+                                        <c:choose>
+                                            <c:when test="${itemCount eq 1}">
+                                                
+                                                <a class="myshop-product-name-link"
+                                                   href="/product_detail.do?product_id=${mainItem.product_id}">
+                                                    ${mainItem.productName}
+                                                </a>
+                                            </c:when>
 
-                                        <p>
-                                            수량 ${mainItem.quantity}개 ·
-                                            <fmt:formatNumber value="${mainItem.price}" pattern="#,###"/>원
-                                        </p>
+                                            <c:otherwise>
+                                                
+                                                <strong class="myshop-product-name-text">
+                                                    ${mainItem.productName} 포함 총 ${itemCount}건
+                                                </strong>
+
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                        
+
                                     </c:when>
 
                                     <c:otherwise>
@@ -178,14 +200,6 @@
                                     </form>
                                 </c:if>
 
-                                <!-- 중요: 배송조회 가능 상태 -->
-                                <c:if test="${order.status eq 'PAID' || order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
-                                    <a href="/order/delivery?order_id=${order.order_id}">
-                                        배송조회
-                                    </a>
-                                </c:if>
-
-                                <!-- 중요: 결제취소 가능 상태 -->
                                 <c:if test="${order.status eq 'PAID'}">
                                     <button type="button"
                                             onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
@@ -193,7 +207,12 @@
                                     </button>
                                 </c:if>
 
-                                <!-- 준비중: 리뷰쓰기 -->
+                                <c:if test="${order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
+                                    <a href="/order/delivery?order_id=${order.order_id}">
+                                        배송조회
+                                    </a>
+                                </c:if>
+
                                 <c:if test="${order.status eq 'DELIVERED'}">
                                     <button type="button"
                                             class="review"
@@ -213,6 +232,69 @@
 
                         </div>
 
+                        <c:if test="${itemCount gt 1}">
+
+                            <button type="button"
+                                    class="myshop-order-toggle"
+                                    data-count="${itemCount}"
+                                    onclick="toggleOrderItems(this)">
+                                <span class="toggle-text">총 ${itemCount}건 주문 펼쳐보기</span>
+                                <span class="toggle-arrow"></span>
+                            </button>
+
+                            <div class="myshop-order-items-panel">
+
+                                <c:forEach var="item" items="${items}">
+
+                                    <div class="myshop-order-item-row">
+
+                                        <a class="myshop-order-item-thumb"
+                                           href="/product_detail.do?product_id=${item.product_id}">
+                                            <c:choose>
+                                                <c:when test="${not empty item.imageS and item.imageS ne 'no_file'}">
+                                                    <img src="${item.imageS}" alt="${item.productName}">
+                                                </c:when>
+
+                                                <c:otherwise>
+                                                    <img src="/images/no_image.png" alt="이미지 없음">
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </a>
+
+                                        <div class="myshop-order-item-info">
+
+                                            <a href="/product_detail.do?product_id=${item.product_id}">
+                                                ${item.productName}
+                                            </a>
+
+                                            <p>
+                                                수량 ${item.quantity}개 ·
+                                                <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
+                                            </p>
+
+                                        </div>
+
+                                        <div class="myshop-order-item-actions">
+
+                                            <a href="/product_detail.do?product_id=${item.product_id}">
+                                                상세보기
+                                            </a>
+
+                                            <button type="button"
+                                                    onclick="alert('문의 기능은 준비중입니다.');">
+                                                문의하기
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </c:forEach>
+
+                            </div>
+
+                        </c:if>
+
                     </article>
 
                 </c:forEach>
@@ -222,3 +304,98 @@
     </c:choose>
 
 </section>
+
+<div class="cancel-modal-wrap" id="cancelModal">
+
+    <div class="cancel-modal-bg" onclick="closeCancelModal()"></div>
+
+    <div class="cancel-modal-box">
+
+        <div class="cancel-modal-head">
+            <div>
+                <span>PAYMENT CANCEL</span>
+                <h3>결제취소 요청</h3>
+                <p>취소 사유와 안내사항을 확인해주세요.</p>
+            </div>
+
+            <button type="button"
+                    class="cancel-modal-close"
+                    onclick="closeCancelModal()">
+                ×
+            </button>
+        </div>
+
+        <div class="cancel-modal-body">
+
+            <div class="cancel-info-row">
+                <span>주문번호</span>
+                <strong id="cancelOrderIdText">#</strong>
+            </div>
+
+            <div class="cancel-info-row">
+                <span>결제금액</span>
+                <strong id="cancelAmountText">0원</strong>
+            </div>
+
+            <div class="cancel-form-row">
+                <label for="cancelReason">취소 사유</label>
+
+                <select id="cancelReason">
+                    <option value="">취소 사유를 선택해주세요</option>
+                    <option value="단순 변심">단순 변심</option>
+                    <option value="상품을 잘못 주문함">상품을 잘못 주문함</option>
+                    <option value="배송 일정 변경">배송 일정 변경</option>
+                    <option value="다른 상품으로 재주문 예정">다른 상품으로 재주문 예정</option>
+                    <option value="기타">기타</option>
+                </select>
+            </div>
+
+            <div class="cancel-form-row">
+                <label for="cancelDetail">상세 사유</label>
+
+                <textarea id="cancelDetail"
+                          placeholder="상세 사유를 입력해주세요. 선택 입력입니다."></textarea>
+            </div>
+
+            <div class="cancel-guide-box">
+                <strong>결제취소 안내</strong>
+
+                <ul>
+                    <li>결제취소가 완료되면 주문 상태가 <b>주문 취소</b>로 변경됩니다.</li>
+                    <li>환불은 결제 수단과 카드사 정책에 따라 처리 시간이 다를 수 있습니다.</li>
+                    <li>이미 제작 또는 배송이 시작된 주문은 취소가 제한될 수 있습니다.</li>
+                    <li>취소 요청 후에는 동일 주문으로 다시 결제할 수 없습니다.</li>
+                </ul>
+            </div>
+
+            <label class="cancel-agree">
+                <input type="checkbox" id="cancelAgree">
+                결제취소 안내사항을 확인했습니다.
+            </label>
+
+        </div>
+
+        <div class="cancel-modal-actions">
+
+            <button type="button"
+                    class="cancel-close-btn"
+                    onclick="closeCancelModal()">
+                닫기
+            </button>
+
+            <form action="/payment/toss/cancel" method="post" id="cancelForm">
+                <input type="hidden" name="order_id" id="cancelOrderId">
+                <input type="hidden" name="cancel_reason" id="cancelReasonInput">
+
+                <button type="button"
+                        class="cancel-submit-btn"
+                        onclick="submitCancelForm()">
+                    결제취소 요청
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

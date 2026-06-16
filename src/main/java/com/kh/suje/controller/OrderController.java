@@ -82,6 +82,7 @@ public class OrderController {
 
         for (OrderVO order : orderList) {
             List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order.getOrder_id());
+
             orderItemMap.put(order.getOrder_id(), itemList);
         }
         

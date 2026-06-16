@@ -1,1231 +1,4 @@
 /* =========================================================
-   주문/결제 통합 CSS
-========================================================= */
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", Arial, sans-serif;
-    background: #ffffff;
-    color: #2b2b2b;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-button,
-input,
-select {
-    font-family: inherit;
-}
-
-/* =========================================================
-   Header 영역
-========================================================= */
-
-.site-header {
-    border-bottom: 1px solid #f0e5dc;
-    background: #fff;
-}
-
-.header-inner {
-    max-width: 1280px;
-    height: 74px;
-    margin: 0 auto;
-    padding: 0 32px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.brand {
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    color: #2b2b2b;
-}
-
-.brand span {
-    color: #ff6f4f;
-}
-
-.main-nav {
-    display: flex;
-    gap: 28px;
-
-    font-size: 15px;
-    font-weight: 800;
-    color: #4b4b4b;
-}
-
-.main-nav a:hover,
-.header-actions a:hover {
-    color: #ff6f4f;
-}
-
-.header-actions {
-    display: flex;
-    gap: 18px;
-
-    color: #777;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-/* =========================================================
-   Hero 영역
-========================================================= */
-
-.hero-order {
-    background: linear-gradient(90deg, #fffaf7 0%, #ffffff 55%, #fff5ef 100%);
-    border-bottom: 1px solid #f5e3d7;
-    padding: 46px 0;
-}
-
-.hero-inner {
-    display: flex;
-    justify-content: space-between;
-    gap: 42px;
-    align-items: center;
-}
-
-.hero-copy {
-    max-width: 640px;
-}
-
-.hero-label {
-    display: block;
-    margin-bottom: 10px;
-
-    color: #ff6f4f;
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-}
-
-.hero-order h1 {
-    margin: 0 0 14px;
-
-    color: #2b2b2b;
-    font-size: 32px;
-    line-height: 1.28;
-    font-weight: 900;
-    letter-spacing: -0.045em;
-}
-
-.hero-order p {
-    max-width: 560px;
-    margin: 0;
-
-    color: #7a6255;
-    font-size: 15px;
-    line-height: 1.75;
-}
-
-.hero-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-
-    margin-top: 22px;
-}
-
-.hero-tags span {
-    height: 34px;
-    padding: 0 14px;
-
-    display: inline-flex;
-    align-items: center;
-
-    border: 1px solid #f0d6c7;
-    background: #fff;
-    color: #8a5a44;
-    border-radius: 999px;
-
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.hero-card {
-    width: 340px;
-    padding: 24px;
-
-    background: #fff;
-    border: 1px solid #f0e5dc;
-}
-
-.hero-card strong {
-    display: block;
-    margin-bottom: 18px;
-
-    font-size: 17px;
-    font-weight: 900;
-}
-
-.hero-flow {
-    display: grid;
-    gap: 12px;
-}
-
-.hero-flow div {
-    padding: 12px 0;
-
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    border-bottom: 1px solid #f5e3d7;
-}
-
-.hero-flow div:last-child {
-    border-bottom: none;
-}
-
-.hero-flow span {
-    width: 34px;
-    height: 34px;
-
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    background: #fff3eb;
-    color: #ff6f4f;
-    border-radius: 50%;
-
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.hero-flow p {
-    margin: 0;
-
-    color: #5f4636;
-    font-size: 14px;
-    font-weight: 800;
-}
-
-/* =========================================================
-   공통 페이지 레이아웃
-========================================================= */
-
-.page-block {
-    padding: 58px 0;
-}
-
-.page-block.soft {
-    background: #ffffff;
-    border-top: 1px solid #eeeeee;
-    border-bottom: 1px solid #eeeeee;
-}
-
-.block-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 32px;
-}
-
-.page-block.soft .block-inner {
-    max-width: 1180px;
-}
-
-.page-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 24px;
-
-    margin-bottom: 30px;
-}
-
-.page-title-row span {
-    display: block;
-    margin-bottom: 8px;
-
-    color: #ff6f4f;
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-}
-
-.page-title-row h2 {
-    margin: 0;
-
-    color: #171717;
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-}
-
-.page-title-row p {
-    margin: 0;
-
-    color: #777;
-    font-size: 15px;
-}
-
-/* =========================================================
-   Panel / 2단 레이아웃
-========================================================= */
-
-.panel {
-    padding: 30px;
-
-    background: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 16px;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.035);
-}
-
-.panel-title {
-    margin: 0 0 22px;
-
-    color: #171717;
-    font-size: 21px;
-    font-weight: 950;
-}
-
-.order-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 380px;
-    gap: 36px;
-    align-items: start;
-}
-
-.side-panel {
-    position: sticky;
-    top: 28px;
-}
-
-/* =========================================================
-   주문 상품 아이템
-========================================================= */
-
-.order-item {
-    display: grid;
-    grid-template-columns: 112px minmax(0, 1fr) 150px;
-    gap: 20px;
-    align-items: center;
-
-    padding: 20px 0;
-    border-bottom: 1px solid #eeeeee;
-}
-
-.order-item:first-of-type {
-    padding-top: 0;
-}
-
-.order-item img {
-    width: 112px;
-    height: 112px;
-
-    object-fit: cover;
-
-    background: #fafafa;
-    border: 1px solid #eeeeee;
-    border-radius: 12px;
-}
-
-.item-info {
-    min-width: 0;
-}
-
-.item-info strong {
-    display: block;
-    margin-bottom: 8px;
-
-    color: #171717;
-    font-size: 18px;
-    font-weight: 900;
-}
-
-.item-info p {
-    margin: 5px 0;
-
-    color: #666;
-    font-size: 14px;
-}
-
-.creator-line {
-    margin-bottom: 6px;
-
-    color: #ff6f4f;
-    font-size: 13px;
-    font-weight: 900;
-}
-
-/* =========================================================
-   주문서 상품 가격 표시
-========================================================= */
-
-.order-price-box {
-    margin: 7px 0;
-}
-
-.order-origin-price {
-    margin: 0 0 4px;
-
-    color: #777;
-    font-size: 14px;
-    font-weight: 800;
-    text-decoration: line-through;
-}
-
-.order-sale-price,
-.order-normal-price {
-    margin: 0;
-
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    color: #666;
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-.order-price-label {
-    display: inline-flex;
-    align-items: center;
-
-    color: #666;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.order-sale-price strong,
-.order-normal-price strong {
-    color: #171717;
-    font-size: 16px;
-    font-weight: 950;
-    line-height: 1;
-    transform: translateY(2px);
-}
-
-.order-qty-text {
-    margin-top: 8px !important;
-}
-
-.item-price {
-    min-width: 120px;
-
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
-    color: #171717;
-    text-align: right;
-}
-
-.item-price strong {
-    color: #171717;
-    font-size: 20px;
-    font-weight: 950;
-    white-space: nowrap;
-}
-
-/* =========================================================
-   결제 요약 영역
-========================================================= */
-
-.summary-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-
-    margin: 15px 0;
-
-    color: #666666;
-}
-
-.summary-line strong {
-    color: #171717;
-}
-
-.summary-line.discount span,
-.summary-line.discount strong {
-    color: #d31c0c;
-}
-
-.summary-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 16px;
-
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid #eeeeee;
-}
-
-.summary-total span {
-    font-weight: 800;
-}
-
-.summary-total strong {
-    color: #ff6f4f;
-    font-size: 27px;
-    font-weight: 900;
-}
-
-/* =========================================================
-   버튼
-========================================================= */
-
-.btn-row {
-    display: flex;
-    gap: 10px;
-
-    margin-top: 26px;
-}
-
-.btn {
-    height: 52px;
-    padding: 0 22px;
-
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    border: 0;
-    border-radius: 10px;
-
-    font-size: 15px;
-    font-weight: 900;
-
-    cursor: pointer;
-    transition: 0.15s ease;
-}
-
-.btn.full {
-    width: 100%;
-}
-
-.btn.primary {
-    background: #ff6f4f;
-    color: #ffffff;
-    box-shadow: 0 8px 16px rgba(255, 111, 79, 0.18);
-}
-
-.btn.primary:hover {
-    background: #f05c3d;
-    transform: translateY(-1px);
-}
-
-.btn.dark {
-    background: #2b2b2b;
-    color: #fff;
-}
-
-.btn.dark:hover {
-    background: #111;
-}
-
-.btn.light {
-    background: #ffffff;
-    color: #9b4b33;
-    border: 1px solid #ead2c4;
-}
-
-.btn.light:hover {
-    background: #fff7f3;
-    color: #ff6f4f;
-}
-
-/* =========================================================
-   상태 배지
-========================================================= */
-
-.badge {
-    min-width: 82px;
-    height: 30px;
-    padding: 0 12px;
-
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    border-radius: 999px;
-
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.badge.PENDING,
-.badge.READY,
-.badge.ready {
-    background: #fff7dc;
-    color: #b97900;
-}
-
-.badge.PAID,
-.badge.SUCCESS,
-.badge.success {
-    background: #e9f8ef;
-    color: #087443;
-}
-
-.badge.PREPARING {
-    background: #fff0e7;
-    color: #d85b35;
-}
-
-.badge.SHIPPING,
-.badge.shipping {
-    background: #eef4ff;
-    color: #2563eb;
-}
-
-.badge.DELIVERED {
-    background: #e9f8ef;
-    color: #087443;
-}
-
-.badge.CANCELLED,
-.badge.FAIL,
-.badge.fail {
-    background: #fdecec;
-    color: #b91c1c;
-}
-
-/* =========================================================
-   정보 박스
-========================================================= */
-
-.info-box {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-
-    margin-bottom: 20px;
-}
-
-.info-box div {
-    padding: 18px;
-
-    background: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 12px;
-}
-
-.info-box span {
-    display: block;
-    margin-bottom: 8px;
-
-    color: #777;
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.info-box strong {
-    font-size: 15px;
-}
-
-/* =========================================================
-   주문 목록 테이블
-========================================================= */
-
-.table-wrap {
-    border-top: 2px solid #2b2b2b;
-    background: #fff;
-}
-
-.order-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.order-table th,
-.order-table td {
-    padding: 16px 14px;
-
-    border-bottom: 1px solid #eeeeee;
-
-    text-align: center;
-    font-size: 14px;
-}
-
-.order-table th {
-    background: #fafafa;
-    color: #4b4b4b;
-    font-weight: 900;
-}
-
-.order-table tbody tr:hover td {
-    background: #fffaf7;
-}
-
-.order-table a {
-    color: #9b4b33;
-    font-weight: 900;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
-.order-table td:last-child a {
-    display: inline-block;
-    margin: 0 4px;
-}
-
-.table-product {
-    text-align: left !important;
-}
-
-.table-product strong {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.table-product span {
-    color: #777;
-    font-size: 13px;
-}
-
-/* =========================================================
-   주문 목록 필터 버튼
-========================================================= */
-
-.order-filter {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 18px;
-}
-
-.order-filter button {
-    height: 38px;
-    padding: 0 18px;
-
-    border: 1px solid #ead2c4;
-    background: #fff;
-    color: #8a5a44;
-
-    font-weight: 900;
-    cursor: pointer;
-}
-
-.order-filter button.active {
-    background: #ff6f4f;
-    color: #fff;
-    border-color: #ff6f4f;
-}
-
-/* =========================================================
-   주문 완료 / 결제 실패 공통 박스
-========================================================= */
-
-.complete-box {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 54px 40px;
-
-    text-align: center;
-
-    background: #fff;
-    border: 1px solid #eeeeee;
-    border-radius: 16px;
-}
-
-.complete-icon {
-    width: 78px;
-    height: 78px;
-    margin: 0 auto 24px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #ff6f4f;
-    color: #fff;
-    border-radius: 50%;
-
-    font-size: 38px;
-    font-weight: 900;
-}
-
-.complete-box h2 {
-    margin: 0 0 12px;
-
-    font-size: 30px;
-    font-weight: 900;
-}
-
-.complete-box > p {
-    margin: 0 0 34px;
-
-    color: #777;
-}
-
-.complete-detail {
-    border-top: 1px solid #2b2b2b;
-    border-bottom: 1px solid #eeeeee;
-    text-align: left;
-}
-
-.complete-detail div {
-    padding: 18px 4px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    border-bottom: 1px solid #eeeeee;
-}
-
-.complete-detail div:last-child {
-    border-bottom: none;
-}
-
-.complete-detail span {
-    color: #777;
-}
-
-.order-guide {
-    margin-top: 22px;
-    padding: 20px;
-
-    background: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 12px;
-    color: #555555;
-}
-
-/* =========================================================
-   상세 정보 보조 박스
-========================================================= */
-
-.artist-note,
-.delivery-info-card {
-    margin-top: 22px;
-    padding: 20px;
-
-    background: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 12px;
-    color: #555555;
-}
-
-.artist-note strong,
-.delivery-info-card h4 {
-    display: block;
-    margin: 0 0 8px;
-
-    font-size: 16px;
-}
-
-.artist-note p,
-.delivery-info-card p {
-    margin: 6px 0;
-}
-
-.delivery-info-card strong {
-    display: inline-block;
-    width: 90px;
-
-    color: #333333;
-}
-
-/* =========================================================
-   배송 상태 확인 화면
-========================================================= */
-
-.delivery-box {
-    padding: 34px;
-
-    background: #fff;
-    border: 1px solid #eeeeee;
-    border-radius: 16px;
-}
-
-.delivery-steps {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 14px;
-}
-
-.delivery-step {
-    padding: 24px 12px;
-
-    border: 1px solid #eeeeee;
-    border-radius: 12px;
-    text-align: center;
-    background: #ffffff;
-}
-
-.delivery-step .num {
-    width: 38px;
-    height: 38px;
-    margin: 0 auto 12px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #f1f1f1;
-    color: #777;
-    border-radius: 50%;
-
-    font-weight: 900;
-}
-
-.delivery-step strong {
-    display: block;
-    margin-bottom: 6px;
-}
-
-.delivery-step span {
-    color: #777;
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.delivery-step.done .num,
-.delivery-step.current .num {
-    background: #ff6f4f;
-    color: #fff;
-}
-
-.delivery-step.current {
-    border-color: #ff6f4f;
-    background: #fff7f3;
-}
-
-.notice-box {
-    margin-top: 24px;
-    padding: 20px;
-
-    background: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 12px;
-    color: #555555;
-}
-
-/* =========================================================
-   주문 상세 전용 정렬
-========================================================= */
-
-.order-detail-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 380px;
-    gap: 36px;
-    align-items: start;
-}
-
-.order-main-column,
-.order-side-column {
-    display: grid;
-    gap: 20px;
-}
-
-.order-summary-box {
-    grid-template-columns: repeat(2, 1fr);
-    margin-bottom: 0;
-}
-
-.order-status-card {
-    min-height: 96px;
-    padding: 18px;
-
-    background: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 12px;
-}
-
-.order-status-card > span {
-    display: block;
-    margin-bottom: 8px;
-
-    color: #777;
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.order-status-card > strong {
-    display: block;
-}
-
-.order-detail-grid .side-panel {
-    position: static;
-}
-
-/* =========================================================
-   Footer
-========================================================= */
-
-.site-footer {
-    padding: 34px 0;
-
-    background: #ffffff;
-    border-top: 1px solid #eeeeee;
-}
-
-.footer-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 32px;
-}
-
-.footer-inner strong {
-    font-size: 16px;
-    font-weight: 900;
-}
-
-.footer-inner p {
-    margin: 8px 0 0;
-
-    color: #777;
-}
-
-/* =========================================================
-   결제취소 모달
-========================================================= */
-
-.cancel-modal-wrap {
-    display: none !important;
-}
-
-.cancel-modal-wrap.open {
-    display: block !important;
-}
-
-.cancel-modal-bg {
-    position: fixed;
-    inset: 0;
-    z-index: 500;
-    background: rgba(0, 0, 0, 0.45);
-}
-
-.cancel-modal-box {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    z-index: 501;
-
-    width: 500px;
-    max-width: calc(100% - 40px);
-
-    transform: translate(-50%, -50%);
-
-    background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
-    overflow: hidden;
-}
-
-.cancel-modal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-
-    padding: 26px 28px 20px;
-    border-bottom: 1px solid #eee;
-}
-
-.cancel-modal-head span {
-    display: block;
-    margin-bottom: 6px;
-
-    color: #ff654f;
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: 1.5px;
-}
-
-.cancel-modal-head h3 {
-    margin: 0;
-
-    color: #222;
-    font-size: 25px;
-    font-weight: 900;
-    letter-spacing: -0.7px;
-}
-
-.cancel-modal-head p {
-    margin: 8px 0 0;
-
-    color: #777;
-    font-size: 14px;
-}
-
-.cancel-modal-close {
-    border: none;
-    background: transparent;
-    color: #777;
-
-    font-size: 30px;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.cancel-modal-close:hover {
-    color: #222;
-}
-
-.cancel-modal-body {
-    padding: 24px 28px;
-}
-
-.cancel-info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 14px 0;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.cancel-info-row span {
-    color: #777;
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.cancel-info-row strong {
-    color: #222;
-    font-size: 16px;
-    font-weight: 900;
-}
-
-.cancel-form-row {
-    margin-top: 20px;
-}
-
-.cancel-form-row label {
-    display: block;
-    margin-bottom: 8px;
-
-    color: #222;
-    font-size: 14px;
-    font-weight: 900;
-}
-
-.cancel-form-row select,
-.cancel-form-row textarea {
-    width: 100%;
-
-    border: 1px solid #ddd;
-    border-radius: 9px;
-    background: #fff;
-
-    font-family: inherit;
-    font-size: 14px;
-    outline: none;
-}
-
-.cancel-form-row select {
-    height: 44px;
-    padding: 0 12px;
-}
-
-.cancel-form-row textarea {
-    height: 86px;
-    padding: 12px;
-    resize: none;
-    line-height: 1.6;
-}
-
-.cancel-form-row select:focus,
-.cancel-form-row textarea:focus {
-    border-color: #ff654f;
-    box-shadow: 0 0 0 3px rgba(255, 101, 79, 0.12);
-}
-
-.cancel-guide-box {
-    margin-top: 20px;
-    padding: 16px 18px;
-
-    background: #fff8f6;
-    border: 1px solid #ffe0d8;
-    border-radius: 12px;
-}
-
-.cancel-guide-box strong {
-    display: block;
-    margin-bottom: 8px;
-
-    color: #222;
-    font-size: 14px;
-    font-weight: 900;
-}
-
-.cancel-guide-box ul {
-    margin: 0;
-    padding-left: 18px;
-
-    color: #666;
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-.cancel-guide-box b {
-    color: #ff654f;
-}
-
-.cancel-agree {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    margin-top: 18px;
-
-    color: #333;
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.cancel-agree input {
-    cursor: pointer;
-}
-
-.cancel-modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-
-    padding: 18px 28px 26px;
-    border-top: 1px solid #eee;
-}
-
-.cancel-close-btn,
-.cancel-submit-btn {
-    min-width: 124px;
-    height: 44px;
-
-    border: none;
-    border-radius: 9px;
-
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 900;
-
-    cursor: pointer;
-}
-
-.cancel-close-btn {
-    background: #f1f1f1;
-    color: #333;
-}
-
-.cancel-close-btn:hover {
-    background: #e5e5e5;
-}
-
-.cancel-submit-btn {
-    background: #ff654f;
-    color: #fff;
-}
-
-.cancel-submit-btn:hover {
-    background: #e9533f;
-}
-
-/* =========================================================
    아이디어스형 마이쇼핑 / 주문내역 화면
 ========================================================= */
 
@@ -1391,12 +164,16 @@ select {
     font-weight: 950;
 }
 
+/* =========================================================
+   주문 상태 요약
+========================================================= */
+
 .myshop-status-card {
     margin-bottom: 18px;
     padding: 18px 12px;
 
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(7, 1fr);
 
     background: #fff;
     border: 1px solid #f0e4dc;
@@ -1445,6 +222,10 @@ select {
     color: #ff6f4f;
 }
 
+/* =========================================================
+   빠른 메뉴
+========================================================= */
+
 .myshop-quick-card {
     margin-bottom: 18px;
     padding: 18px 24px;
@@ -1489,6 +270,10 @@ select {
     font-size: 14px;
     font-weight: 900;
 }
+
+/* =========================================================
+   주문내역 카드
+========================================================= */
 
 .myshop-order-section {
     overflow: hidden;
@@ -1541,16 +326,16 @@ select {
     display: grid;
 }
 
-.myshop-order-card {
+.myshop-order-section .myshop-order-card {
     padding: 0 30px;
     background: #fff;
 }
 
-.myshop-order-card + .myshop-order-card {
+.myshop-order-section .myshop-order-card + .myshop-order-card {
     border-top: 10px solid #ffffff;
 }
 
-.myshop-order-top {
+.myshop-order-section .myshop-order-top {
     padding: 20px 0 15px;
 
     display: flex;
@@ -1558,13 +343,17 @@ select {
     align-items: center;
     gap: 20px;
 
-    border-bottom: 1px solid #f3e7df;
+    background: #fff;
+    border-bottom: 0px solid #f3e7df;
+
+    font-size: inherit;
 }
 
-.myshop-status-badge {
+.myshop-order-section .myshop-status-badge {
     display: inline-flex;
     align-items: center;
 
+    margin-right: 0;
     margin-bottom: 6px;
     padding: 6px 12px;
 
@@ -1574,67 +363,72 @@ select {
     font-weight: 950;
 }
 
-.myshop-status-badge.PENDING {
+.myshop-order-section .myshop-status-badge.PENDING {
     background: #fff7dc;
     color: #b97900;
 }
 
-.myshop-status-badge.PAID {
+.myshop-order-section .myshop-status-badge.PAID {
     background: #fff0e8;
     color: #ff6f4f;
 }
 
-.myshop-status-badge.PREPARING {
+.myshop-order-section .myshop-status-badge.PREPARING {
     background: #fff0e8;
     color: #d85b35;
 }
 
-.myshop-status-badge.SHIPPING {
+.myshop-order-section .myshop-status-badge.SHIPPING {
     background: #eef4ff;
     color: #2563eb;
 }
 
-.myshop-status-badge.DELIVERED {
+.myshop-order-section .myshop-status-badge.DELIVERED {
     background: #edf9f0;
     color: #168447;
 }
 
-.myshop-status-badge.CANCELLED {
+.myshop-order-section .myshop-status-badge.CANCELLED {
     background: #fdecec;
     color: #b91c1c;
 }
 
-.myshop-order-top span {
+.myshop-order-section .myshop-order-top span {
     display: block;
 
     color: #888;
     font-size: 13px;
 }
 
-.myshop-order-top a {
+.myshop-order-section .myshop-order-top a {
     color: #777;
     font-size: 13px;
     font-weight: 850;
     text-decoration: none;
 }
 
-.myshop-order-top a:hover {
+.myshop-order-section .myshop-order-top a:hover {
     color: #ff6f4f;
 }
 
-.myshop-order-body {
+.myshop-order-section .myshop-order-body {
     padding: 22px 0 26px;
 
     display: grid;
     grid-template-columns: 92px minmax(0, 1fr) 300px;
     gap: 20px;
     align-items: center;
+
+    background: #fff;
 }
 
-.myshop-product-thumb {
+.myshop-order-section .myshop-product-thumb {
+    position: relative;
+
     width: 92px;
     height: 92px;
 
+    flex-shrink: 0;
     overflow: hidden;
 
     border: 1px solid #eeeeee;
@@ -1642,17 +436,40 @@ select {
     background: #f6f6f6;
 }
 
-.myshop-product-thumb img {
+.myshop-order-section .myshop-product-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.myshop-product-info {
-    min-width: 0;
+.myshop-order-section .myshop-thumb-count {
+    position: absolute;
+    right: 7px;
+    bottom: 7px;
+
+    min-width: 25px;
+    height: 25px;
+    padding: 0 7px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.62);
+
+    color: #fff;
+    font-size: 13px;
+    font-weight: 950;
 }
 
-.myshop-product-info a {
+.myshop-order-section .myshop-product-info {
+    min-width: 0;
+    flex: initial;
+}
+
+.myshop-order-section .myshop-product-info a,
+.myshop-order-section .myshop-product-name-link {
     display: block;
     margin-bottom: 8px;
 
@@ -1667,32 +484,72 @@ select {
     white-space: nowrap;
 }
 
-.myshop-product-info a:hover {
+.myshop-order-section .myshop-product-info a:hover,
+.myshop-order-section .myshop-product-name-link:hover {
     color: #ff6f4f;
 }
 
-.myshop-product-info p {
+.myshop-order-section .myshop-product-name-text {
+    display: block;
+    margin-bottom: 8px;
+
+    color: #111;
+    font-size: 16px;
+    font-weight: 950;
+    line-height: 1.45;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.myshop-order-section .myshop-product-open-btn {
+    width: 100%;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    text-align: left;
+    font-family: inherit;
+
+    cursor: pointer;
+}
+
+.myshop-order-section .myshop-product-open-btn:hover {
+    color: #ff6f4f;
+}
+
+.myshop-order-section .myshop-product-info p {
     margin: 0 0 8px;
 
     color: #777;
     font-size: 13px;
 }
 
-.myshop-product-info strong {
+.myshop-order-section .myshop-product-info strong {
     color: #222;
     font-size: 15px;
     font-weight: 950;
 }
 
-.myshop-order-actions {
+.myshop-order-section .myshop-order-actions {
+    width: auto;
+
     display: flex;
+    flex-direction: row;
     justify-content: flex-end;
     flex-wrap: wrap;
     gap: 7px;
 }
 
-.myshop-order-actions a,
-.myshop-order-actions button {
+.myshop-order-section .myshop-order-actions .inline-form {
+    margin: 0;
+    display: inline-flex;
+}
+
+.myshop-order-section .myshop-order-actions a,
+.myshop-order-section .myshop-order-actions button {
     min-width: 82px;
     height: 36px;
     padding: 0 12px;
@@ -1714,43 +571,200 @@ select {
     transition: 0.14s ease;
 }
 
-.myshop-order-actions a:hover,
-.myshop-order-actions button:hover {
+.myshop-order-section .myshop-order-actions a:hover,
+.myshop-order-section .myshop-order-actions button:hover {
     border-color: #ff6f4f;
     color: #ff6f4f;
     background: #fff7f3;
 }
 
-.myshop-order-actions .primary {
+.myshop-order-section .myshop-order-actions .primary {
     border-color: #ff6f4f;
     background: #ff6f4f;
     color: #fff;
 }
 
-.myshop-order-actions .primary:hover {
+.myshop-order-section .myshop-order-actions .primary:hover {
     background: #f05c3d;
     color: #fff;
 }
 
-.myshop-order-actions .review {
+.myshop-order-section .myshop-order-actions .review {
     border-color: #ff6f4f;
     background: #ff6f4f;
     color: #fff;
 }
 
-.myshop-order-actions .review:hover {
+.myshop-order-section .myshop-order-actions .review:hover {
     background: #f05c3d;
     color: #fff;
 }
 
-.myshop-order-actions .qna {
+.myshop-order-section .myshop-order-actions .qna {
     color: #8a5a44;
     border-color: #e4cfc3;
 }
 
-.myshop-order-actions .qna:hover {
+.myshop-order-section .myshop-order-actions .qna:hover {
     background: #fff1eb;
     color: #8a5a44;
+}
+
+/* =========================================================
+   여러 상품 주문 펼쳐보기
+========================================================= */
+
+.myshop-order-section .myshop-order-toggle {
+    width: 100%;
+    min-height: 52px;
+
+    margin: 0 0 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    border: 1px solid #d8dee8;
+    border-radius: 10px;
+    background: #fff;
+
+    color: #111;
+    font-size: 15px;
+    font-weight: 950;
+
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.myshop-order-section .myshop-order-toggle:hover {
+    border-color: #ff6f4f;
+    background: #fff8f5;
+    color: #ff6f4f;
+}
+
+.myshop-order-section .toggle-arrow {
+    width: 9px;
+    height: 9px;
+
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+
+    transform: rotate(45deg);
+    margin-top: -5px;
+
+    transition: transform 0.18s ease, margin-top 0.18s ease;
+}
+
+.myshop-order-section .myshop-order-toggle.active .toggle-arrow {
+    transform: rotate(-135deg);
+    margin-top: 5px;
+}
+
+.myshop-order-section .myshop-order-items-panel {
+    display: none;
+
+    margin: -8px 0 24px;
+    padding-top: 4px;
+
+    border-top: 1px solid #f3e7df;
+}
+
+.myshop-order-section .myshop-order-items-panel.open {
+    display: block;
+}
+
+.myshop-order-section .myshop-order-item-row {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr) 128px;
+    gap: 16px;
+    align-items: center;
+
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.myshop-order-section .myshop-order-item-row:last-child {
+    border-bottom: none;
+}
+
+.myshop-order-section .myshop-order-item-thumb {
+    width: 78px;
+    height: 78px;
+
+    display: block;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    background: #f6f6f6;
+}
+
+.myshop-order-section .myshop-order-item-thumb img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    object-fit: cover;
+}
+
+.myshop-order-section .myshop-order-item-info {
+    min-width: 0;
+}
+
+.myshop-order-section .myshop-order-item-name-text {
+    display: block;
+
+    color: #111;
+    font-size: 14px;
+    font-weight: 950;
+    line-height: 1.45;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.myshop-order-section .myshop-order-item-info p {
+    margin: 7px 0 0;
+
+    color: #777;
+    font-size: 13px;
+}
+
+.myshop-order-section .myshop-order-item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.myshop-order-section .myshop-order-item-actions a,
+.myshop-order-section .myshop-order-item-actions button {
+    height: 34px;
+    padding: 0 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #ead8cf;
+    border-radius: 8px;
+    background: #fff;
+
+    color: #444;
+    font-size: 12px;
+    font-weight: 850;
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+.myshop-order-section .myshop-order-item-actions a:hover,
+.myshop-order-section .myshop-order-item-actions button:hover {
+    border-color: #ff6f4f;
+    background: #fff7f3;
+    color: #ff6f4f;
 }
 
 .myshop-empty-order {
@@ -1798,11 +812,24 @@ select {
         display: none;
     }
 
-    .myshop-order-body {
+    .myshop-status-card {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .myshop-status-card button {
+        border-left: 0;
+        border-top: 1px solid #f3e7df;
+    }
+
+    .myshop-status-card button:nth-child(-n + 4) {
+        border-top: 0;
+    }
+
+    .myshop-order-section .myshop-order-body {
         grid-template-columns: 92px minmax(0, 1fr);
     }
 
-    .myshop-order-actions {
+    .myshop-order-section .myshop-order-actions {
         grid-column: 1 / -1;
         justify-content: flex-start;
     }
@@ -1897,6 +924,11 @@ select {
 
     .myshop-status-card button {
         border-left: 0;
+        border-top: 1px solid #f3e7df;
+    }
+
+    .myshop-status-card button:nth-child(-n + 2) {
+        border-top: 0;
     }
 
     .myshop-quick-card {
@@ -1912,22 +944,43 @@ select {
         margin-top: 12px;
     }
 
-    .myshop-order-card {
+    .myshop-order-section .myshop-order-card {
         padding: 0 18px;
     }
 
-    .myshop-order-body {
+    .myshop-order-section .myshop-order-body {
         grid-template-columns: 76px minmax(0, 1fr);
         gap: 14px;
     }
 
-    .myshop-product-thumb {
+    .myshop-order-section .myshop-product-thumb {
         width: 76px;
         height: 76px;
     }
 
-    .myshop-order-actions a,
-    .myshop-order-actions button {
+    .myshop-order-section .myshop-order-actions a,
+    .myshop-order-section .myshop-order-actions button {
         min-width: 76px;
+    }
+
+    .myshop-order-section .myshop-order-item-row {
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .myshop-order-section .myshop-order-item-thumb {
+        width: 64px;
+        height: 64px;
+    }
+
+    .myshop-order-section .myshop-order-item-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
+    .myshop-order-section .myshop-order-item-actions a,
+    .myshop-order-section .myshop-order-item-actions button {
+        min-width: 82px;
     }
 }

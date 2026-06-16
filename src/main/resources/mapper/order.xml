@@ -134,4 +134,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM orders 
         WHERE user_id = #{userId}
     </select>
+
+    <select id="myOrderItemList" resultType="map">
+        SELECT
+            oi.order_item_id,
+            oi.order_id,
+            oi.product_id,
+            p.name AS productName,
+            p.image_s AS imageS,
+            oi.quantity,
+            oi.price
+        FROM order_items oi
+        JOIN products p ON oi.product_id = p.product_id
+        WHERE oi.order_id = #{order_id}
+        ORDER BY oi.order_item_id ASC
+    </select>
+
 </mapper>
