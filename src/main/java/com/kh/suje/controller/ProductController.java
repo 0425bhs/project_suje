@@ -67,7 +67,12 @@ public class ProductController {
         List<ProductVO> categoryBestList = productdao.product_category_list(categoryMap);
         model.addAttribute("categoryBestList", categoryBestList);
 
+        // =========================================================
         // 4. 취향 발견
+        // - 메인 페이지에서는 4개만 미리보기로 출력
+        // - 로그인 회원이면 구매/찜/장바구니/최근조회 기반 취향 카테고리 조회
+        // - 취향 카테고리가 없거나 추천 상품이 없으면 fallback 상품 출력
+        // =========================================================
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
         Map<String, Object> discoveryMap = new HashMap<>();
@@ -76,15 +81,27 @@ public class ProductController {
         List<ProductVO> discoveryList = null;
 
         if (loginUser != null) {
-            discoveryMap.put("user_id", loginUser.getUser_id());
-            discoveryList = productdao.product_discovery_list(discoveryMap);
+
+            int user_id = loginUser.getUser_id();
+
+            // 유저 행동 데이터 기반 취향 카테고리 TOP 5 조회
+            List<Integer> categoryIds = productdao.product_discovery_category_list(user_id);
+
+            if (categoryIds != null && !categoryIds.isEmpty()) {
+
+                discoveryMap.put("user_id", user_id);
+                discoveryMap.put("categoryIds", categoryIds);
+
+                discoveryList = productdao.product_discovery_list(discoveryMap);
+            }
         }
 
+        // 비로그인 또는 취향 데이터 없음 또는 추천 결과 없음
         if (discoveryList == null || discoveryList.isEmpty()) {
             discoveryList = productdao.product_discovery_fallback_list(discoveryMap);
         }
 
-        model.addAttribute("discoveryList", discoveryList);
+model.addAttribute("discoveryList", discoveryList);
 
         return "main";
     }
