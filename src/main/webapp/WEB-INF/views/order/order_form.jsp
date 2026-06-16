@@ -7,8 +7,10 @@
     <head>
         <meta charset="UTF-8">
         <title>주문서 작성</title>
+
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/order-payment.css">
+
         <script src="/js/product_main.js" defer></script>
     </head>
 
@@ -29,16 +31,25 @@
                 </div>
 
                 <form action="/order/create" method="post">
-                    
+
                     <div class="order-layout">
                         <div class="panel">
                             <h3 class="panel-title">주문 상품</h3>
 
                             <c:forEach var="vo" items="${orderItemList}">
 
-                                <input type="hidden" name="product_id" value="${vo.product_id}">
-                                <input type="hidden" name="quantity" value="${vo.quantity}">
-                                <input type="hidden" name="cart_id" value="${vo.cart_id}">
+                                <c:choose>
+                                    <%-- 장바구니 주문: cart_id만 넘김 --%>
+                                    <c:when test="${vo.cart_id ne 0}">
+                                        <input type="hidden" name="cart_id" value="${vo.cart_id}">
+                                    </c:when>
+
+                                    <%-- 바로구매 주문: product_id, quantity만 넘김 --%>
+                                    <c:otherwise>
+                                        <input type="hidden" name="product_id" value="${vo.product_id}">
+                                        <input type="hidden" name="quantity" value="${vo.quantity}">
+                                    </c:otherwise>
+                                </c:choose>
 
                                 <div class="order-item">
                                     <img src="${vo.image_l}" alt="상품 이미지" onerror="this.src='/images/no_image.png'">

@@ -8,6 +8,7 @@
     <head>
         <title>HANDMADE - 신제품</title>
 
+        
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/product/product_card.css">
         <link rel="stylesheet" href="/css/product/product_new_list.css">
@@ -26,7 +27,6 @@
 
         <div class="new-page-title">
             <h2>최신작품</h2>
-            <p>새롭게 등록된 상품을 최신순으로 확인할 수 있습니다.</p>
         </div>
 
         <c:choose>

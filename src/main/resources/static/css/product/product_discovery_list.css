@@ -2,10 +2,97 @@
    취향발견 페이지
 ========================================================= */
 
+.product-nav-inner a.nav-active {
+    color: #ff6f4f;
+}
+
+.product-nav-inner a.nav-active::after {
+    width: 100%;
+}
+
 .discovery-page {
     max-width: 1440px;
     margin: 0 auto;
     padding: 42px 44px 80px;
+}
+
+
+/* =========================================================
+   상단 소개 영역
+========================================================= */
+
+.discovery-hero {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 24px;
+
+    margin-bottom: 42px;
+    padding: 34px 36px;
+
+    border-radius: 24px;
+    background: linear-gradient(135deg, #fff7f3 0%, #ffffff 58%, #fff1ec 100%);
+    border: 1px solid #ffe0d6;
+}
+
+.discovery-hero-text span {
+    display: inline-block;
+
+    margin-bottom: 8px;
+
+    color: #ff6f4f;
+    font-size: 13px;
+    font-weight: 950;
+    letter-spacing: 1.2px;
+}
+
+.discovery-hero-text h2 {
+    margin: 0;
+
+    color: #222222;
+    font-size: 34px;
+    font-weight: 950;
+    letter-spacing: -1.2px;
+}
+
+.discovery-hero-text p {
+    margin: 12px 0 0;
+
+    color: #666666;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.7;
+}
+
+.discovery-guide-box {
+    width: 320px;
+    flex: 0 0 320px;
+
+    padding: 22px 24px;
+
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #ffe1d8;
+    box-shadow: 0 8px 20px rgba(255, 111, 79, 0.08);
+}
+
+.discovery-guide-box strong {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #222222;
+    font-size: 16px;
+    font-weight: 950;
+}
+
+.discovery-guide-box p {
+    margin: 0;
+
+    color: #777777;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.7;
 }
 
 
@@ -28,7 +115,7 @@
 .discovery-section-title h3 {
     margin: 0;
 
-    color: #222;
+    color: #222222;
     font-size: 26px;
     font-weight: 950;
     letter-spacing: -0.8px;
@@ -37,8 +124,9 @@
 .discovery-section-title p {
     margin: 8px 0 0;
 
-    color: #777;
+    color: #777777;
     font-size: 14px;
+    font-weight: 700;
 }
 
 
@@ -49,11 +137,11 @@
 .discovery-empty {
     padding: 80px 20px;
 
-    border: 1px solid #eee;
+    border: 1px solid #eeeeee;
     background: #fafafa;
     border-radius: 12px;
 
-    color: #777;
+    color: #777777;
     text-align: center;
     font-size: 15px;
     font-weight: 800;
@@ -67,5 +155,21 @@
 @media (max-width: 900px) {
     .discovery-page {
         padding: 24px 20px 60px;
+    }
+
+    .discovery-hero {
+        flex-direction: column;
+
+        padding: 28px 24px;
+        gap: 18px;
+    }
+
+    .discovery-hero-text h2 {
+        font-size: 28px;
+    }
+
+    .discovery-guide-box {
+        width: auto;
+        flex: none;
     }
 }

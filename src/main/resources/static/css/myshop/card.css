@@ -1,0 +1,237 @@
+.myshop-list-section,
+.myshop-review-section,
+.myshop-qna-section {
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #f0e4dc;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(80, 45, 25, 0.04);
+}
+
+.myshop-list {
+    display: grid;
+}
+
+.myshop-list-card {
+    padding: 0 30px;
+    background: #fff;
+}
+
+.myshop-list-card + .myshop-list-card {
+    border-top: 10px solid #ffffff;
+}
+
+.myshop-list-top {
+    padding: 20px 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid #f3e7df;
+}
+
+.myshop-status-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 950;
+}
+
+.myshop-status-badge.PENDING {
+    background: #fff7dc;
+    color: #b97900;
+}
+
+.myshop-status-badge.PAID {
+    background: #fff0e8;
+    color: #ff6f4f;
+}
+
+.myshop-status-badge.PREPARING {
+    background: #fff0e8;
+    color: #d85b35;
+}
+
+.myshop-status-badge.SHIPPING {
+    background: #eef4ff;
+    color: #2563eb;
+}
+
+.myshop-status-badge.DELIVERED {
+    background: #edf9f0;
+    color: #168447;
+}
+
+.myshop-status-badge.CANCELLED {
+    background: #fdecec;
+    color: #b91c1c;
+}
+
+.myshop-list-top span {
+    display: block;
+    color: #888;
+    font-size: 13px;
+}
+
+.myshop-list-top a {
+    color: #777;
+    font-size: 13px;
+    font-weight: 850;
+    text-decoration: none;
+}
+
+.myshop-list-top a:hover {
+    color: #ff6f4f;
+}
+
+.myshop-list-body {
+    padding: 22px 0 26px;
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr) 300px;
+    gap: 20px;
+    align-items: center;
+}
+
+.myshop-product-thumb {
+    width: 92px;
+    height: 92px;
+    overflow: hidden;
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    background: #f6f6f6;
+}
+
+.myshop-product-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.myshop-product-info {
+    min-width: 0;
+}
+
+.myshop-product-info a {
+    display: block;
+    margin-bottom: 8px;
+    color: #111;
+    font-size: 16px;
+    font-weight: 950;
+    line-height: 1.45;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.myshop-product-info a:hover {
+    color: #ff6f4f;
+}
+
+.myshop-product-info p {
+    margin: 0 0 8px;
+    color: #777;
+    font-size: 13px;
+}
+
+.myshop-product-info strong {
+    color: #222;
+    font-size: 15px;
+    font-weight: 950;
+}
+
+.myshop-list-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.myshop-list-actions a,
+.myshop-list-actions button {
+    min-width: 82px;
+    height: 36px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ead8cf;
+    border-radius: 8px;
+    background: #fff;
+    color: #444;
+    font-size: 12px;
+    font-weight: 850;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.14s ease;
+}
+
+.myshop-list-actions a:hover,
+.myshop-list-actions button:hover {
+    border-color: #ff6f4f;
+    color: #ff6f4f;
+    background: #fff7f3;
+}
+
+.myshop-list-actions .primary,
+.myshop-list-actions .review {
+    border-color: #ff6f4f;
+    background: #ff6f4f;
+    color: #fff;
+}
+
+.myshop-list-actions .primary:hover,
+.myshop-list-actions .review:hover {
+    background: #f05c3d;
+    color: #fff;
+}
+
+.myshop-list-actions .qna {
+    color: #8a5a44;
+    border-color: #e4cfc3;
+}
+
+.myshop-list-actions .qna:hover {
+    background: #fff1eb;
+    color: #8a5a44;
+}
+
+@media (max-width: 1100px) {
+    .myshop-list-body,
+    .dashboard-recent-orders .myshop-list-body {
+        grid-template-columns: 92px minmax(0, 1fr);
+    }
+
+    .myshop-list-actions,
+    .dashboard-recent-orders .myshop-list-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 720px) {
+    .myshop-list-card,
+    .dashboard-recent-orders .myshop-list-card {
+        padding: 0 18px;
+    }
+
+    .myshop-list-body,
+    .dashboard-recent-orders .myshop-list-body {
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .myshop-product-thumb,
+    .dashboard-recent-orders .myshop-product-thumb {
+        width: 76px;
+        height: 76px;
+    }
+
+    .myshop-list-actions a,
+    .myshop-list-actions button {
+        min-width: 76px;
+    }
+}

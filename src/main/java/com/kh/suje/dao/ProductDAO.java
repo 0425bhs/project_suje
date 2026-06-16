@@ -59,6 +59,9 @@ public interface ProductDAO {
     // 취향발견 추천 상품 목록
     List<ProductVO> product_discovery_list(Map<String, Object> map);
 
+    // 취향발견 추천용 카테고리 목록
+    List<Integer> product_discovery_category_list(int user_id);
+
     // 취향 데이터가 없을 때 보여줄 최신 상품 목록
     List<ProductVO> product_discovery_fallback_list(Map<String, Object> map);
 
@@ -74,6 +77,7 @@ public interface ProductDAO {
     // 로그인 회원 구매내역 기반 선물추천
     List<ProductVO> product_gift_personal_list(Map<String, Object> map);
 
-    
+    // 선물추천 테마별 상품 목록
+    List<ProductVO> product_gift_theme_list(Map<String, Object> map); 
 
 }

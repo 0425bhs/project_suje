@@ -108,7 +108,7 @@
 
         <div class="header-actions">
             <a href="/notice_list.do">고객센터</a>
-            <a href="/order/my">주문내역</a>
+            <a href="/myshop/orders">주문내역</a>
         </div>
     </div>
 </header>

@@ -1,21 +1,30 @@
-function cartInsert(){
+function cartInsert(productId, quantityValue){
 
-    let productInput = document.getElementById("product_id");
-    let quantityInput = document.getElementById("detailQuantity");
+    let product_id = productId;
+    let quantity = quantityValue;
 
-    if(productInput == null){
-        alert("상품 정보를 찾을 수 없습니다.");
-        return;
+    if(product_id == null || product_id === ""){
+        let productInput = document.getElementById("product_id");
+
+        if(productInput == null){
+            alert("상품 정보를 찾을 수 없습니다.");
+            return;
+        }
+
+        product_id = productInput.value;
     }
 
-    let product_id = productInput.value;
-    let quantity = 1;
+    if(quantity == null || quantity === ""){
+        let quantityInput = document.getElementById("detailQuantity");
 
-    if(quantityInput != null){
-        quantity = quantityInput.value;
+        if(quantityInput != null){
+            quantity = quantityInput.value;
+        }else{
+            quantity = 1;
+        }
     }
 
-    if(quantity == "" || Number(quantity) <= 0){
+    if(quantity == "" || Number(quantity) <= 0 || isNaN(Number(quantity))){
         quantity = 1;
     }
 

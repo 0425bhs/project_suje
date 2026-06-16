@@ -102,8 +102,8 @@
         </nav>
 
         <div class="header-actions">
-            <a href="/mypage/review">내 후기</a>
-            <a href="/order/my">주문내역</a>
+            <a href="/myshop/reviews">내 후기</a>
+            <a href="/myshop/orders">주문내역</a>
         </div>
     </div>
 </header>
@@ -117,7 +117,7 @@
                 <p>최근 등록된 상품 후기를 한눈에 확인할 수 있습니다.</p>
             </div>
 
-            <a class="btn light" href="/mypage/review">내 후기 보기</a>
+            <a class="btn light" href="/myshop/reviews">내 후기 보기</a>
         </div>
 
         <section class="community-card">

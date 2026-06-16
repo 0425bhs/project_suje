@@ -24,7 +24,10 @@ import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
 import com.kh.suje.vo.payment.PaymentVO;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class PaymentController {
 
     private final PaymentDAO paymentDAO;
@@ -39,11 +42,6 @@ public class PaymentController {
     @Value("${toss.secret-key}")
     private String tossSecretKey;
 
-    public PaymentController(PaymentDAO paymentDAO, OrderDAO orderDAO, ProductDAO productDAO) {
-        this.paymentDAO = paymentDAO;
-        this.orderDAO = orderDAO;
-        this.productDAO = productDAO;
-    }
 
     // 결제 대기 화면
     // 주소: /payment/ready?order_id=1
@@ -407,7 +405,7 @@ public class PaymentController {
                     productDAO.increaseStock(item);
                 }
 
-                return "redirect:/order/my?status=CANCELLED";
+                return "redirect:/myshop/orders?status=CANCELLED";
             }
 
             model.addAttribute("order_id", order_id);

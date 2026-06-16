@@ -1,5 +1,7 @@
 package com.kh.suje.dao;
 
+import java.util.Map;
+
 import com.kh.suje.vo.UserVO;
 
 public interface UserDAO {
@@ -15,6 +17,8 @@ public interface UserDAO {
     UserVO findLoginId(UserVO vo); //아이디찾기
 
     UserVO findPwd(UserVO vo); //패스워드찾기
+
+    int updatePwd(Map<String, Object> paramMap);//임시비번으로 비번변경
 
     UserVO selectUser(int user_id); //내정보 갖고오기
 
