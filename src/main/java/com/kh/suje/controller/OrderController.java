@@ -95,8 +95,8 @@ public class OrderController {
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);
 
-        String contentPage = "/myshop/order_list";
-        model.addAttribute("contentPage", contentPage);
+        model.addAttribute("activeMenu", "order");
+        model.addAttribute("contentPage", "/myshop/order_list");
 
         return "myshop/myshop_main";
     }

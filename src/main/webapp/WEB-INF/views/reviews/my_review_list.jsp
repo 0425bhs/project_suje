@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/order-payment.css?v=3">
+    <link rel="stylesheet" href="/css/myshop/myshop.css?v=1">
 
     <style>
         .review-list-card {
@@ -201,18 +202,18 @@
     <div class="myshop-layout">
 
         <!-- 왼쪽 사이드바 -->
-        <jsp:include page="/WEB-INF/views/order/common/myshop_sidebar.jsp" />
+        <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" />
 
         <main class="myshop-content">
 
             <!-- 회원 요약 카드 -->
-            <jsp:include page="/WEB-INF/views/order/common/myshop_user_card.jsp">
+            <jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
                 <jsp:param name="label" value="MY REVIEW" />
                 <jsp:param name="count" value="${totalCount}" />
             </jsp:include>
 
             <!-- 빠른 메뉴 -->
-            <jsp:include page="/WEB-INF/views/order/common/myshop_quick_card.jsp" />
+            <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
             <section class="myshop-review-section">
 
