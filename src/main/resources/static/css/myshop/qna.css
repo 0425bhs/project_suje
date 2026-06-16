@@ -1,0 +1,23 @@
+.myshop-qna-answer {
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: #fffaf7;
+    border: 1px solid #f3e7df;
+    border-radius: 12px;
+}
+
+.myshop-qna-answer span {
+    display: block;
+    margin-bottom: 6px;
+    color: #8a5a44;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.myshop-qna-answer strong {
+    display: block;
+    color: #333;
+    font-size: 14px;
+    font-weight: 850;
+    line-height: 1.6;
+}

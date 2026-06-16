@@ -17,6 +17,5 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:///c:/upload/");
                 // .addResourceLocations("file:///c:/upload/");
                 // .addResourceLocations("file:///Users/kkt/Desktop/KKT/Spring_boot/upload");
-                
     }
 }

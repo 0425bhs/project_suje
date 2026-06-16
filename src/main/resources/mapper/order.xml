@@ -124,7 +124,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectOrderStatusCounts" resultType="java.util.Map" parameterType="int">
         SELECT 
-            COUNT(*) AS totalCount,
+            COUNT(CASE WHEN status != 'CANCELLED' THEN 1 END) AS totalCount,
             COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pendingCount,
             COUNT(CASE WHEN status = 'PAID' THEN 1 END) AS paidCount,
             COUNT(CASE WHEN status = 'PREPARING' THEN 1 END) AS preparingCount,

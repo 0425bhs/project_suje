@@ -12,7 +12,8 @@
 
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/order-payment.css?v=3">
-        <link rel="stylesheet" href="/css/myshop/myshop.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/common.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
 
         <script src="/js/product_main.js" defer></script>
         <script src="/js/order-payment.js" defer></script>
@@ -128,7 +129,7 @@
                 </section>
 
                 <!-- 주문/배송내역 -->
-                <section class="myshop-order-section">
+                <section class="myshop-list-section">
 
                     <div class="myshop-section-head">
                         <div>
@@ -147,7 +148,7 @@
                         </c:when>
 
                         <c:otherwise>
-                            <div class="myshop-order-list">
+                            <div class="myshop-list">
 
                                 <c:forEach var="order" items="${orderList}">
 
@@ -155,9 +156,9 @@
                                     <c:set var="items" value="${orderItemMap[order.order_id]}" />
                                     <c:set var="mainItem" value="${items[0]}" />
 
-                                    <article class="myshop-order-card">
+                                    <article class="myshop-list-card">
 
-                                        <div class="myshop-order-top">
+                                        <div class="myshop-list-top">
 
                                             <div>
                                                 <strong class="myshop-status-badge ${order.status}">
@@ -181,7 +182,7 @@
 
                                         </div>
 
-                                        <div class="myshop-order-body">
+                                        <div class="myshop-list-body">
 
                                             <div class="myshop-product-thumb">
                                                 <c:choose>
@@ -224,7 +225,7 @@
                                                 </strong>
                                             </div>
 
-                                            <div class="myshop-order-actions">
+                                            <div class="myshop-list-actions">
 
                                                 <a href="/order/detail?order_id=${order.order_id}">
                                                     상세보기
