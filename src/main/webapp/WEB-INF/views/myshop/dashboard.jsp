@@ -47,42 +47,11 @@
 
 <div class="dashboard-lower-layout">
 
-    <%-- 최근 본 상품 --%>
-    <section class="dashboard-section recently-viewed recent-viewed-compact">
-        <div class="dashboard-section-head">
-            <h3>최근 본 상품 <span>(4)</span></h3>
-            <a href="/myshop/recent" class="view-all-btn">더보기 &gt;</a>
-        </div>
-        <div class="recent-prod-grid">
-            <div class="prod-item">img</div>
-            <div class="prod-item">img</div>
-            <div class="prod-item">img</div>
-            <div class="prod-item">img</div>
-        </div>
-    </section>
-
-    <%-- 나의 혜택 요약 --%>
-    <section class="dashboard-section dashboard-benefit-card">
-        <div class="dashboard-section-head">
-            <h3>나의 쇼핑 혜택</h3>
-        </div>
-        <div class="dashboard-benefit-row">
-            <div class="dashboard-benefit-item point">
-                <span>적립금</span>
-                <strong>2,500<small>원</small></strong>
-            </div>
-            <div class="dashboard-benefit-item coupon">
-                <span>쿠폰</span>
-                <strong>2<small>장</small></strong>
-            </div>
-        </div>
-    </section>
-
     <!-- ================= 왼쪽: 최근 주문 내역 시작 ================= -->
     <section class="dashboard-section dashboard-recent-orders">
         
             <div class="dashboard-section-head">
-                <h3>[최근 주문 내역]</h3>
+                <h3>`</h3>
                 <a href="/myshop/orders" class="view-all-btn">전체보기 ></a>
             </div>
 
@@ -94,13 +63,14 @@
                 </c:when>
 
                 <c:otherwise>
-                    <div class="myshop-order-list dashboard-list-compact">
+                    <div class="myshop-order dashboard-list-compact">
                         <%-- 최근 3건만 출력 --%>
                         <c:forEach var="order" items="${orderList}" varStatus="status">
                             <c:if test="${status.index < 3}"> 
 
                                 <c:set var="items" value="${orderItemMap[order.order_id]}" />
                                 <c:set var="mainItem" value="${items[0]}" />
+                                <c:set var="itemCount" value="${fn:length(items)}" />
 
                                 <article class="myshop-order-card dashboard-order-card">
                                     <div class="myshop-order-top">
@@ -131,29 +101,48 @@
                                                     <img src="/images/no_image.png" alt="이미지 없음">
                                                 </c:otherwise>
                                             </c:choose>
+
+                                            <c:if test="${itemCount gt 1}">
+                                                <span class="myshop-thumb-count">${itemCount}</span>
+                                            </c:if>
                                         </div>
 
                                         <div class="myshop-product-info">
                                             <c:choose>
+                                                <c:when test="${not empty order.created_at and fn:length(order.created_at) ge 16}">
+                                                    <span class="myshop-order-date-text">
+                                                        ${fn:substring(order.created_at, 0, 16)} 주문
+                                                    </span>
+                                                </c:when>
+
+                                                <c:otherwise>
+                                                    <span class="myshop-order-date-text">
+                                                        ${order.created_at} 주문
+                                                    </span>
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                            <c:choose>
                                                 <c:when test="${not empty mainItem}">
-                                                    <a href="/product_detail.do?product_id=${mainItem.product_id}">
+                                                    <strong class="myshop-product-name-text">
                                                         ${mainItem.productName}
-                                                        <c:if test="${fn:length(items) > 1}">
-                                                            외 ${fn:length(items) - 1}건
+
+                                                        <c:if test="${itemCount gt 1}">
+                                                            <span class="myshop-product-count-text">
+                                                                포함 총 ${itemCount}건
+                                                            </span>
                                                         </c:if>
-                                                    </a>
-                                                    <p>
-                                                        수량 ${mainItem.quantity}개 ·
-                                                        <fmt:formatNumber value="${mainItem.price}" pattern="#,###"/>원
-                                                    </p>
+                                                    </strong>
+
+                                                    <strong>
+                                                        총 결제금액
+                                                        <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
+                                                    </strong>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <strong>주문 상품 정보 없음</strong>
                                                 </c:otherwise>
                                             </c:choose>
-                                            <strong>
-                                                총 결제금액 <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
-                                            </strong>
                                         </div>
 
                                         <div class="myshop-order-actions">
@@ -185,6 +174,37 @@
     <!-- ================= 오른쪽: 최근 활동 알림 시작 ================= -->
     <aside class="dashboard-activity-sidebar">
 
+        <%-- 나의 혜택 요약 --%>
+        <section class="dashboard-section dashboard-benefit-card">
+            <div class="dashboard-section-head">
+                <h3>나의 쇼핑 혜택</h3>
+            </div>
+            <div class="dashboard-benefit-row">
+                <div class="dashboard-benefit-item point">
+                    <span>적립금</span>
+                    <strong>2,500<small>원</small></strong>
+                </div>
+                <div class="dashboard-benefit-item coupon">
+                    <span>쿠폰</span>
+                    <strong>2<small>장</small></strong>
+                </div>
+            </div>
+        </section>
+
+        <%-- 최근 본 상품 --%>
+        <section class="dashboard-section recently-viewed recent-viewed-compact">
+            <div class="dashboard-section-head">
+                <h3>최근 본 상품 <span>(4)</span></h3>
+                <a href="/myshop/recent" class="view-all-btn">더보기 &gt;</a>
+            </div>
+            <div class="recent-prod-grid">
+                <div class="prod-item">img</div>
+                <div class="prod-item">img</div>
+                <div class="prod-item">img</div>
+                <div class="prod-item">img</div>
+            </div>
+        </section>
+
         <%-- 2. 작성 가능한 리뷰 (워딩 변경) --%>
         <section class="dashboard-section">
             <div class="dashboard-section-head">
@@ -213,17 +233,6 @@
                 <span class="status">답변 완료</span>
                 <span class="type">2023.10.25</span>
             </div>
-        </section>
-
-        <%-- 4. 공지사항 (추가 제안) --%>
-        <section class="dashboard-section">
-            <div class="dashboard-section-head">
-                <h3>공지사항</h3>
-            </div>
-            <ul class="dashboard-notice-list">
-                <li><a href="#">[안내] 설 연휴 배송 일정 안내</a></li>
-                <li><a href="#">[이벤트] 신규 가입 10% 쿠폰 지급</a></li>
-            </ul>
         </section>
 
     </aside>

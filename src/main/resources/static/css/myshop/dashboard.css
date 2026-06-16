@@ -1,10 +1,11 @@
 .myshop-dashboard-content {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 0;
 }
 
 .dashboard-status-cards {
+    margin-bottom: 18px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
@@ -59,28 +60,25 @@
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     grid-template-areas:
-        "recent benefit"
         "orders activity";
-    gap: 24px;
-    align-items: stretch;
+    gap: 18px;
+    align-items: start;
 }
 
 .dashboard-activity-sidebar {
     display: flex;
     flex-direction: column;
     grid-area: activity;
-    gap: 24px;
+    gap: 18px;
 }
 
 .recent-viewed-compact {
-    grid-area: recent;
     padding: 18px 20px;
 }
 
 .dashboard-benefit-card {
-    grid-area: benefit;
     margin-bottom: 0;
-    padding: 18px 20px;
+    padding: 22px 24px;
 }
 
 .dashboard-recent-orders {
@@ -159,11 +157,11 @@
     color: #ff6f4f;
 }
 
-.dashboard-recent-orders .myshop-list-card {
+.dashboard-recent-orders .myshop-order-card {
     padding: 0 20px;
 }
 
-.dashboard-recent-orders .myshop-list-body {
+.dashboard-recent-orders .myshop-order-body {
     grid-template-columns: 82px minmax(0, 1fr) 92px;
     gap: 16px;
 }
@@ -173,7 +171,7 @@
     height: 82px;
 }
 
-.dashboard-recent-orders .myshop-list-actions {
+.dashboard-recent-orders .myshop-order-actions {
     justify-content: flex-end;
 }
 
@@ -323,26 +321,6 @@
     font-weight: 500;
 }
 
-.dashboard-notice-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: 13px;
-}
-
-.dashboard-notice-list li + li {
-    margin-top: 8px;
-}
-
-.dashboard-notice-list a {
-    color: #555;
-    text-decoration: none;
-}
-
-.dashboard-notice-list a:hover {
-    color: #ff6f4f;
-}
-
 .recent-viewed-compact .dashboard-section-head,
 .dashboard-benefit-card .dashboard-section-head {
     margin-bottom: 12px;
@@ -368,8 +346,6 @@
     .dashboard-lower-layout {
         grid-template-columns: 1fr;
         grid-template-areas:
-            "recent"
-            "benefit"
             "orders"
             "activity";
     }
