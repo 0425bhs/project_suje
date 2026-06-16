@@ -11,17 +11,26 @@
     <title>마이쇼핑 - HANDMADE</title>
 
     <link rel="stylesheet" href="/css/product/product_main.css">
-    <link rel="stylesheet" href="/css/myshop/myshop_common.css">
+    <link rel="stylesheet" href="/css/myshop/common.css?v=1">
 
     <c:if test="${contentPage eq '/myshop/dashboard'}">
-        <link rel="stylesheet" href="/css/myshop/myshop-dashboard.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/dashboard.css?v=1">
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/order_list'}">
-        <link rel="stylesheet" href="/css/myshop/order_list.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/order.css?v=1">
     </c:if>
 
-    <c:if test="${contentPage eq '/myshop/order_list'}">
+    <c:if test="${contentPage eq '/myshop/review_list'}">
+        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/review.css?v=1">
+    </c:if>
+
+    <c:if test="${contentPage eq '/myshop/qna_list'}">
+        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/qna.css?v=1">
     </c:if>
     
     <script src="/js/product_main.js" defer></script>

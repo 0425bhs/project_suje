@@ -292,7 +292,7 @@
         </nav>
 
         <div class="header-actions">
-            <a href="/mypage/review">내 후기</a>
+            <a href="/myshop/reviewss">내 후기</a>
             <a href="/myshop/orders">주문내역</a>
         </div>
     </div>

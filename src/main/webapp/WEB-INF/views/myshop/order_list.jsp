@@ -67,7 +67,7 @@
 </section>
 
 <!-- 주문/배송내역 -->
-<section class="myshop-order-section">
+<section class="myshop-list-section">
 
     <div class="myshop-section-head">
         <div>
@@ -86,7 +86,7 @@
         </c:when>
 
         <c:otherwise>
-            <div class="myshop-order-list">
+            <div class="myshop-list">
 
                 <c:forEach var="order" items="${orderList}">
 
@@ -95,9 +95,9 @@
                     <c:set var="mainItem" value="${items[0]}" />
                     <c:set var="itemCount" value="${fn:length(items)}" />
 
-                    <article class="myshop-order-card">
+                    <article class="myshop-list-card">
 
-                        <div class="myshop-order-top">
+                        <div class="myshop-list-top">
 
                             <div>
                                 <strong class="myshop-status-badge ${order.status}">
@@ -120,7 +120,7 @@
 
                         </div>
 
-                        <div class="myshop-order-body">
+                        <div class="myshop-list-body">
 
                             <div class="myshop-product-thumb">
                                 <c:choose>
@@ -192,7 +192,7 @@
 
                             </div>
 
-                            <div class="myshop-order-actions">
+                            <div class="myshop-list-actions">
 
                                 <!-- 중요: 결제대기 상태 -->
                                 <c:if test="${order.status eq 'PENDING'}">
@@ -329,6 +329,7 @@
 
 </section>
 
+<!-- 중요: 결제취소 모달 -->
 <div class="cancel-modal-wrap" id="cancelModal">
 
     <div class="cancel-modal-bg" onclick="closeCancelModal()"></div>
