@@ -21,7 +21,7 @@
 
     <c:if test="${contentPage eq '/myshop/order_list'}">
         <link rel="stylesheet" href="/css/myshop/cancleModal.css?v=1">
-        <link rel="stylesheet" href="/css/myshop/order.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/order.css?v=2">
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/review_list'}">

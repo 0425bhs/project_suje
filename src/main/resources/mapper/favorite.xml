@@ -4,35 +4,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kh.suje.dao.FavoriteDAO">
-    <select id="getFavoriteList"
-            parameterType="int"
-            resultType="favorite">
-        SELECT *
-        FROM favorites_seller
-        WHERE user_id = #{user_id}
+
+    <select id="getFavoriteSellerList" parameterType="int" resultType="favorite">
+        SELECT
+            fs.seller_favorite_id,
+            fs.user_id,
+            fs.seller_id,
+            fs.created_at,
+            s.company_name
+        FROM favorites_seller fs
+        JOIN sellers s ON fs.seller_id = s.seller_id
+        WHERE fs.user_id = #{user_id}
+        ORDER BY fs.created_at DESC
     </select>
     
-    <insert id="addFavorite"
-            parameterType="java.util.Map">
+    <insert id="addFavoriteSeller" parameterType="map">
         INSERT IGNORE INTO favorites_seller (user_id, seller_id)
         VALUES (#{user_id}, #{seller_id})
     </insert>
 
-    <delete id="delFavorite"
-            parameterType="java.util.Map">
+    <delete id="delFavoriteSeller" parameterType="map">
         DELETE FROM favorites_seller
         WHERE user_id = #{user_id}
         AND seller_id = #{seller_id}
     </delete>
 
-    <select id="checkFavoriteShop"
-            parameterType="java.util.Map"
-            resultType="int">
-        SELECT EXISTS (
-            SELECT 1
-            FROM favorites_seller
-            WHERE user_id = #{user_id}
-            AND seller_id = #{seller_id}
-        )
+    <select id="checkFavoriteSeller" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM favorites_seller
+        WHERE user_id = #{user_id} AND seller_id = #{seller_id}
     </select>
+
+    <select id="SellerFavoriteCount" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM favorites_seller
+        WHERE seller_id = #{seller_id}
+    </select>
+
 </mapper>

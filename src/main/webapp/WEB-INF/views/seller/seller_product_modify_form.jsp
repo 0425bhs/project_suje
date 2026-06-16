@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -128,6 +129,53 @@
                             <div class="form-row shipping-section">
                                 <label>배송비</label>
                                 <input type="number" id="delivery_fee" name="delivery_fee" value="${vo.delivery_fee}" placeholder="배송비">
+                            </div>
+
+                        </div>
+
+                         <!--할인 설정-->
+                        <div class="form-row discount-setting-box">
+                            <label>할인 설정</label>
+
+                            <div class="discount-type-box">
+                                <label>
+                                    <input type="radio" name="sale_discount_type" value="none"
+                                        ${vo.sale_price == 0 ? 'checked' : ''}>
+                                    할인 없음
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="sale_discount_type" value="always"
+                                        ${vo.sale_price > 0 and empty vo.sale_start_at and empty vo.sale_end_at ? 'checked' : ''}>
+                                    상시 할인
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="sale_discount_type" value="period"
+                                        ${vo.sale_price > 0 and not empty vo.sale_start_at and not empty vo.sale_end_at ? 'checked' : ''}>
+                                    기간 할인
+                                </label>
+                            </div>
+
+                            <p class="form-help discount-help">
+                                기간 할인 선택 시, 할인 기간을 설정할 수 있습니다.
+                            </p>
+
+                            <div class="discount-period-grid">
+
+                                <div class="form-row">
+                                    <label>할인 시작일</label>
+                                    <input type="date" 
+                                           name="sale_start_at"
+                                           value="${not empty vo.sale_start_at ? fn:substring(vo.sale_start_at, 0, 10) : ''}">
+                                </div>
+
+                                <div>
+                                    <label>할인 종료일</label>
+                                    <input type="date" 
+                                           name="sale_end_at"
+                                           value="${not empty vo.sale_end_at ? fn:substring(vo.sale_end_at, 0, 10) : ''}">
+                                </div>
                             </div>
 
                         </div>

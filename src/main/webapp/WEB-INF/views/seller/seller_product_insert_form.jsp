@@ -93,6 +93,48 @@
 
                         </div>
 
+                        <!--할인 설정-->
+                        <div class="form-row discount-setting-box">
+                            <label>할인 설정</label>
+
+                            <div class="discount-type-box">
+                                <label>
+                                    <input type="radio" name="sale_discount_type" value="none" checked>
+                                    할인 없음
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="sale_discount_type" value="always">
+                                    상시 할인
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="sale_discount_type" value="period">
+                                    기간 할인
+                                </label>
+                            </div>
+
+                            <p class="form-help discount-help">
+                                기간 할인 선택 시, 할인 기간을 설정할 수 있습니다.
+                            </p>
+
+                            <div class="discount-period-grid">
+
+                                <div class="form-row">
+                                    <label>할인 시작일</label>
+                                    <input type="date" name="sale_start_at">
+                                </div>
+
+                                <div>
+                                    <label>할인 종료일</label>
+                                    <input type="date" name="sale_end_at">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        </div>
+
                         <div class="form-row free-shipping-row">
                             <label>무료배송 기준 금액</label>
 

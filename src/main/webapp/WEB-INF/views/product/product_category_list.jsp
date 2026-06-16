@@ -5,11 +5,19 @@
 <!DOCTYPE html>
 <html lang="ko">
     <head>
+        <!-- 상품 목록 페이지 공통 레이아웃 CSS -->
         <link rel="stylesheet" href="/css/product/product_main.css">
+
+        <!-- 공통 상품 카드 디자인 CSS -->
         <link rel="stylesheet" href="/css/product/product_card.css">
+
+        <!-- 카테고리 상품 목록 페이지 전용 CSS -->
         <link rel="stylesheet" href="/css/product/product_category_list.css">
 
+        <!-- 상품 공통 헤더, 카테고리 메뉴 관련 JS -->
         <script src="/js/product_main.js" defer></script>
+
+        <!-- 카테고리 목록 페이지 전용 JS -->
         <script src="/js/product_category_list.js"></script>
     </head>
 

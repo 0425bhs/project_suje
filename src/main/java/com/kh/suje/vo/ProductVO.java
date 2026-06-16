@@ -27,6 +27,13 @@ public class ProductVO {
     private float review_avg;
     private int review_count;
 
+    //할인 기간 설정
+    private String sale_start_at;
+    private String sale_end_at;
+
+    //할인 설정 구분값
+    private String sale_discount_type;
+
     // 상품 상세에서 리뷰 목록 담을 때 사용
     private List<ReviewVO> review_list;
 

@@ -1,18 +1,37 @@
 window.onload = function(){
-    const freeShippingView = document.getElementById("free_shipping_view");
-    const freeShipping = document.getElementById("free_shipping");
-    const freeShippingText = document.getElementById("free_shipping_text");
-    const freeShippingHelp = document.getElementById("free_shipping_help");
-    const deliveryFee = document.getElementById("delivery_fee");
 
     const bigCategory = document.getElementById("big_category_id");
     const smallCategory = document.getElementById("category_id");
 
-    function setFreeShippingText(value){
-        if(freeShippingText != null){
-            freeShippingText.innerText = value;
-        }
+    if(bigCategory != null && smallCategory != null){
+        bigCategory.addEventListener("change",function(){
+            let parentId = this.value;
+
+            smallCategory.innerHTML = "<option value=''>하위 카테고리 선택</option>";
+
+            if(parentId == ""){
+                return;
+            }
+
+            fetch("/sub.do?parent_id=" + parentId)
+                .then(res=>res.json())
+                .then(data=>{
+                    data.forEach(category=>{
+                        let option = document.createElement("option");
+
+                        option.value = category.category_id;
+                        option.innerText = category.name;
+
+                        smallCategory.appendChild(option);
+                    });
+                });
+        });
     }
+
+    const deliveryFee = document.getElementById("delivery_fee");
+    const freeShippingView = document.getElementById("free_shipping_view");
+    const freeShipping = document.getElementById("free_shipping");
+    const freeShippingHelp = document.getElementById("free_shipping_help");
 
     function updateShippingHelp(){
         if(freeShippingHelp == null){
@@ -53,7 +72,6 @@ window.onload = function(){
             freeShipping.value = "0";
             freeShippingView.disabled = true;
             freeShippingView.placeholder = "택배비를 입력해야 무료배송 기준 금액을 설정할 수 있습니다.";
-            setFreeShippingText("0");
         } else {
             freeShippingView.disabled = false;
         }
@@ -61,21 +79,22 @@ window.onload = function(){
         updateShippingHelp();
     }
 
-    if(freeShippingView != null && freeShipping != null && deliveryFee != null){
+    if(deliveryFee != null && freeShippingView != null && freeShipping != null){
+
         freeShippingView.addEventListener("input",function(){
             let value = this.value.replace(/,/g, "");
 
             if(value == ""){
                 this.value = "";
                 freeShipping.value = "0";
-                setFreeShippingText("0");
                 updateShippingHelp();
                 return;
             }
 
+            // 글자가 들어오면 여기서 지우지 않음
+            // 수정 버튼 눌렀을 때 alert 띄우기 위함
             if(isNaN(value)){
                 freeShipping.value = "0";
-                setFreeShippingText("0");
                 updateShippingHelp();
                 return;
             }
@@ -85,7 +104,6 @@ window.onload = function(){
             let commaValue = Number(value).toLocaleString();
 
             this.value = commaValue;
-            setFreeShippingText(commaValue);
             updateShippingHelp();
         });
 
@@ -93,77 +111,32 @@ window.onload = function(){
             checkDeliveryFeeInput();
         });
 
+        // 수정 페이지는 기존 DB 값이 들어와 있으니까 처음 열릴 때도 체크
         checkDeliveryFeeInput();
-    }
-
-    if(bigCategory != null && smallCategory != null){
-        bigCategory.addEventListener("change",function(){
-            let parentId = this.value;
-
-            smallCategory.innerHTML = "<option value=''>하위 카테고리 선택</option>";
-
-            if(parentId == ""){
-                return;
-            }
-
-            fetch("/sub.do?parent_id=" + parentId)
-                .then(res => res.json())
-                .then(data => {
-                    data.forEach(category => {
-                        let option = document.createElement("option");
-
-                        option.value = category.category_id;
-                        option.innerText = category.name;
-
-                        smallCategory.appendChild(option);
-                    });
-                });
-        });
     }
 };
 
 function send(f){
-    const bigCategory = document.getElementById("big_category_id");
-    const category_id = f.category_id;
+
     const name = f.name;
     const description = f.description;
-    const imageL = f.image_l_file;
-    const imageS = f.image_s_file;
-
-    if(bigCategory.value == ""){
-        alert("대분류 카테고리를 선택하세요.");
-        bigCategory.focus();
-        return;
-    }
-
-    if(category_id.value == ""){
-        alert("하위 카테고리를 선택하세요.");
-        category_id.focus();
-        return;
-    }
 
     if(name.value == ""){
-        alert("제품명을 미기입하셨습니다.");
+        alert("제품명을 등록해주세요.");
         name.focus();
         return;
     }
 
     if(description.value == ""){
-        alert("상세 내용을 미기입하셨습니다.");
+        alert("상세 내용을 등록해주세요.");
         description.focus();
         return;
     }
 
-    if(f.stock.value == ""){
-        alert("재고 수량을 미기입하셨습니다.");
-        f.stock.focus();
-        return;
-    }
-
-    let stockValue = Number(f.stock.value);
+    let stockValue = Number(f.stock.value || 0);
 
     if(stockValue < 0){
-        alert("올바른 재고 수량을 기입해주세요.");
+        alert("올바른 재고 수량을 입력해주세요.");
         f.stock.focus();
         return;
     }
@@ -172,19 +145,19 @@ function send(f){
     let salePrice = Number(f.sale_price.value || 0);
 
     if(price <= 0){
-        alert("상품 가격을 미기입하셨습니다.");
+        alert("상품 가격은 1원 이상 입력해야 합니다.");
         f.price.focus();
         return;
     }
 
     if(salePrice < 0){
-        alert("할인 가격을 올바르게 입력해주세요.");
+        alert("세일 가격은 음수로 입력할 수 없습니다.");
         f.sale_price.focus();
         return;
     }
 
     if(salePrice > 0 && salePrice >= price){
-        alert("할인 가격이 잘못 기입되었습니다.");
+        alert("세일 가격은 상품 가격보다 낮아야 합니다.");
         f.sale_price.focus();
         return;
     }
@@ -222,7 +195,7 @@ function send(f){
     let deliveryFee = Number(deliveryFeeValue);
 
     if(deliveryFee < 0){
-        alert("배송비를 올바르게 입력해주세요.");
+        alert("배송비는 0원 이상 입력해야 합니다.");
         f.delivery_fee.focus();
         return;
     }
@@ -239,6 +212,7 @@ function send(f){
         return;
     }
 
+    
     let productPriceForShipping = price;
 
     if(salePrice > 0){
@@ -255,18 +229,6 @@ function send(f){
         freeShippingValue = 0;
     }
 
-    if(imageL.value == ""){
-        alert("대표 이미지를 등록해주세요.");
-        imageL.focus();
-        return;
-    }
-
-    if(imageS.value == ""){
-        alert("상세 이미지를 등록해주세요.");
-        imageS.focus();
-        return;
-    }
-
     f.price.value = String(price);
     f.sale_price.value = String(salePrice);
     f.stock.value = String(stockValue);
@@ -275,14 +237,12 @@ function send(f){
 
     let formData = new FormData(f);
 
-    fetch("/seller_product_insert.do", { method: "post", body: formData })
-        .then(res => res.json())
-        .then(data => {
+    fetch("/seller_product_modify.do",{method:"post",body:formData}).then(res=>res.json()).then(data=>{
             if(data.result == 1){
-                alert("상품 등록이 되었습니다.");
-                location.href = "/all_list.do";
+                alert("상품을 수정하셨습니다.");
+                location.href = "/product_detail.do?product_id=" + data.product_id;
             } else {
-                alert("상품 등록이 불가능합니다. 관리자에게 문의바랍니다.");
+                alert("상품 수정 적용이 실패하셨습니다. 관리자에게 문의 바랍니다.");
             }
         });
 }
