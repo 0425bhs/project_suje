@@ -11,17 +11,30 @@
     <title>마이쇼핑 - HANDMADE</title>
 
     <link rel="stylesheet" href="/css/product/product_main.css">
-    <link rel="stylesheet" href="/css/order-payment.css?v=3">
-    <link rel="stylesheet" href="/css/myshop/myshop.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/myshop_common.css">
+
+    <c:if test="${contentPage eq '/myshop/dashboard'}">
+        <link rel="stylesheet" href="/css/myshop/myshop-dashboard.css?v=1">
+    </c:if>
+
+    <c:if test="${contentPage eq '/myshop/order_list'}">
+        <link rel="stylesheet" href="/css/myshop/order_list.css?v=1">
+    </c:if>
+
+    <c:if test="${contentPage eq '/myshop/order_list'}">
+    </c:if>
     
     <script src="/js/product_main.js" defer></script>
-    <script src="/js/order-payment.js" defer></script>
+    <c:if test="${contentPage eq '/myshop/order_list'}">
+        <script src="/js/cart.js" defer></script>
+        <script src="/js/order-payment.js" defer></script>
+    </c:if>
 </head>
 
 <body>
 
 <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-    <jsp:param name="activeMenu" value="" />
+    <jsp:param name="activeMenu" value="myshop" />
 </jsp:include>
 
     <section class="myshop-page">

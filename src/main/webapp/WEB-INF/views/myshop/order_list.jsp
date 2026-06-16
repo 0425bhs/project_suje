@@ -112,7 +112,6 @@
                                     </c:choose>
                                 </strong>
 
-                                <span>${order.created_at} · 주문번호 #${order.order_id}</span>
                             </div>
 
                             <a href="/order/detail?order_id=${order.order_id}">
@@ -141,28 +140,47 @@
                             </div>
 
                             <div class="myshop-product-info">
+
+                                <c:choose>
+                                    <c:when test="${not empty order.created_at and fn:length(order.created_at) ge 16}">
+                                        <span class="myshop-order-date-text">
+                                            ${fn:substring(order.created_at, 0, 16)} 주문
+                                        </span>
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <span class="myshop-order-date-text">
+                                            ${order.created_at} 주문
+                                        </span>
+                                    </c:otherwise>
+                                </c:choose>
+
                                 <c:choose>
                                     <c:when test="${not empty mainItem}">
 
                                         <c:choose>
                                             <c:when test="${itemCount eq 1}">
-                                                
-                                                <a class="myshop-product-name-link"
-                                                   href="/product_detail.do?product_id=${mainItem.product_id}">
+                                                <strong class="myshop-product-name-text">
                                                     ${mainItem.productName}
-                                                </a>
+                                                </strong>
                                             </c:when>
 
                                             <c:otherwise>
-                                                
-                                                <strong class="myshop-product-name-text">
-                                                    ${mainItem.productName} 포함 총 ${itemCount}건
-                                                </strong>
+                                                <button type="button" class="myshop-product-name-text myshop-product-open-btn"
+                                                        onclick="toggleOrderItems(this.closest('.myshop-order-card').querySelector('.myshop-order-toggle'))">
+                                                    ${mainItem.productName}
+                                                    <span class="myshop-product-count-text">
+                                                        포함 총 ${itemCount}건
+                                                    </span>
 
+                                                </button>
                                             </c:otherwise>
                                         </c:choose>
 
-                                        
+                                        <strong>
+                                            총 결제금액
+                                            <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
+                                        </strong>
 
                                     </c:when>
 
@@ -172,17 +190,9 @@
                                     </c:otherwise>
                                 </c:choose>
 
-                                <strong>
-                                    총 결제금액
-                                    <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
-                                </strong>
                             </div>
 
                             <div class="myshop-order-actions">
-
-                                <a href="/order/detail?order_id=${order.order_id}">
-                                    상세보기
-                                </a>
 
                                 <!-- 중요: 결제대기 상태 -->
                                 <c:if test="${order.status eq 'PENDING'}">
@@ -221,12 +231,13 @@
                                     </button>
                                 </c:if>
 
-                                <!-- 준비중: 문의하기 -->
-                                <button type="button"
-                                        class="qna"
-                                        onclick="alert('문의 기능은 준비중입니다.');">
-                                    문의하기
-                                </button>
+                                <c:if test="${itemCount eq 1}">
+                                    <button type="button"
+                                            class="qna"
+                                            onclick="location.href='/qna_form.do?product_id=${mainItem.product_id}'">
+                                        문의하기
+                                    </button>
+                                </c:if>
 
                             </div>
 
@@ -276,12 +287,25 @@
 
                                         <div class="myshop-order-item-actions">
 
-                                            <a href="/product_detail.do?product_id=${item.product_id}">
-                                                상세보기
-                                            </a>
+                                            <c:if test="${order.status eq 'DELIVERED'}">
+                                                
+                                                <button type="button" onclick="cartInsert('${item.product_id}', 1)">
+                                                    장바구니 담기
+                                                </button>
 
-                                            <button type="button"
-                                                    onclick="alert('문의 기능은 준비중입니다.');">
+                                                <button type="button" onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1'">
+                                                    바로 구매하기
+                                                </button>
+
+
+                                                <button type="button" onclick="alert('환불/교환 기능은 준비중입니다.');">
+                                                    환불/교환
+                                                </button>
+
+                                            </c:if>
+                                            
+
+                                            <button type="button" onclick="location.href='/qna_form.do?product_id=${mainItem.product_id}'">
                                                 문의하기
                                             </button>
 

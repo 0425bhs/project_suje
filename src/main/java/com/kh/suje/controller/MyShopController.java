@@ -11,10 +11,14 @@ import lombok.RequiredArgsConstructor;
 public class MyShopController {
 
     @GetMapping("/myshop")
-    private String MyShop(Model model) {
-        model.addAttribute("activeMenu", "myshop");
+    public String myshopMain(Model model) {
+
         model.addAttribute("contentPage", "/myshop/dashboard");
-        
-        return "/myshop/myshop_main";
+
+        model.addAttribute("activeMenu", "dashboard");
+
+        return "myshop/myshop_main";
     }
+
+    
 }
