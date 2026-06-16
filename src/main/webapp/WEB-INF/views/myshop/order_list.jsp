@@ -13,7 +13,54 @@
 <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
 <!-- 주문 상태 요약 -->
+ <!-- 주문 상태 요약 -->
 <section class="myshop-status-card">
+
+    <button type="button"
+            class="${empty selectedStatus ? 'active' : ''}"
+            onclick="location.href='/myshop/orders'">
+        <span>전체</span>
+        <strong>${totalCount}</strong>
+    </button>
+
+    <button type="button"
+            class="${selectedStatus eq 'PENDING' ? 'active' : ''}"
+            onclick="location.href='/myshop/orders?status=PENDING'">
+        <span>결제대기</span>
+        <strong>${pendingCount}</strong>
+    </button>
+
+    <button type="button"
+            class="${selectedStatus eq 'PAID' ? 'active' : ''}"
+            onclick="location.href='/myshop/orders?status=PAID'">
+        <span>결제완료</span>
+        <strong>${paidCount}</strong>
+    </button>
+
+    <button type="button"
+            class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
+            onclick="location.href='/myshop/orders?status=SHIPPING'">
+        <span>배송중</span>
+        <strong>${shippingCount}</strong>
+    </button>
+
+    <button type="button"
+            class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}"
+            onclick="location.href='/myshop/orders?status=DELIVERED'">
+        <span>배송완료</span>
+        <strong>${deliveredCount}</strong>
+    </button>
+
+    <button type="button"
+            class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
+            onclick="location.href='/myshop/orders?status=CANCELLED'">
+        <span>취소</span>
+        <strong>${cancelCount}</strong>
+    </button>
+
+</section>
+
+<!-- <section class="myshop-status-card">
 
     <button type="button"
             class="${empty selectedStatus ? 'active' : ''}"
@@ -64,10 +111,10 @@
         <strong>${cancelCount}</strong>
     </button>
 
-</section>
+</section> -->
 
 <!-- 주문/배송내역 -->
-<section class="myshop-list-section">
+<section class="myshop-order-section">
 
     <div class="myshop-section-head">
         <div>
@@ -86,7 +133,7 @@
         </c:when>
 
         <c:otherwise>
-            <div class="myshop-list">
+            <div class="myshop-order">
 
                 <c:forEach var="order" items="${orderList}">
 
@@ -95,9 +142,9 @@
                     <c:set var="mainItem" value="${items[0]}" />
                     <c:set var="itemCount" value="${fn:length(items)}" />
 
-                    <article class="myshop-list-card">
+                    <article class="myshop-order-card">
 
-                        <div class="myshop-list-top">
+                        <div class="myshop-order-top">
 
                             <div>
                                 <strong class="myshop-status-badge ${order.status}">
@@ -120,7 +167,7 @@
 
                         </div>
 
-                        <div class="myshop-list-body">
+                        <div class="myshop-order-body">
 
                             <div class="myshop-product-thumb">
                                 <c:choose>
@@ -192,7 +239,7 @@
 
                             </div>
 
-                            <div class="myshop-list-actions">
+                            <div class="myshop-order-actions">
 
                                 <!-- 중요: 결제대기 상태 -->
                                 <c:if test="${order.status eq 'PENDING'}">

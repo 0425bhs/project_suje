@@ -12,24 +12,22 @@
 
     <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/myshop/common.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/card.css?v=1">
 
     <c:if test="${contentPage eq '/myshop/dashboard'}">
-        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
         <link rel="stylesheet" href="/css/myshop/dashboard.css?v=1">
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/order_list'}">
-        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/cancleModal.css?v=1">
         <link rel="stylesheet" href="/css/myshop/order.css?v=1">
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/review_list'}">
-        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
         <link rel="stylesheet" href="/css/myshop/review.css?v=1">
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/qna_list'}">
-        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
         <link rel="stylesheet" href="/css/myshop/qna.css?v=1">
     </c:if>
     
