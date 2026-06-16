@@ -4,13 +4,13 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!-- 회원 요약 카드 -->
-<jsp:include page="/WEB-INF/views/order/common/myshop_user_card.jsp">
+<jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
     <jsp:param name="label" value="MY ORDER" />
     <jsp:param name="count" value="${totalCount}" />
 </jsp:include>
 
 <!-- 빠른 메뉴 -->
-<jsp:include page="/WEB-INF/views/order/common/myshop_quick_card.jsp" />
+<jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
 <!-- 주문 상태 요약 -->
 <section class="myshop-status-card">

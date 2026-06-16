@@ -3,23 +3,17 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<!-- 1. 상단 회원 환영 바 -->
-<div class="dashboard-welcome-bar">
-    <div class="user-info-basic">
-        <div class="user-avatar">👤</div>
-        <div class="user-name-email">
-            <strong>${sessionScope.loginMember.name}님</strong>
-            <span>${sessionScope.loginMember.email}</span>
-        </div>
-    </div>
-    <div class="welcome-msg">안녕하세요, ${sessionScope.loginMember.name}님!</div>
-</div>
+<!-- 회원 요약 카드 -->
+<jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
+    <jsp:param name="label" value="MY SHOP" />
+    <jsp:param name="count" value="${totalCount}" />
+</jsp:include>
 
-<!-- 2. 종합 현황 카드 영역 -->
+<!-- 종합 현황 카드 영역 -->
 <section class="dashboard-status-cards">
     
     <%-- 주문 현황 카드 --%>
-    <div class="status-card" onclick="location.href='/myshop/orders'">
+    <div class="dashboard-status-card" onclick="location.href='/myshop/orders'">
         <span class="icon">📦</span>
         <h4>나의 주문 현황</h4>
         <strong>${totalCount}건</strong>
@@ -27,7 +21,7 @@
     </div>
 
     <%-- 리뷰 관리 카드 --%>
-    <div class="status-card" onclick="location.href='/mypage/review'">
+    <div class="dashboard-status-card" onclick="location.href='/mypage/review'">
         <span class="icon">⭐</span>
         <h4>리뷰 관리</h4>
         <strong>12건</strong>
@@ -35,7 +29,7 @@
     </div>
 
     <%-- 문의 현황 카드 --%>
-    <div class="status-card" onclick="location.href='/mypage/qna'">
+    <div class="dashboard-status-card" onclick="location.href='/mypage/qna'">
         <span class="icon">💬</span>
         <h4>문의 현황</h4>
         <strong>4건</strong>
@@ -43,7 +37,7 @@
     </div>
 
     <%-- 관심 상품 카드 --%>
-    <div class="status-card" onclick="alert('찜한 상품 기능은 준비중입니다.');">
+    <div class="dashboard-status-card" onclick="alert('찜한 상품 기능은 준비중입니다.');">
         <span class="icon">♡</span>
         <h4>관심 상품</h4>
         <strong>18건</strong>
@@ -68,18 +62,18 @@
     </section>
 
     <%-- 나의 혜택 요약 --%>
-    <section class="dashboard-section dashboard-benefit-card" style="margin-bottom: 24px; padding: 20px;">
-        <div class="dashboard-section-head" style="margin-bottom: 15px;">
-            <h3 style="font-size: 16px;">나의 쇼핑 혜택</h3>
+    <section class="dashboard-section dashboard-benefit-card">
+        <div class="dashboard-section-head">
+            <h3>나의 쇼핑 혜택</h3>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <div style="flex: 1; background: #fff4f4; padding: 15px; border-radius: 8px; text-align: center;">
-                <span style="font-size: 12px; color: #ff6b6b; font-weight: 600; display: block; margin-bottom: 4px;">적립금</span>
-                <strong style="font-size: 16px; color: #222;">2,500<span style="font-size: 13px; font-weight: normal;">원</span></strong>
+        <div class="dashboard-benefit-row">
+            <div class="dashboard-benefit-item point">
+                <span>적립금</span>
+                <strong>2,500<small>원</small></strong>
             </div>
-            <div style="flex: 1; background: #f4f6ff; padding: 15px; border-radius: 8px; text-align: center;">
-                <span style="font-size: 12px; color: #4a6ee0; font-weight: 600; display: block; margin-bottom: 4px;">쿠폰</span>
-                <strong style="font-size: 16px; color: #222;">2<span style="font-size: 13px; font-weight: normal;">장</span></strong>
+            <div class="dashboard-benefit-item coupon">
+                <span>쿠폰</span>
+                <strong>2<small>장</small></strong>
             </div>
         </div>
     </section>
@@ -94,7 +88,7 @@
 
             <c:choose>
                 <c:when test="${empty orderList}">
-                    <div class="myshop-empty-order" style="padding: 50px 0; text-align: center; color: #999;">
+                    <div class="myshop-empty-order">
                         최근 주문 내역이 없습니다.
                     </div>
                 </c:when>
@@ -108,10 +102,10 @@
                                 <c:set var="items" value="${orderItemMap[order.order_id]}" />
                                 <c:set var="mainItem" value="${items[0]}" />
 
-                                <article class="myshop-order-card dashboard-order-card" style="border: 1px solid #eee; margin-bottom: 15px; border-radius: 8px;">
-                                    <div class="myshop-order-top" style="background-color: #fcfcfc; padding: 10px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 13px;">
+                                <article class="myshop-order-card dashboard-order-card">
+                                    <div class="myshop-order-top">
                                         <div>
-                                            <strong class="myshop-status-badge ${order.status}" style="font-weight: bold; color: #ff6b6b; margin-right: 10px;">
+                                            <strong class="myshop-status-badge ${order.status}">
                                                 <c:choose>
                                                     <c:when test="${order.status eq 'PENDING'}">주문 접수</c:when>
                                                     <c:when test="${order.status eq 'PAID'}">결제 완료</c:when>
@@ -122,33 +116,33 @@
                                                     <c:otherwise>${order.status}</c:otherwise>
                                                 </c:choose>
                                             </strong>
-                                            <span style="color: #777;">${order.created_at} · 주문번호 #${order.order_id}</span>
+                                            <span>${order.created_at} · 주문번호 #${order.order_id}</span>
                                         </div>
-                                        <a href="/order/detail?order_id=${order.order_id}" style="color: #555; text-decoration: none;">주문상세 ></a>
+                                        <a href="/order/detail?order_id=${order.order_id}">주문상세 &gt;</a>
                                     </div>
 
-                                    <div class="myshop-order-body" style="padding: 15px; display: flex; gap: 15px; align-items: center;">
-                                        <div class="myshop-product-thumb" style="width: 70px; height: 70px; border: 1px solid #eee; border-radius: 4px; overflow: hidden;">
+                                    <div class="myshop-order-body">
+                                        <div class="myshop-product-thumb">
                                             <c:choose>
                                                 <c:when test="${not empty mainItem and not empty mainItem.imageS and mainItem.imageS ne 'no_file'}">
-                                                    <img src="${mainItem.imageS}" alt="${mainItem.productName}" style="width: 100%; height: 100%; object-fit: cover;">
+                                                    <img src="${mainItem.imageS}" alt="${mainItem.productName}">
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <img src="/images/no_image.png" alt="이미지 없음" style="width: 100%; height: 100%; object-fit: cover;">
+                                                    <img src="/images/no_image.png" alt="이미지 없음">
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
 
-                                        <div class="myshop-product-info" style="flex: 1; font-size: 14px;">
+                                        <div class="myshop-product-info">
                                             <c:choose>
                                                 <c:when test="${not empty mainItem}">
-                                                    <a href="/product_detail.do?product_id=${mainItem.product_id}" style="text-decoration: none; color: #333; font-weight: 500;">
+                                                    <a href="/product_detail.do?product_id=${mainItem.product_id}">
                                                         ${mainItem.productName}
                                                         <c:if test="${fn:length(items) > 1}">
                                                             외 ${fn:length(items) - 1}건
                                                         </c:if>
                                                     </a>
-                                                    <p style="color: #888; font-size: 13px; margin-top: 4px;">
+                                                    <p>
                                                         수량 ${mainItem.quantity}개 ·
                                                         <fmt:formatNumber value="${mainItem.price}" pattern="#,###"/>원
                                                     </p>
@@ -157,17 +151,17 @@
                                                     <strong>주문 상품 정보 없음</strong>
                                                 </c:otherwise>
                                             </c:choose>
-                                            <strong style="display: block; margin-top: 8px; font-size: 15px;">
+                                            <strong>
                                                 총 결제금액 <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
                                             </strong>
                                         </div>
 
-                                        <div class="myshop-order-actions" style="display: flex; flex-direction: column; gap: 5px;">
-                                            <a href="/order/detail?order_id=${order.order_id}" style="border: 1px solid #ddd; padding: 5px 12px; border-radius: 4px; color: #555; text-decoration: none; font-size: 12px; text-align: center;">
+                                        <div class="myshop-order-actions">
+                                            <a href="/order/detail?order_id=${order.order_id}">
                                                 상세보기
                                             </a>
                                             <c:if test="${order.status eq 'PENDING'}">
-                                                <a href="/payment/ready?order_id=${order.order_id}" class="primary" style="background-color: #ff6b6b; color: #fff; border: 1px solid #ff6b6b; padding: 5px 12px; border-radius: 4px; text-decoration: none; font-size: 12px; text-align: center;">
+                                                <a href="/payment/ready?order_id=${order.order_id}" class="primary">
                                                     결제하기
                                                 </a>
                                             </c:if>
@@ -192,43 +186,43 @@
     <aside class="dashboard-activity-sidebar">
 
         <%-- 2. 작성 가능한 리뷰 (워딩 변경) --%>
-        <section class="dashboard-section" style="margin-bottom: 24px;">
+        <section class="dashboard-section">
             <div class="dashboard-section-head">
                 <h3>작성 가능한 리뷰</h3>
                 <a href="/mypage/review" class="view-all-btn">더보기 &gt;</a>
             </div>
-            <ul class="compact-prod-list" style="list-style: none; padding: 0;">
-                <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0;">
-                    <img src="/images/tmp_prod_1.jpg" alt="" style="width: 48px; height: 48px; border-radius: 6px; background-color: #eee; object-fit: cover;">
-                    <div style="flex: 1;">
-                        <span style="font-size: 13px; color: #333; display: block; margin-bottom: 4px;">핸드메이드 코스튬 자켓</span>
-                        <a href="/mypage/review/write" style="font-size: 12px; color: #ff6b6b; font-weight: 600; text-decoration: none;">✏️ 리뷰 쓰고 500원 받기</a>
+            <ul class="compact-prod-list">
+                <li>
+                    <img src="/images/tmp_prod_1.jpg" alt="">
+                    <div class="info">
+                        <span>핸드메이드 코스튬 자켓</span>
+                        <a href="/mypage/review/write" class="action">리뷰 쓰고 500원 받기</a>
                     </div>
                 </li>
             </ul>
         </section>
 
         <%-- 3. 최근 내 문의 --%>
-        <section class="dashboard-section" style="margin-bottom: 24px;">
+        <section class="dashboard-section">
             <div class="dashboard-section-head">
                 <h3>최근 내 문의</h3>
                 <a href="/mypage/qna" class="view-all-btn">더보기 &gt;</a>
             </div>
-            <div class="compact-inquiry" style="background-color: #fcfcfc; padding: 12px; border-radius: 8px; border: 1px solid #eaeaea; font-size: 13px;">
-                <p style="margin: 0 0 6px 0; color: #222; font-weight: 600;">배송 지연 문의드립니다.</p>
-                <span style="color: #ff6b6b; font-size: 12px; font-weight: 600;">답변 완료</span>
-                <span style="color: #999; font-size: 12px; margin-left: 8px;">2023.10.25</span>
+            <div class="compact-inquiry">
+                <p>배송 지연 문의드립니다.</p>
+                <span class="status">답변 완료</span>
+                <span class="type">2023.10.25</span>
             </div>
         </section>
 
         <%-- 4. 공지사항 (추가 제안) --%>
-        <section class="dashboard-section" style="margin-bottom: 24px; padding: 20px;">
-            <div class="dashboard-section-head" style="margin-bottom: 12px;">
-                <h3 style="font-size: 15px;">📢 공지사항</h3>
+        <section class="dashboard-section">
+            <div class="dashboard-section-head">
+                <h3>공지사항</h3>
             </div>
-            <ul style="list-style: none; padding: 0; margin: 0; font-size: 13px;">
-                <li style="margin-bottom: 8px;"><a href="#" style="color: #555; text-decoration: none;">[안내] 설 연휴 배송 일정 안내</a></li>
-                <li><a href="#" style="color: #555; text-decoration: none;">[이벤트] 신규 가입 10% 쿠폰 지급</a></li>
+            <ul class="dashboard-notice-list">
+                <li><a href="#">[안내] 설 연휴 배송 일정 안내</a></li>
+                <li><a href="#">[이벤트] 신규 가입 10% 쿠폰 지급</a></li>
             </ul>
         </section>
 

@@ -12,8 +12,8 @@ public class MyShopController {
 
     @GetMapping("/myshop")
     private String MyShop(Model model) {
-        String contentPage = "/myshop/dashboard";
-        model.addAttribute("contentPage", contentPage);
+        model.addAttribute("activeMenu", "myshop");
+        model.addAttribute("contentPage", "/myshop/dashboard");
         
         return "/myshop/myshop_main";
     }
