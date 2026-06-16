@@ -43,7 +43,7 @@
 
                     <div class="store-main-image-box">
 
-                        <button type="button" class="store-wish-icon-btn">♡</button>
+                        <button type="button" class="store-wish-icon-btn" id="productWishBtn" data-product-id="${vo.product_id}">♡</button>
 
                         <button type="button" class="store-image-nav store-image-prev" id="detailImgPrev">
                             ‹
@@ -90,10 +90,9 @@
 
                     <div class="store-seller-line">
                         <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
-                            판매자 샵 보기
+                             ${vo.company_name} 샵 보기
                         </a>
                         <br/>
-                        <span>판매자 번호 ${vo.seller_id}</span>
 
                         <button type="button" class="wish-shop-btn" id="sellerWishBtn" data-seller-id="${vo.seller_id}">
                             <span class="wish-shop-heart">♡</span>

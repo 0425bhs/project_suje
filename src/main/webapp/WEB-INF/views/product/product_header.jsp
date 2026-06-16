@@ -118,7 +118,7 @@
             </c:if>
 
             <!-- 판매자센터는 현재 그대로 노출 -->
-            <a href="/seller_product_list.do">판매자센터</a>
+            <a href="/seller_dashboard.do">판매자센터</a>
 
             <a href="#" class="disabled">♡ 관심</a>
             <a href="/cart_list.do" class="header-cart-link">
