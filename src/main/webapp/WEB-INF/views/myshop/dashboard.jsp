@@ -15,31 +15,28 @@
     <%-- 주문 현황 카드 --%>
     <div class="dashboard-status-card" onclick="location.href='/myshop/orders'">
         <span class="icon">📦</span>
-        <h4>나의 주문 현황</h4>
+        <h4>전체 주문 수</h4>
         <strong>${totalCount}건</strong>
-        <span class="sub-info">결제대기 ${pendingCount} / 배송중 ${shippingCount} / 배송완료 ${deliveredCount}</span>
     </div>
 
     <%-- 리뷰 관리 카드 --%>
     <div class="dashboard-status-card" onclick="location.href='/myshop/reviews'">
         <span class="icon">⭐</span>
-        <h4>리뷰 관리</h4>
+        <h4>작성 리뷰 수</h4>
         <strong>12건</strong>
-        <span class="sub-info">작성 가능: 3건</span>
     </div>
 
     <%-- 문의 현황 카드 --%>
     <div class="dashboard-status-card" onclick="location.href='/myshop/qnas'">
         <span class="icon">💬</span>
-        <h4>문의 현황</h4>
+        <h4>문의 내역 수</h4>
         <strong>4건</strong>
-        <span class="sub-info">미답변: 0건</span>
     </div>
 
     <%-- 관심 상품 카드 --%>
     <div class="dashboard-status-card" onclick="alert('찜한 상품 기능은 준비중입니다.');">
         <span class="icon">♡</span>
-        <h4>관심 상품</h4>
+        <h4>관심 상품 수</h4>
         <strong>18건</strong>
     </div>
 
@@ -51,8 +48,8 @@
     <section class="dashboard-section dashboard-recent-orders">
         
             <div class="dashboard-section-head">
-                <h3>`</h3>
-                <a href="/myshop/orders" class="view-all-btn">전체보기 ></a>
+                <h3>최근 주문 내역 <span>최근 3건</span></h3>
+                <a href="/myshop/orders" class="view-all-btn">전체보기 &gt;</a>
             </div>
 
             <c:choose>
@@ -86,7 +83,6 @@
                                                     <c:otherwise>${order.status}</c:otherwise>
                                                 </c:choose>
                                             </strong>
-                                            <span>${order.created_at} · 주문번호 #${order.order_id}</span>
                                         </div>
                                         <a href="/order/detail?order_id=${order.order_id}">주문상세 &gt;</a>
                                     </div>
@@ -102,12 +98,9 @@
                                                 </c:otherwise>
                                             </c:choose>
 
-                                            <c:if test="${itemCount gt 1}">
-                                                <span class="myshop-thumb-count">${itemCount}</span>
-                                            </c:if>
                                         </div>
 
-                                        <div class="myshop-product-info">
+                                        <div class="myshop-product-info dashboard-order-info">
                                             <c:choose>
                                                 <c:when test="${not empty order.created_at and fn:length(order.created_at) ge 16}">
                                                     <span class="myshop-order-date-text">
@@ -134,25 +127,45 @@
                                                         </c:if>
                                                     </strong>
 
-                                                    <strong>
+                                                    <strong class="dashboard-order-total">
                                                         총 결제금액
                                                         <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
                                                     </strong>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <strong>주문 상품 정보 없음</strong>
+                                                    <strong class="myshop-product-name-text">주문 상품 정보 없음</strong>
+                                                    <p class="dashboard-order-empty-text">상품 정보를 불러오지 못했습니다.</p>
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
 
                                         <div class="myshop-order-actions">
-                                            <a href="/order/detail?order_id=${order.order_id}">
-                                                상세보기
-                                            </a>
                                             <c:if test="${order.status eq 'PENDING'}">
                                                 <a href="/payment/ready?order_id=${order.order_id}" class="primary">
                                                     결제하기
                                                 </a>
+                                            </c:if>
+
+                                            <c:if test="${order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
+                                                <a href="/order/delivery?order_id=${order.order_id}">
+                                                    배송조회
+                                                </a>
+                                            </c:if>
+
+                                            <c:if test="${order.status eq 'DELIVERED' and not empty mainItem}">
+                                                <button type="button"
+                                                        class="review"
+                                                        onclick="location.href='/review_form.do?order_item_id=${mainItem.order_item_id}'">
+                                                    리뷰쓰기
+                                                </button>
+                                            </c:if>
+
+                                            <c:if test="${itemCount eq 1 and not empty mainItem}">
+                                                <button type="button"
+                                                        class="qna"
+                                                        onclick="location.href='/qna_form.do?product_id=${mainItem.product_id}'">
+                                                    문의하기
+                                                </button>
                                             </c:if>
                                         </div>
                                     </div>

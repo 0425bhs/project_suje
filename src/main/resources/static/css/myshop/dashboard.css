@@ -5,55 +5,51 @@
 }
 
 .dashboard-status-cards {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 12px;
 }
 
 .dashboard-status-card {
     background-color: #fff;
-    padding: 24px 20px;
-    border-radius: 18px;
+    min-height: 104px;
+    padding: 16px 16px;
+    border-radius: 14px;
     border: 1px solid #f0e4dc;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 8px 24px rgba(80, 45, 25, 0.04);
+    box-shadow: 0 6px 18px rgba(80, 45, 25, 0.035);
+    box-sizing: border-box;
 }
 
 .dashboard-status-card:hover {
     border-color: #ff6f4f;
     transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(80, 45, 25, 0.06);
+    box-shadow: 0 8px 20px rgba(80, 45, 25, 0.055);
 }
 
 .dashboard-status-card .icon {
     display: inline-block;
-    margin-bottom: 12px;
-    font-size: 32px;
+    margin-bottom: 7px;
+    font-size: 26px;
+    line-height: 1;
 }
 
 .dashboard-status-card h4 {
-    margin-bottom: 8px;
+    margin: 0 0 6px;
     color: #666;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 650;
 }
 
 .dashboard-status-card strong {
     display: block;
     color: #222;
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-}
-
-.dashboard-status-card .sub-info {
-    display: block;
-    margin-top: 8px;
-    color: #a0a0a0;
-    font-size: 12px;
+    font-size: 23px;
+    font-weight: 850;
+    line-height: 1;
 }
 
 .dashboard-lower-layout {
@@ -158,21 +154,62 @@
 }
 
 .dashboard-recent-orders .myshop-order-card {
-    padding: 0 20px;
+    padding: 0;
+    border-radius: 14px;
+    box-shadow: none;
+}
+
+.dashboard-recent-orders .dashboard-list-compact {
+    padding: 0;
+    gap: 14px;
+    background: transparent;
+}
+
+.dashboard-recent-orders .myshop-order-top {
+    min-height: 50px;
+    padding: 12px 16px;
+}
+
+.dashboard-recent-orders .myshop-order-top > div {
+    gap: 10px;
 }
 
 .dashboard-recent-orders .myshop-order-body {
-    grid-template-columns: 82px minmax(0, 1fr) 92px;
+    padding: 16px;
+    grid-template-columns: 78px minmax(0, 1fr) 104px;
     gap: 16px;
 }
 
 .dashboard-recent-orders .myshop-product-thumb {
-    width: 82px;
-    height: 82px;
+    width: 78px;
+    height: 78px;
+    border-radius: 10px;
+}
+
+.dashboard-order-info {
+    gap: 0;
+}
+
+.dashboard-order-total {
+    margin-top: 2px;
+}
+
+.dashboard-order-empty-text {
+    margin: 4px 0 0;
+    color: #888;
+    font-size: 13px;
 }
 
 .dashboard-recent-orders .myshop-order-actions {
+    flex-direction: column;
+    align-items: stretch;
     justify-content: flex-end;
+}
+
+.dashboard-recent-orders .myshop-order-actions a,
+.dashboard-recent-orders .myshop-order-actions button {
+    width: 100%;
+    min-width: 0;
 }
 
 .compact-prod-list {
@@ -354,5 +391,25 @@
 @media (max-width: 720px) {
     .dashboard-status-cards {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-recent-orders .myshop-order-top {
+        align-items: flex-start;
+    }
+
+    .dashboard-recent-orders .myshop-order-body {
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .dashboard-recent-orders .myshop-product-thumb {
+        width: 72px;
+        height: 72px;
+    }
+
+    .dashboard-recent-orders .myshop-order-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        justify-content: flex-start;
     }
 }

@@ -38,6 +38,7 @@ public class ProductController {
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
     private final ReviewDAO reviewdao;
+    private final ImageDAO imageDAO;
 
     // 할인 설정값 정리
     private void applySaleSetting(ProductVO vo) {
