@@ -970,6 +970,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
             category_id
         FROM (
+            <!-- 1. 구매한 상품 카테고리 -->
             SELECT
                 p.category_id,
                 COUNT(*) * 5 AS score
@@ -990,6 +991,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             UNION ALL
 
 
+            <!-- 2. 찜한 상품 카테고리 -->
             SELECT
                 p.category_id,
                 COUNT(*) * 4 AS score
@@ -1006,10 +1008,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             UNION ALL
 
 
+            <!-- 3. 장바구니에 담은 상품 카테고리 -->
             SELECT
                 p.category_id,
                 COUNT(*) * 3 AS score
-            FROM cart c
+            FROM cart_items c
 
             JOIN products p
             ON c.product_id = p.product_id
@@ -1022,6 +1025,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             UNION ALL
 
 
+            <!-- 4. 최근 본 상품 카테고리 -->
             SELECT
                 p.category_id,
                 COUNT(*) * 2 AS score
