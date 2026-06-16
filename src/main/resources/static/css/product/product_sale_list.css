@@ -13,12 +13,21 @@
 }
 
 /* =========================================================
-   상단 할인 슬라이드
+   페이지 공통
+========================================================= */
+
+.sale-page {
+    background: #ffffff;
+    color: #222;
+}
+
+/* =========================================================
+   상단 할인 영역
 ========================================================= */
 
 .sale-hero {
-    padding: 54px 0 50px;
-    background: #fff;
+    padding: 54px 0 42px;
+    background: #ffffff;
 }
 
 .sale-hero-inner {
@@ -30,18 +39,19 @@
 .sale-hero h1 {
     margin: 0 0 18px;
 
-    color: #222;
-    font-size: 30px;
+    color: #111;
+    font-size: 32px;
     font-weight: 950;
     letter-spacing: -0.05em;
     text-align: center;
 }
 
+/* 타이머 */
 .sale-countdown {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 
     margin-bottom: 34px;
 }
@@ -54,21 +64,24 @@
     justify-content: center;
     align-items: center;
 
-    border-radius: 8px;
-    background: #fff3eb;
-    color: #e85c2a;
+    border-radius: 12px;
+    background: #fff1eb;
+    color: #ff6f4f;
 
     font-size: 25px;
     font-weight: 950;
 }
 
 .sale-countdown span {
-    color: #e85c2a;
-    font-size: 25px;
+    color: #ff6f4f;
+    font-size: 24px;
     font-weight: 950;
 }
 
-/* 슬라이드 영역 */
+/* =========================================================
+   상단 할인 슬라이드
+========================================================= */
+
 .sale-feature-wrap {
     position: relative;
     width: 1280px;
@@ -83,12 +96,13 @@
 .sale-feature-track.common-product-wrap {
     display: flex;
     flex-wrap: nowrap;
-    gap: 14px;
+    gap: 16px;
+
     transition: transform 0.35s ease;
 }
 
 .sale-feature-track.common-product-wrap > * {
-    flex: 0 0 calc((100% - 56px) / 5);
+    flex: 0 0 calc((100% - 64px) / 5);
     min-width: 0;
 }
 
@@ -103,8 +117,8 @@
 
     border: none;
     border-radius: 50%;
-    background: #fff;
-    color: #333;
+    background: #ffffff;
+    color: #333333;
 
     display: flex;
     align-items: center;
@@ -115,7 +129,7 @@
     font-weight: 300;
 
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
 }
 
 .sale-slide-prev {
@@ -150,32 +164,35 @@
     height: 7px;
 
     border-radius: 50%;
-    background: #ddd;
+    background: #dddddd;
 
     cursor: pointer;
 }
 
 .sale-feature-dots span.active {
-    background: #222;
+    background: #ff6f4f;
 }
 
+/* 더보기 버튼 */
 .sale-more-btn {
     width: 360px;
-    height: 40px;
-    margin: 26px auto 0;
+    height: 42px;
+    margin: 28px auto 0;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #fff;
-    color: #555;
+    border: 1px solid #dddddd;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #555555;
 
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 850;
     text-decoration: none;
+
+    transition: 0.18s ease;
 }
 
 .sale-more-btn:hover {
@@ -183,16 +200,66 @@
     color: #ff6f4f;
 }
 
+/* 상품 없음 */
 .sale-empty {
     padding: 70px 20px;
 
-    border: 1px solid #eee;
+    border-radius: 16px;
     background: #fafafa;
 
     text-align: center;
-    color: #777;
+    color: #777777;
     font-size: 15px;
     font-weight: 800;
+}
+
+/* =========================================================
+   할인 유형 탭
+========================================================= */
+
+.sale-type-section {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 4px 44px 34px;
+}
+
+.sale-type-tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.sale-type-tabs a {
+    min-width: 120px;
+    height: 42px;
+    padding: 0 22px;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #555555;
+
+    font-size: 15px;
+    font-weight: 850;
+    text-decoration: none;
+
+    transition: 0.18s ease;
+}
+
+.sale-type-tabs a:hover {
+    border-color: #ff6f4f;
+    color: #ff6f4f;
+}
+
+.sale-type-tabs a.active {
+    background: #ff6f4f;
+    border-color: #ff6f4f;
+    color: #ffffff;
 }
 
 /* =========================================================
@@ -202,80 +269,22 @@
 .sale-list-section {
     max-width: 1440px;
     margin: 0 auto;
-    padding: 46px 44px 80px;
+    padding: 34px 44px 82px;
 }
 
-.sale-tab-menu {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-
-    border: 1px solid #ddd;
-    border-right: 0;
-
-    margin-bottom: 34px;
-}
-
-.sale-tab-menu button {
-    height: 50px;
-
-    border: 0;
-    border-right: 1px solid #ddd;
-    background: #fff;
-    color: #333;
-
-    font-size: 15px;
-    font-weight: 800;
-    cursor: default;
-}
-
-.sale-tab-menu button.active {
-    background: #222;
-    color: #fff;
-}
-
-.sale-filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-
-    margin-bottom: 22px;
-}
-
-.sale-filter-row button {
-    height: 40px;
-    padding: 0 18px;
-
-    border: 1px solid #ddd;
-    border-radius: 999px;
-    background: #fff;
-    color: #333;
-
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: 0.12s ease;
-}
-
-.sale-filter-row button:hover {
-    border-color: #ff6f4f;
-    color: #ff6f4f;
-}
-
-.sale-filter-row button.active {
-    background: #ff6f4f;
-    border-color: #ff6f4f;
-    color: #fff;
-}
-
+/* 정렬 영역 */
 .sale-sort-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
 
-    margin-bottom: 18px;
+    margin-bottom: 16px;
+    padding-bottom: 15px;
 
-    color: #777;
+    border-bottom: 1px solid #eeeeee;
+
+    color: #777777;
     font-size: 14px;
 }
 
@@ -287,16 +296,17 @@
 }
 
 .sale-sort-left strong {
-    color: #222;
+    color: #111111;
     font-weight: 950;
 }
 
 .sale-sort-left span {
-    color: #ddd;
+    color: #dddddd;
 }
 
 .sale-sort-left a {
-    color: #777;
+    color: #777777;
+    font-weight: 750;
     text-decoration: none;
 }
 
@@ -305,11 +315,11 @@
 }
 
 .sale-count-text {
-    margin: 0 0 14px;
+    margin: 0 0 22px;
 
-    color: #555;
+    color: #555555;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 /* =========================================================
@@ -317,17 +327,17 @@
 ========================================================= */
 
 .sale-page-menu {
-    margin-top: 46px;
+    margin-top: 48px;
 
     text-align: center;
-    color: #333;
+    color: #333333;
     font-size: 15px;
     font-weight: 900;
 }
 
 .sale-page-menu a {
-    min-width: 32px;
-    height: 32px;
+    min-width: 34px;
+    height: 34px;
     margin: 0 3px;
 
     display: inline-flex;
@@ -335,17 +345,50 @@
     align-items: center;
 
     border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    background: #fff;
-    color: #333;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #333333;
 
     text-decoration: none;
+    transition: 0.15s ease;
 }
 
 .sale-page-menu a:hover {
-    color: #fff;
+    color: #ffffff;
     background: #ff6f4f;
     border-color: #ff6f4f;
+}
+
+/* =========================================================
+   푸터
+========================================================= */
+
+.product-footer {
+    border-top: 1px solid #eeeeee;
+    background: #fafafa;
+}
+
+.product-footer-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 34px 44px;
+
+    color: #777777;
+}
+
+.product-footer-inner strong {
+    display: block;
+
+    color: #222222;
+    font-size: 17px;
+    font-weight: 950;
+}
+
+.product-footer-inner p {
+    margin: 8px 0 0;
+
+    font-size: 13px;
+    font-weight: 700;
 }
 
 /* =========================================================
@@ -358,86 +401,80 @@
     }
 
     .sale-feature-track.common-product-wrap > * {
-        flex: 0 0 calc((100% - 42px) / 4);
+        flex: 0 0 calc((100% - 48px) / 4);
     }
 }
 
 @media (max-width: 900px) {
     .sale-hero-inner,
-    .sale-list-section {
+    .sale-type-section,
+    .sale-list-section,
+    .product-footer-inner {
         padding-left: 24px;
         padding-right: 24px;
     }
 
+    .sale-hero h1 {
+        font-size: 27px;
+    }
+
     .sale-feature-track.common-product-wrap > * {
-        flex: 0 0 calc((100% - 14px) / 2);
+        flex: 0 0 calc((100% - 16px) / 2);
     }
 
     .sale-slide-btn {
         display: none !important;
     }
 
-    .sale-tab-menu {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
     .sale-more-btn {
         width: 100%;
     }
+
+    .sale-type-tabs {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .sale-type-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .sale-type-tabs a {
+        flex: 0 0 auto;
+    }
+
+    .sale-sort-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sale-sort-left {
+        gap: 8px;
+        line-height: 1.9;
+    }
 }
 
-.sale-sort-row {
-    position: sticky;
-    top: 140px;
-    z-index: 50;
+@media (max-width: 560px) {
+    .sale-countdown strong {
+        min-width: 48px;
+        height: 48px;
 
-    padding: 14px 0;
-    background: #fff;
-}
+        font-size: 21px;
+    }
 
-/* =========================================================
-   할인 유형 탭
-========================================================= */
+    .sale-countdown span {
+        font-size: 20px;
+    }
 
-.sale-type-section {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 10px 44px 38px;
-}
+    .sale-feature-track.common-product-wrap > * {
+        flex: 0 0 78%;
+    }
 
-.sale-type-tabs {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.sale-type-tabs a {
-    min-width: 118px;
-    height: 42px;
-    padding: 0 22px;
-
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    border: 1px solid #e5e5e5;
-    border-radius: 999px;
-    background: #fff;
-    color: #555;
-
-    font-size: 15px;
-    font-weight: 850;
-    text-decoration: none;
-}
-
-.sale-type-tabs a:hover {
-    border-color: #ff6f4f;
-    color: #ff6f4f;
-}
-
-.sale-type-tabs a.active {
-    background: #222;
-    border-color: #222;
-    color: #fff;
+    .sale-sort-left {
+        font-size: 13px;
+    }
 }

@@ -43,21 +43,6 @@
         <!-- 추천 상품 목록 -->
         <section class="discovery-list-section">
 
-            <div class="discovery-section-title">
-                <h3>추천 작품</h3>
-
-                <c:choose>
-                    <c:when test="${isFallback}">
-                        <p>취향 기록이 쌓이기 전까지는 최신 작품을 보여드립니다.</p>
-                    </c:when>
-
-                    <c:otherwise>
-                        <p>최근 본 카테고리와 비슷한 작품을 모았습니다.</p>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-
-
             <c:choose>
 
                 <c:when test="${empty list}">

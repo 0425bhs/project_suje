@@ -74,6 +74,7 @@ public interface ProductDAO {
     // 로그인 회원 구매내역 기반 선물추천
     List<ProductVO> product_gift_personal_list(Map<String, Object> map);
 
-    
+    // 선물추천 테마별 상품 목록
+    List<ProductVO> product_gift_theme_list(Map<String, Object> map); 
 
 }
