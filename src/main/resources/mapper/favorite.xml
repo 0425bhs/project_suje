@@ -5,15 +5,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.kh.suje.dao.FavoriteDAO">
 
-    <select id="getFavoriteSellerList" parameterType="int" resultType="favorite">
+    <select id="getFavoriteSellerList" parameterType="int" resultType="map">
         SELECT
             fs.seller_favorite_id,
             fs.user_id,
             fs.seller_id,
-            fs.created_at,
-            s.company_name
+            DATE_FORMAT(fs.created_at, '%Y-%m-%d %H:%i') AS created_at,
+            s.company_name,
+            u.photo_name
         FROM favorites_seller fs
         JOIN sellers s ON fs.seller_id = s.seller_id
+        JOIN users u ON s.user_id = u.user_id
         WHERE fs.user_id = #{user_id}
         ORDER BY fs.created_at DESC
     </select>
@@ -42,14 +44,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     
     <insert id="addFavoriteProduct" parameterType="map">
-        INSERT IGNORE INTO favorites (
-            user_id,
-            product_id
-        )
-        VALUES (
-            #{user_id},
-            #{product_id}
-        )
+        INSERT IGNORE INTO favorites (user_id,product_id)
+        VALUES ( #{user_id},#{product_id})
     </insert>
 
     <delete id="delFavoriteProduct" parameterType="map">
@@ -63,6 +59,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM favorites
         WHERE user_id = #{user_id}
         AND product_id = #{product_id}
+    </select>
+
+    <!-- 마이페이지 상품 찜 목록 -->
+    <select id="getFavoriteProductList" resultType="map">
+        SELECT
+            f.user_id,
+            f.product_id,
+            DATE_FORMAT(f.created_at, '%Y-%m-%d %H:%i') AS created_at,
+            p.name,
+            p.price,
+            p.sale_price,
+            p.image_l,
+            p.image_s,
+            p.seller_id,
+            s.company_name
+        FROM favorites f
+        JOIN products p ON f.product_id = p.product_id
+        JOIN sellers s ON p.seller_id = s.seller_id
+        WHERE f.user_id = #{user_id}
+        ORDER BY f.created_at DESC
+    </select>
+
+    <!-- 마이페이지 상품 찜 개수 -->
+    <select id="getFavoriteProductCount" resultType="int">
+        SELECT COUNT(*)
+        FROM favorites
+        WHERE user_id = #{user_id}
+    </select>
+
+    <!-- 마이페이지 작가 찜 개수 -->
+    <select id="getFavoriteSellerCount" resultType="int">
+        SELECT COUNT(*)
+        FROM favorites_seller
+        WHERE user_id = #{user_id}
     </select>
 
 </mapper>

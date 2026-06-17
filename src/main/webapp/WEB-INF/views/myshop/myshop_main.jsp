@@ -27,6 +27,10 @@
         <link rel="stylesheet" href="/css/myshop/review.css?v=1">
     </c:if>
 
+    <c:if test="${contentPage eq '/myshop/favorite_list'}">
+        <link rel="stylesheet" href="/css/myshop/favorite.css?v=2">
+    </c:if>
+
     <c:if test="${contentPage eq '/myshop/qna_list'}">
         <link rel="stylesheet" href="/css/myshop/qna.css?v=1">
     </c:if>
