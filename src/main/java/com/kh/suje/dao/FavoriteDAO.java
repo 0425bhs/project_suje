@@ -7,10 +7,9 @@ import com.kh.suje.vo.FavoriteVO;
 
 public interface FavoriteDAO {
 
-    List<FavoriteVO> getFavoriteList(int user_id);
-    int addFavorite(Map<String, Integer> map);
-    int delFavorite(Map<String, Integer> map);
-    int checkFavoriteShop(Map<String, Object> map);
+    int addFavoriteProduct(Map<String, Object> map);
+    int delFavoriteProduct(Map<String, Object> map);
+    int checkFavoriteProduct(Map<String, Object> map);
 
     List<FavoriteVO> getFavoriteSellerList(int user_id);
     int addFavoriteSeller(Map<String, Integer> map);

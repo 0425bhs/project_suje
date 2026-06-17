@@ -18,3 +18,30 @@ window.addEventListener("load",function(){
     }
 
 });
+
+function favoriteToggle(event, productId, heartBtn){
+    event.preventDefault();
+    event.stopPropagation();
+
+    fetch("/favorite_product.do",{method:"POST",headers:{"Content-Type": "application/x-www-form-urlencoded"},
+        body: "product_id=" + encodeURIComponent(productId)
+    }).then(function (response){return response.json();}).then(function (data){
+        if (data.result === "login"){
+            alert("로그인 후 이용 가능합니다.");
+            location.href = "/login.do";
+            return;
+        }
+
+        if (data.liked === true){
+            heartBtn.textContent = "♥";
+            heartBtn.classList.add("active");
+        } else {
+            heartBtn.textContent = "♡";
+            heartBtn.classList.remove("active");
+        }
+    })
+    .catch(function (error){
+        console.log(error);
+        alert("상품 찜 처리 중 오류가 발생했습니다.");
+    });
+}

@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class FavoriteController {
     private final HttpSession session;
 
-    private final FavoriteDAO favoriteDAO;
+    private final FavoriteDAO favoritedao;
 
     @PostMapping("favorite_shop.do")
     @ResponseBody
@@ -42,14 +42,14 @@ public class FavoriteController {
         map.put("user_id", user_id);
         map.put("seller_id", seller_id);
 
-        int check = favoriteDAO.checkFavoriteSeller(map);
+        int check = favoritedao.checkFavoriteSeller(map);
 
         if (check > 0) {
-            favoriteDAO.delFavoriteSeller(map);
+            favoritedao.delFavoriteSeller(map);
             resMap.put("result", "delete");
             resMap.put("liked", false);
         } else {
-            favoriteDAO.addFavoriteSeller(map);
+            favoritedao.addFavoriteSeller(map);
             resMap.put("result", "insert");
             resMap.put("liked", true);
         }
@@ -58,27 +58,68 @@ public class FavoriteController {
     }
 
     @PostMapping("favorite_shop_cancel.do")
-    public String favoriteShopCancel(int seller_id) {
+    public String favoriteShopCancel(int seller_id){
         UserVO user = (UserVO) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login.do";
+        }
+
         int user_id = user.getUser_id();
 
         Map<String, Integer> map = new HashMap<>();
         map.put("user_id", user_id);
         map.put("seller_id", seller_id);
         
-        int res = favoriteDAO.delFavorite(map);
+        int res = favoritedao.delFavoriteSeller(map);
 
         return "redirect:/seller_shop_homepage.do?seller_id=" + seller_id;
     }
 
     @GetMapping("my_favorite_list.do")
-    public String myFavoriteList(Model model) {
+    public String myFavoriteList(Model model){
         UserVO user = (UserVO) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login.do";
+        }
+
         int user_id = user.getUser_id();
 
-        List<FavoriteVO> list = favoriteDAO.getFavoriteSellerList(user_id);
+        List<FavoriteVO> list = favoritedao.getFavoriteSellerList(user_id);
         model.addAttribute("list", list);
 
         return "/favorite/my_favorite_list";
+    }
+
+    @PostMapping("/favorite_product.do")
+    @ResponseBody
+    public Map<String, Object> favoriteProduct(int product_id,HttpSession session){
+        Map<String, Object> result = new HashMap<>();
+
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            result.put("result", "login");
+            return result;
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("user_id", loginUser.getUser_id());
+        map.put("product_id", product_id);
+
+        int check = favoritedao.checkFavoriteProduct(map);
+
+        if (check > 0) {
+            favoritedao.delFavoriteProduct(map);
+            result.put("liked", false);
+        } else {
+            favoritedao.addFavoriteProduct(map);
+            result.put("liked", true);
+        }
+
+        result.put("result", "success");
+
+        return result;
     }
 }

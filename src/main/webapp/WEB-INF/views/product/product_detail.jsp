@@ -26,6 +26,33 @@
     </c:otherwise>
 </c:choose>
 
+<c:set var="imageLPath" value="" />
+<c:set var="imageSPath" value="" />
+
+<c:if test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
+    <c:choose>
+        <c:when test="${fn:startsWith(vo.image_l, '/upload/')}">
+            <c:set var="imageLPath" value="${vo.image_l}" />
+        </c:when>
+
+        <c:otherwise>
+            <c:set var="imageLPath" value="/upload/${vo.image_l}" />
+        </c:otherwise>
+    </c:choose>
+</c:if>
+
+<c:if test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
+    <c:choose>
+        <c:when test="${fn:startsWith(vo.image_s, '/upload/')}">
+            <c:set var="imageSPath" value="${vo.image_s}" />
+        </c:when>
+
+        <c:otherwise>
+            <c:set var="imageSPath" value="/upload/${vo.image_s}" />
+        </c:otherwise>
+    </c:choose>
+</c:if>
+
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -63,12 +90,18 @@
                         </button>
 
                         <c:choose>
-                            <c:when test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
-                                <img id="detailMainImage" src="${vo.image_l}" alt="${vo.name}">
+                            <c:when test="${not empty imageLPath}">
+                                <img id="detailMainImage"
+                                     src="${imageLPath}"
+                                     alt="${vo.name}"
+                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
                             </c:when>
 
-                            <c:when test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
-                                <img id="detailMainImage" src="${vo.image_s}" alt="${vo.name}">
+                            <c:when test="${not empty imageSPath}">
+                                <img id="detailMainImage"
+                                     src="${imageSPath}"
+                                     alt="${vo.name}"
+                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
                             </c:when>
 
                             <c:otherwise>
@@ -83,15 +116,19 @@
                     </div>
 
                     <div class="store-thumb-row">
-                        <c:if test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
-                            <button type="button" class="store-thumb-btn active" data-img="${vo.image_l}">
-                                <img src="${vo.image_l}" alt="${vo.name}">
+                        <c:if test="${not empty imageLPath}">
+                            <button type="button" class="store-thumb-btn active" data-img="${imageLPath}">
+                                <img src="${imageLPath}"
+                                     alt="${vo.name}"
+                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
                             </button>
                         </c:if>
 
-                        <c:if test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
-                            <button type="button" class="store-thumb-btn" data-img="${vo.image_s}">
-                                <img src="${vo.image_s}" alt="${vo.name}">
+                        <c:if test="${not empty imageSPath}">
+                            <button type="button" class="store-thumb-btn" data-img="${imageSPath}">
+                                <img src="${imageSPath}"
+                                     alt="${vo.name}"
+                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
                             </button>
                         </c:if>
                     </div>
@@ -103,14 +140,19 @@
 
                     <div class="store-seller-line">
                         <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
-                             ${vo.company_name} 샵 보기
+                             ${vo.company_name} 샵 보기 >
                         </a>
                         <br/>
 
-                        <button type="button" class="wish-shop-btn" id="sellerWishBtn" data-seller-id="${vo.seller_id}">
-                            <span class="wish-shop-heart">♡</span>
-                            <span class="wish-shop-text">작가샵 찜하기</span>
-                        </button>
+                        <button type="button" class="wish-shop-btn ${favorite ? 'active' : ''}" id="sellerWishBtn" data-seller-id="${vo.seller_id}">
+                        <span class="wish-shop-heart">
+                            ${favorite ? '♥' : '♡'}
+                        </span>
+
+                        <span class="wish-shop-text">
+                            ${favorite ? '찜 취소' : '작가샵 찜하기'}
+                        </span>
+                    </button>
                     </div>
 
                     <h1 class="store-product-title">${vo.name}</h1>
@@ -320,6 +362,7 @@
 
                             <p>${review.content}</p>
                             <small>${review.created_at}</small>
+
                             <c:if test="${not empty review.imageList}">
                                 <div class="review-photo-list">
                                     <c:forEach var="image" items="${review.imageList}">
