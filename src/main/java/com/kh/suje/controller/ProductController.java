@@ -670,7 +670,7 @@ public class ProductController {
         featureMap.put("start", 0);
         featureMap.put("blockList", 10);
         featureMap.put("sort", "discount");
-        featureMap.put("saleType", "all");
+        featureMap.put("saleType", "today");
 
         List<ProductVO> saleFeatureList = productdao.product_sale_list(featureMap);
 
