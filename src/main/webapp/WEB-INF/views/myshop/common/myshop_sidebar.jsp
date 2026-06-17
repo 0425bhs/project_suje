@@ -43,10 +43,10 @@
 
         <div class="myshop-side-group">
             <strong>관심 상품</strong>
-            <button type="button" onclick="alert('찜한 상품은 준비중입니다.');">
+            <a href="/myshop/my_favorite_list.do" class="${param.activeMenu eq 'favorite' ? 'active' : ''}">
                 찜한 상품
-            </button>
-            <button type="button" onclick="alert('최근 본 상품은 준비중입니다.');">
+            </a>
+            <button type="button" onclick="">
                 최근 본 상품
             </button>
         </div>

@@ -37,7 +37,7 @@
     </div>
 
     <%-- 관심 상품 카드 --%>
-    <div class="dashboard-status-card" onclick="alert('찜한 상품 기능은 준비중입니다.');">
+    <div class="dashboard-status-card" onclick="location.href='/myshop/my_favorite_list.do'">
         <span class="icon">♡</span>
         <h4>관심 상품</h4>
         <strong>18건</strong>
