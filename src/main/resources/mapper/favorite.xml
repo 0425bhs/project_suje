@@ -40,4 +40,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE seller_id = #{seller_id}
     </select>
 
+    
+    <insert id="addFavoriteProduct" parameterType="map">
+        INSERT IGNORE INTO favorites (
+            user_id,
+            product_id
+        )
+        VALUES (
+            #{user_id},
+            #{product_id}
+        )
+    </insert>
+
+    <delete id="delFavoriteProduct" parameterType="map">
+        DELETE FROM favorites
+        WHERE user_id = #{user_id}
+        AND product_id = #{product_id}
+    </delete>
+
+    <select id="checkFavoriteProduct" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM favorites
+        WHERE user_id = #{user_id}
+        AND product_id = #{product_id}
+    </select>
+
 </mapper>

@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -69,7 +70,9 @@
             </c:otherwise>
         </c:choose>
 
-        <span class="sale-heart" onclick="favoriteToggle(event, ${vo.product_id})">&#9825;</span>
+        <span class="sale-heart ${favoriteProductMap[vo.product_id] ? 'active' : ''}" onclick="favoriteToggle(event, '${vo.product_id}', this)">
+            ${favoriteProductMap[vo.product_id] ? '♥':'♡'}
+        </span>
 
     </a>
 

@@ -22,6 +22,7 @@ import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
+import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ImageVO;
 import com.kh.suje.vo.ProductVO;
@@ -39,6 +40,7 @@ public class ProductController {
     private final CategoryDAO categorydao;
     private final ReviewDAO reviewdao;
     private final ImageDAO imageDAO;
+    private final FavoriteDAO favoritedao;
 
     // 할인 설정값 정리
     private void applySaleSetting(ProductVO vo) {
@@ -82,6 +84,27 @@ public class ProductController {
         vo.setSale_price(0);
         vo.setSale_start_at(null);
         vo.setSale_end_at(null);
+    }
+
+    // 상품 목록의 찜 여부를 JSP에서 사용할 Map으로 만들어주는 공통 함수
+    private void addFavoriteProductMap(Model model,HttpSession session,List<ProductVO> productList){
+        Map<Integer, Boolean> favoriteProductMap = new HashMap<>();
+
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser != null && productList != null){
+            for (ProductVO product : productList) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("user_id", loginUser.getUser_id());
+                map.put("product_id", product.getProduct_id());
+
+                boolean liked = favoritedao.checkFavoriteProduct(map) > 0;
+
+                favoriteProductMap.put(product.getProduct_id(),liked);
+            }
+        }
+
+        model.addAttribute("favoriteProductMap",favoriteProductMap);
     }
 
    
@@ -155,14 +178,34 @@ public class ProductController {
 
         model.addAttribute("discoveryList", discoveryList);
 
+        List<ProductVO> mainFavoriteCheckList = new ArrayList<>();
+
+        if (mainProductList != null) {
+            mainFavoriteCheckList.addAll(mainProductList);
+        }
+
+        if (recommendList != null) {
+            mainFavoriteCheckList.addAll(recommendList);
+        }
+
+        if (categoryBestList != null) {
+            mainFavoriteCheckList.addAll(categoryBestList);
+        }
+
+        if (discoveryList != null) {
+            mainFavoriteCheckList.addAll(discoveryList);
+        }
+
+        addFavoriteProductMap(model, session, mainFavoriteCheckList);
+
         return "main";
     }
         
     @GetMapping("/category_list.do")
-    public String product_category_list(Model model, Integer page, Integer category_id, String sort) {
+    public String product_category_list(Model model,Integer page,Integer category_id,String sort,HttpSession session){
 
         // 정렬 기본값
-        if (sort == null || sort.trim().equals("")) {
+        if (sort == null || sort.trim().equals("")){
             sort = "popular";
         }
 
@@ -172,13 +215,13 @@ public class ProductController {
         Integer selectedBigCategoryId = categorydao.find_parent_id(category_id);
 
         // parent_id가 null이면 현재 category_id 자체가 대분류
-        if (selectedBigCategoryId == null) {
+        if (selectedBigCategoryId == null){
             selectedBigCategoryId = category_id;
         }
 
         int nowPage = 1;
 
-        if (page != null) {
+        if (page != null){
             nowPage = page;
         }
 
@@ -201,6 +244,8 @@ public class ProductController {
         int rowTotal = productdao.product_category_cnt(map);
 
         List<ProductVO> list = productdao.product_category_list(map);
+
+        addFavoriteProductMap(model, session, list);
 
         String pageMenu = Paging.getPaging(
             "/category_list.do?category_id=" + category_id + "&sort=" + sort,
@@ -228,7 +273,7 @@ public class ProductController {
     }
 
     @GetMapping("/product_search.do")
-    public String productSearch(Model model, String keyword, Integer page){
+    public String productSearch(Model model,String keyword,Integer page,HttpSession session){
 
         // ✅ 검색 기능: 공백 키워드 방지
         if(keyword == null || keyword.trim().isEmpty()){
@@ -275,7 +320,9 @@ public class ProductController {
             rowTotaL,
             blockList,
             blockPage
-         );
+        );
+
+        addFavoriteProductMap(model, session, list);
 
         model.addAttribute("list", list);
         model.addAttribute("pageMenu", pageMenu);
@@ -365,7 +412,7 @@ public class ProductController {
             String target,
             String priceRange,
             HttpSession session
-    ) {
+    ){
         // 헤더 전체 카테고리 출력용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
@@ -535,6 +582,8 @@ public class ProductController {
         // =========================================================
         // 로그인 회원 구매내역 기반 추천
         // =========================================================
+        List<ProductVO> personalGiftList = new ArrayList<>();
+
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
         if (loginUser != null) {
@@ -544,7 +593,7 @@ public class ProductController {
             personalMap.put("user_id", user_id);
             personalMap.put("limit", 4);
 
-            List<ProductVO> personalGiftList = productdao.product_gift_personal_list(personalMap);
+            personalGiftList = productdao.product_gift_personal_list(personalMap);
 
             String loginUserName = loginUser.getName();
 
@@ -571,6 +620,18 @@ public class ProductController {
 
         List<ProductVO> giftList = productdao.product_gift_list(map);
 
+        List<ProductVO> giftFavoriteCheckList = new ArrayList<>();
+
+        if (personalGiftList != null) {
+            giftFavoriteCheckList.addAll(personalGiftList);
+        }
+
+        if (giftList != null) {
+            giftFavoriteCheckList.addAll(giftList);
+        }
+
+        addFavoriteProductMap(model, session, giftFavoriteCheckList);
+
         model.addAttribute("giftList", giftList);
 
         return "product/product_gift_list";
@@ -578,11 +639,7 @@ public class ProductController {
 
 
    @GetMapping("/product_sale.do")
-    public String product_sale_list(
-            Model model,
-            Integer page,
-            String sort,
-            String saleType) {
+    public String product_sale_list(Model model,Integer page,String sort,String saleType,HttpSession session){
 
         int nowPage = 1;
 
@@ -647,6 +704,13 @@ public class ProductController {
                 blockPage
         );
 
+        List<ProductVO> saleFavoriteCheckList = new ArrayList<>();
+
+        saleFavoriteCheckList.addAll(saleFeatureList);
+        saleFavoriteCheckList.addAll(list);
+
+        addFavoriteProductMap(model, session, saleFavoriteCheckList);
+
         model.addAttribute("saleFeatureList", saleFeatureList);
 
         model.addAttribute("list", list);
@@ -663,9 +727,11 @@ public class ProductController {
     }
 
     @GetMapping("/product_best.do")
-    public String product_best_list(Model model) {
+    public String product_best_list(Model model,HttpSession session){
 
         List<ProductVO> list = productdao.product_best_all_list();
+
+        addFavoriteProductMap(model, session, list);
 
         model.addAttribute("list", list);
 
@@ -676,7 +742,7 @@ public class ProductController {
     }
 
    @GetMapping("/product_discovery.do")
-    public String product_discovery_list(Model model, HttpSession session) {
+    public String product_discovery_list(Model model,HttpSession session){
 
         // ✅ 취향 발견 페이지 전용 (메인 페이지와 다름)
         // 로그인 사용자: 개인화된 추천 상품 20개 표시
@@ -713,6 +779,8 @@ public class ProductController {
             isFallback = true;  // ✅ JSP에서 "fallback 상품입니다" 메시지 표시 용도
         }
 
+        addFavoriteProductMap(model, session, list);
+
         model.addAttribute("list", list);
         model.addAttribute("isFallback", isFallback);
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
@@ -722,7 +790,7 @@ public class ProductController {
     }
 
     @GetMapping("/all_list.do")
-    public String allProductList(Model model, Integer page) {
+    public String allProductList(Model model,Integer page,HttpSession session) {
 
         int nowPage = 1;
 
@@ -749,6 +817,8 @@ public class ProductController {
                 blockList,
                 blockPage
         );
+
+        addFavoriteProductMap(model, session, list);
 
         model.addAttribute("list", list);
         model.addAttribute("pageMenu", pageMenu);
