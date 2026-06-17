@@ -69,7 +69,9 @@
             </c:otherwise>
         </c:choose>
 
-        <span class="sale-heart" onclick="favoriteToggle(event, ${vo.product_id})">&#9825;</span>
+        <span class="sale-heart ${favoriteProductMap[vo.product_id] ? 'active' : ''}" onclick="favoriteToggle(event, ${vo.product_id}, this)">
+            ${favoriteProductMap[vo.product_id] ? '♥':'♡'}
+        </span>
 
     </a>
 

@@ -140,14 +140,19 @@
 
                     <div class="store-seller-line">
                         <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
-                             ${vo.company_name} 샵 보기
+                             ${vo.company_name} 샵 보기 >
                         </a>
                         <br/>
 
-                        <button type="button" class="wish-shop-btn" id="sellerWishBtn" data-seller-id="${vo.seller_id}">
-                            <span class="wish-shop-heart">♡</span>
-                            <span class="wish-shop-text">작가샵 찜하기</span>
-                        </button>
+                        <button type="button" class="wish-shop-btn ${favorite ? 'active' : ''}" id="sellerWishBtn" data-seller-id="${vo.seller_id}">
+                        <span class="wish-shop-heart">
+                            ${favorite ? '♥' : '♡'}
+                        </span>
+
+                        <span class="wish-shop-text">
+                            ${favorite ? '찜 취소' : '작가샵 찜하기'}
+                        </span>
+                    </button>
                     </div>
 
                     <h1 class="store-product-title">${vo.name}</h1>
