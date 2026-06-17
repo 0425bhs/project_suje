@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     
     <insert id="addFavoriteProduct" parameterType="map">
-        INSERT IGNORE INTO favorites_product (
+        INSERT IGNORE INTO favorites (
             user_id,
             product_id
         )
@@ -53,14 +53,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <delete id="delFavoriteProduct" parameterType="map">
-        DELETE FROM favorites_product
+        DELETE FROM favorites
         WHERE user_id = #{user_id}
         AND product_id = #{product_id}
     </delete>
 
     <select id="checkFavoriteProduct" parameterType="map" resultType="int">
         SELECT COUNT(*)
-        FROM favorites_product
+        FROM favorites
         WHERE user_id = #{user_id}
         AND product_id = #{product_id}
     </select>
