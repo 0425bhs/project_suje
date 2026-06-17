@@ -16,28 +16,38 @@
     <button type="button" class="dashboard-status-card" onclick="location.href='/myshop/orders'">
         <span>📦</span>
         <strong>주문/배송조회</strong>
-        <small>전체 ${totalCount}건</small>
+        <small class="dashboard-order-status-summary">
+            <em>결제대기 ${pendingCount}</em>
+            <em>배송중 ${shippingCount}</em>
+            <em>배송완료 ${deliveredCount}</em>
+        </small>
     </button>
 
     <%-- 리뷰 관리 카드 --%>
     <button type="button" class="dashboard-status-card" onclick="location.href='/myshop/reviews'">
         <span>⭐</span>
         <strong>리뷰관리</strong>
-        <small>작성 12건</small>
+        <small class="dashboard-order-status-summary">
+            <em>작성가능 1</em>
+            <em>작성완료 3</em>
+        </small>
     </button>
 
     <%-- 문의 현황 카드 --%>
     <button type="button" class="dashboard-status-card" onclick="location.href='/myshop/qnas'">
         <span>💬</span>
         <strong>문의내역</strong>
-        <small>전체 4건</small>
+        <small class="dashboard-order-status-summary">
+            <em>답변대기 1</em>
+            <em>답변완료 3</em>
+        </small>
     </button>
 
     <%-- 관심 상품 카드 --%>
     <button type="button" class="dashboard-status-card" onclick="alert('찜한 상품 기능은 준비중입니다.');">
         <span>♡</span>
         <strong>찜한상품</strong>
-        <small>전체 18건</small>
+        <small>전체 건</small>
     </button>
 
 </section>

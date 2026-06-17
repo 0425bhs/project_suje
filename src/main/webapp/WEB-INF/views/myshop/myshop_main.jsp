@@ -53,9 +53,9 @@
             <jsp:param name="activeMenu" value="${activeMenu}" />
         </jsp:include>
 
-            <main class="myshop-content ${contentPage eq '/myshop/dashboard' ? 'myshop-dashboard-content' : ''}">
-                <jsp:include page="/WEB-INF/views${contentPage}.jsp" />
-            </main>
+        <main class="myshop-content ${contentPage eq '/myshop/dashboard' ? 'myshop-dashboard-content' : ''}">
+            <jsp:include page="/WEB-INF/views${contentPage}.jsp" />
+        </main>
 
         </div>
     </section>

@@ -32,6 +32,19 @@
     font-weight: 800;
 }
 
+.dashboard-status-card .dashboard-order-status-summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 8px;
+    line-height: 1.45;
+}
+
+.dashboard-order-status-summary em {
+    font-style: normal;
+    white-space: nowrap;
+}
+
 .dashboard-lower-layout {
     display: grid;
     grid-template-columns: 1.2fr 1fr;

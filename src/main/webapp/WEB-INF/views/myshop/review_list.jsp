@@ -10,42 +10,20 @@
 <!-- 빠른 메뉴 -->
 <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
-<c:set var="photoReviewCount" value="0" />
-<c:set var="textReviewCount" value="0" />
-
-<c:forEach var="review" items="${list}">
-    <c:choose>
-        <c:when test="${not empty review.imageList}">
-            <c:set var="photoReviewCount" value="${photoReviewCount + 1}" />
-        </c:when>
-        <c:otherwise>
-            <c:set var="textReviewCount" value="${textReviewCount + 1}" />
-        </c:otherwise>
-    </c:choose>
-</c:forEach>
-
 <!-- 리뷰 상태 요약 -->
-<section class="myshop-status-card myshop-status-card-compact">
+<section class="myshop-status-card myshop-status-card-review">
 
     <button type="button"
-            class="${empty selectedType ? 'active' : ''}"
-            onclick="location.href='/mypage/review'">
-        <span>전체 리뷰</span>
+            onclick="location.href='/myshop/orders'">
+        <span>작성 가능한 리뷰</span>
+        <strong>${empty writableReviewCount ? 0 : writableReviewCount}</strong>
+    </button>
+
+    <button type="button"
+            class="active"
+            onclick="location.href='/myshop/reviews'">
+        <span>내가 작성한 리뷰</span>
         <strong>${empty totalCount ? 0 : totalCount}</strong>
-    </button>
-
-    <button type="button"
-            class="${selectedType eq 'PHOTO' ? 'active' : ''}"
-            onclick="location.href='/mypage/review?type=PHOTO'">
-        <span>사진 리뷰</span>
-        <strong>${photoReviewCount}</strong>
-    </button>
-
-    <button type="button"
-            class="${selectedType eq 'TEXT' ? 'active' : ''}"
-            onclick="location.href='/mypage/review?type=TEXT'">
-        <span>일반 리뷰</span>
-        <strong>${textReviewCount}</strong>
     </button>
 
 </section>
@@ -76,13 +54,6 @@
 
                         <div class="myshop-list-top">
                             <div>
-                                <strong class="myshop-status-badge ${not empty review.imageList ? 'DELIVERED' : 'PAID'}">
-                                    <c:choose>
-                                        <c:when test="${not empty review.imageList}">사진 리뷰</c:when>
-                                        <c:otherwise>일반 리뷰</c:otherwise>
-                                    </c:choose>
-                                </strong>
-
                                 <span>${review.created_at}</span>
                             </div>
 
@@ -128,18 +99,6 @@
                                 <button type="button"
                                         onclick="if (confirm('삭제하시겠습니까?')) location.href='/review_delete.do?review_id=${review.review_id}';">
                                     삭제
-                                </button>
-
-                                <button type="button"
-                                        class="review"
-                                        onclick="alert('리뷰 공유 기능은 준비중입니다.');">
-                                    공유
-                                </button>
-
-                                <button type="button"
-                                        class="qna"
-                                        onclick="alert('리뷰 신고 내역 확인 기능은 준비중입니다.');">
-                                    신고내역
                                 </button>
                             </div>
                         </div>

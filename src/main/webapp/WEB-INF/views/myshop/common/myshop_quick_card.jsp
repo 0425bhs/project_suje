@@ -3,7 +3,7 @@
 <section class="myshop-quick-card">
 
     <!-- 중요: 배송중 필터 -->
-    <button type="button" onclick="location.href='/myshop/orders?status=SHIPPING'">
+    <button type="button" onclick="location.href='/myshop/orders'">
         <span>📦</span>
         <strong>주문/배송조회</strong>
     </button>

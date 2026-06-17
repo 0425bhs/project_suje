@@ -30,6 +30,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY created_at DESC
     </select>
 
+    <select id="getWritableReviewCount"
+            parameterType="int"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM order_items oi
+        JOIN orders o ON oi.order_id = o.order_id
+        LEFT JOIN reviews r ON oi.order_item_id = r.order_item_id
+        WHERE o.user_id = #{user_id}
+          AND o.status = 'DELIVERED'
+          AND r.review_id IS NULL
+    </select>
+
     <select id="getLiveReviewList"
             parameterType="int"
             resultType="review">
@@ -72,5 +84,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM reviews
         WHERE product_id = #{value}
         ORDER BY review_id DESC
+    </select>
+
+    <select id="getReviewCount"
+            parameterType="int"
+            resultType="int">
+        SELECT count(*)
+        FROM reviews
+        WHERE user_id = #{user_id}
     </select>
 </mapper>

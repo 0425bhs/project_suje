@@ -7,6 +7,8 @@ import com.kh.suje.vo.ReviewVO;
 public interface ReviewDAO {
     int addReview(ReviewVO review);
     ReviewVO getReviewById(int review_id);
+    int getReviewCount(int user_id);
+    int getWritableReviewCount(int user_id);
     List<ReviewVO> getMyReviewList(int user_id);
     List<ReviewVO> getLiveReviewList();
 

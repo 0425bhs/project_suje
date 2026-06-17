@@ -126,6 +126,12 @@ public class ReviewController {
             }
         }
 
+        int totalCount = list == null ? 0 : list.size();
+        int writableReviewCount = reviewDAO.getWritableReviewCount(userId);
+
+        model.addAttribute("list", list);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("writableReviewCount", writableReviewCount);
         model.addAttribute("activeMenu", "review");
         model.addAttribute("contentPage", "/myshop/review_list");
 
