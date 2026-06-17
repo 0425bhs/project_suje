@@ -923,8 +923,8 @@ public class ProductController {
         }
 
         // ✅ DB에 저장할 이미지 경로 설정
-        vo.setImage_l(image_l_name.equals("no_file") ? "no_file":"/upload/"+image_l_name);
-        vo.setImage_s(image_s_name.equals("no_file") ? "no_file":"/upload/"+image_s_name);
+        vo.setImage_l(image_l_name.equals("no_file") ? "no_file":image_l_name);
+        vo.setImage_s(image_s_name.equals("no_file") ? "no_file":image_s_name);
 
         // 할인 설정값 정리
         applySaleSetting(vo);

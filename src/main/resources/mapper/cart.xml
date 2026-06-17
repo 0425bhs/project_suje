@@ -17,9 +17,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             s.company_name AS seller_name,
 
             p.name AS name,
+
             p.price,
             p.sale_price,
+            p.sale_start_at,
+            p.sale_end_at,
             p.delivery_fee,
+
             p.free_shipping,
             p.stock,
             p.image_l AS image_l,
@@ -28,25 +32,77 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.price * c.quantity AS origin_total,
 
             CASE
-                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                WHEN p.sale_price > 0
+                AND p.sale_price &lt; p.price
+                AND (
+                    (
+                        p.sale_start_at IS NULL
+                        AND p.sale_end_at IS NULL
+                    )
+                    OR
+                    (
+                        p.sale_start_at IS NOT NULL
+                        AND p.sale_end_at IS NOT NULL
+                        AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
+                    )
+                )
                 THEN p.sale_price
                 ELSE p.price
             END AS item_price,
 
             CASE
-                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                WHEN p.sale_price > 0
+                AND p.sale_price &lt; p.price
+                AND (
+                    (
+                        p.sale_start_at IS NULL
+                        AND p.sale_end_at IS NULL
+                    )
+                    OR
+                    (
+                        p.sale_start_at IS NOT NULL
+                        AND p.sale_end_at IS NOT NULL
+                        AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
+                    )
+                )
                 THEN p.sale_price * c.quantity
                 ELSE p.price * c.quantity
             END AS item_total,
 
             CASE
-                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                WHEN p.sale_price > 0
+                AND p.sale_price &lt; p.price
+                AND (
+                    (
+                        p.sale_start_at IS NULL
+                        AND p.sale_end_at IS NULL
+                    )
+                    OR
+                    (
+                        p.sale_start_at IS NOT NULL
+                        AND p.sale_end_at IS NOT NULL
+                        AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
+                    )
+                )
                 THEN (p.price - p.sale_price) * c.quantity
                 ELSE 0
             END AS discount_total,
 
             CASE
-                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                WHEN p.sale_price > 0
+                AND p.sale_price &lt; p.price
+                AND (
+                    (
+                        p.sale_start_at IS NULL
+                        AND p.sale_end_at IS NULL
+                    )
+                    OR
+                    (
+                        p.sale_start_at IS NOT NULL
+                        AND p.sale_end_at IS NOT NULL
+                        AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
+                    )
+                )
                 THEN FLOOR((p.price - p.sale_price) / p.price * 100)
                 ELSE 0
             END AS sale_rate
@@ -121,9 +177,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             s.company_name AS seller_name,
 
             p.name,
+
             p.price,
             p.sale_price,
+            p.sale_start_at,
+            p.sale_end_at,
             p.delivery_fee,
+
             p.free_shipping,
             p.stock,
             p.image_l,
@@ -131,25 +191,77 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.price * c.quantity AS origin_total,
 
             CASE
-                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                WHEN p.sale_price > 0
+                AND p.sale_price &lt; p.price
+                AND (
+                    (
+                        p.sale_start_at IS NULL
+                        AND p.sale_end_at IS NULL
+                    )
+                    OR
+                    (
+                        p.sale_start_at IS NOT NULL
+                        AND p.sale_end_at IS NOT NULL
+                        AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
+                    )
+                )
                 THEN p.sale_price
                 ELSE p.price
             END AS item_price,
 
             CASE
-                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                WHEN p.sale_price > 0
+                AND p.sale_price &lt; p.price
+                AND (
+                    (
+                        p.sale_start_at IS NULL
+                        AND p.sale_end_at IS NULL
+                    )
+                    OR
+                    (
+                        p.sale_start_at IS NOT NULL
+                        AND p.sale_end_at IS NOT NULL
+                        AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
+                    )
+                )
                 THEN p.sale_price * c.quantity
                 ELSE p.price * c.quantity
             END AS item_total,
 
             CASE
-                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                WHEN p.sale_price > 0
+                AND p.sale_price &lt; p.price
+                AND (
+                    (
+                        p.sale_start_at IS NULL
+                        AND p.sale_end_at IS NULL
+                    )
+                    OR
+                    (
+                        p.sale_start_at IS NOT NULL
+                        AND p.sale_end_at IS NOT NULL
+                        AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
+                    )
+                )
                 THEN (p.price - p.sale_price) * c.quantity
                 ELSE 0
             END AS discount_total,
 
             CASE
-                WHEN p.sale_price > 0 AND p.sale_price &lt; p.price
+                WHEN p.sale_price > 0
+                AND p.sale_price &lt; p.price
+                AND (
+                    (
+                        p.sale_start_at IS NULL
+                        AND p.sale_end_at IS NULL
+                    )
+                    OR
+                    (
+                        p.sale_start_at IS NOT NULL
+                        AND p.sale_end_at IS NOT NULL
+                        AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
+                    )
+                )
                 THEN FLOOR((p.price - p.sale_price) / p.price * 100)
                 ELSE 0
             END AS sale_rate
@@ -168,4 +280,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY p.seller_id ASC, c.cart_id DESC
     </select>
 
-</mapper>    
+</mapper>

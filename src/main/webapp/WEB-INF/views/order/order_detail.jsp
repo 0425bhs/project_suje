@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -124,7 +124,9 @@
 
                             <div class="summary-total">
                                 <span>총 결제금액</span>
-                                <strong>${payment.amount}원</strong>
+                                <strong>
+                                    <fmt:formatNumber value="${payment.amount}" pattern="#,###"/>원
+                                </strong>
                             </div>
 
                             <div class="btn-row">

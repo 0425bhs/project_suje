@@ -64,11 +64,11 @@
 
                         <c:choose>
                             <c:when test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
-                                <img id="detailMainImage" src="${vo.image_l}" alt="${vo.name}">
+                                <img id="detailMainImage" src="/upload/${vo.image_l}" alt="${vo.name}">
                             </c:when>
 
                             <c:when test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
-                                <img id="detailMainImage" src="${vo.image_s}" alt="${vo.name}">
+                                <img id="detailMainImage" src="/upload/${vo.image_s}" alt="${vo.name}">
                             </c:when>
 
                             <c:otherwise>
@@ -85,13 +85,13 @@
                     <div class="store-thumb-row">
                         <c:if test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
                             <button type="button" class="store-thumb-btn active" data-img="${vo.image_l}">
-                                <img src="${vo.image_l}" alt="${vo.name}">
+                                <img src="/upload/${vo.image_l}" alt="${vo.name}">
                             </button>
                         </c:if>
 
                         <c:if test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
                             <button type="button" class="store-thumb-btn" data-img="${vo.image_s}">
-                                <img src="${vo.image_s}" alt="${vo.name}">
+                                <img src="/upload/${vo.image_s}" alt="${vo.name}">
                             </button>
                         </c:if>
                     </div>
