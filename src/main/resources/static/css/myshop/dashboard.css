@@ -6,50 +6,30 @@
 
 .dashboard-status-cards {
     margin-bottom: 16px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
 }
 
 .dashboard-status-card {
-    background-color: #fff;
-    min-height: 104px;
-    padding: 16px 16px;
-    border-radius: 14px;
-    border: 1px solid #f0e4dc;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 6px 18px rgba(80, 45, 25, 0.035);
-    box-sizing: border-box;
+    gap: 6px;
 }
 
 .dashboard-status-card:hover {
-    border-color: #ff6f4f;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(80, 45, 25, 0.055);
 }
 
-.dashboard-status-card .icon {
-    display: inline-block;
-    margin-bottom: 7px;
-    font-size: 26px;
-    line-height: 1;
-}
-
-.dashboard-status-card h4 {
-    margin: 0 0 6px;
-    color: #666;
-    font-size: 13px;
-    font-weight: 650;
+.dashboard-status-card span {
+    font-size: 21px;
 }
 
 .dashboard-status-card strong {
-    display: block;
-    color: #222;
-    font-size: 23px;
+    font-size: 13px;
     font-weight: 850;
-    line-height: 1;
+}
+
+.dashboard-status-card small {
+    display: block;
+    color: #888;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 .dashboard-lower-layout {
