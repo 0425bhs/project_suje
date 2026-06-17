@@ -595,6 +595,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         AND p.sale_price &lt; p.price
 
         <choose>
+            <!-- 오늘의 할인 상품: 종료일이 오늘인 기간 할인 -->
+            <when test="saleType == 'today'">
+                AND p.sale_start_at IS NOT NULL
+                AND p.sale_end_at IS NOT NULL
+                AND DATE(p.sale_start_at) = CURDATE()
+                AND DATE(p.sale_end_at) = CURDATE()
+            </when>
+
             <!-- 기간 할인 -->
             <when test="saleType == 'period'">
                 AND p.sale_start_at IS NOT NULL
@@ -691,6 +699,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         AND p.sale_price &lt; p.price
 
         <choose>
+            <!-- 오늘의 할인 상품: 종료일이 오늘인 기간 할인 -->
+            <when test="saleType == 'today'">
+                AND p.sale_start_at IS NOT NULL
+                AND p.sale_end_at IS NOT NULL
+                AND DATE(p.sale_start_at) = CURDATE()
+                AND DATE(p.sale_end_at) = CURDATE()
+            </when>
+
             <!-- 기간 할인 -->
             <when test="saleType == 'period'">
                 AND p.sale_start_at IS NOT NULL
