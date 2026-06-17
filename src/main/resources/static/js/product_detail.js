@@ -312,60 +312,70 @@ function initProductWishButton(){
 
 
 // 판매자 찜 버튼
-function initSellerWishButton(){
-    const sellerWishBtn = document.getElementById("sellerWishBtn");
+window.addEventListener("load", function () {
+    initSellerWishButton();
+});
 
-    if(sellerWishBtn == null){
+function initSellerWishButton() {
+    const wishBtn = document.getElementById("sellerWishBtn");
+
+    if (wishBtn == null) {
         return;
     }
 
-    sellerWishBtn.addEventListener("click", function(){
-        const seller_id = sellerWishBtn.dataset.sellerId;
+    const sellerId = wishBtn.dataset.sellerId;
 
+    if (sellerId == null || sellerId === "") {
+        alert("판매자 정보를 찾을 수 없습니다.");
+        return;
+    }
+
+    wishBtn.addEventListener("click", function () {
         fetch("/favorite_shop.do", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: "seller_id=" + encodeURIComponent(seller_id)
+            body: "seller_id=" + encodeURIComponent(sellerId)
         })
-        .then(function(res){
-            return res.json();
+        .then(function (response) {
+            return response.json();
         })
-        .then(function(data){
-            if(data.result === "login"){
-                alert("로그인이 필요합니다.");
+        .then(function (data) {
+            if (data.result === "login") {
+                alert("로그인 후 이용 가능합니다.");
                 location.href = "/login.do";
                 return;
             }
 
-            const heart = sellerWishBtn.querySelector(".wish-shop-heart");
-            const text = sellerWishBtn.querySelector(".wish-shop-text");
+            const heart = wishBtn.querySelector(".wish-shop-heart");
+            const text = wishBtn.querySelector(".wish-shop-text");
 
-            if(data.liked === true){
-                sellerWishBtn.classList.add("active");
+            if (data.liked === true) {
+                wishBtn.classList.add("active");
 
-                if(heart != null){
+                if (heart != null) {
                     heart.textContent = "♥";
                 }
 
-                if(text != null){
-                    text.textContent = "작가샵 찜 완료";
+                if (text != null) {
+                    text.textContent = "찜 취소";
                 }
             } else {
-                sellerWishBtn.classList.remove("active");
+                wishBtn.classList.remove("active");
 
-                if(heart != null){
+                if (heart != null) {
                     heart.textContent = "♡";
                 }
 
-                if(text != null){
+                if (text != null) {
                     text.textContent = "작가샵 찜하기";
                 }
             }
         })
-        .catch(function(){
-            alert("판매자 찜 처리 중 오류가 발생했습니다.");
+        .catch(function (error) {
+            console.log(error);
+            alert("찜 처리 중 오류가 발생했습니다.");
         });
     });
 }
