@@ -923,9 +923,24 @@ public class ProductController {
         }
 
         // ✅ DB에 저장할 이미지 경로 설정
-        vo.setImage_l(image_l_name.equals("no_file") ? "no_file":image_l_name);
-        vo.setImage_s(image_s_name.equals("no_file") ? "no_file":image_s_name);
+        // 새로 업로드한 파일명은 /upload/를 붙이고,
+        // 기존 이미지 경로는 이미 /upload/가 붙어 있으므로 그대로 유지
+        if (image_l_name.equals("no_file")) {
+            vo.setImage_l("no_file");
+        } else if (image_l_name.startsWith("/upload/")) {
+            vo.setImage_l(image_l_name);
+        } else {
+            vo.setImage_l("/upload/" + image_l_name);
+        }
 
+        if (image_s_name.equals("no_file")) {
+            vo.setImage_s("no_file");
+        } else if (image_s_name.startsWith("/upload/")) {
+            vo.setImage_s(image_s_name);
+        } else {
+            vo.setImage_s("/upload/" + image_s_name);
+        }
+        
         // 할인 설정값 정리
         applySaleSetting(vo);
 
