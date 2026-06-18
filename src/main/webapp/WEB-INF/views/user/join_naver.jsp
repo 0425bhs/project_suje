@@ -5,15 +5,16 @@
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user/join.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user/join_naver.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
 </head>
 <body>
 <div class="join-container">
     <form method="post" enctype="multipart/form-data">
-        <input type="hidden" name="role" id="role" value="${role}" />
-
+        
         <table class="usertable" id="usertable">
+
+            <input type="hidden" name="naver_id" value="${sessionScope.naver_id}">
 
             <tr>
                 <th>아이디</th>
@@ -29,13 +30,14 @@
                 <th>닉네임</th>
                 <td>
                     <div class="input-row">
-                        <input name="nick_name" id="nick_name" onchange="chknick()" placeholder="닉네임을 입력하세요" />
+                        <input name="nick_name" id="nick_name" onchange="chknick()"
+                        value="${sessionScope.naver_nickname}" placeholder= "${sessionScope.naver_nickname}" />
                         <input type="button" value="중복체크" class="btn-secondary" onclick="check_nick()" />
                     </div>
                 </td>
             </tr>
 
-    <tr>
+            <tr>
     <th>비밀번호</th>
     <td>
         <div class="input-wrapper">
@@ -77,9 +79,11 @@
     </td>
 </tr>
             
+            
             <tr>
                 <th>이름</th>
-                <td><input name="name" /></td>
+                <td><input name="name" value="${sessionScope.naver_name}" 
+                    placeholder="${sessionScope.naver_name}"/></td>
             </tr>
 
             <tr>
@@ -94,7 +98,8 @@
 
             <tr>
                 <th>전화번호</th>
-                <td><input name="phone" placeholder="'-'없이 입력"/></td>
+                <td><input name="phone" value="${sessionScope.naver_mobile}" 
+    placeholder="'-'없이 입력"/></td>
             </tr>
 
             <tr>
@@ -104,30 +109,6 @@
             
         </table>
 
-        <c:if test="${role == 'SELLER'}">
-        <table id="sellertable" class="sellertable" >
-            <tr>
-                <th>상호</th>
-                <td><input name="company_name" /></td>
-            </tr>
-            <tr>
-                <th>사업자 등록번호</th>
-                <td><input name="business_number" type="number" /></td>
-            </tr>
-            <tr>
-                <th>대표자명</th>
-                <td><input name="representative_name" /></td>
-            </tr>
-            <tr>
-                <th>사업자 개업일자</th>
-                <td><input name="opening_date" type="date" /></td>
-            </tr>
-            <tr>
-                <th>사업자 주소</th>
-                <td><input name="business_address" /></td>
-            </tr>
-        </table>
-        </c:if>
 
         <table class="join-table">
             <tr>
@@ -141,6 +122,6 @@
     </form>
 </div>
 
-<script src="${pageContext.request.contextPath}/js/join.js"></script>
+<script src="${pageContext.request.contextPath}/js/join_naver.js"></script>
 </body>
 </html>

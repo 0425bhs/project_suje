@@ -51,6 +51,11 @@
     <section class="myshop-page">
         <div class="myshop-layout">
 
+
+<c:if test="${not empty flashMsg}">
+    <script>alert("${flashMsg}");</script>
+    <c:remove var="flashMsg" scope="session" />
+</c:if>
         <!-- 왼쪽 사이드바 -->
         <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" >
             <jsp:param name="activeMenu" value="${activeMenu}" />

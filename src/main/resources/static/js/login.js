@@ -94,3 +94,15 @@ function findInfo(type) {
 }
 
 
+function kakaoLogin() {
+    const CLIENT_ID = '33aac57d1dfd2b5b7498004ba718b9d1';
+    const REDIRECT_URI = 'http://localhost:9090/kakao/callback.do';
+    location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+}
+
+function naverLogin() {
+    const CLIENT_ID = 'WRlrhlhNnY73Y1Qixajm';
+    const REDIRECT_URI = 'http://localhost:9090/naver/callback.do';
+    const STATE = Math.random().toString(36).substring(2); // 보안용 랜덤값
+    location.href = `https://nid.naver.com/oauth2.0/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&state=${STATE}`;
+}
