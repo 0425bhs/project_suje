@@ -24,5 +24,5 @@ public interface SellerDAO {
 
     // 판매자 주문 상태 변경
     int updateSellerOrderStatus(Map<String, Object> map);
-    
+        
 }
