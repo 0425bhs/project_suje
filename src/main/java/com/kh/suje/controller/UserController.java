@@ -400,7 +400,7 @@ if(naver_id != null) {
     
     //회원 정보수정폼으로
     @GetMapping("/user_modify.do")
-    public String user_modifyForm( Model model, HttpSession session) {
+    public String user_modifyForm( Model model ) {
 
        //로그인한 사람의 정보 꺼내기
     UserVO sessionUser = (UserVO) session.getAttribute("user");
@@ -419,13 +419,6 @@ if(naver_id != null) {
         dto.setSeller(sellerDao.selectSeller(sessionUser.getUser_id()));
     }
     
-    if (sessionUser.getRole().equalsIgnoreCase("SELLER")) {
-    dto.setSeller(sellerDao.selectSeller(sessionUser.getUser_id()));
-}
-
-// 추가
-System.out.println("role: " + sessionUser.getRole());
-System.out.println("seller: " + dto.getSeller());
     //JSP 화면
     model.addAttribute("dto", dto);  // "user" 대신 "dto"로 변경
     model.addAttribute("activeMenu", "myinfo");
@@ -512,7 +505,7 @@ System.out.println("seller: " + dto.getSeller());
     
 @PostMapping("/check_currPassword.do")
     @ResponseBody
-    public Map<String, Object> checkCurrentPassword( String ori_password, HttpSession session ){
+    public Map<String, Object> checkCurrentPassword( String ori_password ){
 
         
         Map<String, Object> map = new HashMap<>();
@@ -568,10 +561,10 @@ if (sessionUser != null && ori_password != null) {
 
 
     model.addAttribute("sessionUser", sessionUser);
-    model.addAttribute("activeMenu", "myinfo");  // 사이드바 강조용
+    model.addAttribute("activeMenu", "update_seller.do");  // 사이드바 강조용
     model.addAttribute("contentPage", "user/update_seller"); 
 
-    return "myshop/myshop_main";  // myshop_main을 통해서 열기
+    return "myshop/myshop";  // myshop_main을 통해서 열기
  
     }
 
@@ -587,7 +580,7 @@ if (sessionUser != null && ori_password != null) {
         UserVO updatedUser = userDao.selectUser(user_id);
     session.setAttribute("user", updatedUser);
 
-       return "redirect:/myshop_main";
+       return "redirect:/myshop";
     }
 
 
@@ -601,7 +594,7 @@ if (sessionUser != null && ori_password != null) {
 
  /* 
    @GetMapping("/user_mypage.do")
-    public String user_mypage( Model model, HttpSession session) {
+    public String user_mypage( Model model) {
 
        //로그인한 사람의 정보 꺼내기
     UserVO sessionUser = (UserVO) session.getAttribute("user");
