@@ -7,12 +7,16 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.UserVO;
+import com.kh.suje.vo.order.OrderItemVO;
+import com.kh.suje.vo.order.OrderVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -54,8 +58,59 @@ public class SellerController {
     }
 
     @GetMapping("/seller_order_list.do")
-    public String sellerOrderList(){
+    public String sellerOrderList(Model model, String status) {
+
+        // 로그인 연동 전까지 임시 판매자 번호 사용
+        int seller_id = 1;
+
+        // 판매자 주문 목록 조회 조건
+        Map<String, Object> map = new HashMap<>();
+        map.put("seller_id", seller_id);
+        map.put("status", status);
+
+        // 상태값이 있으면 해당 상태 주문만, 없으면 전체 주문 조회
+        List<OrderVO> orderList = sellerdao.getSellerOrderList(map);
+
+        // 주문별 상품 목록을 담을 Map
+        Map<Integer, List<OrderItemVO>> orderItemMap = new HashMap<>();
+
+        for (OrderVO order : orderList) {
+            Map<String, Object> itemMap = new HashMap<>();
+            itemMap.put("seller_id", seller_id);
+            itemMap.put("order_id", order.getOrder_id());
+
+            // 해당 주문에 포함된 판매자 상품 조회
+            List<OrderItemVO> itemList = sellerdao.getSellerOrderItemList(itemMap);
+            orderItemMap.put(order.getOrder_id(), itemList);
+        }
+
+        model.addAttribute("orderList", orderList);
+        model.addAttribute("orderItemMap", orderItemMap);
+        model.addAttribute("selectedStatus", status);
+
         return "/seller/seller_order_list";
+    }
+    
+    @PostMapping("/seller_order_status_update.do")
+    public String sellerOrderStatusUpdate(int order_id, String status, String selectedStatus) {
+
+        // 로그인 연동 전까지 임시 판매자 번호 사용
+        int seller_id = 1;
+
+        // 주문 상태 변경 조건
+        Map<String, Object> map = new HashMap<>();
+        map.put("seller_id", seller_id);
+        map.put("order_id", order_id);
+        map.put("status", status);
+
+        sellerdao.updateSellerOrderStatus(map);
+
+        // 기존에 보고 있던 상태 목록으로 다시 이동
+        if (selectedStatus != null && !selectedStatus.trim().equals("")) {
+            return "redirect:/seller_order_list.do?status=" + selectedStatus;
+        }
+
+        return "redirect:/seller_order_list.do";
     }
 
     @GetMapping("/seller_qna_list.do")

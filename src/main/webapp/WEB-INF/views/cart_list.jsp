@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>   
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -97,7 +98,31 @@
                                     </div>
 
                                     <div class="cart-item-img-box">
-                                        <img class="cart-product-img" src="${item.image_l}" onerror="this.src='/images/no_image.png'" />
+                                        <c:choose>
+                                            <c:when test="${not empty item.image_l and fn:trim(item.image_l) ne 'no_file'}">
+                                                <c:set var="cartImagePath" value="${fn:trim(item.image_l)}" />
+
+                                                <c:choose>
+                                                    <c:when test="${fn:startsWith(cartImagePath, '/upload/')}">
+                                                        <img class="cart-product-img"
+                                                            src="${cartImagePath}"
+                                                            alt="${item.name}"
+                                                            onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;cart-no-image&quot;>이미지 없음</div>';">
+                                                    </c:when>
+
+                                                    <c:otherwise>
+                                                        <img class="cart-product-img"
+                                                            src="/upload/${cartImagePath}"
+                                                            alt="${item.name}"
+                                                            onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;cart-no-image&quot;>이미지 없음</div>';">
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <div class="cart-no-image">이미지 없음</div>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
 
                                     <div class="cart-item-info">
