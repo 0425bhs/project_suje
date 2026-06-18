@@ -28,8 +28,8 @@
         <span>⭐</span>
         <strong>리뷰관리</strong>
         <small class="dashboard-order-status-summary">
-            <em>작성가능 1</em>
-            <em>작성완료 3</em>
+            <em>작성완료 ${writtenReviewCount}</em>
+            <em>작성가능 ${writableReviewCount}</em>
         </small>
     </button>
 

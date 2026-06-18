@@ -14,16 +14,17 @@
 <section class="myshop-status-card myshop-status-card-review">
 
     <button type="button"
-            onclick="location.href='/myshop/orders'">
-        <span>작성 가능한 리뷰</span>
-        <strong>${empty writableReviewCount ? 0 : writableReviewCount}</strong>
+        class="${tab eq 'written' ? 'active' : ''}"
+        onclick="location.href='/myshop/reviews'">
+    <span>내가 작성한 리뷰</span>
+    <strong>${empty writtenReviewCount ? 0 : writtenReviewCount}</strong>
     </button>
 
     <button type="button"
-            class="active"
-            onclick="location.href='/myshop/reviews'">
-        <span>내가 작성한 리뷰</span>
-        <strong>${empty totalCount ? 0 : totalCount}</strong>
+        class="${tab eq 'writable' ? 'active' : ''}"
+            onclick="location.href='/myshop/reviews?tab=writable'">
+        <span>작성 가능한 리뷰</span>
+        <strong>${empty writableReviewCount ? 0 : writableReviewCount}</strong>
     </button>
 
 </section>

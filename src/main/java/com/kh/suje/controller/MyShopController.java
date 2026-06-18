@@ -37,7 +37,10 @@ public class MyShopController {
         int user_id = loginUser.getUser_id();
 
         Map<String, Object> statusCounts = orderDAO.selectOrderStatusCounts(user_id);
-        
+
+        int writtenReviewCount = reviewDAO.getWrittenReviewCount(user_id);
+        int writableReviewCount = reviewDAO.getWritableReviewCount(user_id);
+
         int orderCount = orderDAO.getOrderCount(user_id);
         int reviewCount = reviewDAO.getReviewCount(user_id);
         int qnaCount = qnaDAO.getQnaCount(user_id);
@@ -54,6 +57,9 @@ public class MyShopController {
         }
 
         model.addAllAttributes(statusCounts);
+
+        model.addAttribute("writtenReviewCount", writtenReviewCount);
+        model.addAttribute("writableReviewCount", writableReviewCount);
 
         model.addAttribute("orderCount", orderCount);
         model.addAttribute("reviewCount", reviewCount);

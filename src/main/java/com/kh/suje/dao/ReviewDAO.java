@@ -8,7 +8,12 @@ public interface ReviewDAO {
     int addReview(ReviewVO review);
     ReviewVO getReviewById(int review_id);
     int getReviewCount(int user_id);
+
+    List<ReviewVO> getWritableReview(int user_id);
+    List<ReviewVO> getWrittenReview(int user_id);
+    int getWrittenReviewCount(int user_id);
     int getWritableReviewCount(int user_id);
+
     List<ReviewVO> getMyReviewList(int user_id);
     List<ReviewVO> getLiveReviewList();
 

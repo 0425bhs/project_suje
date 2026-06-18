@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +22,9 @@ import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.vo.ImageVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.ReviewVO;
+import com.kh.suje.vo.UserVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -99,43 +103,87 @@ public class ReviewController {
     }
 
     @GetMapping("/myshop/reviews")
-    public String myReviewList(Model model) {
-        // UserVO user = session.getAttribute("user");
-        // int id = user.getId();
+    public String myReviewList(HttpSession session, Model model, String tab) {
+        UserVO user = (UserVO)session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login.do";
+        }
+        int user_id = user.getUser_id();
 
-        int userId = 2;
+        if (tab == null || tab.trim().isEmpty()) {
+            tab = "written"; 
+        }
 
-        List<ReviewVO> list = reviewDAO.getMyReviewList(userId);
-
+        List<ReviewVO> list;
+        if ("writable".equals(tab)) {
+            list = reviewDAO.getWritableReview(user_id);
+        } else {
+            list = reviewDAO.getWrittenReview(user_id);
+        }
+        
         if (list != null && !list.isEmpty()) {
-            List<Integer> reviewIds = new ArrayList<>();
-            for (ReviewVO review : list) {
-                reviewIds.add(review.getReview_id()); 
-            }
+            //리뷰 리스트에서 리뷰id를 가져와서 리뷰 아이디 리스트에 담기
+            List<Integer> reviewIds = list.stream()
+                                      .map(ReviewVO::getReview_id)
+                                      .collect(Collectors.toList());
 
+            //리뷰 아이디 리스트를 가지고 해당하는 이미지를 모두 가져와서 이미지 리스트에 담기
             List<ImageVO> images = imageDAO.getImagesByReviewIds(reviewIds);
             
-            for (ReviewVO review : list) {
-                List<ImageVO> matchedImages = new ArrayList<>();
-                for (ImageVO image : images) {
-                    if (review.getReview_id() == image.getTarget_id()) {
-                        matchedImages.add(image);
-                    }
+            if (images != null && !images.isEmpty()) {
+                //이미지 리스트에서 타겟 아이디를 기준으로 이미지들을 그룹화
+                Map<Integer, List<ImageVO>> imageMap = images.stream()
+                        .collect(Collectors.groupingBy(ImageVO::getTarget_id));
+
+                // 리뷰 리스트에 리뷰 리스트와 동일한 아이디를 갖는 이미지 그룹을 연결
+                for (ReviewVO review : list) {
+                    review.setImageList(imageMap.getOrDefault(review.getReview_id(), new ArrayList<>()));
                 }
-                review.setImageList(matchedImages);
             }
         }
 
-        int totalCount = list == null ? 0 : list.size();
-        int writableReviewCount = reviewDAO.getWritableReviewCount(userId);
+        // int totalCount = list == null ? 0 : list.size();
+        int writtenReviewCount = reviewDAO.getWrittenReviewCount(user_id);
+        int writableReviewCount = reviewDAO.getWritableReviewCount(user_id);
 
         model.addAttribute("list", list);
-        model.addAttribute("totalCount", totalCount);
+        // model.addAttribute("totalCount", totalCount);
+        model.addAttribute("tab", tab);
+        model.addAttribute("writtenReviewCount", writtenReviewCount);
         model.addAttribute("writableReviewCount", writableReviewCount);
         model.addAttribute("activeMenu", "review");
         model.addAttribute("contentPage", "/myshop/review_list");
 
         return "/myshop/myshop_main";
+
+        // 이전 코드
+        // List<ReviewVO> list;
+
+        // if (tab == null || tab.trim().isEmpty()) {
+        //     list = reviewDAO.getWrittenReview(user_id);
+        // } else {
+        //     list = reviewDAO.getWritableReview(user_id);
+        // }
+
+        // if (list != null && !list.isEmpty()) {
+        //     List<Integer> reviewIds = new ArrayList<>();
+        //     for (ReviewVO review : list) {
+        //         reviewIds.add(review.getReview_id()); 
+        //     }
+
+        //     List<ImageVO> images = imageDAO.getImagesByReviewIds(reviewIds);
+            
+        //     for (ReviewVO review : list) {
+        //         List<ImageVO> matchedImages = new ArrayList<>();
+        //         for (ImageVO image : images) {
+        //             if (review.getReview_id() == image.getTarget_id()) {
+        //                 matchedImages.add(image);
+        //             }
+        //         }
+        //         review.setImageList(matchedImages);
+        //     }
+        // }
+
     }
 
     @GetMapping("/live_review_list.do")
