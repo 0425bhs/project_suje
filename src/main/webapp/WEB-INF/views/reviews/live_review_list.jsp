@@ -60,10 +60,6 @@
                                     <img src="${vo.image_l}" alt="${vo.product_name}">
                                 </c:when>
 
-                                <c:when test="${not empty vo.image_s and vo.image_s ne 'no_file'}">
-                                    <img src="${vo.image_s}" alt="${vo.product_name}">
-                                </c:when>
-
                                 <c:otherwise>
                                     <img src="/images/no_image.png" alt="이미지 없음">
                                 </c:otherwise>

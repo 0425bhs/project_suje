@@ -20,7 +20,7 @@ public class OrderItemVO {
 
     // 화면 출력용 JOIN 데이터
     private String productName;  // products.name
-    private String imageS;       // products.image_s
+    private String imageL;       // products.image_l
     private int subtotalAmount;  // price * quantity
 
 }

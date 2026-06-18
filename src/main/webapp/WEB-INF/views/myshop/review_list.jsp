@@ -94,8 +94,8 @@
                         <div class="myshop-list-body myshop-review-body">
                             <div class="myshop-product-thumb">
                                 <c:choose>
-                                    <c:when test="${not empty review.image_s}">
-                                        <img src="${review.image_s}" alt="${review.product_name}">
+                                    <c:when test="${not empty review.image_l}">
+                                        <img src="${review.image_l}" alt="${review.product_name}">
                                     </c:when>
                                     <c:otherwise>
                                         <img src="/images/no_image.png" alt="이미지 없음">

@@ -146,7 +146,7 @@
                                     <tr>
                                         <td class="product-cell">
                                             <div class="review-product">
-                                                <img src="${review.image_s}" alt="${review.product_name}">
+                                                <img src="${review.image_l}" alt="${review.product_name}">
                                                 <strong>${review.product_name}</strong>
                                             </div>
                                         </td>

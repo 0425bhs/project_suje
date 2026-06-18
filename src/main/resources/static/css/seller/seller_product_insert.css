@@ -31,3 +31,33 @@
 .product-insert-form .form-section:nth-of-type(3)::before {
     content: "이미지 정보";
 }
+
+.toastui-editor-defaultUI-toolbar button.custom-toolbar-btn {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    border-radius: 3px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    color: #555 !important;
+}
+
+.toastui-editor-defaultUI-toolbar button.custom-toolbar-btn:hover {
+    background-color: #e9ecef !important;
+    color: #222 !important;
+}
+
+.toastui-editor-defaultUI-toolbar button.custom-toolbar-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
