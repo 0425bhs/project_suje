@@ -15,6 +15,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 #{opening_date}, #{business_address} )
     </insert>
         
+
+    <!--판매자 조회-->
+    <select id="selectSeller" parameterType="int" resultType="seller">
+        SELECT * FROM sellers WHERE user_id = #{user_id}
+    </select>
+
+
+    <!--판매자 업데이트-->
+    <update id="sellerModify" parameterType="seller">
+    UPDATE sellers
+    SET company_name = #{company_name},
+        business_number = #{business_number},
+        representative_name = #{representative_name},
+        opening_date = #{opening_date},
+        business_address = #{business_address}
+    WHERE user_id = #{user_id}
+    </update>
+
+
+
+
     <select id="getOrderStatusCounts"
             parameterType="int"
             resultType="java.util.Map">
@@ -58,4 +79,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN products p ON p.product_id = q.product_id
         WHERE p.seller_id = #{seller_id}
     </select>
+
+
+
+
 </mapper>
+

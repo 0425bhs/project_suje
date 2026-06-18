@@ -12,6 +12,8 @@ public interface UserDAO {
 
     UserVO userLoginIdCheck(String login_id); //아이디 중복체크
 
+    UserVO mailDuplicateCheck(String email); //메일 중복체크
+
     UserVO loginCheck(UserVO vo); //아이디로그인
 
     UserVO findLoginId(UserVO vo); //아이디찾기
@@ -24,5 +26,12 @@ public interface UserDAO {
 
     int userModify(UserVO vo); //내 정보 수정하기
 
+    int updateSeller(int user_id); // 일반=>판매자 신청
+
+
+
+    UserVO kakaoLogin(String kakao_id); //카톡로그인
+
+    UserVO naverLogin(String naver_id); //네이버로그인
     
 }

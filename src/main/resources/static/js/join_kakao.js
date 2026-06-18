@@ -1,12 +1,11 @@
 
 let nickCheck = false;
 let idCheck = false;
-let email_duplicate = false;
-
 
 //이메일 인증관련 변수들
 let authNumber;
 let email_valid = false;
+let email_duplicate = false;
 
 
 function chknick() {
@@ -20,27 +19,6 @@ function chkid() {
 }
 
 
-
-function toggleForm() {
-    // 1. 라디오 버튼 요소 가져오기
-    let isUserChecked = document.getElementById("user").checked;
-
-    // 2. 제어할 테이블 요소 가져오기
-    let userTable = document.getElementById("usertable");
-    let sellerTable = document.getElementById("sellertable");
-
-    //체크 상태에 따라 display 속성 변경
-
-    nickCheck = false;
-
-    if (isUserChecked) {
-        userTable.style.display = "table";      // 일반회원 테이블 
-        sellerTable.style.display = "none";    // 판매자 테이블 숨기기
-    } else {
-        userTable.style.display = "table";      // 일반회원 테이블 
-        sellerTable.style.display = "table";    // 판매자 테이블 보이기
-    }
-}
 
 function togglePwdVisibility(e) {
     e.preventDefault();
@@ -102,7 +80,6 @@ function check_nick() {
         })
 }
 
-
 //아이디중복체크
 function check_loginId() {
 
@@ -133,6 +110,7 @@ function check_loginId() {
 
         })
 }
+
 
 //메일 중복체크
 function mailDupliCheck(){
@@ -244,7 +222,7 @@ function checkPwdMatch() {
 
     let messages = [];
 
-    if ( password === checkPassword && password !== "" ) {
+    if ( password === checkPassword) {
    
         div.innerHTML = "<span style='color:green'>✅ 일치합니다</span>";
     } else {
@@ -258,8 +236,6 @@ function checkPwdMatch() {
 //가입
 function send(f) {
 
-    let role = document.getElementById("role").value;
-    let isUserChecked = (role === 'USER');
     let nick_name = f.nick_name.value.trim();
     let login_id = f.login_id.value.trim();
 
@@ -290,14 +266,13 @@ function send(f) {
         return;
     }
 
-   /*
     //이메일 중복체크를 마쳤는지 확인
     if(!email_duplicate){
         alert("이메일 중복체크를 하세요");
         f.authEmail.focus();
         return;
     }
-    
+
     //메일이 인증된 상태인지 확인
    
         if (!email_valid) {
@@ -305,8 +280,6 @@ function send(f) {
             return;
         }
 
-        */
-       
         // 이름 입력 확인
         if (f.name.value.trim() === "") {
             alert("이름을 입력해 주세요.");
@@ -350,47 +323,8 @@ function send(f) {
     return;
 }
 
-
-   if(!isUserChecked) {
-
-
-        if (f.company_name.value.trim() === "") {
-            alert("상호명을 입력해 주세요.");
-            f.company_name.focus();
-            return;
-        }
-        if (f.business_number.value.trim() === "") {
-            alert("사업자 등록번호를 입력해 주세요.");
-            f.business_number.focus();
-            return;
-        }
-        if (f.representative_name.value.trim() === "") {
-            alert("대표자명을 입력해 주세요.");
-            f.representative_name.focus();
-            return;
-        }
-        if (f.opening_date.value === "") {
-            alert("사업자 개업일자를 선택해 주세요.");
-            f.opening_date.focus();
-            return;
-        }
-        if (f.business_address.value.trim() === "") {
-            alert("사업자 주소를 입력해 주세요.");
-            f.business_address.focus();
-            return;
-        }
-    }//사업자
-
-
-    if(isUserChecked){
-
          f.action = "/join.do";
 
-    }else{
-
-        f.action = "/joinSeller.do"
-    }
-   
     f.method = "POST";
     f.submit();
 }

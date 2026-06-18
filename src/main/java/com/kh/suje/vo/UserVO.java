@@ -29,4 +29,7 @@ public class UserVO {
 
     private MultipartFile photo;
     private String photo_name;
+    private String kakao_id;
+    private String naver_id;
+
 }
