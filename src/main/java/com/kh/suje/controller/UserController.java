@@ -3,6 +3,7 @@ package com.kh.suje.controller;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import com.kh.suje.dto.UserDTO;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,6 +100,29 @@ public class UserController {
 
     }
 
+
+    //메일중복체크   
+    @PostMapping("/checkMailDuplicate.do")
+    @ResponseBody
+    public Map<String, String> mailDuplicateCheck(String email) {
+
+        UserVO vo = userDao.mailDuplicateCheck(email);
+        String res = "no";
+
+        // 사용이 가능한 상태
+        if (vo == null) {
+            res = "yes";
+        }
+
+        Map<String, String> map = new HashMap<>();
+        map.put("result", res);
+        map.put("email", email);
+
+        return map;
+    }
+
+
+
     // 메일인증
     @PostMapping("/mailCheck.do")
     @ResponseBody
@@ -121,6 +145,26 @@ public class UserController {
       
         String securePwd = pwdSecurity.pwdEncoding(vo.getPassword());
         vo.setPassword(securePwd);
+
+       String kakao_id = (String) session.getAttribute("kakao_id");
+       if(kakao_id != null) {
+     vo.setKakao_id(kakao_id);
+    session.removeAttribute("kakao_id");
+    session.removeAttribute("kakao_nickname");
+
+    }
+
+    String naver_id = (String) session.getAttribute("naver_id");
+if(naver_id != null) {
+    vo.setNaver_id(naver_id);
+    session.removeAttribute("naver_id");
+    session.removeAttribute("naver_name");
+    session.removeAttribute("naver_email");
+    session.removeAttribute("naver_nickname");
+    session.removeAttribute("naver_gender");
+    session.removeAttribute("naver_mobile");
+    session.removeAttribute("naver_photo");
+}
 
     String savePath = "c:" + File.separator + "upload" + File.separator;
 
@@ -332,9 +376,7 @@ public class UserController {
 
 // 임시비번발송
 @PostMapping("/newPwdSend.do")
-  @ResponseBody
-    
-  
+  @ResponseBody  
   //newPassword(String email, Integer user_id)로 변경 권장
     public Map<String, Object> newPassword(String email, int user_id) {
 
@@ -356,7 +398,7 @@ public class UserController {
     }
 
     
-    //일반회원 정보수정폼으로
+    //회원 정보수정폼으로
     @GetMapping("/user_modify.do")
     public String user_modifyForm( Model model, HttpSession session) {
 
@@ -368,19 +410,37 @@ public class UserController {
         return "redirect:/login.do";
     }
     
-    //로그인된 유저의 id로 DB 조회
-    UserVO vo = userDao.selectUser(sessionUser.getUser_id());
+    // DTO 조립
+    UserDTO dto = new UserDTO();
+    dto.setUser(userDao.selectUser(sessionUser.getUser_id()));
+
+    // 판매자면 seller 정보도 담기
+    if (sessionUser.getRole().equalsIgnoreCase("SELLER")) {
+        dto.setSeller(sellerDao.selectSeller(sessionUser.getUser_id()));
+    }
     
-    //JSP 화면
-    model.addAttribute("user", vo);
-    
-    return "user/user_edit";
+    if (sessionUser.getRole().equalsIgnoreCase("SELLER")) {
+    dto.setSeller(sellerDao.selectSeller(sessionUser.getUser_id()));
 }
+
+// 추가
+System.out.println("role: " + sessionUser.getRole());
+System.out.println("seller: " + dto.getSeller());
+    //JSP 화면
+    model.addAttribute("dto", dto);  // "user" 대신 "dto"로 변경
+    model.addAttribute("activeMenu", "myinfo");
+ model.addAttribute("contentPage", "user/user_edit");
+   
+    return "myshop/myshop_main";  // myshop_main을 통해서 열기
+}
+
+
+
  
-    //일반회원 정보수정
+    //회원 정보수정
     @PostMapping("/user_modify.do")
     @ResponseBody
-    public Map<String, Integer> user_modify( UserVO vo, String ori_photo_name, String del_photo_name ) throws Exception {
+    public Map<String, Integer> user_modify( UserVO vo, String ori_photo_name, String del_photo_name, SellerVO svo ) throws Exception {
 
         if(vo.getPassword()!=null && !vo.getPassword().trim().isEmpty() ){
         //수정에 사용한 비밀번호 암호화
@@ -423,6 +483,10 @@ public class UserController {
         vo.setPhoto_name(photo_name);
         
         int res = userDao.userModify( vo );
+        if(vo.getRole().equalsIgnoreCase("SELLER")){
+            svo.setUser_id(vo.getUser_id());
+            int sres = sellerDao.sellerModify( svo );
+        }
 
         //업데이트 후 필요없어진 이미지가 있다면 삭제
         if( res == 1 ){
@@ -461,7 +525,7 @@ if (sessionUser != null && ori_password != null) {
     UserVO dbUser = userDao.selectUser(sessionUser.getUser_id()); 
     
     if(dbUser != null) {
-        // DB에 있는 최신 암호화 비밀번호와 유저의 입력값을 비교하므로 100% 정확합니다.
+        // DB에 있는 최신 암호화 비밀번호와 유저의 입력값을 비교
         isValid = pwdSecurity.pwdDecoding(ori_password, dbUser.getPassword());
 
     }
@@ -470,6 +534,7 @@ if (sessionUser != null && ori_password != null) {
 }
  return map;
     }
+
 
      //사업자회원 가입
  @Transactional
@@ -483,13 +548,58 @@ if (sessionUser != null && ori_password != null) {
 
         svo.setUser_id(vo.getUser_id());
 
-        int resultS = sellerDao.insertSeller(svo); 
-        
+        int resultS = sellerDao.insertSeller(svo);      
         
         return "redirect:/login.do";
     }
 
 
+     //일반회원=>판매자회원폼
+  @GetMapping("/update_seller.do")
+    public String updgradeSeller(Model model) {
+
+             //로그인한 사람의 정보 꺼내기
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+    if(sessionUser.getRole().equalsIgnoreCase("SELLER")) {
+    session.setAttribute("flashMsg", "이미 판매자입니다.");
+    return "redirect:/myshop";
+}
+
+
+    model.addAttribute("sessionUser", sessionUser);
+    model.addAttribute("activeMenu", "myinfo");  // 사이드바 강조용
+    model.addAttribute("contentPage", "user/update_seller"); 
+
+    return "myshop/myshop_main";  // myshop_main을 통해서 열기
+ 
+    }
+
+
+    //일반 => 사업자회원으로 변경
+ @Transactional
+  @PostMapping("/update_seller.do")
+    public String updateSeller(int user_id, SellerVO vo) throws Exception {
+
+       userDao.updateSeller(user_id);
+        sellerDao.insertSeller(vo); 
+        
+        UserVO updatedUser = userDao.selectUser(user_id);
+    session.setAttribute("user", updatedUser);
+
+       return "redirect:/myshop_main";
+    }
+
+
+ //로그아웃
+    @GetMapping("/logout.do")
+    public String logout(){
+        session.invalidate();
+         return "redirect:/login.do";}
+
+
+
+ /* 
    @GetMapping("/user_mypage.do")
     public String user_mypage( Model model, HttpSession session) {
 
@@ -509,14 +619,7 @@ if (sessionUser != null && ori_password != null) {
     
     return "user/mypage";
 }
-
-
-
- //로그아웃
-    @GetMapping("/logout.do")
-    public String logout(){
-        session.invalidate();
-         return "redirect:/login.do";}
+*/
 
 
 

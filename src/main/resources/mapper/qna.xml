@@ -12,7 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getMyQnaList"
             parameterType="int"
             resultType="qna">
-        SELECT q.*, p.name product_name, p.image_s
+        SELECT q.*, p.name product_name, p.image_l
         FROM qnas q
         JOIN products p
         ON q.product_id = p.product_id
@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getQnaById"
             parameterType="int"
             resultType="qna">
-        SELECT q.*, p.name product_name, p.image_s
+        SELECT q.*, p.name product_name, p.image_l
         FROM qnas q
         JOIN products p
         ON q.product_id = p.product_id

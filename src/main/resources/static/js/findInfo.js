@@ -2,22 +2,36 @@
         let currentFind;
          let authNumber;
 
+// 페이지 로드 시 URL 파라미터 확인해서 탭 전환
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    if (type === 'password') {
+        switchFind('password');
+    }
+};
+
 function switchFind(type) {
     currentFind = type;
 
     const IdDiv = document.getElementById('loginIdFind');
     const pwdDiv = document.getElementById('pwdFind');
+    const btns = document.querySelectorAll('.toggle-btn');
 
     // 토글 버튼 active 클래스 변경 추가
     document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-
+    
+    // event.target 대신 type으로 직접 active 처리
     if (type === 'id') {
         IdDiv.style.display = 'block';
         pwdDiv.style.display = 'none';
+        btns[0].classList.add('active');
+        btns[1].classList.remove('active');
     } else {
         IdDiv.style.display = 'none';
         pwdDiv.style.display = 'block';
+        btns[0].classList.remove('active');
+        btns[1].classList.add('active');
     }
 }
 

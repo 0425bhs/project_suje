@@ -71,7 +71,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.price,
             p.sale_price,
             p.image_l,
-            p.image_s,
             p.seller_id,
             s.company_name
         FROM favorites f

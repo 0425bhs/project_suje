@@ -92,9 +92,6 @@
 
                                     <div class="myshop-product-thumb">
                                         <c:choose>
-                                            <c:when test="${not empty item.image_s and item.image_s ne 'no_file'}">
-                                                <img src="${item.image_s}" alt="${item.name}">
-                                            </c:when>
 
                                             <c:when test="${not empty item.image_l and item.image_l ne 'no_file'}">
                                                 <img src="${item.image_l}" alt="${item.name}">

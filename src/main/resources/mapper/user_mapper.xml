@@ -20,13 +20,24 @@ select * from users where login_id=#{login_id}
 
 </select>
 
+
+<!--메일 중복체크-->
+<select id = "mailDuplicateCheck" parameterType = "String"
+resultType = "user">
+
+select * from users where email=#{email}
+
+</select>
+
+
+
 <!--가입-->
 <insert id = "insertUser" parameterType="user"  
 useGeneratedKeys="true" keyProperty="user_id">
 insert into users( email, password, name,
-phone, gender, role, nick_name, photo_name, login_id )
+phone, gender, role, nick_name, photo_name, login_id, kakao_id, naver_id )
 values( #{email}, #{password}, #{name}, #{phone}, #{gender}, 
-#{role}, #{nick_name}, #{photo_name}, #{login_id} )
+#{role}, #{nick_name}, #{photo_name}, #{login_id}, #{kakao_id}, #{naver_id} )
 </insert>
 
 
@@ -75,5 +86,27 @@ phone=#{phone}, gender=#{gender}, nick_name=#{nick_name}, photo_name=#{photo_nam
 where user_id=#{user_id}
 
 </update>
+
+
+<!--일반회원=>판매자 업데이트-->
+<update id = "updateSeller"  parameterType = "int">
+
+update users set role = 'SELLER' where user_id = #{user_id}
+
+</update>
+
+
+
+<!--카카오 로그인-->
+<select id = "kakaoLogin" parameterType="String" resultType="user">
+
+select * from users where kakao_id=#{kakao_id}
+</select>
+
+<!--네이버 로그인-->
+<select id = "naverLogin" parameterType="String" resultType="user">
+
+select * from users where naver_id=#{naver_id}
+</select>
 
 </mapper>

@@ -1,0 +1,312 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #FAFAFA;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* ── 전체 컨테이너 ── */
+.join-container {
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 580px;
+    margin: 40px 20px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+/* ── 테이블 기본 ── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+}
+
+th, td {
+    padding: 10px 0;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    width: 28%;
+    font-size: 13px;
+    color: #666666;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+td {
+    width: 72%;
+}
+
+/* ── 모든 입력창 통일 ── */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input:not([type]),
+#authInput {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #DDDDDD;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333333;
+    background-color: #FAFAFA;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input:not([type]):focus,
+#authInput:focus {
+    outline: none;
+    border-color: #FF7E36;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(255, 126, 54, 0.1);
+}
+
+/* ── 가로 배치 (입력창 + 버튼) ── */
+.input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.input-row:last-child {
+    margin-bottom: 0;
+}
+
+.input-row input[type="text"],
+.input-row input[type="email"],
+.input-row input:not([type]),
+.input-row #authInput {
+    flex: 1;
+    width: auto;
+}
+
+/* ── 비밀번호 눈 아이콘 래퍼 ── */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding-right: 44px;
+}
+
+.eye-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #BBBBBB;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.eye-btn:hover { color: #777777; }
+
+/* ── 비활성화 ── */
+input[disabled],
+input[readonly] {
+    background-color: #F5F5F5 !important;
+    color: #AAAAAA !important;
+    border-color: #E8E8E8 !important;
+    cursor: not-allowed;
+}
+
+/* ── 파일 업로드 ── */
+input[type="file"] {
+    height: auto;
+    padding: 8px 0;
+    border: none;
+    background: none;
+    font-size: 13px;
+    color: #666666;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* ── 라디오 ── */
+input[type="radio"] {
+    accent-color: #FF7E36;
+    margin-right: 4px;
+    cursor: pointer;
+    vertical-align: middle;
+    width: auto;
+    height: auto;
+}
+
+label {
+    font-size: 14px;
+    color: #444444;
+    margin-right: 20px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+/* ── 버튼 공통 ── */
+input[type="button"] {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: background-color 0.2s, color 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── 서브 버튼 (중복체크, 전송, 인증) ── */
+.btn-secondary {
+    height: 44px;
+    padding: 0 14px;
+    background-color: #FFFFFF;
+    border: 1px solid #FF7E36;
+    color: #FF7E36;
+}
+
+.btn-secondary:hover {
+    background-color: #FFF5F0;
+}
+
+/* ── 가입 버튼 ── */
+.btn-main {
+    height: 50px;
+    width: 140px;
+    background-color: #FF7E36;
+    border: none;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 700;
+    margin-right: 10px;
+    border-radius: 8px;
+}
+
+.btn-main:hover { background-color: #E66A23; }
+
+/* ── 취소 버튼 ── */
+.btn-cancel {
+    height: 50px;
+    width: 140px;
+    background-color: #EEEEEE;
+    border: none;
+    color: #666666;
+    font-size: 15px;
+    border-radius: 8px;
+}
+
+.btn-cancel:hover {
+    background-color: #DDDDDD;
+    color: #333333;
+}
+
+/* ── 비밀번호 안내 메시지 ── */
+#pwd-rules, #pwd-match {
+    font-size: 12px;
+    margin-top: 5px;
+    line-height: 1.6;
+}
+
+/* ── 소셜 로그인 ── */
+.social-wrap {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px dashed #EAEAEA;
+    margin-bottom: 20px;
+}
+
+.social-wrap button {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, opacity 0.2s;
+    padding: 0;
+}
+
+.social-wrap button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+.social-wrap svg { width: 24px; height: 24px; }
+
+.btn-kakao { background-color: #FEE500; }
+.btn-kakao svg { fill: #191919; }
+
+.btn-naver { background-color: #03C75A; }
+.btn-naver svg { fill: #FFFFFF; }
+
+.btn-toss { background-color: #0051FF; }
+.btn-toss svg { fill: #FFFFFF; }
+
+
+
+/* 1. 일반 회원 테이블에서 아이디, 비밀번호, 비밀번호 확인, 이메일, 이름, 성별, 전화번호 지정 */
+#usertable tr:nth-child(1) th::after,  /* 아이디 */
+#usertable tr:nth-child(3) th::after,  /* 비밀번호 */
+#usertable tr:nth-child(4) th::after,  /* 비밀번호 확인 */
+#usertable tr:nth-child(5) th::after,  /* 이메일 */
+#usertable tr:nth-child(6) th::after,  /* 이름 */
+#usertable tr:nth-child(7) th::after,  /* 성별 */
+#usertable tr:nth-child(8) th::after { /* 전화번호 */
+     content: " *";
+    color: #FF3B30;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 2px;
+ 
+}
+
+
+/* 2. 사업자 회원 테이블은 모든 항목이 필수이므로 전체 적용 */
+#sellertable th::after {
+    content: " *";
+    color: #FF3B30;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+
+/* 버튼 가운데 정렬 */
+.join-table td {
+    text-align: center;
+}

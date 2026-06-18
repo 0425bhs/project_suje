@@ -6,8 +6,13 @@
         <meta charset="UTF-8">
         <title>판매자센터 - 상품 등록</title>
 
+        <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+
         <link rel="stylesheet" href="/css/seller/seller_form_common.css">
         <link rel="stylesheet" href="/css/seller/seller_product_insert.css">
+
+        
+        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
         <script src="/js/seller_product_insert.js"></script>
     </head>
@@ -25,7 +30,7 @@
 
                 <section class="product-insert-box">
 
-                    <form class="product-insert-form" method="post" enctype="multipart/form-data">
+                    <form class="product-insert-form" action="/seller_product_insert.do" method="post" enctype="multipart/form-data">
 
                         <!-- 테스트용 판매자 번호, 삭제 예정 -->
                         <input type="hidden" name="seller_id" value="1">
@@ -62,7 +67,16 @@
 
                             <div class="form-row">
                                 <label>상품 설명</label>
-                                <textarea name="description" placeholder="상품 설명을 입력하세요"></textarea>
+
+                                <!-- Toast UI Editor가 보이는 영역 -->
+                                <div id="productDescriptionEditor"></div>
+
+                                <!-- 실제 Controller로 넘어가는 값 -->
+                                <input type="hidden" id="description" name="description">
+
+                                <p class="form-help">
+                                    상품 설명을 자세히 입력하세요. 이미지, 링크, 표 등을 사용할 수 있습니다.
+                                </p>
                             </div>
 
                         </div>
@@ -171,7 +185,7 @@
                                     <label>상세 이미지</label>
 
                                     <div class="file-input-box">
-                                        <input type="file" name="image_s_file">
+                                        <input type="file" name="image_s_file" multiple accept="image/*">
                                     </div>
 
                                     <p class="form-help">

@@ -242,8 +242,8 @@
                                     <article class="review-item">
 
                                         <c:choose>
-                                            <c:when test="${not empty review.image_s}">
-                                                <img class="review-thumb" src="${review.image_s}" alt="${review.product_name}">
+                                            <c:when test="${not empty review.image_l}">
+                                                <img class="review-thumb" src="${review.image_l}" alt="${review.product_name}">
                                             </c:when>
 
                                             <c:otherwise>

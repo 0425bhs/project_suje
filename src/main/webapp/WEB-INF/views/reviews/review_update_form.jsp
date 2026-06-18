@@ -315,7 +315,7 @@
             <div class="form-layout">
                 <aside class="product-panel">
                     <span>작가 상품</span>
-                    <img src="${review.image_s}" alt="${review.product_name}">
+                    <img src="${review.image_l}" alt="${review.product_name}">
                     <strong>${review.product_name}</strong>
                     <p>수정한 내용은 내 후기 목록에 바로 반영됩니다.</p>
                 </aside>
@@ -356,7 +356,7 @@
                         <div class="image-preview" id="image-preview">
                             <c:forEach var="image" items="${review.imageList}">
                                 <div class="image-card" id="old-image-${image.image_id}">
-                                    <span class="delete-btn" onclick="deleteOldImage(${image.image_id})">x</span>
+                                    <span class="delete-btn" onclick="deleteOldImage('${image.image_id}')">x</span>
                                     <img src="/upload/${image.image_url}" class="preview-img">
                                 </div>
                             </c:forEach>
