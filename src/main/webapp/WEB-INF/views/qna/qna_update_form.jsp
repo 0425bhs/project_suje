@@ -184,7 +184,7 @@
             <div class="form-layout">
                 <aside class="product-panel">
                     <span>문의 상품</span>
-                    <img src="${qna.image_s}" alt="${qna.product_name}">
+                    <img src="${qna.image_l}" alt="${qna.product_name}">
                     <strong>${qna.product_name}</strong>
                     <p>답변 전 문의라면 내용을 다시 정리해서 저장할 수 있습니다.</p>
                 </aside>

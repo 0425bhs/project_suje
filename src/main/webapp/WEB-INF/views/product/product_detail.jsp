@@ -27,7 +27,6 @@
 </c:choose>
 
 <c:set var="imageLPath" value="" />
-<c:set var="imageSPath" value="" />
 
 <c:if test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
     <c:choose>
@@ -41,17 +40,6 @@
     </c:choose>
 </c:if>
 
-<c:if test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
-    <c:choose>
-        <c:when test="${fn:startsWith(vo.image_s, '/upload/')}">
-            <c:set var="imageSPath" value="${vo.image_s}" />
-        </c:when>
-
-        <c:otherwise>
-            <c:set var="imageSPath" value="/upload/${vo.image_s}" />
-        </c:otherwise>
-    </c:choose>
-</c:if>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -92,23 +80,22 @@
                         <c:choose>
                             <c:when test="${not empty imageLPath}">
                                 <img id="detailMainImage"
-                                     src="${imageLPath}"
-                                     alt="${vo.name}"
-                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                    src="${imageLPath}"
+                                    alt="${vo.name}"
+                                    onerror="this.onerror=null; this.src='/images/no_image.png';">
                             </c:when>
 
-                            <c:when test="${not empty imageSPath}">
+                            <c:when test="${not empty vo.imageList}">
                                 <img id="detailMainImage"
-                                     src="${imageSPath}"
-                                     alt="${vo.name}"
-                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                    src="/upload/${vo.imageList[0].image_url}"
+                                    alt="${vo.name}"
+                                    onerror="this.onerror=null; this.src='/images/no_image.png';">
                             </c:when>
 
                             <c:otherwise>
                                 <img id="detailMainImage" src="/images/no_image.png" alt="이미지 없음">
                             </c:otherwise>
                         </c:choose>
-
                         <button type="button" class="store-image-nav store-image-next" id="detailImgNext">
                             ›
                         </button>
@@ -124,12 +111,14 @@
                             </button>
                         </c:if>
 
-                        <c:if test="${not empty imageSPath}">
-                            <button type="button" class="store-thumb-btn" data-img="${imageSPath}">
-                                <img src="${imageSPath}"
-                                     alt="${vo.name}"
-                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
-                            </button>
+                        <c:if test="${not empty vo.imageList}">
+                            <c:forEach var="img" items="${vo.imageList}">
+                                <button type="button" class="store-thumb-btn" data-img="/upload/${img.image_url}">
+                                    <img src="/upload/${img.image_url}"
+                                        alt="${vo.name}"
+                                        onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                </button>
+                            </c:forEach>
                         </c:if>
                     </div>
 
@@ -156,10 +145,6 @@
                     </div>
 
                     <h1 class="store-product-title">${vo.name}</h1>
-
-                    <p class="store-product-desc">
-                        ${vo.description}
-                    </p>
 
                     <!-- 가격 정보 -->
                     <div class="store-price-box">
@@ -342,7 +327,10 @@
 
             <section class="store-detail-info-section store-tab-panel" id="detailInfo">
                 <h2>상세정보</h2>
-                <p>${vo.description}</p>
+
+                <div class="product-editor-content">
+                    <c:out value="${vo.description}" escapeXml="false" />
+                </div>
             </section>
 
             <section class="product-review-box store-tab-panel" id="reviewBox">
