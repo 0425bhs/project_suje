@@ -3,6 +3,7 @@ package com.kh.suje.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDate;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,6 @@ public class OrderController {
     private final ProductDAO productDAO;
     private final CartDAO cartdao;
 
-    
 
     // 로그인 회원 정보 가져오기
     private UserVO getLoginUser(HttpSession session) {
@@ -50,6 +50,50 @@ public class OrderController {
 
         return user.getUser_id();
     }
+
+    //현재 날짜 기준으로 실제 적용할 상품 가격 구하기
+    private int getActiveProductPrice(ProductVO product){
+
+        int price = product.getPrice();
+        int salePrice = product.getSale_price();
+
+        //할인가가 없거나 원가보다 크거나 같으먄 원가 사용
+        if(salePrice <=0 || salePrice >= price){
+            return price;
+        }
+
+        String saleStartAt = product.getSale_start_at();
+        String saleEndAt = product.getSale_end_at();
+
+        boolean emtyStart = saleStartAt == null || saleStartAt.trim().isEmpty();
+        boolean emtyEnd = saleEndAt == null || saleEndAt.trim().isEmpty();
+
+        //할인 시작일, 종료일 둘 다 없으면 상시 할인
+        if(emtyStart && emtyEnd){
+            return salePrice;
+        }
+
+        //할인 시작일, 종료일 둘 다 있으면 기간 할인
+        if(!emtyStart && !emtyEnd){
+            try{
+                LocalDate today = LocalDate.now();
+
+                LocalDate startDate = LocalDate.parse(saleStartAt.substring(0, 10));
+                LocalDate endDate = LocalDate.parse(saleEndAt.substring(0, 10));
+
+                if (!today.isBefore(startDate) && !today.isAfter(endDate)) {
+                    return salePrice;
+                }
+
+            } catch (Exception e) {
+                return price;
+            }
+        }
+
+        // 기간 할인인데 기간이 아니거나 날짜가 이상하면 원가 사용
+        return price;
+    }
+
     
     // 내 주문 내역
     // 주소: /myshop/orders
@@ -83,6 +127,7 @@ public class OrderController {
 
         for (OrderVO order : orderList) {
             List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order.getOrder_id());
+
             orderItemMap.put(order.getOrder_id(), itemList);
         }
         
@@ -95,7 +140,7 @@ public class OrderController {
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);
 
-        model.addAttribute("activeMenu", "order");
+        model.addAttribute("activeMenu", "orders");
         model.addAttribute("contentPage", "/myshop/order_list");
 
         return "myshop/myshop_main";
@@ -295,6 +340,8 @@ public class OrderController {
             paymentVO.setTransaction_id(null);
 
             paymentDAO.insertPayment(paymentVO);
+
+            cartdao.cartDeleteSelected(map);
 
             return "redirect:/payment/ready?order_id=" + orderVO.getOrder_id();
         }

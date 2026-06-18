@@ -7,12 +7,16 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.UserVO;
+import com.kh.suje.vo.order.OrderItemVO;
+import com.kh.suje.vo.order.OrderVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +29,8 @@ public class SellerController {
 
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
-    private final SellerDAO sellerDAO;
-    private final FavoriteDAO favoriteDAO;
+    private final SellerDAO sellerdao;
+    private final FavoriteDAO favoritedao;
 
     @GetMapping("/seller_dashboard.do")
     public String sellerDashboard(Model model) {
@@ -34,10 +38,10 @@ public class SellerController {
         // int seller_id = seller.getSellerId();
         int seller_id = 1;
 
-        Map<String, Object> orderStatusCounts = sellerDAO.getOrderStatusCounts(seller_id);
-        Map<String, Object> productStatusCounts = sellerDAO.getProductStatusCounts(seller_id);
-        int unansweredQnaCount = sellerDAO.getUnansweredQnaCount(seller_id);
-        int newReviewCount = sellerDAO.getNewReviewCount(seller_id);
+        Map<String, Object> orderStatusCounts = sellerdao.getOrderStatusCounts(seller_id);
+        Map<String, Object> productStatusCounts = sellerdao.getProductStatusCounts(seller_id);
+        int unansweredQnaCount = sellerdao.getUnansweredQnaCount(seller_id);
+        int newReviewCount = sellerdao.getNewReviewCount(seller_id);
 
         if (orderStatusCounts != null) {
             model.addAllAttributes(orderStatusCounts); 
@@ -54,8 +58,59 @@ public class SellerController {
     }
 
     @GetMapping("/seller_order_list.do")
-    public String sellerOrderList(){
+    public String sellerOrderList(Model model, String status) {
+
+        // 로그인 연동 전까지 임시 판매자 번호 사용
+        int seller_id = 1;
+
+        // 판매자 주문 목록 조회 조건
+        Map<String, Object> map = new HashMap<>();
+        map.put("seller_id", seller_id);
+        map.put("status", status);
+
+        // 상태값이 있으면 해당 상태 주문만, 없으면 전체 주문 조회
+        List<OrderVO> orderList = sellerdao.getSellerOrderList(map);
+
+        // 주문별 상품 목록을 담을 Map
+        Map<Integer, List<OrderItemVO>> orderItemMap = new HashMap<>();
+
+        for (OrderVO order : orderList) {
+            Map<String, Object> itemMap = new HashMap<>();
+            itemMap.put("seller_id", seller_id);
+            itemMap.put("order_id", order.getOrder_id());
+
+            // 해당 주문에 포함된 판매자 상품 조회
+            List<OrderItemVO> itemList = sellerdao.getSellerOrderItemList(itemMap);
+            orderItemMap.put(order.getOrder_id(), itemList);
+        }
+
+        model.addAttribute("orderList", orderList);
+        model.addAttribute("orderItemMap", orderItemMap);
+        model.addAttribute("selectedStatus", status);
+
         return "/seller/seller_order_list";
+    }
+    
+    @PostMapping("/seller_order_status_update.do")
+    public String sellerOrderStatusUpdate(int order_id, String status, String selectedStatus) {
+
+        // 로그인 연동 전까지 임시 판매자 번호 사용
+        int seller_id = 1;
+
+        // 주문 상태 변경 조건
+        Map<String, Object> map = new HashMap<>();
+        map.put("seller_id", seller_id);
+        map.put("order_id", order_id);
+        map.put("status", status);
+
+        sellerdao.updateSellerOrderStatus(map);
+
+        // 기존에 보고 있던 상태 목록으로 다시 이동
+        if (selectedStatus != null && !selectedStatus.trim().equals("")) {
+            return "redirect:/seller_order_list.do?status=" + selectedStatus;
+        }
+
+        return "redirect:/seller_order_list.do";
     }
 
     @GetMapping("/seller_qna_list.do")
@@ -81,12 +136,12 @@ public class SellerController {
         if (user != null) {
             int user_id = user.getUser_id();
 
-            Map<String, Object> favoriteMap = new HashMap<>();
-            favoriteMap.put("user_id", user_id);
-            favoriteMap.put("seller_id", seller_id);
+            Map<String, Integer> map = new HashMap<>();
+            map.put("user_id", user_id);
+            map.put("seller_id", seller_id);
 
-            int favoriteShop = favoriteDAO.checkFavoriteShop(favoriteMap);
-            favorite = favoriteShop >= 1;
+            int check = favoritedao.checkFavoriteSeller(map);
+            favorite = check >= 1;
         }
 
         Map<String, Object> listMap = new HashMap<>();
@@ -95,18 +150,19 @@ public class SellerController {
 
         List<ProductVO> list = productdao.sellerHomepageProductList(listMap);
 
+        int favoriteCount = favoritedao.SellerFavoriteCount(seller_id);
+
+        model.addAttribute("favoriteCount", favoriteCount);
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
         model.addAttribute("favorite", favorite);
-
         model.addAttribute("seller_id", seller_id);
         model.addAttribute("sort", sort);
-
         model.addAttribute("list", list);
 
         return "/seller/seller_shop_homepage";
-    } 
+    }
 
     @GetMapping("/seller_statistics.do")
     public String seller_statistics(){

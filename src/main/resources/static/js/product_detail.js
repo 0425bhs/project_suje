@@ -2,6 +2,7 @@ window.addEventListener("load",function (){
     initProductDetailImageSlider();
     initProductDetailQuantity();
     initProductDetailTabs();
+    initProductWishButton();
     initSellerWishButton();
 });
 
@@ -267,22 +268,114 @@ function initProductDetailTabs(){
     updateActiveByScroll();
 }
 
-function initSellerWishButton(){
-    const sellerWishBtn = document.getElementById("sellerWishBtn");
+// 상품 찜 버튼
+function initProductWishButton(){
+    const productWishBtn = document.getElementById("productWishBtn");
 
-    if (sellerWishBtn == null){
+    if(productWishBtn == null){
         return;
     }
 
-    sellerWishBtn.addEventListener("click", function (){
-        const heart = sellerWishBtn.querySelector(".wish-shop-heart");
+    productWishBtn.addEventListener("click", function(){
+        const product_id = productWishBtn.dataset.productId;
 
-        sellerWishBtn.classList.toggle("active");
+        fetch("/favorite_product.do", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "product_id=" + encodeURIComponent(product_id)
+        })
+        .then(function(res){
+            return res.json();
+        })
+        .then(function(data){
+            if(data.result === "login"){
+                alert("로그인이 필요합니다.");
+                location.href = "/login.do";
+                return;
+            }
 
-        if (sellerWishBtn.classList.contains("active")){
-            heart.textContent = "♥";
-        } else {
-            heart.textContent = "♡";
-        }
+            if(data.liked === true){
+                productWishBtn.classList.add("active");
+                productWishBtn.textContent = "♥";
+            } else {
+                productWishBtn.classList.remove("active");
+                productWishBtn.textContent = "♡";
+            }
+        })
+        .catch(function(){
+            alert("상품 찜 처리 중 오류가 발생했습니다.");
+        });
+    });
+}
+
+
+// 판매자 찜 버튼
+window.addEventListener("load", function () {
+    initSellerWishButton();
+});
+
+function initSellerWishButton() {
+    const wishBtn = document.getElementById("sellerWishBtn");
+
+    if (wishBtn == null) {
+        return;
+    }
+
+    const sellerId = wishBtn.dataset.sellerId;
+
+    if (sellerId == null || sellerId === "") {
+        alert("판매자 정보를 찾을 수 없습니다.");
+        return;
+    }
+
+    wishBtn.addEventListener("click", function () {
+        fetch("/favorite_shop.do", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "seller_id=" + encodeURIComponent(sellerId)
+        })
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            if (data.result === "login") {
+                alert("로그인 후 이용 가능합니다.");
+                location.href = "/login.do";
+                return;
+            }
+
+            const heart = wishBtn.querySelector(".wish-shop-heart");
+            const text = wishBtn.querySelector(".wish-shop-text");
+
+            if (data.liked === true) {
+                wishBtn.classList.add("active");
+
+                if (heart != null) {
+                    heart.textContent = "♥";
+                }
+
+                if (text != null) {
+                    text.textContent = "찜 취소";
+                }
+            } else {
+                wishBtn.classList.remove("active");
+
+                if (heart != null) {
+                    heart.textContent = "♡";
+                }
+
+                if (text != null) {
+                    text.textContent = "작가샵 찜하기";
+                }
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+            alert("찜 처리 중 오류가 발생했습니다.");
+        });
     });
 }

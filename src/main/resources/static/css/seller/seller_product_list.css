@@ -735,3 +735,231 @@ button.status-badge {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================================
+   주문 관리 화면 - 카드형 주문 목록
+   - 주문 하나를 하나의 카드로 보여주기 위한 스타일
+========================================================= */
+
+/* 주문 목록 전체 */
+.seller-order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 주문 목록 컬럼 제목 */
+.seller-order-head {
+    display: grid;
+    grid-template-columns: 110px 150px minmax(360px, 1fr) 90px 130px 150px 170px;
+    align-items: center;
+
+    padding: 12px 20px;
+    margin-bottom: 4px;
+
+    background: #fff;
+    border: 1px solid #eef0f2;
+    border-radius: 12px;
+
+    color: #555;
+    font-size: 13px;
+    font-weight: 900;
+    text-align: center;
+}
+
+/* 주문 카드 */
+.seller-order-card {
+    display: grid;
+    grid-template-columns: 110px 150px minmax(360px, 1fr) 90px 130px 150px 170px;
+    align-items: stretch;
+
+    padding: 14px 20px;
+
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 14px;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.035);
+}
+
+/* 주문 카드 hover */
+.seller-order-card:hover {
+    border-color: #ffd6ce;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.055);
+}
+
+/* 주문번호 영역 */
+.order-no-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.order-no-box strong {
+    color: #222;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+/* 주문 상태 영역 */
+.order-status-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* 주문 상태 변경 form */
+.order-status-form {
+    margin: 0;
+}
+
+/* 주문 상태 변경 버튼 */
+.status-change-btn {
+    min-width: 82px;
+    height: 26px;
+    padding: 0 10px;
+
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    background: #fff;
+
+    color: #555;
+    font-size: 11px;
+    font-weight: 800;
+    font-family: inherit;
+
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+/* 주문 상태 변경 버튼 hover */
+.status-change-btn:hover {
+    border-color: #ff654f;
+    background: #fff7f5;
+    color: #ff654f;
+}
+
+/* 주문관리 화면 상태 배지 크기 */
+.order-status-area .status-badge {
+    min-width: 74px;
+    height: 28px;
+    padding: 0 12px;
+
+    font-size: 12px;
+}
+
+/* 주문 상품 목록 */
+.order-card-items {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 주문 안의 상품 한 줄 */
+.order-item-line {
+    display: grid;
+    grid-template-columns: minmax(360px, 1fr) 90px 130px;
+    align-items: center;
+
+    min-height: 78px;
+    padding: 6px 0;
+
+    border-bottom: 1px solid #eef0f2;
+}
+
+/* 마지막 상품은 구분선 제거 */
+.order-item-line:last-child {
+    border-bottom: none;
+}
+
+/* 주문관리 상품 이미지 */
+.order-product-info .product-thumb,
+.order-product-info .no-image {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+}
+
+/* 주문관리 상품명 */
+.order-product-name {
+    color: #111;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.4;
+    word-break: keep-all;
+}
+
+/* 수량 */
+.order-item-qty {
+    color: #111;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* 상품금액 */
+.order-item-price {
+    color: #111;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* 주문금액 */
+.order-total-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.order-total-box strong {
+    color: #111;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+/* 주문일 */
+.order-date-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #555;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* 주문관리 카드형 반응형 */
+@media (max-width: 1300px) {
+    .seller-order-list {
+        overflow-x: auto;
+    }
+
+    .seller-order-head,
+    .seller-order-card {
+        min-width: 1280px;
+    }
+}
+
+/* 주문관리 상품 이미지 영역 정렬 고정 */
+.order-product-info {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    align-items: center;
+    column-gap: 14px;
+    text-align: left;
+}
+
+/* 실제 이미지와 이미지 없음 박스 위치를 동일하게 고정 */
+.order-product-info .product-thumb,
+.order-product-info .no-image {
+    width: 64px;
+    height: 64px;
+    margin: 0 !important;
+    flex-shrink: 0;
+}
+
+/* 주문관리 상품명 왼쪽 정렬 */
+.order-product-name {
+    text-align: left;
+}

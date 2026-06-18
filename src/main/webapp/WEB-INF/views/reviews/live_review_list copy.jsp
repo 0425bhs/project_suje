@@ -102,7 +102,7 @@
         </nav>
 
         <div class="header-actions">
-            <a href="/mypage/review">내 후기</a>
+            <a href="/myshop/reviews">내 후기</a>
             <a href="/myshop/orders">주문내역</a>
         </div>
     </div>
@@ -117,7 +117,7 @@
                 <p>최근 등록된 상품 후기를 한눈에 확인할 수 있습니다.</p>
             </div>
 
-            <a class="btn light" href="/mypage/review">내 후기 보기</a>
+            <a class="btn light" href="/myshop/reviews">내 후기 보기</a>
         </div>
 
         <section class="community-card">
@@ -146,7 +146,7 @@
                                     <tr>
                                         <td class="product-cell">
                                             <div class="review-product">
-                                                <img src="${review.image_s}" alt="${review.product_name}">
+                                                <img src="${review.image_l}" alt="${review.product_name}">
                                                 <strong>${review.product_name}</strong>
                                             </div>
                                         </td>

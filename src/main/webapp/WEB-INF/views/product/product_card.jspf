@@ -1,6 +1,24 @@
+<%@ page pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<fmt:formatDate var="today" value="<%= new java.util.Date() %>" pattern="yyyy-MM-dd" />
+
+<c:set var="saleStartDate" value="${empty vo.sale_start_at ? '' : fn:substring(vo.sale_start_at, 0, 10)}" />
+<c:set var="saleEndDate" value="${empty vo.sale_end_at ? '' : fn:substring(vo.sale_end_at, 0, 10)}" />
+
+<c:set var="isAlwaysSale"
+       value="${vo.price > 0 and vo.sale_price > 0 and vo.sale_price < vo.price and empty saleStartDate and empty saleEndDate}" />
+
+<c:set var="isPeriodSale"
+       value="${vo.price > 0 and vo.sale_price > 0 and vo.sale_price < vo.price and not empty saleStartDate and not empty saleEndDate and today ge saleStartDate and today le saleEndDate}" />
+
+<c:set var="isSaleActive" value="${isAlwaysSale or isPeriodSale}" />
+
+<c:if test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
+    <c:set var="rawImageL" value="${vo.image_l}" />
+</c:if>
 
 <div class="common-product-card">
 
@@ -8,14 +26,8 @@
        class="common-image-link">
 
         <c:choose>
-            <c:when test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
-                <img src="${vo.image_l}"
-                     alt="${vo.name}"
-                     onerror="this.onerror=null; this.src='/images/no_image.png';">
-            </c:when>
-
-            <c:when test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
-                <img src="${vo.image_s}"
+            <c:when test="${not empty rawImageL}">
+                <img src="/upload/${rawImageL}"
                      alt="${vo.name}"
                      onerror="this.onerror=null; this.src='/images/no_image.png';">
             </c:when>
@@ -25,7 +37,9 @@
             </c:otherwise>
         </c:choose>
 
-        <span class="sale-heart" onclick="favoriteToggle(event, ${vo.product_id})">&#9825;</span>
+        <span class="sale-heart ${favoriteProductMap[vo.product_id] ? 'active' : ''}" onclick="favoriteToggle(event, '${vo.product_id}', this)">
+            ${favoriteProductMap[vo.product_id] ? '♥':'♡'}
+        </span>
 
     </a>
 
@@ -44,17 +58,34 @@
         </div>
 
         <c:choose>
-            <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
+            <c:when test="${isSaleActive}">
                 <p class="common-origin-price">
                     <fmt:formatNumber value="${vo.price}" pattern="#,###"/>&#50896;
                 </p>
 
                 <p class="common-sale-price">
-                    <span>${vo.sale_rate}%</span>
+                    <span>
+                        <fmt:formatNumber value="${((vo.price - vo.sale_price) / vo.price) * 100}" pattern="0"/>%
+                    </span>
+
                     <strong>
                         <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>&#50896;
                     </strong>
                 </p>
+
+                <c:if test="${showSalePeriod eq true}">
+                    <p class="common-sale-period">
+                        <c:choose>
+                            <c:when test="${empty saleStartDate and empty saleEndDate}">
+                                상시 할인
+                            </c:when>
+
+                            <c:otherwise>
+                                ${saleEndDate}까지 할인
+                            </c:otherwise>
+                        </c:choose>
+                    </p>
+                </c:if>
             </c:when>
 
             <c:otherwise>

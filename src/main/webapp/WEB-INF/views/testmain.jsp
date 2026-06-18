@@ -10,7 +10,7 @@
 </head>
 <body>
     <input type="button" value="후기 작성(1번 상품)" onclick="location.href='review_form.do?order_item_id=1'">
-    <input type="button" value="내 후기 목록" onclick="location.href='/mypage/review'">
+    <input type="button" value="내 후기 목록" onclick="location.href='/myshop/reviews'">
     <input type="button" value="실시간 후기" onclick="location.href='live_review_list.do'">
     <hr>
     <input type="button" value="상품 문의 작성(1번 상품)" onclick="location.href='qna_form.do?product_id=1'">

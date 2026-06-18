@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
@@ -11,7 +11,7 @@
 
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/product/product_card.css">
-        <link rel="stylesheet" href="/css/product/product_sale_list.css?v=14">
+        <link rel="stylesheet" href="/css/product/product_sale_list.css?v=15">
 
         <script src="/js/product_main.js" defer></script>
         <script src="/js/product_sale_list.js" defer></script>
@@ -27,13 +27,14 @@
     <c:set var="saleTypeValue" value="${empty currentSaleType ? 'all' : currentSaleType}" />
     <c:set var="totalSaleCount" value="${saleCount == null ? 0 : saleCount}" />
 
+    <c:set var="showSalePeriod" value="true" />
+
     <div class="sale-page">
 
-        <!-- 상단 할인 슬라이드 -->
         <section class="sale-hero">
             <div class="sale-hero-inner">
 
-                <h1>지금 진행 중인 특별 할인</h1>
+                <h1>오늘 하루만 특별 할인</h1>
 
                 <div class="sale-countdown">
                     <strong id="saleHour">00</strong>
@@ -46,7 +47,7 @@
                 <c:choose>
                     <c:when test="${empty saleFeatureList}">
                         <div class="sale-empty">
-                            현재 할인 중인 상품이 없습니다.
+                            오늘 하루만 진행되는 할인 상품이 없습니다.
                         </div>
                     </c:when>
 
@@ -83,22 +84,21 @@
         </section>
 
 
-        <!-- 할인 유형 탭 -->
         <section class="sale-type-section">
             <div class="sale-type-tabs">
 
                 <a class="${saleTypeValue eq 'all' ? 'active' : ''}"
-                href="/product_sale.do?saleType=all&amp;sort=${sortValue}">
+                   href="/product_sale.do?saleType=all&amp;sort=${sortValue}">
                     전체 할인
                 </a>
 
                 <a class="${saleTypeValue eq 'period' ? 'active' : ''}"
-                href="/product_sale.do?saleType=period&amp;sort=${sortValue}">
+                   href="/product_sale.do?saleType=period&amp;sort=${sortValue}">
                     기간 할인
                 </a>
 
                 <a class="${saleTypeValue eq 'always' ? 'active' : ''}"
-                href="/product_sale.do?saleType=always&amp;sort=${sortValue}">
+                   href="/product_sale.do?saleType=always&amp;sort=${sortValue}">
                     상시 할인
                 </a>
 
@@ -106,7 +106,6 @@
         </section>
 
 
-        <!-- 하단 할인 목록 -->
         <section class="sale-list-section" id="saleList">
 
             <div class="sale-sort-row">
@@ -232,7 +231,7 @@
     </div>
 
 
-    <footer class="product-footer">
+    <footer class="product-footer"> 
         <div class="product-footer-inner">
             <strong>HANDMADE</strong>
             <p>작가 상품을 둘러보고 마음에 드는 작품을 주문할 수 있습니다.</p>

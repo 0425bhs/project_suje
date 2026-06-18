@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <!DOCTYPE html>
 <html>
@@ -39,12 +40,10 @@
                             <c:forEach var="vo" items="${orderItemList}">
 
                                 <c:choose>
-                                    <%-- 장바구니 주문: cart_id만 넘김 --%>
                                     <c:when test="${vo.cart_id ne 0}">
                                         <input type="hidden" name="cart_id" value="${vo.cart_id}">
                                     </c:when>
 
-                                    <%-- 바로구매 주문: product_id, quantity만 넘김 --%>
                                     <c:otherwise>
                                         <input type="hidden" name="product_id" value="${vo.product_id}">
                                         <input type="hidden" name="quantity" value="${vo.quantity}">
@@ -52,7 +51,30 @@
                                 </c:choose>
 
                                 <div class="order-item">
-                                    <img src="${vo.image_l}" alt="상품 이미지" onerror="this.src='/images/no_image.png'">
+
+                                    <c:choose>
+                                        <c:when test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
+                                            <c:set var="orderImagePath" value="${fn:trim(vo.image_l)}" />
+
+                                            <c:choose>
+                                                <c:when test="${fn:startsWith(orderImagePath, '/upload/')}">
+                                                    <img src="${orderImagePath}"
+                                                         alt="${vo.name}"
+                                                         onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
+                                                </c:when>
+
+                                                <c:otherwise>
+                                                    <img src="/upload/${orderImagePath}"
+                                                         alt="${vo.name}"
+                                                         onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <div class="order-no-image">이미지 없음</div>
+                                        </c:otherwise>
+                                    </c:choose>
 
                                     <div class="item-info">
                                         <div class="creator-line">작가 상품</div>
@@ -98,7 +120,6 @@
                                     </div>
                                 </div>
                             </c:forEach>
-
 
                             <div class="artist-note">
                                 <strong>작가 안내</strong>

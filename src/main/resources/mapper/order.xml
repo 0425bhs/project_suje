@@ -90,7 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             oi.price,
             oi.quantity,
             p.name AS productName,
-            p.image_s AS imageS,
+            p.image_l AS imageL,
             (oi.price * oi.quantity) AS subtotalAmount
         FROM order_items oi
         JOIN products p ON oi.product_id = p.product_id
@@ -124,7 +124,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectOrderStatusCounts" resultType="java.util.Map" parameterType="int">
         SELECT 
-            COUNT(*) AS totalCount,
+            COUNT(CASE WHEN status != 'CANCELLED' THEN 1 END) AS totalCount,
             COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pendingCount,
             COUNT(CASE WHEN status = 'PAID' THEN 1 END) AS paidCount,
             COUNT(CASE WHEN status = 'PREPARING' THEN 1 END) AS preparingCount,
@@ -134,4 +134,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM orders 
         WHERE user_id = #{userId}
     </select>
+
+    <select id="myOrderItemList" resultType="map">
+        SELECT
+            oi.order_item_id,
+            oi.order_id,
+            oi.product_id,
+            p.name AS productName,
+            p.image_l AS imageL,
+            oi.quantity,
+            oi.price
+        FROM order_items oi
+        JOIN products p ON oi.product_id = p.product_id
+        WHERE oi.order_id = #{order_id}
+        ORDER BY oi.order_item_id ASC
+    </select>
+
 </mapper>

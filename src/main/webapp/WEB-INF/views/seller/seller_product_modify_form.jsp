@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -8,9 +9,12 @@
         <meta charset="UTF-8">
         <title>판매자센터 - 상품 수정</title>
 
+        <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+
         <link rel="stylesheet" href="/css/seller/seller_form_common.css">
         <link rel="stylesheet" href="/css/seller/seller_product_modify.css">
 
+        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
         <script src="/js/seller_product_modify.js"></script>
     </head>
 
@@ -77,8 +81,7 @@
                     <input type="hidden" name="seller_id" value="${vo.seller_id}">
 
                     <input type="hidden" name="ori_image_l" id="ori_image_l" value="${vo.image_l}">
-                    <input type="hidden" name="ori_image_s" id="ori_image_s" value="${vo.image_s}">
-
+                    
                     <div class="form-section">
 
                         <div class="form-row category-row">
@@ -101,7 +104,19 @@
 
                         <div class="form-row">
                             <label>상품 설명</label>
-                            <textarea name="description" placeholder="상품 설명을 입력하세요">${vo.description}</textarea>
+
+                            <!-- Toast UI Editor가 보이는 영역 -->
+                            <div id="productDescriptionEditor"></div>
+
+                            <!-- 실제 Controller로 넘어가는 값 -->
+                            <input type="hidden" id="description" name="description">
+
+                            <!-- 기존 DB 상품 설명 값 -->
+                            <textarea id="descriptionOrigin" style="display:none;"><c:out value="${vo.description}" /></textarea>
+
+                            <p class="form-help">
+                                상품 설명을 수정하세요. 이미지, 링크, 표, 영상 등을 사용할 수 있습니다.
+                            </p>
                         </div>
 
                     </div>
@@ -132,6 +147,53 @@
 
                         </div>
 
+                         <!--할인 설정-->
+                        <div class="form-row discount-setting-box">
+                            <label>할인 설정</label>
+
+                            <div class="discount-type-box">
+                                <label>
+                                    <input type="radio" name="sale_discount_type" value="none"
+                                        ${vo.sale_price == 0 ? 'checked' : ''}>
+                                    할인 없음
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="sale_discount_type" value="always"
+                                        ${vo.sale_price > 0 and empty vo.sale_start_at and empty vo.sale_end_at ? 'checked' : ''}>
+                                    상시 할인
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="sale_discount_type" value="period"
+                                        ${vo.sale_price > 0 and not empty vo.sale_start_at and not empty vo.sale_end_at ? 'checked' : ''}>
+                                    기간 할인
+                                </label>
+                            </div>
+
+                            <p class="form-help discount-help">
+                                기간 할인 선택 시, 할인 기간을 설정할 수 있습니다.
+                            </p>
+
+                            <div class="discount-period-grid">
+
+                                <div class="form-row">
+                                    <label>할인 시작일</label>
+                                    <input type="date" 
+                                           name="sale_start_at"
+                                           value="${not empty vo.sale_start_at ? fn:substring(vo.sale_start_at, 0, 10) : ''}">
+                                </div>
+
+                                <div>
+                                    <label>할인 종료일</label>
+                                    <input type="date" 
+                                           name="sale_end_at"
+                                           value="${not empty vo.sale_end_at ? fn:substring(vo.sale_end_at, 0, 10) : ''}">
+                                </div>
+                            </div>
+
+                        </div>
+
                         <div class="form-row free-shipping-row">
                             <label>무료배송 기준 금액</label>
 
@@ -155,7 +217,7 @@
 
                                 <c:if test="${vo.image_l ne 'no_file'}">
                                     <div class="image-preview" id="image_l_div">
-                                        <img src="${vo.image_l}" alt="대표 이미지">
+                                        <img src="/upload/${vo.image_l}" alt="대표 이미지">
                                     </div>
                                 </c:if>
 
@@ -167,14 +229,16 @@
                             <div class="image-upload-box">
                                 <label>상세 이미지</label>
 
-                                <c:if test="${vo.image_s ne 'no_file'}">
+                                <c:if test="${not empty vo.imageList}">
                                     <div class="image-preview" id="image_s_div">
-                                        <img src="${vo.image_s}" alt="상세 이미지">
+                                        <c:forEach var="img" items="${vo.imageList}">
+                                            <img src="/upload/${img.image_url}" alt="상세 이미지">
+                                        </c:forEach>
                                     </div>
                                 </c:if>
 
                                 <div class="file-input-box">
-                                    <input type="file" name="image_s_file">
+                                    <input type="file" name="image_s_file" multiple accept="image/*">
                                 </div>
                             </div>
 

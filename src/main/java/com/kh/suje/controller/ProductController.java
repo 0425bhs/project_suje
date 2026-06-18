@@ -5,24 +5,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.dao.ProductDAO;
-import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
+import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ImageVO;
 import com.kh.suje.vo.ProductVO;
@@ -39,11 +40,79 @@ public class ProductController {
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
     private final ReviewDAO reviewdao;
-    // private final QnaDAO qnadao;
-    private final ImageDAO imageDAO;
+    private final ImageDAO imagedao;
+    private final FavoriteDAO favoritedao;
+
+    // 할인 설정값 정리
+    private void applySaleSetting(ProductVO vo) {
+
+        String saleType = vo.getSale_discount_type();
+
+        if (saleType == null || saleType.trim().equals("")) {
+            saleType = "none";
+        }
+
+        // 할인 없음
+        if ("none".equals(saleType)) {
+            vo.setSale_price(0);
+            vo.setSale_start_at(null);
+            vo.setSale_end_at(null);
+            return;
+        }
+
+        // 상시 할인
+        if ("always".equals(saleType)) {
+            vo.setSale_start_at(null);
+            vo.setSale_end_at(null);
+            return;
+        }
+
+        // 기간 할인
+        if ("period".equals(saleType)) {
+
+            if (vo.getSale_start_at() != null && vo.getSale_start_at().trim().equals("")) {
+                vo.setSale_start_at(null);
+            }
+
+            if (vo.getSale_end_at() != null && vo.getSale_end_at().trim().equals("")) {
+                vo.setSale_end_at(null);
+            }
+
+            return;
+        }
+
+        // 이상한 값이 들어오면 할인 없음 처리
+        vo.setSale_price(0);
+        vo.setSale_start_at(null);
+        vo.setSale_end_at(null);
+    }
+
+    // 상품 목록의 찜 여부를 JSP에서 사용할 Map으로 만들어주는 공통 함수
+    private void addFavoriteProductMap(Model model,HttpSession session,List<ProductVO> productList){
+        Map<Integer, Boolean> favoriteProductMap = new HashMap<>();
+
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser != null && productList != null){
+            for (ProductVO product : productList) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("user_id", loginUser.getUser_id());
+                map.put("product_id", product.getProduct_id());
+
+                boolean liked = favoritedao.checkFavoriteProduct(map) > 0;
+
+                favoriteProductMap.put(product.getProduct_id(),liked);
+            }
+        }
+
+        model.addAttribute("favoriteProductMap",favoriteProductMap);
+    }
+
    
     @GetMapping(value={"/", "/main.do", "/product/main.do", "/product/list.do"})
     public String main(Model model, HttpSession session){
+        // ✅ 메인 페이지: 4가지 상품 섹션을 한번에 로드
+        // ⚠️ 주의: DB 쿼리가 많으므로 느릴 수 있음 - 향후 캐싱 고려
 
         // 전체 카테고리 헤더용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
@@ -76,6 +145,8 @@ public class ProductController {
         // - 메인 페이지에서는 4개만 미리보기로 출력
         // - 로그인 회원이면 구매/찜/장바구니/최근조회 기반 취향 카테고리 조회
         // - 취향 카테고리가 없거나 추천 상품이 없으면 fallback 상품 출력
+        // ⚠️ 주의: product_discovery_category_list() 반환값이 null이나 isEmpty일 수 있음
+        // ⚠️ 주의: NULL 체크 필수 - NullPointerException 방지
         // =========================================================
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
@@ -89,6 +160,7 @@ public class ProductController {
             int user_id = loginUser.getUser_id();
 
             // 유저 행동 데이터 기반 취향 카테고리 TOP 5 조회
+            // ⚠️ 중요: null 체크 필수 - isEmpty() 호출 전에 null 확인
             List<Integer> categoryIds = productdao.product_discovery_category_list(user_id);
 
             if (categoryIds != null && !categoryIds.isEmpty()) {
@@ -105,16 +177,36 @@ public class ProductController {
             discoveryList = productdao.product_discovery_fallback_list(discoveryMap);
         }
 
-model.addAttribute("discoveryList", discoveryList);
+        model.addAttribute("discoveryList", discoveryList);
+
+        List<ProductVO> mainFavoriteCheckList = new ArrayList<>();
+
+        if (mainProductList != null) {
+            mainFavoriteCheckList.addAll(mainProductList);
+        }
+
+        if (recommendList != null) {
+            mainFavoriteCheckList.addAll(recommendList);
+        }
+
+        if (categoryBestList != null) {
+            mainFavoriteCheckList.addAll(categoryBestList);
+        }
+
+        if (discoveryList != null) {
+            mainFavoriteCheckList.addAll(discoveryList);
+        }
+
+        addFavoriteProductMap(model, session, mainFavoriteCheckList);
 
         return "main";
     }
         
     @GetMapping("/category_list.do")
-    public String product_category_list(Model model, Integer page, Integer category_id, String sort) {
+    public String product_category_list(Model model,Integer page,Integer category_id,String sort,HttpSession session){
 
         // 정렬 기본값
-        if (sort == null || sort.trim().equals("")) {
+        if (sort == null || sort.trim().equals("")){
             sort = "popular";
         }
 
@@ -124,19 +216,24 @@ model.addAttribute("discoveryList", discoveryList);
         Integer selectedBigCategoryId = categorydao.find_parent_id(category_id);
 
         // parent_id가 null이면 현재 category_id 자체가 대분류
-        if (selectedBigCategoryId == null) {
+        if (selectedBigCategoryId == null){
             selectedBigCategoryId = category_id;
         }
 
         int nowPage = 1;
 
-        if (page != null) {
+        if (page != null){
             nowPage = page;
         }
 
         int blockList = 10;
         int blockPage = 5;
 
+        // ✅ 페이징 로직:
+        // blockList: 한 페이지에 표시할 상품 개수 (10개)
+        // blockPage: 페이지 네비게이션에 표시할 페이지 수 (예: 1,2,3,4,5 / 6,7,8,9,10)
+        // start: DB LIMIT 시작 위치 (1페이지=0, 2페이지=10, 3페이지=20...)
+        // ⚠️ 수정 금지 - 페이징이 깨질 수 있음
         int start = (nowPage - 1) * blockList;
 
         Map<String, Object> map = new HashMap<>();
@@ -148,6 +245,8 @@ model.addAttribute("discoveryList", discoveryList);
         int rowTotal = productdao.product_category_cnt(map);
 
         List<ProductVO> list = productdao.product_category_list(map);
+
+        addFavoriteProductMap(model, session, list);
 
         String pageMenu = Paging.getPaging(
             "/category_list.do?category_id=" + category_id + "&sort=" + sort,
@@ -175,8 +274,9 @@ model.addAttribute("discoveryList", discoveryList);
     }
 
     @GetMapping("/product_search.do")
-    public String productSearch(Model model, String keyword, Integer page){
+    public String productSearch(Model model,String keyword,Integer page,HttpSession session){
 
+        // ✅ 검색 기능: 공백 키워드 방지
         if(keyword == null || keyword.trim().isEmpty()){
             return "redirect:/all_list.do";
         }
@@ -198,6 +298,7 @@ model.addAttribute("discoveryList", discoveryList);
         int blockPage = 5;
 
         // start: 데이터베이스 쿼리의 시작 위치 계산
+        // ⚠️ 중요: LIMIT의 첫 번째 값
         // 예) 1페이지(nowPage=1): start = 0       → LIMIT 0, 10 (0~9번째 상품)
         //     2페이지(nowPage=2): start = 10      → LIMIT 10, 10 (10~19번째 상품)
         //     3페이지(nowPage=3): start = 20      → LIMIT 20, 10 (20~29번째 상품)
@@ -208,6 +309,7 @@ model.addAttribute("discoveryList", discoveryList);
         map.put("start", start);
         map.put("blockList", blockList);
 
+        // ⚠️ 주의: keyword 한글 인코딩 이슈 - URL 파라미터로 전달될 때 깨질 수 있음
         int rowTotaL = productdao.product_search_cnt(map);
         List<ProductVO> list = productdao.product_search_list(map);
 
@@ -219,7 +321,9 @@ model.addAttribute("discoveryList", discoveryList);
             rowTotaL,
             blockList,
             blockPage
-         );
+        );
+
+        addFavoriteProductMap(model, session, list);
 
         model.addAttribute("list", list);
         model.addAttribute("pageMenu", pageMenu);
@@ -243,10 +347,13 @@ model.addAttribute("discoveryList", discoveryList);
         // 상품 상세 정보 조회
         ProductVO vo = productdao.product_one(product_id);
 
-        // 상품이 없으면 메인으로 이동
+        // ✅ 중요: null 체크 필수 - 존재하지 않는 상품 접근 방지
         if (vo == null) {
             return "redirect:/product/main.do";
         }
+
+        List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
+        vo.setImageList(productImageList);
 
         // 상품 상세 JSP로 상품 정보 전달
         model.addAttribute("vo", vo);
@@ -261,7 +368,7 @@ model.addAttribute("discoveryList", discoveryList);
                 reviewIds.add(review.getReview_id()); 
             }
 
-            List<ImageVO> images = imageDAO.getImagesByReviewIds(reviewIds);
+            List<ImageVO> images = imagedao.getImagesByReviewIds(reviewIds);
             
             for (ReviewVO review : list) {
                 List<ImageVO> matchedImages = new ArrayList<>();
@@ -277,8 +384,9 @@ model.addAttribute("discoveryList", discoveryList);
         // =========================================================
         // 취향발견용 상품 조회 기록 저장
         // - 로그인한 회원이 상품 상세 페이지에 들어왔을 때만 기록
-        // - user_id = 1 고정 사용하지 않음
+        // - user_id = 1 고정 사용하지 않음 (실제 로그인 유저 사용)
         // - product_view_log에 저장된 기록은 취향발견 추천에 사용
+        // ⚠️ 중요: 로그인 사용자만 기록됨 - 비로그인은 무시
         // =========================================================
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
@@ -308,7 +416,7 @@ model.addAttribute("discoveryList", discoveryList);
             String target,
             String priceRange,
             HttpSession session
-    ) {
+    ){
         // 헤더 전체 카테고리 출력용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
@@ -375,19 +483,24 @@ model.addAttribute("discoveryList", discoveryList);
         // 상황이 있으면 상황 기준
         // 상황이 없으면 대상 기준
         // 실제 DB 카테고리 번호 기준
+        // ⚠️ 중요: 카테고리 ID는 DB에서 확인 후 수정 필수
+        // ⚠️ 주의: 변경 시 선물 추천 로직 전체 검수 필요
         // =========================================================
         List<Integer> categoryIds = new ArrayList<>();
 
         if ("birthday".equals(occasion)) {
             // 생일: 주얼리, 키링, 인테리어 소품, 향수
+            // ✅ DB category_id 확인: 7=주얼리, 26=키링, 13=인테리어, 24=향수
             categoryIds.addAll(Arrays.asList(7, 26, 13, 24));
 
         } else if ("house".equals(occasion)) {
             // 집들이/개업: 홈리빙 대분류, 생활용품, 인테리어 소품
+            // ✅ DB category_id 확인: 2=홈리빙, 12=생활용품, 13=인테리어
             categoryIds.addAll(Arrays.asList(2, 12, 13));
 
         } else if ("thanks".equals(occasion)) {
             // 감사/답례: 공예 대분류, 비누, 키링, 식품 대분류
+            // ✅ DB category_id 확인: 5=공예, 23=비누, 26=키링, 4=식품
             categoryIds.addAll(Arrays.asList(5, 23, 26, 4));
 
         } else if ("couple".equals(occasion)) {
@@ -473,6 +586,8 @@ model.addAttribute("discoveryList", discoveryList);
         // =========================================================
         // 로그인 회원 구매내역 기반 추천
         // =========================================================
+        List<ProductVO> personalGiftList = new ArrayList<>();
+
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
         if (loginUser != null) {
@@ -482,7 +597,7 @@ model.addAttribute("discoveryList", discoveryList);
             personalMap.put("user_id", user_id);
             personalMap.put("limit", 4);
 
-            List<ProductVO> personalGiftList = productdao.product_gift_personal_list(personalMap);
+            personalGiftList = productdao.product_gift_personal_list(personalMap);
 
             String loginUserName = loginUser.getName();
 
@@ -509,6 +624,18 @@ model.addAttribute("discoveryList", discoveryList);
 
         List<ProductVO> giftList = productdao.product_gift_list(map);
 
+        List<ProductVO> giftFavoriteCheckList = new ArrayList<>();
+
+        if (personalGiftList != null) {
+            giftFavoriteCheckList.addAll(personalGiftList);
+        }
+
+        if (giftList != null) {
+            giftFavoriteCheckList.addAll(giftList);
+        }
+
+        addFavoriteProductMap(model, session, giftFavoriteCheckList);
+
         model.addAttribute("giftList", giftList);
 
         return "product/product_gift_list";
@@ -516,11 +643,7 @@ model.addAttribute("discoveryList", discoveryList);
 
 
    @GetMapping("/product_sale.do")
-    public String product_sale_list(
-            Model model,
-            Integer page,
-            String sort,
-            String saleType) {
+    public String product_sale_list(Model model,Integer page,String sort,String saleType,HttpSession session){
 
         int nowPage = 1;
 
@@ -528,12 +651,12 @@ model.addAttribute("discoveryList", discoveryList);
             nowPage = page;
         }
 
-        // 정렬 기본값
+        // ✅ 정렬 기본값 설정
         if (sort == null || sort.trim().equals("")) {
             sort = "popular";
         }
 
-        // 할인 유형 기본값
+        // ✅ 할인 유형 기본값 설정
         if (saleType == null || saleType.trim().equals("")) {
             saleType = "all";
         }
@@ -543,13 +666,15 @@ model.addAttribute("discoveryList", discoveryList);
         // 상단 대표 할인 슬라이드용 상품
         // - 하단 정렬/페이징과 분리
         // - 항상 전체 할인 중 할인율 높은 상품 기준으로 출력
+        // ✅ 이 쿼리는 고정: sort="discount", saleType="all"
+        // ⚠️ 주의: 사용자가 선택한 sort/saleType와 무관하게 실행
         // =========================================================
         Map<String, Object> featureMap = new HashMap<>();
 
         featureMap.put("start", 0);
         featureMap.put("blockList", 10);
         featureMap.put("sort", "discount");
-        featureMap.put("saleType", "all");
+        featureMap.put("saleType", "today");
 
         List<ProductVO> saleFeatureList = productdao.product_sale_list(featureMap);
 
@@ -557,6 +682,7 @@ model.addAttribute("discoveryList", discoveryList);
         // =========================================================
         // 하단 할인 목록
         // - 사용자가 선택한 saleType, sort, page 적용
+        // ✅ 동적: 사용자 선택값 반영
         // =========================================================
         int blockList = 10;
         int blockPage = 5;
@@ -582,6 +708,13 @@ model.addAttribute("discoveryList", discoveryList);
                 blockPage
         );
 
+        List<ProductVO> saleFavoriteCheckList = new ArrayList<>();
+
+        saleFavoriteCheckList.addAll(saleFeatureList);
+        saleFavoriteCheckList.addAll(list);
+
+        addFavoriteProductMap(model, session, saleFavoriteCheckList);
+
         model.addAttribute("saleFeatureList", saleFeatureList);
 
         model.addAttribute("list", list);
@@ -598,9 +731,11 @@ model.addAttribute("discoveryList", discoveryList);
     }
 
     @GetMapping("/product_best.do")
-    public String product_best_list(Model model) {
+    public String product_best_list(Model model,HttpSession session){
 
         List<ProductVO> list = productdao.product_best_all_list();
+
+        addFavoriteProductMap(model, session, list);
 
         model.addAttribute("list", list);
 
@@ -611,20 +746,26 @@ model.addAttribute("discoveryList", discoveryList);
     }
 
    @GetMapping("/product_discovery.do")
-    public String product_discovery_list(Model model, HttpSession session) {
+    public String product_discovery_list(Model model,HttpSession session){
 
+        // ✅ 취향 발견 페이지 전용 (메인 페이지와 다름)
+        // 로그인 사용자: 개인화된 추천 상품 20개 표시
+        // 비로그인 사용자 또는 취향 데이터 없음: fallback 상품 표시
+        
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
         Map<String, Object> map = new HashMap<>();
-        map.put("limit", 20);
+        map.put("limit", 20);  // ✅ 메인 페이지는 4개, 전용 페이지는 20개
 
         List<ProductVO> list = null;
         boolean isFallback = false;
 
+        // ✅ 로그인 사용자만 취향 발견 추천 시작
         if (loginUser != null) {
 
             int user_id = loginUser.getUser_id();
 
+            // ⚠️ 중요: 이 메서드 반환값이 null이거나 empty일 수 있음
             List<Integer> categoryIds = productdao.product_discovery_category_list(user_id);
 
             if (categoryIds != null && !categoryIds.isEmpty()) {
@@ -636,10 +777,13 @@ model.addAttribute("discoveryList", discoveryList);
             }
         }
 
+        // ⚠️ 주의: list가 null이거나 empty면 fallback 상품 사용
         if (list == null || list.isEmpty()) {
             list = productdao.product_discovery_fallback_list(map);
-            isFallback = true;
+            isFallback = true;  // ✅ JSP에서 "fallback 상품입니다" 메시지 표시 용도
         }
+
+        addFavoriteProductMap(model, session, list);
 
         model.addAttribute("list", list);
         model.addAttribute("isFallback", isFallback);
@@ -650,7 +794,7 @@ model.addAttribute("discoveryList", discoveryList);
     }
 
     @GetMapping("/all_list.do")
-    public String allProductList(Model model, Integer page) {
+    public String allProductList(Model model,Integer page,HttpSession session) {
 
         int nowPage = 1;
 
@@ -678,6 +822,8 @@ model.addAttribute("discoveryList", discoveryList);
                 blockPage
         );
 
+        addFavoriteProductMap(model, session, list);
+
         model.addAttribute("list", list);
         model.addAttribute("pageMenu", pageMenu);
         model.addAttribute("rowTotal", rowTotal);
@@ -700,14 +846,19 @@ model.addAttribute("discoveryList", discoveryList);
 
     @PostMapping("/seller_product_insert.do")
     @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
     public Map<String,Object> seller_product_insert(ProductVO vo) throws Exception{
 
+        // ✅ 파일 업로드 경로 설정
+        // ⚠️ 주의: c:/upload/ 경로가 실제로 존재해야 함 (없으면 생성)
+        // ⚠️ Windows/Linux 경로 다를 수 있음 - 배포 시 경로 확인 필수
         String savePath="c:/upload/";
         File dir= new File(savePath);
         if(!dir.exists()){
             dir.mkdirs();
         }
 
+        // ✅ 큰 이미지 저장
         MultipartFile image_L=vo.getImage_l_file();
         String filename_l="no_file";
 
@@ -715,6 +866,7 @@ model.addAttribute("discoveryList", discoveryList);
             filename_l=image_L.getOriginalFilename();
             File savFile=new File(savePath,filename_l);
 
+            // ⚠️ 중요: 같은 파일명 존재 시 덮어씌워짐 - 타임스탬프로 고유화
             if(savFile.exists()){
                 long time=System.currentTimeMillis();
                 filename_l=String.format("%d_%s",time, filename_l);
@@ -724,37 +876,66 @@ model.addAttribute("discoveryList", discoveryList);
             image_L.transferTo(savFile);
         }
 
-        MultipartFile image_S=vo.getImage_s_file();
-        String filename_s="no_file";
+        // ✅ 작은 이미지 저장 (같은 로직)
+        List<ImageVO> imageList = new ArrayList<>();
 
-        if(image_S!=null && !image_S.isEmpty()){
-            filename_s=image_S.getOriginalFilename();
-            File savFile=new File(savePath,filename_s);
+        int sort_order = 1;
 
-            if(savFile.exists()){
-                long time=System.currentTimeMillis();
-                filename_s=String.format("%d_%s",time, filename_s);
-                savFile=new File(savePath,filename_s);
+        List<MultipartFile> image_s_file = vo.getImage_s_file();
+
+        if(image_s_file != null){
+            for(MultipartFile file : image_s_file){
+
+                if(file == null || file.isEmpty()){
+                    continue;
+                }
+
+                String filename = file.getOriginalFilename();
+                File savFile = new File(savePath, filename);
+
+                if(savFile.exists()){
+                    long time = System.currentTimeMillis();
+                    filename = String.format("%d_%s", time, filename);
+                    savFile = new File(savePath, filename);
+                }
+
+                file.transferTo(savFile);
+
+                ImageVO image = new ImageVO();
+                image.setTarget_type("PRODUCT");
+                image.setImage_url(filename);
+                image.setOriginal_name(file.getOriginalFilename());
+                image.setSort_order(sort_order++);
+
+                imageList.add(image);
             }
-
-            image_S.transferTo(savFile);
         }
-
+        // ✅ DB에 저장할 이미지 경로 설정 (/upload/ + 파일명)
+        // ⚠️ 중요: 실제 파일은 c:/upload/에 있지만
+        //         DB에는 /upload/파일명 저장 (WebConfig에서 매핑됨)
         if (filename_l.equals("no_file")){
             vo.setImage_l("no_file");
         } else {
-            vo.setImage_l("/upload/" + filename_l);
-        }
-
-        if (filename_s.equals("no_file")){
-            vo.setImage_s("no_file");
-        } else {
-            vo.setImage_s("/upload/" + filename_s);
+            vo.setImage_l(filename_l);
         }
 
         vo.setStatus("APPROVED");//테스트용 삭제 예정
 
+        // 할인 설정값 정리
+        applySaleSetting(vo);
+
         int res=productdao.seller_product_insert(vo);
+
+        // 수정된 부분 시작
+        // 상품 등록 후 생성된 product_id를 상세 이미지에 넣고 images 테이블에 저장
+        if(!imageList.isEmpty()){
+            for(ImageVO image : imageList){
+                image.setTarget_id(vo.getProduct_id());
+            }
+
+            imagedao.insertImageList(imageList);
+        }
+        // 수정된 부분 끝
 
         Map<String,Object> map=new HashMap<>();
         map.put("result", res);
@@ -765,7 +946,12 @@ model.addAttribute("discoveryList", discoveryList);
 
     @GetMapping("/seller_product_modify.do")
     public String seller_product_modify_form(int product_id, Model model){
+        
         ProductVO vo=productdao.product_one(product_id);
+
+        List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
+        vo.setImageList(productImageList);
+
         // 현재 상품의 하위 카테고리 id
         int category_id=vo.getCategory_id();
         // 하위 카테고리의 대분류 id 찾기
@@ -780,14 +966,18 @@ model.addAttribute("discoveryList", discoveryList);
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("selectedBigCategoryId",selectedBigCategoryId);
         model.addAttribute("smallCategoryList", categorydao.small_category_list(selectedBigCategoryId));
+        
         return "seller/seller_product_modify_form";
     }
  
 
     @PostMapping("/seller_product_modify.do")
     @ResponseBody
-    public Map<String,Object> seller_product_modify(ProductVO vo,String ori_image_l,String ori_image_s,String del_image_l,String del_image_s)throws Exception{
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String,Object> seller_product_modify(ProductVO vo,String ori_image_l,String del_image_l)throws Exception{
         
+        // ✅ 파일 업로드 경로 설정
+        // ⚠️ 주의: seller_product_insert와 동일한 경로 필수
         String savePath = "c:/upload/";
         File dir = new File(savePath);
 
@@ -795,9 +985,11 @@ model.addAttribute("discoveryList", discoveryList);
             dir.mkdirs();
         }
 
+        // ✅ 큰 이미지 처리: 새 파일 업로드 또는 기존 파일 유지
         String image_l_name = "no_file";
 
         if (vo.getImage_l_file() != null && !vo.getImage_l_file().isEmpty()){
+            // 새 이미지 업로드됨
             image_l_name=vo.getImage_l_file().getOriginalFilename();
             File saveFile=new File(savePath, image_l_name);
 
@@ -807,52 +999,75 @@ model.addAttribute("discoveryList", discoveryList);
                 saveFile=new File(savePath,image_l_name);
             }
 
-            
             vo.getImage_l_file().transferTo(saveFile);
 
         } else if(ori_image_l != null && !ori_image_l.equals("no_file")){
+            // 새 이미지 없음 - 기존 이미지 유지
+            // ori_image_l 형식: "/upload/파일명"
             image_l_name=ori_image_l;
         }
 
-        String image_s_name = "no_file";
+        // ✅ 상세 이미지 여러 장 처리
+        List<ImageVO> imageList = new ArrayList<>();
+        int sort_order = 1;
 
-        if (vo.getImage_s_file() != null && !vo.getImage_s_file().isEmpty()){
-            image_s_name=vo.getImage_s_file().getOriginalFilename();
-            File saveFile=new File(savePath, image_s_name);
+        List<MultipartFile> image_s_file = vo.getImage_s_file();
 
-            if (saveFile.exists()){
-                long time=System.currentTimeMillis();
-                image_s_name=String.format("%d_%s", time, image_s_name);
-                saveFile=new File(savePath,image_s_name);
+        if (image_s_file != null && !image_s_file.isEmpty()) {
+            for (MultipartFile file : image_s_file) {
+
+                if (file == null || file.isEmpty()) {
+                    continue;
+                }
+
+                String filename = file.getOriginalFilename();
+                File saveFile = new File(savePath, filename);
+
+                if (saveFile.exists()) {
+                    long time = System.currentTimeMillis();
+                    filename = String.format("%d_%s", time, filename);
+                    saveFile = new File(savePath, filename);
+                }
+
+                file.transferTo(saveFile);
+
+                ImageVO image = new ImageVO();
+                image.setTarget_type("PRODUCT");
+                image.setTarget_id(vo.getProduct_id());
+                image.setImage_url(filename);
+                image.setOriginal_name(file.getOriginalFilename());
+                image.setSort_order(sort_order++);
+
+                imageList.add(image);
             }
-
-            vo.getImage_s_file().transferTo(saveFile);
-
-        } else if (ori_image_s!=null && !ori_image_s.equals("no_file")){
-            image_s_name = ori_image_s;
         }
 
-        vo.setImage_l(image_l_name.equals("no_file") ? "no_file":"/upload/"+image_l_name);
-        vo.setImage_s(image_s_name.equals("no_file") ? "no_file":"/upload/"+image_s_name);
+        // ✅ DB에 저장할 이미지 경로 설정
+        if (image_l_name.equals("no_file")) {
+            vo.setImage_l("no_file");
+        } else {
+            vo.setImage_l(image_l_name);
+        } 
+        
+        // 할인 설정값 정리
+        applySaleSetting(vo);
 
-        int res=productdao.seller_product_modify(vo);
+        // ✅ DB 업데이트
+        int res = productdao.seller_product_modify(vo);
 
-        if (res == 1){
-            if (del_image_l != null && !del_image_l.equals("no_file")){
+        // ✅ 새 상세 이미지를 올렸으면 images 테이블에 저장
+        if (res == 1 && !imageList.isEmpty()) {
+            imagedao.deleteImagesByProductId(vo.getProduct_id());
+            imagedao.insertImageList(imageList);
+        }
+
+        // ✅ 수정 성공 시에만 기존 대표 이미지 파일 삭제
+        if (res == 1) {
+            if (del_image_l != null && !del_image_l.equals("no_file")) {
                 File delFile = new File(savePath, del_image_l.replace("/upload/", ""));
 
-                if (vo.getImage_l_file()!=null && !vo.getImage_l_file().isEmpty()){
-                    if (delFile.exists()){
-                        delFile.delete();
-                    }
-                }
-            }
-
-            if (del_image_s!=null && !del_image_s.equals("no_file")){
-                File delFile=new File(savePath, del_image_s.replace("/upload/", ""));
-
-                if (vo.getImage_s_file() != null && !vo.getImage_s_file().isEmpty()){
-                    if (delFile.exists()){
+                if (vo.getImage_l_file() != null && !vo.getImage_l_file().isEmpty()) {
+                    if (delFile.exists()) {
                         delFile.delete();
                     }
                 }
@@ -860,8 +1075,8 @@ model.addAttribute("discoveryList", discoveryList);
         }
 
         Map<String, Object> map = new HashMap<>();
-        map.put("result",res);
-        map.put("product_id",vo.getProduct_id());
+        map.put("result", res);
+        map.put("product_id", vo.getProduct_id());
 
         return map;
     }
@@ -869,9 +1084,14 @@ model.addAttribute("discoveryList", discoveryList);
     @GetMapping("/seller_product_list.do")
     public String seller_product_list(Model model,String status,String sort){
 
-        // 로그인/판매자 기능 붙기 전까지 임시 seller_id
+        // ⚠️ 주의: 현재 seller_id가 고정되어 있음
+        // 실제 환경에서는 로그인한 판매자의 seller_id를 가져와야 함
+        // UserVO seller = (UserVO) session.getAttribute("seller");
+        // int seller_id = seller.getSeller_id();
+        
         //int seller_id = 1;
 
+        // ✅ 기본 정렬값 설정
         if (sort == null || sort.equals("")) {
             sort = "new";
         }
@@ -924,5 +1144,48 @@ model.addAttribute("discoveryList", discoveryList);
 
         return "redirect:/seller_product_list.do";
     }
+
+    @PostMapping("/editor/image/upload")
+    @ResponseBody
+    public Map<String, Object> editorImageUpload(@RequestParam("image") MultipartFile image) throws Exception {
+
+        Map<String, Object> map = new HashMap<>();
+
+        String savePath = "c:/upload/editor/";
+
+        File dir = new File(savePath);
+
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String originalName = image.getOriginalFilename();
+
+        if (originalName == null || originalName.equals("")) {
+            map.put("result", 0);
+            return map;
+        }
+
+        String ext = "";
+
+        int dotIndex = originalName.lastIndexOf(".");
+
+        if (dotIndex != -1) {
+            ext = originalName.substring(dotIndex);
+        }
+
+        String saveName = UUID.randomUUID().toString() + ext;
+
+        File saveFile = new File(savePath, saveName);
+
+        image.transferTo(saveFile);
+
+        map.put("result", 1);
+        map.put("imageUrl", "/upload/editor/" + saveName);
+
+        return map;
+    }
+
+    
 
 }

@@ -311,7 +311,7 @@ body {
     font-weight: 900;
 }
 
-.form-row input,
+.form-row input:not([type="radio"]),
 .form-row select,
 .form-row textarea {
     width: 100%;
@@ -326,13 +326,13 @@ body {
     transition: 0.15s;
 }
 
-.form-row input:hover,
+.form-row input:not([type="radio"]):hover,
 .form-row select:hover,
 .form-row textarea:hover {
     border-color: #c6ccd5;
 }
 
-.form-row input:focus,
+.form-row input:not([type="radio"]):focus,
 .form-row select:focus,
 .form-row textarea:focus {
     border-color: #ff654f;
@@ -429,6 +429,104 @@ body {
 }
 
 /* =========================================================
+   할인 설정 영역
+========================================================= */
+
+.discount-setting-box {
+    margin-top: 24px;
+    padding: 22px;
+
+    border-radius: 14px;
+    background: #fafbfc;
+    border: 1px solid #edf0f3;
+}
+
+.discount-setting-box > label {
+    display: block;
+    margin-bottom: 12px;
+
+    color: #2f3542;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.discount-type-box {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.discount-type-box label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    min-height: 38px;
+    margin: 0;
+    padding: 0 14px;
+
+    border: 1px solid #dce1e7;
+    border-radius: 999px;
+    background: #fff;
+
+    color: #333;
+    font-size: 13px;
+    font-weight: 800;
+
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.discount-type-box label:hover {
+    border-color: #ff654f;
+    color: #ff654f;
+}
+
+.discount-type-box input[type="radio"] {
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    border-radius: 50%;
+    box-shadow: none;
+
+    accent-color: #ff654f;
+    cursor: pointer;
+}
+
+.discount-type-box input[type="radio"]:focus,
+.discount-type-box input[type="radio"]:hover {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.discount-help {
+    margin-top: 10px;
+}
+
+.discount-period-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+
+    margin-top: 16px;
+}
+
+.discount-period-grid .form-row {
+    margin-bottom: 0;
+}
+
+.discount-period-grid input:disabled {
+    background: #f1f3f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* =========================================================
    반응형
 ========================================================= */
 
@@ -464,7 +562,8 @@ body {
     }
 
     .form-grid,
-    .image-upload-area {
+    .image-upload-area,
+    .discount-period-grid {
         grid-template-columns: 1fr;
     }
 }

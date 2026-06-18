@@ -377,3 +377,25 @@ body {
         gap: 34px 16px;
     }
 }
+
+.seller-interest-count {
+    display: inline-block;
+    margin-top: 6px;
+
+    color: #666;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.seller-interest-count span {
+    color: #ff6b57;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+/* 찜 완료 상태 */
+.wish-shop-btn.active {
+    border-color: #ff6b57;
+    background: #fff4f1;
+    color: #ff4f3a;
+}

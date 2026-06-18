@@ -917,6 +917,28 @@ button {
     font-weight: 900;
 }
 
+/* 상품 찜 선택 상태 */
+.product-heart.active,
+.sale-heart.active,
+.best-heart.active,
+.discovery-heart.active,
+.new-heart.active {
+    background: #ffffff;
+    border-color: #ff6f4f;
+    color: #ff6f4f;
+}
+
+/* 찜 선택 상태에서 hover 해도 주황 유지 */
+.product-heart.active:hover,
+.sale-heart.active:hover,
+.best-heart.active:hover,
+.discovery-heart.active:hover,
+.new-heart.active:hover {
+    background: #ffffff;
+    border-color: #ff6f4f;
+    color: #ff6f4f;
+}
+
 .product-heart:hover,
 .sale-heart:hover,
 .best-heart:hover,

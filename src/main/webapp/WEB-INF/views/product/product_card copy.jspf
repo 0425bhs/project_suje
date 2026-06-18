@@ -1,0 +1,156 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<fmt:formatDate var="today" value="<%= new java.util.Date() %>" pattern="yyyy-MM-dd" />
+
+<c:set var="saleStartDate" value="${empty vo.sale_start_at ? '' : fn:substring(vo.sale_start_at, 0, 10)}" />
+<c:set var="saleEndDate" value="${empty vo.sale_end_at ? '' : fn:substring(vo.sale_end_at, 0, 10)}" />
+
+<c:set var="isAlwaysSale"
+       value="${vo.price > 0 and vo.sale_price > 0 and vo.sale_price < vo.price and empty saleStartDate and empty saleEndDate}" />
+
+<c:set var="isPeriodSale"
+       value="${vo.price > 0 and vo.sale_price > 0 and vo.sale_price < vo.price and not empty saleStartDate and not empty saleEndDate and today ge saleStartDate and today le saleEndDate}" />
+
+<c:set var="isSaleActive" value="${isAlwaysSale or isPeriodSale}" />
+
+<c:set var="imageLPath" value="" />
+<c:set var="imageSPath" value="" />
+
+<c:if test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
+    <c:set var="rawImageL" value="${fn:replace(fn:trim(vo.image_l), '/upload//upload/', '/upload/')}" />
+
+    <c:choose>
+        <c:when test="${fn:startsWith(rawImageL, '/upload/')}">
+            <c:set var="imageLPath" value="${rawImageL}" />
+        </c:when>
+
+        <c:otherwise>
+            <c:set var="imageLPath" value="/upload/${rawImageL}" />
+        </c:otherwise>
+    </c:choose>
+</c:if>
+
+<c:if test="${not empty vo.image_s and fn:trim(vo.image_s) ne 'no_file'}">
+    <c:set var="rawImageS" value="${fn:replace(fn:trim(vo.image_s), '/upload//upload/', '/upload/')}" />
+
+    <c:choose>
+        <c:when test="${fn:startsWith(rawImageS, '/upload/')}">
+            <c:set var="imageSPath" value="${rawImageS}" />
+        </c:when>
+
+        <c:otherwise>
+            <c:set var="imageSPath" value="/upload/${rawImageS}" />
+        </c:otherwise>
+    </c:choose>
+</c:if>
+
+<div class="common-product-card">
+
+    <a href="/product_detail.do?product_id=${vo.product_id}"
+       class="common-image-link">
+
+        <c:choose>
+            <c:when test="${not empty imageLPath}">
+                <img src="${imageLPath}"
+                     alt="${vo.name}"
+                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+            </c:when>
+
+            <c:when test="${not empty imageSPath}">
+                <img src="${imageSPath}"
+                     alt="${vo.name}"
+                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+            </c:when>
+
+            <c:otherwise>
+                <img src="/images/no_image.png" alt="no image">
+            </c:otherwise>
+        </c:choose>
+
+        <span class="sale-heart ${favoriteProductMap[vo.product_id] ? 'active' : ''}" onclick="favoriteToggle(event, '${vo.product_id}', this)">
+            ${favoriteProductMap[vo.product_id] ? '♥':'♡'}
+        </span>
+
+    </a>
+
+    <div class="common-product-info">
+
+        <div class="common-seller-name">
+            <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
+                ${vo.company_name} &gt;
+            </a>
+        </div>
+
+        <div class="common-product-name">
+            <a href="/product_detail.do?product_id=${vo.product_id}">
+                ${vo.name}
+            </a>
+        </div>
+
+        <c:choose>
+            <c:when test="${isSaleActive}">
+                <p class="common-origin-price">
+                    <fmt:formatNumber value="${vo.price}" pattern="#,###"/>&#50896;
+                </p>
+
+                <p class="common-sale-price">
+                    <span>
+                        <fmt:formatNumber value="${((vo.price - vo.sale_price) / vo.price) * 100}" pattern="0"/>%
+                    </span>
+
+                    <strong>
+                        <fmt:formatNumber value="${vo.sale_price}" pattern="#,###"/>&#50896;
+                    </strong>
+                </p>
+
+                <c:if test="${showSalePeriod eq true}">
+                    <p class="common-sale-period">
+                        <c:choose>
+                            <c:when test="${empty saleStartDate and empty saleEndDate}">
+                                상시 할인
+                            </c:when>
+
+                            <c:otherwise>
+                                ${saleEndDate}까지 할인
+                            </c:otherwise>
+                        </c:choose>
+                    </p>
+                </c:if>
+            </c:when>
+
+            <c:otherwise>
+                <p class="common-price">
+                    <fmt:formatNumber value="${vo.price}" pattern="#,###"/>&#50896;
+                </p>
+            </c:otherwise>
+        </c:choose>
+
+        <c:choose>
+            <c:when test="${vo.delivery_fee > 0}">
+                <p class="common-delivery">
+                    <span class="delivery-icon">&#128666;</span>
+                    <fmt:formatNumber value="${vo.delivery_fee}" pattern="#,###"/>&#50896;
+                </p>
+            </c:when>
+
+            <c:otherwise>
+                <p class="common-delivery free">
+                    <span class="delivery-icon">&#128666;</span>
+                    &#47924;&#47308;&#48176;&#49569;
+                </p>
+            </c:otherwise>
+        </c:choose>
+
+        <div class="common-review-line">
+            <span class="review-star">&#9733;</span>
+            <span class="review-score">4.86</span>
+            <span class="review-dot">&middot;</span>
+            <span class="review-count">&#47532;&#48624; 215</span>
+        </div>
+
+    </div>
+
+</div>

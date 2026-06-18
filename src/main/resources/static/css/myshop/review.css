@@ -1,0 +1,15 @@
+.myshop-review-photo-list {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.myshop-review-photo-list img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border: 1px solid #eeeeee;
+    border-radius: 10px;
+    background: #f6f6f6;
+}

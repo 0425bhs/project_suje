@@ -10,7 +10,9 @@
 
     <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/order-payment.css?v=3">
-    <link rel="stylesheet" href="/css/myshop/myshop.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/common.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/card.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/qna.css?v=1">
 
     <style>
         .qna-list-card {
@@ -168,8 +170,8 @@
                                                 <td class="product-cell">
                                                     <div class="qna-product">
                                                         <c:choose>
-                                                            <c:when test="${not empty qna.image_s}">
-                                                                <img src="${qna.image_s}" alt="${qna.product_name}">
+                                                            <c:when test="${not empty qna.image_l}">
+                                                                <img src="${qna.image_l}" alt="${qna.product_name}">
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <img src="/images/no_image.png" alt="이미지 없음">

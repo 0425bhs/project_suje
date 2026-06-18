@@ -27,34 +27,44 @@
                 </div>
 
                 <div class="dashboard-grid">
+
                     <div class="dash-card span-3">
                         <div class="card-header">
                             <h3><span class="icon green">📦</span> 판매 관리</h3>
                         </div>
+
                         <div class="sales-funnel">
-                            <div class="funnel-step">
+                            <div class="funnel-step clickable" onclick="location.href='/seller_order_list.do?status=PAID'">
                                 <span class="label">신규주문</span>
                                 <span class="count">${newOrderCount}<small>건</small></span>
                             </div>
+
                             <div class="funnel-arrow">〉</div>
-                            <div class="funnel-step">
+
+                            <div class="funnel-step clickable" onclick="location.href='/seller_order_list.do?status=PREPARING'">
                                 <span class="label">배송준비</span>
                                 <span class="count">${preparingCount}<small>건</small></span>
                             </div>
+
                             <div class="funnel-arrow">〉</div>
-                            <div class="funnel-step">
+
+                            <div class="funnel-step clickable" onclick="location.href='/seller_order_list.do?status=SHIPPING'">
                                 <span class="label">배송중</span>
                                 <span class="count">${shippingCount}<small>건</small></span>
                             </div>
+
                             <div class="funnel-arrow">〉</div>
-                            <div class="funnel-step">
+
+                            <div class="funnel-step clickable" onclick="location.href='/seller_order_list.do?status=DELIVERED'">
                                 <span class="label">배송완료</span>
                                 <span class="count">${deliveredCount}<small>건</small></span>
                             </div>
+
                             <div class="funnel-arrow">〉</div>
+
                             <div class="funnel-step">
                                 <span class="label">구매확정</span>
-                                <span class="count">${confirmedCount}<small>건(미구현)</small></span>
+                                <span class="count">0<small>건(미구현)</small></span>
                             </div>
                         </div>
                     </div>
@@ -63,15 +73,18 @@
                         <div class="card-header">
                             <h3><span class="icon red">⚠️</span> 취소·반품·교환</h3>
                         </div>
+
                         <div class="list-group">
                             <div class="list-item">
                                 <span class="label">취소요청(미구현)</span>
                                 <span class="value zero">0</span>
                             </div>
+
                             <div class="list-item">
                                 <span class="label">반품요청(미구현)</span>
                                 <span class="value zero">0</span>
                             </div>
+
                             <div class="list-item">
                                 <span class="label">교환요청(미구현)</span>
                                 <span class="value zero">0</span>
@@ -83,15 +96,18 @@
                         <div class="card-header">
                             <h3><span class="icon teal">🛍️</span> 상품 관리</h3>
                         </div>
+
                         <div class="list-group">
-                            <div class="list-item">
+                            <div class="list-item clickable" onclick="location.href='/seller_product_list.do'">
                                 <span class="label">판매중 상품</span>
                                 <span class="value highlight">${onSaleCount}</span>
                             </div>
-                            <div class="list-item">
+
+                            <div class="list-item clickable" onclick="location.href='/seller_product_list.do?stockStatus=out'">
                                 <span class="label">품절 상품</span>
                                 <span class="value zero">${outOfStockCount}</span>
                             </div>
+
                             <div class="list-item">
                                 <span class="label">수정요청 상품(미구현)</span>
                                 <span class="value zero">0</span>
@@ -103,17 +119,20 @@
                         <div class="card-header">
                             <h3><span class="icon orange">💬</span> 문의·리뷰 현황</h3>
                         </div>
+
                         <div class="list-group">
-                            <div class="list-item">
-                                <span class="label">미답변 상품 Q&A</span>
+                            <div class="list-item clickable" onclick="location.href='/seller_qna_list.do'">
+                                <span class="label">미답변 상품 Q&amp;A</span>
                                 <span class="value zero">${unansweredQnaCount}</span>
                             </div>
+
                             <div class="list-item">
-                                <span class="label">새로 작성된 리뷰(구현 중)</span>
+                                <span class="label">새로 작성된 리뷰</span>
                                 <span class="value zero">${newReviewCount}</span>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

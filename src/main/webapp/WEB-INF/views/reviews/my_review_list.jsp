@@ -10,7 +10,9 @@
 
     <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/order-payment.css?v=3">
-    <link rel="stylesheet" href="/css/myshop/myshop.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/common.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/card.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/review.css?v=1">
 
     <style>
         .review-list-card {
@@ -240,8 +242,8 @@
                                     <article class="review-item">
 
                                         <c:choose>
-                                            <c:when test="${not empty review.image_s}">
-                                                <img class="review-thumb" src="${review.image_s}" alt="${review.product_name}">
+                                            <c:when test="${not empty review.image_l}">
+                                                <img class="review-thumb" src="${review.image_l}" alt="${review.product_name}">
                                             </c:when>
 
                                             <c:otherwise>

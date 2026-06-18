@@ -23,7 +23,7 @@ public class ReviewVO {
     private String user_name, nick_name;
     
     //product_id    
-    private String product_name, image_s, image_l;
+    private String product_name, image_l;
 
     private List<ImageVO> imageList;
 }

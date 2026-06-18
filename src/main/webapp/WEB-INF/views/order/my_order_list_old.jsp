@@ -12,7 +12,8 @@
 
         <link rel="stylesheet" href="/css/product/product_main.css">
         <link rel="stylesheet" href="/css/order-payment.css?v=3">
-        <link rel="stylesheet" href="/css/myshop/myshop.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/common.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/card.css?v=1">
 
         <script src="/js/product_main.js" defer></script>
         <script src="/js/order-payment.js" defer></script>
@@ -20,9 +21,9 @@
 
     <body>
 
-    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-        <jsp:param name="activeMenu" value="order" />
-    </jsp:include>
+        <jsp:include page="/WEB-INF/views/product/product_header.jsp">
+            <jsp:param name="activeMenu" value="order" />
+        </jsp:include>
 
     <!-- 중요: 주문 상태별 개수 계산 -->
     <c:set var="totalCount" value="0" />
@@ -63,13 +64,13 @@
 
     <section class="myshop-page">
 
-        <div class="myshop-layout">
+            <div class="myshop-layout">
 
             <!-- 왼쪽 사이드바 -->
             <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" />
 
-            <!-- 오른쪽 본문 -->
-            <main class="myshop-content">
+                <!-- 오른쪽 본문 -->
+                <main class="myshop-content">
 
                 <!-- 회원 요약 카드 -->
                 <jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
@@ -128,7 +129,7 @@
                 </section>
 
                 <!-- 주문/배송내역 -->
-                <section class="myshop-order-section">
+                <section class="myshop-list-section">
 
                     <div class="myshop-section-head">
                         <div>
@@ -147,7 +148,7 @@
                         </c:when>
 
                         <c:otherwise>
-                            <div class="myshop-order-list">
+                            <div class="myshop-list">
 
                                 <c:forEach var="order" items="${orderList}">
 
@@ -155,9 +156,9 @@
                                     <c:set var="items" value="${orderItemMap[order.order_id]}" />
                                     <c:set var="mainItem" value="${items[0]}" />
 
-                                    <article class="myshop-order-card">
+                                    <article class="myshop-list-card">
 
-                                        <div class="myshop-order-top">
+                                        <div class="myshop-list-top">
 
                                             <div>
                                                 <strong class="myshop-status-badge ${order.status}">
@@ -181,12 +182,12 @@
 
                                         </div>
 
-                                        <div class="myshop-order-body">
+                                        <div class="myshop-list-body">
 
                                             <div class="myshop-product-thumb">
                                                 <c:choose>
-                                                    <c:when test="${not empty mainItem and not empty mainItem.imageS and mainItem.imageS ne 'no_file'}">
-                                                        <img src="${mainItem.imageS}" alt="${mainItem.productName}">
+                                                    <c:when test="${not empty mainItem and not empty mainItem.imageL and mainItem.imageL ne 'no_file'}">
+                                                        <img src="${mainItem.imageL}" alt="${mainItem.productName}">
                                                     </c:when>
 
                                                     <c:otherwise>
@@ -224,7 +225,7 @@
                                                 </strong>
                                             </div>
 
-                                            <div class="myshop-order-actions">
+                                            <div class="myshop-list-actions">
 
                                                 <a href="/order/detail?order_id=${order.order_id}">
                                                     상세보기

@@ -18,5 +18,5 @@ public class QnaVO {
     private LocalDateTime created_at, answered_at;
 
     //product_id
-    private String product_name, image_s;
+    private String product_name, image_l;
 }
