@@ -149,8 +149,8 @@
 
                                                 <div class="order-product-info">
                                                     <c:choose>
-                                                        <c:when test="${not empty item.imageS and fn:trim(item.imageS) ne 'no_file'}">
-                                                            <c:set var="orderImagePath" value="${fn:trim(item.imageS)}" />
+                                                        <c:when test="${not empty item.imageL and fn:trim(item.imageL) ne 'no_file'}">
+                                                            <c:set var="orderImagePath" value="${fn:trim(item.imageL)}" />
 
                                                             <c:choose>
                                                                 <c:when test="${fn:startsWith(orderImagePath, '/upload/')}">

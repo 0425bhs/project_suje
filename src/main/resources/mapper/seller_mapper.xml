@@ -115,7 +115,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             oi.price,
             oi.quantity,
             p.name AS productName,
-            p.image_l AS imageS,
+            p.image_l AS imageL,
             (oi.price * oi.quantity) AS subtotalAmount
         FROM order_items oi
         JOIN products p ON p.product_id = oi.product_id

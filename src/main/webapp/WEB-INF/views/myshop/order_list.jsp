@@ -171,8 +171,8 @@
 
                             <div class="myshop-product-thumb">
                                 <c:choose>
-                                    <c:when test="${not empty mainItem and not empty mainItem.imageS and mainItem.imageS ne 'no_file'}">
-                                        <img src="${mainItem.imageS}" alt="${mainItem.productName}">
+                                    <c:when test="${not empty mainItem and not empty mainItem.imageL and mainItem.imageL ne 'no_file'}">
+                                        <img src="${mainItem.imageL}" alt="${mainItem.productName}">
                                     </c:when>
 
                                     <c:otherwise>
@@ -305,8 +305,8 @@
                                         <a class="myshop-order-item-thumb"
                                            href="/product_detail.do?product_id=${item.product_id}">
                                             <c:choose>
-                                                <c:when test="${not empty item.imageS and item.imageS ne 'no_file'}">
-                                                    <img src="${item.imageS}" alt="${item.productName}">
+                                                <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
+                                                    <img src="${item.imageL}" alt="${item.productName}">
                                                 </c:when>
 
                                                 <c:otherwise>

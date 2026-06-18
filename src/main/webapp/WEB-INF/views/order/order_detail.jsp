@@ -46,7 +46,7 @@
 
                             <c:forEach var="item" items="${orderItemList}">
                                 <div class="order-item">
-                                    <img src="${item.imageS}" alt="상품 이미지">
+                                    <img src="${item.imageL}" alt="상품 이미지">
 
                                     <div class="item-info">
                                         <div class="creator-line">작가 상품</div>

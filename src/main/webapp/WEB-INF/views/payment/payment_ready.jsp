@@ -49,8 +49,8 @@
                         <div class="order-item">
 
                             <c:choose>
-                                <c:when test="${not empty item.imageS and item.imageS ne 'no_file'}">
-                                    <img src="${item.imageS}" alt="${item.productName}">
+                                <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
+                                    <img src="${item.imageL}" alt="${item.productName}">
                                 </c:when>
 
                                 <c:otherwise>
