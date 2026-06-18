@@ -12,4 +12,10 @@ public interface SellerDAO {
 
     int getUnansweredQnaCount(int seller_id);
     int getNewReviewCount(int seller_id);
+
+
+
+SellerVO selectSeller(int user_id);
+
+int sellerModify(SellerVO vo);
 }

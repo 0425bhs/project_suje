@@ -1,12 +1,21 @@
 let nickCheck = true;
+let idCheck = true;
 let isPwdVerified = false;
+
 function chk() {
-    let currentNick = document.getElementById("nick_name").value.trim();
-    // 지우고 다시 썼을때 원래 본인 닉네임과 같다면 중복체크 패스
-    if (currentNick === "${user.nick_name}") {
-        nickCheck = true;
+    let currentId = document.getElementById("login_id").value.trim();
+
+    let ori_login_id = document.getElementById("ori_login_id").value.trim();
+
+    let login_id_btn = document.getElementById("login_id_btn");
+
+    // 지우고 다시 썼을때 원래 본인 로그인아이디과 같다면 중복체크 패스
+    if (currentId === ori_login_id) {
+        idCheck = true;
+        login_id_btn.disabled = true;
     } else {
-        nickCheck = false;
+        idCheck = false;
+        login_id_btn.disabled = false;
     }
 }
 
@@ -18,6 +27,22 @@ function chk2() {
     document.getElementById("checkPassword").disabled = true;
 }
 
+function chknick() {
+
+    let nick_check_btn = document.getElementById("nick_check_btn");
+
+    let ori_nick_name = document.getElementById("ori_nick_name").value;
+
+    let currentNick = document.getElementById("nick_name").value.trim();
+    // null이거나 지우고 다시 썼을때 원래 본인 닉네임과 같다면 중복체크 패스
+    if (currentNick === ori_nick_name || currentNick === "") {
+        nickCheck = true;
+        nick_check_btn.disabled = true;
+    } else {
+        nick_check_btn.disabled = false;
+        nickCheck = false;
+    }
+}
 
 function check_nick() {
 
@@ -59,8 +84,6 @@ function check_func() {
     let password = document.getElementById("password");
     let checkPassword = document.getElementById("checkPassword");
 
-    let correct_password = "${user.password}";
-
     if (ori_password.trim() === "") {
         alert("현재 비밀번호를 입력해주세요.");
         ori_password_el.focus();
@@ -87,8 +110,8 @@ function check_func() {
             } else {
                 alert("현재 비밀번호가 일치하지 않습니다.");
                 isPwdVerified = false;
-                ori_password.value = "";
-                ori_password.focus();
+                ori_password_el.value = "";
+                ori_password_el.focus();
             }
         })
         .catch(err => {
@@ -100,6 +123,7 @@ function check_func() {
 function checkPwdRules() {
     let password = document.getElementById("password").value;
     let div = document.getElementById("pwd-rules");
+    let checkPasswordbtn = document.getElementById("checkPassword");
 
     let messages = [];
 
@@ -113,9 +137,25 @@ function checkPwdRules() {
         messages.push("숫자가 포함되어야 합니다");
 
     if (messages.length === 0) {
+        checkPasswordbtn.disabled = false;
         div.innerHTML = "<span style='color:green'>✅ 사용 가능한 비밀번호입니다</span>";
     } else {
         div.innerHTML = messages.map(m => `<span style='color:red'>${m}</span>`).join("<br>");
+    }
+}
+
+function checkPwdMatch() {
+    let password = document.getElementById("password").value;
+    let checkPassword = document.getElementById("checkPassword").value;
+    let div = document.getElementById("pwd-match");
+
+    let messages = [];
+
+    if ( password === checkPassword && password !== "" ) {
+   
+        div.innerHTML = "<span style='color:green'>✅ 일치합니다</span>";
+    } else {
+        div.innerHTML ="<span style='color:red'> 비밀번호가 일치하지 않습니다 </span>";
     }
 }
 
@@ -123,11 +163,13 @@ function checkPwdRules() {
 function send(f) {
     //닉네임
     let nick_name = f.nick_name.value.trim();
-    if (nick_name === "") {
-        alert("닉네임을 입력해주세요.");
-        f.nick_name.focus();
-        return;
+   /*   
+     if (nick_name === "") {
+     alert("닉네임을 입력해주세요.");
+     f.nick_name.focus();
+     return;
     }
+        */
     if (!nickCheck) {
         alert("닉네임 중복체크를 완료해주세요.");
         return;
@@ -181,13 +223,18 @@ function send(f) {
 
             if (data.result == 1) {
                 alert("수정성공");
-                location.href = "/user_mypage.do";
+                location.href = "/myshop/myshop_main";
             } else {
                 alert("수정실패");
             }
         })
 
 }
+
+function applySeller() {
+   location.href = "/update_seller.do";
+}
+
 
 function togglePwdVisibility(e) {
     e.preventDefault();
@@ -245,7 +292,4 @@ function deletePhoto() {
     photo_div.style.display = 'none';
 }
 
-function sellerModify(f) {
-    f.action = "/addSeller.do";
-    f.submit();
-}
+

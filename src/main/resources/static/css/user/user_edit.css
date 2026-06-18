@@ -1,125 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
     background-color: #FAFAFA;
     font-family: 'Noto Sans KR', sans-serif;
-    color: #333333;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    color: #333;
 }
 
-/* 회원정보 수정 전체 컨테이너 */
 .join-container {
-    background: #FFFFFF;
+    background: #fff;
     width: 100%;
-    max-width: 550px;
-    margin: 40px 20px;
+    max-width: 600px;
+    margin: 40px auto;
     padding: 40px;
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
 }
 
-/* 상단 타이틀 (테이블 캡션) */
-.usertable caption {
-    font-size: 24px;
-    font-weight: 700;
-    color: #333333;
-    margin-bottom: 30px;
-    text-align: center;
-    display: block;
-}
-
-/* 테이블 기본 세팅 */
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 8px;
 }
 
-.usertable {
-    margin-bottom: 20px;
+caption {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: left;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #FF7E36;
+    display: table-caption;
 }
 
-.modify_table {
-    margin-top: 10px;
+.sellertable caption {
+    margin-top: 24px;
 }
 
 th, td {
-    padding: 14px 0;
-    text-align: left;
+    padding: 10px 0;
     vertical-align: middle;
+    text-align: left;
 }
 
-/* 왼쪽 항목 이름 (Th) */
 th {
     width: 30%;
-    font-size: 14px;
-    color: #666666;
+    font-size: 13px;
     font-weight: 500;
+    color: #555;
+    white-space: nowrap;
 }
 
-/* 오른쪽 입력 필드 (Td) */
-td {
-    width: 70%;
+#usertable tr th::after,
+#sellertable th::after {
+    content: " *";
+    color: #FF3B30;
+    font-size: 12px;
+    font-weight: 700;
 }
 
-/* 입력창 기본 스타일 */
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input:not([type]) {
     width: 100%;
     height: 44px;
-    padding: 0 14px;
-    border: 1px solid #DCDCDC;
+    padding: 0 12px;
+    border: 1px solid #DDD;
     border-radius: 6px;
     font-size: 14px;
-    color: #333333;
-    background-color: #FFFFFF;
-    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333;
+    background: #FAFAFA;
     transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-/* 포커스 효과 (당근 오렌지색) */
-input[type="text"]:focus,
-input[type="password"]:focus {
     outline: none;
+}
+
+input:focus {
     border-color: #FF7E36;
-    box-shadow: 0 0 4px rgba(255, 126, 54, 0.2);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255,126,54,0.1);
 }
 
-/* 파일 업로드 스타일 */
-input[type="file"] {
-    font-size: 14px;
-    color: #666666;
-    cursor: pointer;
-    margin-top: 8px;
-    display: block;
-}
+input::placeholder { color: #BBB; }
 
-/* 비활성화(disabled) 상태 스타일 - 새 비밀번호창 전용 */
-input[disabled] {
-    background-color: #F5F5F5 !important;
-    color: #999999 !important;
-    border-color: #EFEFEF !important;
+input:disabled {
+    background: #F5F5F5 !important;
+    color: #AAA !important;
+    border-color: #E8E8E8 !important;
     cursor: not-allowed;
 }
 
-/* 가로 정렬 레이아웃 (중복체크, 비밀번호 확인 버튼 라인) */
 .input-row {
     display: flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
 }
 
-.input-row input[type="text"],
-.input-row input[type="password"] {
-    flex: 1; /* 인풋창이 남은 너비를 꽉 채우도록 설정 */
+.input-row input:first-child { flex: 1; }
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #DDD;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #FAFAFA;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* 라디오 버튼 및 라벨 (성별) */
+.input-wrapper:focus-within {
+    border-color: #FF7E36;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255,126,54,0.1);
+}
+
+.input-wrapper input {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    flex: 1;
+    height: 44px;
+    padding: 0 12px;
+}
+
+.eye-btn {
+    background: none;
+    border: none;
+    padding: 0 12px;
+    cursor: pointer;
+    color: #BBB;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+}
+.eye-btn:hover { color: #777; }
+
+.btn-secondary {
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #FF7E36;
+    border-radius: 6px;
+    background: #fff;
+    color: #FF7E36;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #FF7E36;
+    color: #fff;
+}
+
+.btn-secondary:disabled {
+    border-color: #DDD;
+    color: #BBB;
+    cursor: not-allowed;
+}
+
 input[type="radio"] {
-    accent-color: #FF7E36; 
+    width: auto;
+    height: auto;
+    border: none;
+    accent-color: #FF7E36;
     margin-right: 4px;
     cursor: pointer;
     vertical-align: middle;
@@ -127,125 +177,87 @@ input[type="radio"] {
 
 label {
     font-size: 14px;
-    color: #444444;
+    color: #444;
     margin-right: 20px;
     cursor: pointer;
     vertical-align: middle;
 }
 
-/* -----------------------------------------------------
-    PROFILED IMAGE (프로필 이미지 구역 스타일에 맞춤)
------------------------------------------------------ */
 #photo_div {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 10px;
-    background: #F9F9F9;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid #EAEAEA;
+    margin-bottom: 8px;
 }
 
 #photo_div img {
-    border-radius: 6px;
-    object-fit: cover;
-    border: 1px solid #DCDCDC;
-}
-
-/* 이미지 삭제용 X 버튼 */
-#photo_div input[type="button"] {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: none;
-    background-color: #999999;
-    color: #FFFFFF;
-    font-size: 12px;
-    font-weight: bold;
     border-radius: 50%;
+    border: 2px solid #EEE;
+    object-fit: cover;
+}
+
+#photo_div input[type="button"] {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #DDD;
+    background: #F5F5F5;
+    color: #888;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
+    font-size: 12px;
 }
 
-#photo_div input[type="button"]:hover {
-    background-color: #333333;
-}
-
-/* -----------------------------------------------------
-    BUTTONS (버튼 기본 설정)
------------------------------------------------------ */
-input[type="button"], button {
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-    box-sizing: border-box;
-}
-
-/* 우측 기능성 서브 버튼 (중복체크, 인증, 확인 등) */
-.btn-secondary {
-    height: 44px;
-    padding: 0 16px;
-    background-color: #FFFFFF;
-    border: 1px solid #FF7E36;
-    color: #FF7E36;
-    white-space: nowrap; /* 글자가 밑으로 깨지는 것 방지 */
-}
-
-.btn-secondary:hover {
-    background-color: #FFF5F0; 
-}
-
-/* 👁️ 비밀번호 토글 이모지 버튼 커스텀 */
-button[id^="toggleBtn"] {
-    background: none;
+input[type="file"] {
+    font-size: 13px;
+    color: #888;
     border: none;
-    cursor: pointer;
-    font-size: 18px;
-    padding: 4px 8px;
+    background: none;
+    height: auto;
+    padding: 6px 0;
+}
+
+#pwd-rules, #pwd-match {
+    font-size: 12px;
+    margin-top: 5px;
+    line-height: 1.6;
+}
+
+.btn-area {
     display: flex;
-    align-items: center;
     justify-content: center;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+    gap: 10px;
+    margin-top: 30px;
+    flex-wrap: wrap;
 }
 
-button[id^="toggleBtn"]:hover {
-    background-color: #F0F0F0;
-}
-
-/* 하단 메인 변경 및 판매자 신청 버튼 */
 .btn-main {
     height: 50px;
-    padding: 0 20px;
-    background-color: #FF7E36;
+    padding: 0 32px;
+    background: #FF7E36;
+    color: #fff;
     border: none;
-    color: #FFFFFF;
-    font-size: 16px;
-    font-weight: 600;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
 }
 
-.btn-main:hover {
-    background-color: #E66A23; 
-}
+.btn-main:hover { background: #E66A23; }
 
-/* 하단 메인 취소 버튼 */
 .btn-cancel {
     height: 50px;
-    padding: 0 24px;
-    background-color: #EEEEEE;
+    padding: 0 32px;
+    background: #EEE;
+    color: #666;
     border: none;
-    color: #666666;
-    font-size: 16px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
 }
 
-.btn-cancel:hover {
-    background-color: #DDDDDD;
-    color: #333333;
-}
+.btn-cancel:hover { background: #DDD; color: #333; }
