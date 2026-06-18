@@ -128,3 +128,13 @@
 .list-item .value.highlight {
     color: #00aeb5;
 }
+
+/* 클릭 가능한 대시보드 항목에 마우스를 올렸을 때 손가락 표시 */
+.clickable {
+    cursor: pointer;
+}
+
+/* 클릭 가능한 항목에 마우스를 올렸을 때 살짝 반응이 보이도록 처리 */
+.clickable:hover {
+    opacity: 0.85;
+}
