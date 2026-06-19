@@ -1,6 +1,7 @@
 
 let nickCheck = false;
 let idCheck = false;
+let email_duplicate = false;
 
 
 //이메일 인증관련 변수들
@@ -101,6 +102,7 @@ function check_nick() {
         })
 }
 
+
 //아이디중복체크
 function check_loginId() {
 
@@ -127,6 +129,37 @@ function check_loginId() {
             } else {
                 alert(data.login_id + "는 사용 가능합니다");
                 idCheck = true;
+            }
+
+        })
+}
+
+//메일 중복체크
+function mailDupliCheck(){
+
+     let email = document.getElementById("authEmail").value.trim();
+
+    if (email === '') {
+        alert("이메일을 입력하세요");
+        document.getElementById("authEmail").focus();
+        return;
+    }
+
+    fetch('/checkMailDuplicate.do', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'email=' + email
+    }).then(response => response.json())
+        .then(data => {
+
+            if (data.result === 'no') {
+                alert(data.email + "는 이미 사용중입니다");
+
+            } else {
+                alert(data.email + "는 사용 가능합니다");
+                email_duplicate = true;
             }
 
         })
@@ -211,7 +244,7 @@ function checkPwdMatch() {
 
     let messages = [];
 
-    if ( password === checkPassword) {
+    if ( password === checkPassword && password !== "" ) {
    
         div.innerHTML = "<span style='color:green'>✅ 일치합니다</span>";
     } else {
@@ -257,6 +290,13 @@ function send(f) {
         return;
     }
 
+   /*
+    //이메일 중복체크를 마쳤는지 확인
+    if(!email_duplicate){
+        alert("이메일 중복체크를 하세요");
+        f.authEmail.focus();
+        return;
+    }
     
     //메일이 인증된 상태인지 확인
    
@@ -265,6 +305,8 @@ function send(f) {
             return;
         }
 
+        */
+       
         // 이름 입력 확인
         if (f.name.value.trim() === "") {
             alert("이름을 입력해 주세요.");

@@ -14,7 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getReviewById"
             parameterType="int"
             resultType="review">
-        SELECT r.*, p.name product_name, p.image_s
+        SELECT r.*, p.name product_name, p.image_l
         FROM reviews r
         JOIN products p ON r.product_id = p.product_id
         WHERE r.review_id = #{review_id}
@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getMyReviewList"
             parameterType="int"
             resultType="review">
-        SELECT r.*, p.name product_name, p.image_s
+        SELECT r.*, p.name product_name, p.image_l
         FROM reviews r
         JOIN products p ON r.product_id = p.product_id
         WHERE r.user_id = #{id}

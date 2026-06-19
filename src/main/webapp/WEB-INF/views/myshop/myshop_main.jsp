@@ -28,6 +28,10 @@
         <link rel="stylesheet" href="/css/myshop/review.css?v=1">
     </c:if>
 
+    <c:if test="${contentPage eq '/myshop/favorite_list'}">
+        <link rel="stylesheet" href="/css/myshop/favorite.css?v=2">
+    </c:if>
+
     <c:if test="${contentPage eq '/myshop/qna_list'}">
         <link rel="stylesheet" href="/css/myshop/order.css?v=2">
         <link rel="stylesheet" href="/css/myshop/qna.css?v=1">
@@ -49,6 +53,11 @@
     <section class="myshop-page">
         <div class="myshop-layout">
 
+
+<c:if test="${not empty flashMsg}">
+    <script>alert("${flashMsg}");</script>
+    <c:remove var="flashMsg" scope="session" />
+</c:if>
         <!-- 왼쪽 사이드바 -->
         <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" >
             <jsp:param name="activeMenu" value="${activeMenu}" />

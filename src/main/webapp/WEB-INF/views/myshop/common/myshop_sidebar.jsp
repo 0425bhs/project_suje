@@ -9,12 +9,11 @@
 
         <div class="myshop-side-group">
             <strong>내 정보</strong>
-            <button type="button" onclick="alert('회원 정보 수정은 준비중입니다.');">
-                회원 정보 수정
-            </button>
+            <a href="/user_modify.do" class="${param.activeMenu eq 'user_modify.do' ? 'active' : ''}">회원 정보 수정</a>
             <button type="button" onclick="alert('배송지 관리는 준비중입니다.');">
                 배송지 관리
             </button>
+            <a href="/update_seller.do" class="${param.activeMenu eq 'update_seller.do' ? 'active' : ''}">판매자 신청하기</a>
         </div>
         
         <div class="myshop-side-group">
@@ -46,10 +45,10 @@
 
         <div class="myshop-side-group">
             <strong>관심 상품</strong>
-            <button type="button" onclick="alert('찜한 상품은 준비중입니다.');">
+            <a href="/myshop/my_favorite_list.do" class="${param.activeMenu eq 'favorite' ? 'active' : ''}">
                 찜한 상품
-            </button>
-            <button type="button" onclick="alert('최근 본 상품은 준비중입니다.');">
+            </a>
+            <button type="button" onclick="">
                 최근 본 상품
             </button>
         </div>

@@ -5,22 +5,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.dao.ProductDAO;
-import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.util.Paging;
@@ -39,7 +40,7 @@ public class ProductController {
     private final ProductDAO productdao;
     private final CategoryDAO categorydao;
     private final ReviewDAO reviewdao;
-    private final ImageDAO imageDAO;
+    private final ImageDAO imagedao;
     private final FavoriteDAO favoritedao;
 
     // 할인 설정값 정리
@@ -351,6 +352,9 @@ public class ProductController {
             return "redirect:/product/main.do";
         }
 
+        List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
+        vo.setImageList(productImageList);
+
         // 상품 상세 JSP로 상품 정보 전달
         model.addAttribute("vo", vo);
 
@@ -364,7 +368,7 @@ public class ProductController {
                 reviewIds.add(review.getReview_id()); 
             }
 
-            List<ImageVO> images = imageDAO.getImagesByReviewIds(reviewIds);
+            List<ImageVO> images = imagedao.getImagesByReviewIds(reviewIds);
             
             for (ReviewVO review : list) {
                 List<ImageVO> matchedImages = new ArrayList<>();
@@ -670,7 +674,7 @@ public class ProductController {
         featureMap.put("start", 0);
         featureMap.put("blockList", 10);
         featureMap.put("sort", "discount");
-        featureMap.put("saleType", "all");
+        featureMap.put("saleType", "today");
 
         List<ProductVO> saleFeatureList = productdao.product_sale_list(featureMap);
 
@@ -842,6 +846,7 @@ public class ProductController {
 
     @PostMapping("/seller_product_insert.do")
     @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
     public Map<String,Object> seller_product_insert(ProductVO vo) throws Exception{
 
         // ✅ 파일 업로드 경로 설정
@@ -872,35 +877,46 @@ public class ProductController {
         }
 
         // ✅ 작은 이미지 저장 (같은 로직)
-        MultipartFile image_S=vo.getImage_s_file();
-        String filename_s="no_file";
+        List<ImageVO> imageList = new ArrayList<>();
 
-        if(image_S!=null && !image_S.isEmpty()){
-            filename_s=image_S.getOriginalFilename();
-            File savFile=new File(savePath,filename_s);
+        int sort_order = 1;
 
-            if(savFile.exists()){
-                long time=System.currentTimeMillis();
-                filename_s=String.format("%d_%s",time, filename_s);
-                savFile=new File(savePath,filename_s);
+        List<MultipartFile> image_s_file = vo.getImage_s_file();
+
+        if(image_s_file != null){
+            for(MultipartFile file : image_s_file){
+
+                if(file == null || file.isEmpty()){
+                    continue;
+                }
+
+                String filename = file.getOriginalFilename();
+                File savFile = new File(savePath, filename);
+
+                if(savFile.exists()){
+                    long time = System.currentTimeMillis();
+                    filename = String.format("%d_%s", time, filename);
+                    savFile = new File(savePath, filename);
+                }
+
+                file.transferTo(savFile);
+
+                ImageVO image = new ImageVO();
+                image.setTarget_type("PRODUCT");
+                image.setImage_url(filename);
+                image.setOriginal_name(file.getOriginalFilename());
+                image.setSort_order(sort_order++);
+
+                imageList.add(image);
             }
-
-            image_S.transferTo(savFile);
         }
-
         // ✅ DB에 저장할 이미지 경로 설정 (/upload/ + 파일명)
         // ⚠️ 중요: 실제 파일은 c:/upload/에 있지만
         //         DB에는 /upload/파일명 저장 (WebConfig에서 매핑됨)
         if (filename_l.equals("no_file")){
             vo.setImage_l("no_file");
         } else {
-            vo.setImage_l("/upload/" + filename_l);
-        }
-
-        if (filename_s.equals("no_file")){
-            vo.setImage_s("no_file");
-        } else {
-            vo.setImage_s("/upload/" + filename_s);
+            vo.setImage_l(filename_l);
         }
 
         vo.setStatus("APPROVED");//테스트용 삭제 예정
@@ -909,6 +925,17 @@ public class ProductController {
         applySaleSetting(vo);
 
         int res=productdao.seller_product_insert(vo);
+
+        // 수정된 부분 시작
+        // 상품 등록 후 생성된 product_id를 상세 이미지에 넣고 images 테이블에 저장
+        if(!imageList.isEmpty()){
+            for(ImageVO image : imageList){
+                image.setTarget_id(vo.getProduct_id());
+            }
+
+            imagedao.insertImageList(imageList);
+        }
+        // 수정된 부분 끝
 
         Map<String,Object> map=new HashMap<>();
         map.put("result", res);
@@ -919,7 +946,12 @@ public class ProductController {
 
     @GetMapping("/seller_product_modify.do")
     public String seller_product_modify_form(int product_id, Model model){
+        
         ProductVO vo=productdao.product_one(product_id);
+
+        List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
+        vo.setImageList(productImageList);
+
         // 현재 상품의 하위 카테고리 id
         int category_id=vo.getCategory_id();
         // 하위 카테고리의 대분류 id 찾기
@@ -934,13 +966,15 @@ public class ProductController {
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("selectedBigCategoryId",selectedBigCategoryId);
         model.addAttribute("smallCategoryList", categorydao.small_category_list(selectedBigCategoryId));
+        
         return "seller/seller_product_modify_form";
     }
  
 
     @PostMapping("/seller_product_modify.do")
     @ResponseBody
-    public Map<String,Object> seller_product_modify(ProductVO vo,String ori_image_l,String ori_image_s,String del_image_l,String del_image_s)throws Exception{
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String,Object> seller_product_modify(ProductVO vo,String ori_image_l,String del_image_l)throws Exception{
         
         // ✅ 파일 업로드 경로 설정
         // ⚠️ 주의: seller_product_insert와 동일한 경로 필수
@@ -973,70 +1007,67 @@ public class ProductController {
             image_l_name=ori_image_l;
         }
 
-        // ✅ 작은 이미지 처리 (같은 로직)
-        String image_s_name = "no_file";
+        // ✅ 상세 이미지 여러 장 처리
+        List<ImageVO> imageList = new ArrayList<>();
+        int sort_order = 1;
 
-        if (vo.getImage_s_file() != null && !vo.getImage_s_file().isEmpty()){
-            image_s_name=vo.getImage_s_file().getOriginalFilename();
-            File saveFile=new File(savePath, image_s_name);
+        List<MultipartFile> image_s_file = vo.getImage_s_file();
 
-            if (saveFile.exists()){
-                long time=System.currentTimeMillis();
-                image_s_name=String.format("%d_%s", time, image_s_name);
-                saveFile=new File(savePath,image_s_name);
+        if (image_s_file != null && !image_s_file.isEmpty()) {
+            for (MultipartFile file : image_s_file) {
+
+                if (file == null || file.isEmpty()) {
+                    continue;
+                }
+
+                String filename = file.getOriginalFilename();
+                File saveFile = new File(savePath, filename);
+
+                if (saveFile.exists()) {
+                    long time = System.currentTimeMillis();
+                    filename = String.format("%d_%s", time, filename);
+                    saveFile = new File(savePath, filename);
+                }
+
+                file.transferTo(saveFile);
+
+                ImageVO image = new ImageVO();
+                image.setTarget_type("PRODUCT");
+                image.setTarget_id(vo.getProduct_id());
+                image.setImage_url(filename);
+                image.setOriginal_name(file.getOriginalFilename());
+                image.setSort_order(sort_order++);
+
+                imageList.add(image);
             }
-
-            vo.getImage_s_file().transferTo(saveFile);
-
-        } else if (ori_image_s!=null && !ori_image_s.equals("no_file")){
-            image_s_name = ori_image_s;
         }
 
         // ✅ DB에 저장할 이미지 경로 설정
-        // 새로 업로드한 파일명은 /upload/를 붙이고,
-        // 기존 이미지 경로는 이미 /upload/가 붙어 있으므로 그대로 유지
         if (image_l_name.equals("no_file")) {
             vo.setImage_l("no_file");
-        } else if (image_l_name.startsWith("/upload/")) {
+        } else {
             vo.setImage_l(image_l_name);
-        } else {
-            vo.setImage_l("/upload/" + image_l_name);
-        }
-
-        if (image_s_name.equals("no_file")) {
-            vo.setImage_s("no_file");
-        } else if (image_s_name.startsWith("/upload/")) {
-            vo.setImage_s(image_s_name);
-        } else {
-            vo.setImage_s("/upload/" + image_s_name);
-        }
+        } 
         
         // 할인 설정값 정리
         applySaleSetting(vo);
 
         // ✅ DB 업데이트
-        int res=productdao.seller_product_modify(vo);
+        int res = productdao.seller_product_modify(vo);
 
-        // ✅ 수정 성공 시에만 기존 파일 삭제
-        // ⚠️ 중요: 성공 여부 확인 후 삭제 (DB 오류 시 기존 파일 보존)
-        if (res == 1){
-            // ⚠️ 주의: del_image_l 형식은 "/upload/파일명" - "/upload/" 제거 후 파일명만 추출
-            if (del_image_l != null && !del_image_l.equals("no_file")){
+        // ✅ 새 상세 이미지를 올렸으면 images 테이블에 저장
+        if (res == 1 && !imageList.isEmpty()) {
+            imagedao.deleteImagesByProductId(vo.getProduct_id());
+            imagedao.insertImageList(imageList);
+        }
+
+        // ✅ 수정 성공 시에만 기존 대표 이미지 파일 삭제
+        if (res == 1) {
+            if (del_image_l != null && !del_image_l.equals("no_file")) {
                 File delFile = new File(savePath, del_image_l.replace("/upload/", ""));
 
-                // ⚠️ 주의: 새 이미지가 업로드된 경우만 기존 파일 삭제
-                if (vo.getImage_l_file()!=null && !vo.getImage_l_file().isEmpty()){
-                    if (delFile.exists()){
-                        delFile.delete();
-                    }
-                }
-            }
-
-            if (del_image_s!=null && !del_image_s.equals("no_file")){
-                File delFile=new File(savePath, del_image_s.replace("/upload/", ""));
-
-                if (vo.getImage_s_file() != null && !vo.getImage_s_file().isEmpty()){
-                    if (delFile.exists()){
+                if (vo.getImage_l_file() != null && !vo.getImage_l_file().isEmpty()) {
+                    if (delFile.exists()) {
                         delFile.delete();
                     }
                 }
@@ -1044,8 +1075,8 @@ public class ProductController {
         }
 
         Map<String, Object> map = new HashMap<>();
-        map.put("result",res);
-        map.put("product_id",vo.getProduct_id());
+        map.put("result", res);
+        map.put("product_id", vo.getProduct_id());
 
         return map;
     }
@@ -1112,6 +1143,47 @@ public class ProductController {
         productdao.sellerProductDeleteSelected(product_id);
 
         return "redirect:/seller_product_list.do";
+    }
+
+    @PostMapping("/editor/image/upload")
+    @ResponseBody
+    public Map<String, Object> editorImageUpload(@RequestParam("image") MultipartFile image) throws Exception {
+
+        Map<String, Object> map = new HashMap<>();
+
+        String savePath = "c:/upload/editor/";
+
+        File dir = new File(savePath);
+
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String originalName = image.getOriginalFilename();
+
+        if (originalName == null || originalName.equals("")) {
+            map.put("result", 0);
+            return map;
+        }
+
+        String ext = "";
+
+        int dotIndex = originalName.lastIndexOf(".");
+
+        if (dotIndex != -1) {
+            ext = originalName.substring(dotIndex);
+        }
+
+        String saveName = UUID.randomUUID().toString() + ext;
+
+        File saveFile = new File(savePath, saveName);
+
+        image.transferTo(saveFile);
+
+        map.put("result", 1);
+        map.put("imageUrl", "/upload/editor/" + saveName);
+
+        return map;
     }
 
     

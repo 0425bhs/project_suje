@@ -8,9 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.kh.suje.dao.AddressDAO;
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
+import com.kh.suje.dao.UserDAO;
+import com.kh.suje.vo.AddressVO;
 import com.kh.suje.vo.UserVO;
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
@@ -22,9 +25,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MyShopController {
 
-    private final ReviewDAO reviewDAO;
+    private final HttpSession session;
+    private final UserDAO userDao;
+    private final AddressDAO addressDao;
     private final OrderDAO orderDAO;
     private final QnaDAO qnaDAO;
+    private final ReviewDAO reviewDAO;
 
     @GetMapping("/myshop")
     private String MyShop(HttpSession session, Model model) {
@@ -78,5 +84,35 @@ public class MyShopController {
         model.addAttribute("contentPage", "/myshop/dashboard");
 
         return "myshop/myshop_main";
+    }
+
+        //배송지 추가폼으로
+    @GetMapping("/insertAddress.do")
+    private String insertAddress(Model model) {
+
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
+   
+        model.addAttribute("user", sessionUser); 
+        model.addAttribute("activeMenu", "myshop");
+        model.addAttribute("contentPage", "/myshop/address_form");
+
+        return "/myshop/address_list";
+    }
+
+
+    //배송지 조회
+    @GetMapping("/addressList.do")
+    private String addressLis(Model model) {
+
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+        List<AddressVO> list = addressDao.selectList(sessionUser.getUser_id());
+        
+        model.addAttribute("user", sessionUser); 
+        model.addAttribute("list", list); 
+        model.addAttribute("activeMenu", "myshop");
+        model.addAttribute("contentPage", "/myshop/dashboard");
+
+        return "/myshop/address_list";
     }
 }

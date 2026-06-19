@@ -24,7 +24,7 @@
 
     <!-- 준비중: 찜한 상품 -->
     <button type="button"
-            onclick="alert('찜한 상품 기능은 준비중입니다.');">
+            onclick="location.href='/myshop/my_favorite_list.do'">
         <span>♡</span>
         <strong>찜한상품</strong>
     </button>

@@ -826,3 +826,17 @@ input[type="checkbox"] {
     font-weight: 950;
     letter-spacing: -0.04em;
 }
+
+/* 장바구니 상품 이미지가 없을 때 표시 */
+.cart-no-image {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #f7f7f7;
+    color: #999;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

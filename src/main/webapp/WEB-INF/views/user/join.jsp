@@ -35,7 +35,7 @@
                 </td>
             </tr>
 
-            <tr>
+    <tr>
     <th>비밀번호</th>
     <td>
         <div class="input-wrapper">
@@ -62,20 +62,20 @@
     </td>
 </tr>
 
-            <tr>
-                <th>이메일(본인인증)</th>
-                <td>
-                    <div class="input-row">
-                        <input name="email" id="authEmail" placeholder="email을 입력하세요" />
-                        <input type="button" value="전송" class="btn-secondary" onclick="mailCheck(this.form)" />
-                    </div>
-                    <div class="input-row">
-                        <input id="authInput" placeholder="인증번호 6자리" maxlength="6" disabled="disabled" />
-                        <input type="button" value="인증" onclick="authCheck()" class="btn-secondary" />
-                    </div>
-                </td>
-            </tr>
-            
+<tr>
+    <th>이메일(본인인증)</th>
+    <td>
+        <div class="input-row">
+            <input name="email" id="authEmail" placeholder="email을 입력하세요" />
+            <input type="button" value="중복체크" class="btn-secondary" onclick="mailDupliCheck()" />
+        </div>
+        <div class="input-row">
+            <input id="authInput" placeholder="인증번호 6자리" maxlength="6" disabled="disabled" />
+            <input type="button" value="인증번호 전송" class="btn-secondary" onclick="mailCheck(this.form)" />
+            <input type="button" value="인증" onclick="authCheck()" class="btn-secondary" />
+        </div>
+    </td>
+</tr>
             
             <tr>
                 <th>이름</th>

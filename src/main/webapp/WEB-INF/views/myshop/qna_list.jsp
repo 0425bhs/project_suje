@@ -99,8 +99,8 @@
                         <div class="myshop-order-body myshop-qna-body">
                             <div class="myshop-product-thumb">
                                 <c:choose>
-                                    <c:when test="${not empty qna.image_s}">
-                                        <img src="${qna.image_s}" alt="${qna.product_name}">
+                                    <c:when test="${not empty qna.image_l}">
+                                        <img src="${qna.image_l}" alt="${qna.product_name}">
                                     </c:when>
                                     <c:otherwise>
                                         <img src="/images/no_image.png" alt="이미지 없음">
