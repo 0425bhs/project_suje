@@ -38,11 +38,22 @@ public class MyShopController {
 
         Map<String, Object> statusCounts = orderDAO.selectOrderStatusCounts(user_id);
 
+        model.addAllAttributes(statusCounts);
+
         int writtenReviewCount = reviewDAO.getWrittenReviewCount(user_id);
         int writableReviewCount = reviewDAO.getWritableReviewCount(user_id);
 
-        int orderCount = orderDAO.getOrderCount(user_id);
-        int reviewCount = reviewDAO.getReviewCount(user_id);
+        int watingQnaCount = qnaDAO.getWatingQnaCount(user_id);
+        int answeredQnaCount = qnaDAO.getAnsweredQnaCount(user_id);
+
+        model.addAttribute("writtenReviewCount", writtenReviewCount);
+        model.addAttribute("writableReviewCount", writableReviewCount);
+
+        model.addAttribute("watingQnaCount", watingQnaCount);
+        model.addAttribute("answeredQnaCount", answeredQnaCount);
+
+        // int orderCount = orderDAO.getOrderCount(user_id);
+        // int reviewCount = reviewDAO.getReviewCount(user_id);
         int qnaCount = qnaDAO.getQnaCount(user_id);
 
         List<OrderVO> orderList = orderDAO.selectOrderListByUserId(user_id);
@@ -56,13 +67,8 @@ public class MyShopController {
             orderItemMap.put(order.getOrder_id(), itemList);
         }
 
-        model.addAllAttributes(statusCounts);
-
-        model.addAttribute("writtenReviewCount", writtenReviewCount);
-        model.addAttribute("writableReviewCount", writableReviewCount);
-
-        model.addAttribute("orderCount", orderCount);
-        model.addAttribute("reviewCount", reviewCount);
+        // model.addAttribute("orderCount", orderCount);
+        // model.addAttribute("reviewCount", reviewCount);
         model.addAttribute("qnaCount", qnaCount);
 
         model.addAttribute("orderList", orderList);

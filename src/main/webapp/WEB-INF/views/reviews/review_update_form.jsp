@@ -356,7 +356,7 @@
                         <div class="image-preview" id="image-preview">
                             <c:forEach var="image" items="${review.imageList}">
                                 <div class="image-card" id="old-image-${image.image_id}">
-                                    <span class="delete-btn" onclick="deleteOldImage(${image.image_id})">x</span>
+                                    <span class="delete-btn" onclick="deleteOldImage('${image.image_id}')">x</span>
                                     <img src="/upload/${image.image_url}" class="preview-img">
                                 </div>
                             </c:forEach>

@@ -29,6 +29,7 @@
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/qna_list'}">
+        <link rel="stylesheet" href="/css/myshop/order.css?v=2">
         <link rel="stylesheet" href="/css/myshop/qna.css?v=1">
     </c:if>
     

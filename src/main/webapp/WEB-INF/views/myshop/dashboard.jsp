@@ -17,7 +17,7 @@
         <span>📦</span>
         <strong>주문/배송조회</strong>
         <small class="dashboard-order-status-summary">
-            <em>결제대기 ${pendingCount}</em>
+            <em>결제대기 ${watingQnaCount}</em>
             <em>배송중 ${shippingCount}</em>
             <em>배송완료 ${deliveredCount}</em>
         </small>
@@ -38,8 +38,8 @@
         <span>💬</span>
         <strong>문의내역</strong>
         <small class="dashboard-order-status-summary">
-            <em>답변대기 1</em>
-            <em>답변완료 3</em>
+            <em>답변대기 ${watingQnaCount}</em>
+            <em>답변완료 ${answeredQnaCount}</em>
         </small>
     </button>
 

@@ -34,8 +34,13 @@
 
     <div class="myshop-section-head">
         <div>
-            <h2>내 후기 목록</h2>
-            <p>내가 작성한 상품 후기와 첨부 이미지를 확인할 수 있습니다.</p>
+            <h2>${tab eq 'writable' ? '작성 가능한 리뷰' : '내 후기 목록'}</h2>
+            <p>
+                <c:choose>
+                    <c:when test="${tab eq 'writable'}">배송 완료된 상품 중 아직 리뷰를 작성하지 않은 상품입니다.</c:when>
+                    <c:otherwise>내가 작성한 상품 후기와 첨부 이미지를 확인할 수 있습니다.</c:otherwise>
+                </c:choose>
+            </p>
         </div>
 
         <a href="/live_review_list.do">실시간 리뷰 보기</a>
@@ -55,7 +60,16 @@
 
                         <div class="myshop-list-top">
                             <div>
-                                <span>${review.created_at}</span>
+                                <strong class="myshop-review-state ${tab eq 'writable' ? 'writable' : 'written'}">
+                                    ${tab eq 'writable' ? '작성 가능' : '작성 완료'}
+                                </strong>
+
+                                <span>
+                                    <c:choose>
+                                        <c:when test="${tab eq 'writable'}">배송 완료 상품</c:when>
+                                        <c:otherwise>${review.created_at}</c:otherwise>
+                                    </c:choose>
+                                </span>
                             </div>
 
                             <a href="/product_detail.do?product_id=${review.product_id}">
@@ -80,8 +94,26 @@
                                     ${review.product_name}
                                 </a>
 
-                                <p>별점 ${review.rating}점 · 작성일 ${review.created_at}</p>
-                                <strong>${review.content}</strong>
+                                <c:choose>
+                                    <c:when test="${tab eq 'writable'}">
+                                        <div class="myshop-review-guide">
+                                            <span>REVIEW READY</span>
+                                            <strong>이 상품의 후기를 남길 수 있습니다.</strong>
+                                            <p>작품의 사용감, 포장, 배송 경험을 함께 남겨보세요.</p>
+                                        </div>
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <div class="myshop-review-meta">
+                                            <span class="myshop-review-rating">별점 ${review.rating}점</span>
+                                            <span>작성일 ${review.created_at}</span>
+                                        </div>
+
+                                        <div class="myshop-review-content">
+                                            ${review.content}
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
 
                                 <c:if test="${not empty review.imageList}">
                                     <div class="myshop-review-photo-list">
@@ -93,14 +125,24 @@
                             </div>
 
                             <div class="myshop-list-actions">
-                                <a href="/review_update_form.do?review_id=${review.review_id}">
-                                    수정
-                                </a>
+                                <c:choose>
+                                    <c:when test="${tab eq 'writable'}">
+                                        <a class="primary" href="/review_form.do?order_item_id=${review.order_item_id}">
+                                            리뷰쓰기
+                                        </a>
+                                    </c:when>
 
-                                <button type="button"
-                                        onclick="if (confirm('삭제하시겠습니까?')) location.href='/review_delete.do?review_id=${review.review_id}';">
-                                    삭제
-                                </button>
+                                    <c:otherwise>
+                                        <a href="/review_update_form.do?review_id=${review.review_id}">
+                                            수정
+                                        </a>
+
+                                        <button type="button"
+                                                onclick="if (confirm('삭제하시겠습니까?')) location.href='/review_delete.do?review_id=${review.review_id}';">
+                                            삭제
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
 

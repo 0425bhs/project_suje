@@ -28,30 +28,30 @@
 <section class="myshop-status-card myshop-status-card-compact">
 
     <button type="button"
-            class="${empty selectedStatus ? 'active' : ''}"
-            onclick="location.href='/mypage/qna'">
+            class="${empty status || status eq 'all' ? 'active' : ''}"
+            onclick="location.href='/myshop/qnas'">
         <span>전체 문의</span>
         <strong>${empty totalCount ? 0 : totalCount}</strong>
     </button>
 
     <button type="button"
-            class="${selectedStatus eq 'WAITING' ? 'active' : ''}"
-            onclick="location.href='/mypage/qna?status=WAITING'">
+            class="${status eq 'wating' ? 'active' : ''}"
+            onclick="location.href='/myshop/qnas?status=wating'">
         <span>답변 대기</span>
-        <strong>${waitingCount}</strong>
+        <strong>${empty watingQnaCount ? 0 : watingQnaCount}</strong>
     </button>
 
     <button type="button"
-            class="${selectedStatus eq 'ANSWERED' ? 'active' : ''}"
-            onclick="location.href='/mypage/qna?status=ANSWERED'">
+            class="${status eq 'answered' ? 'active' : ''}"
+            onclick="location.href='/myshop/qnas?status=answered'">
         <span>답변 완료</span>
-        <strong>${answeredCount}</strong>
+        <strong>${empty answeredQnaCount ? 0 : answeredQnaCount}</strong>
     </button>
 
 </section>
 
 <!-- 내 문의 목록 -->
-<section class="myshop-list-section myshop-qna-section">
+<section class="myshop-order-section myshop-qna-section">
 
     <div class="myshop-section-head">
         <div>
@@ -70,13 +70,13 @@
         </c:when>
 
         <c:otherwise>
-            <div class="myshop-list">
+            <div class="myshop-order myshop-qna-list">
                 <c:forEach var="qna" items="${list}">
-                    <article class="myshop-list-card">
+                    <article class="myshop-order-card myshop-qna-card">
 
-                        <div class="myshop-list-top">
+                        <div class="myshop-order-top">
                             <div>
-                                <strong class="myshop-status-badge ${empty qna.answer ? 'PENDING' : 'DELIVERED'}">
+                                <strong class="myshop-status-badge ${empty qna.answer ? 'WATING' : 'DELIVERED'}">
                                     <c:choose>
                                         <c:when test="${empty qna.answer}">답변 대기</c:when>
                                         <c:otherwise>답변 완료</c:otherwise>
@@ -96,7 +96,7 @@
                             </a>
                         </div>
 
-                        <div class="myshop-list-body myshop-qna-body">
+                        <div class="myshop-order-body myshop-qna-body">
                             <div class="myshop-product-thumb">
                                 <c:choose>
                                     <c:when test="${not empty qna.image_s}">
@@ -109,14 +109,21 @@
                             </div>
 
                             <div class="myshop-product-info">
-                                <a href="/qna_detail.do?qna_id=${qna.qna_id}">
-                                    ${qna.title}
+                                <a class="myshop-product-name-text myshop-qna-title"
+                                   href="/product_detail.do?product_id=${qna.product_id}">
+                                    ${qna.product_name}
                                 </a>
 
-                                <p>${qna.product_name}</p>
+                                <p class="myshop-qna-product-name">문의 상품</p>
+
+                                <div class="myshop-qna-question">
+                                    <span>문의 제목</span>
+                                    <strong>${qna.title}</strong>
+                                    <p>${qna.content}</p>
+                                </div>
 
                                 <div class="myshop-qna-answer">
-                                    <span>최근 답변</span>
+                                    <span>${empty qna.answer ? '답변 상태' : '최근 답변'}</span>
                                     <strong>
                                         <c:choose>
                                             <c:when test="${empty qna.answer}">
@@ -130,7 +137,7 @@
                                 </div>
                             </div>
 
-                            <div class="myshop-list-actions">
+                            <div class="myshop-order-actions myshop-qna-actions">
                                 <a href="/qna_detail.do?qna_id=${qna.qna_id}">
                                     상세보기
                                 </a>

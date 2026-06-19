@@ -19,6 +19,54 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE user_id = #{user_id}
     </select>
 
+    <select id="getWatingQnaList"
+            parameterType="int"
+            resultType="qna">
+        SELECT q.*, p.name product_name, p.image_s
+        FROM qnas q
+        JOIN products p
+        ON q.product_id = p.product_id
+        WHERE q.user_id = #{user_id}
+          AND q.status = "waiting"
+    </select>
+
+    <select id="getAnsweredQnaList"
+            parameterType="int"
+            resultType="qna">
+        SELECT q.*, p.name product_name, p.image_s
+        FROM qnas q
+        JOIN products p
+        ON q.product_id = p.product_id
+        WHERE q.user_id = #{user_id}
+          AND q.status = "answered"
+    </select>
+
+    <select id="getQnaCount"
+            parameterType="int"
+            resultType="int">
+        SELECT count(*)
+        FROM qnas
+        WHERE user_id = #{user_id}
+    </select>
+
+    <select id="getWatingQnaCount"
+            parameterType="int"
+            resultType="int">
+        SELECT count(*)
+        FROM qnas
+        WHERE user_id = #{user_id}
+          AND status = "waiting"
+    </select>
+
+    <select id="getAnsweredQnaCount"
+            parameterType="int"
+            resultType="int">
+        SELECT count(*)
+        FROM qnas
+        WHERE user_id = #{user_id}
+          AND status = "answered"
+    </select>
+
     <select id="getQnaById"
             parameterType="int"
             resultType="qna">
@@ -47,13 +95,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM qnas
         WHERE product_id = #{value}
         ORDER BY qna_id DESC
-    </select>
-
-    <select id="getQnaCount"
-            parameterType="int"
-            resultType="int">
-        SELECT count(*)
-        FROM qnas
-        WHERE user_id = #{user_id}
     </select>
 </mapper>
