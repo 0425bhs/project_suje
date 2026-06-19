@@ -57,61 +57,7 @@
         <span>취소</span>
         <strong>${cancelCount}</strong>
     </button>
-
 </section>
-
-<!-- <section class="myshop-status-card">
-
-    <button type="button"
-            class="${empty selectedStatus ? 'active' : ''}"
-            onclick="location.href='/myshop/orders'">
-        <span>전체</span>
-        <strong>${totalCount}</strong>
-    </button>
-
-    <button type="button"
-            class="${selectedStatus eq 'PENDING' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=PENDING'">
-        <span>결제대기</span>
-        <strong>${pendingCount}</strong>
-    </button>
-
-    <button type="button"
-            class="${selectedStatus eq 'PAID' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=PAID'">
-        <span>결제완료</span>
-        <strong>${paidCount}</strong>
-    </button>
-
-    <button type="button"
-            class="${selectedStatus eq 'PREPARING' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=PREPARING'">
-        <span>제작 준비중</span>
-        <strong>${preparingCount}</strong>
-    </button>
-
-    <button type="button"
-            class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=SHIPPING'">
-        <span>배송중</span>
-        <strong>${shippingCount}</strong>
-    </button>
-
-    <button type="button"
-            class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=DELIVERED'">
-        <span>배송완료</span>
-        <strong>${deliveredCount}</strong>
-    </button>
-
-    <button type="button"
-            class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=CANCELLED'">
-        <span>취소</span>
-        <strong>${cancelCount}</strong>
-    </button>
-
-</section> -->
 
 <!-- 주문/배송내역 -->
 <section class="myshop-order-section">
@@ -172,7 +118,7 @@
                             <div class="myshop-product-thumb">
                                 <c:choose>
                                     <c:when test="${not empty mainItem and not empty mainItem.imageL and mainItem.imageL ne 'no_file'}">
-                                        <img src="${mainItem.imageL}" alt="${mainItem.productName}">
+                                        <img src="/upload/${mainItem.imageL}" alt="${mainItem.productName}">
                                     </c:when>
 
                                     <c:otherwise>
@@ -199,45 +145,37 @@
                                 </c:choose>
 
                                 <c:choose>
-                                    <c:when test="${not empty mainItem}">
 
-                                        <c:choose>
-                                            <c:when test="${itemCount eq 1}">
-                                                <strong class="myshop-product-name-text">
-                                                    ${mainItem.productName}
-                                                </strong>
-                                            </c:when>
+                                    <c:choose>
+                                        <c:when test="${itemCount eq 1}">
+                                            <strong class="myshop-product-name-text">
+                                                ${mainItem.productName}
+                                            </strong>
+                                        </c:when>
 
-                                            <c:otherwise>
-                                                <button type="button" class="myshop-product-name-text myshop-product-open-btn"
-                                                        onclick="toggleOrderItems(this.closest('.myshop-order-card').querySelector('.myshop-order-toggle'))">
-                                                    ${mainItem.productName}
-                                                    <span class="myshop-product-count-text">
-                                                        포함 총 ${itemCount}건
-                                                    </span>
+                                        <c:otherwise>
+                                            <button type="button" class="myshop-product-name-text myshop-product-open-btn"
+                                                    onclick="toggleOrderItems(this.closest('.myshop-order-card').querySelector('.myshop-order-toggle'))">
+                                                ${mainItem.productName}
+                                                <span class="myshop-product-count-text">
+                                                    포함 총 ${itemCount}건
+                                                </span>
 
-                                                </button>
-                                            </c:otherwise>
-                                        </c:choose>
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
 
-                                        <strong>
-                                            총 결제금액
-                                            <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
-                                        </strong>
+                                    <strong>
+                                        총 결제금액
+                                        <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
+                                    </strong>
 
-                                    </c:when>
-
-                                    <c:otherwise>
-                                        <strong>주문 상품 정보 없음</strong>
-                                        <p>상품 정보를 불러오지 못했습니다.</p>
-                                    </c:otherwise>
                                 </c:choose>
 
                             </div>
 
                             <div class="myshop-order-actions">
 
-                                <!-- 중요: 결제대기 상태 -->
                                 <c:if test="${order.status eq 'PENDING'}">
                                     <a href="/payment/ready?order_id=${order.order_id}" class="primary">
                                         결제하기
@@ -254,8 +192,7 @@
                                 </c:if>
 
                                 <c:if test="${order.status eq 'PAID'}">
-                                    <button type="button"
-                                            onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
+                                    <button type="button" onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
                                         결제취소
                                     </button>
                                 </c:if>
@@ -267,17 +204,13 @@
                                 </c:if>
 
                                 <c:if test="${order.status eq 'DELIVERED'}">
-                                    <button type="button"
-                                            class="review"
-                                            onclick="location.href='/review_form.do?order_item_id=${mainItem.order_item_id}'">
+                                    <button type="button" class="review" onclick="location.href='/review_form.do?order_item_id=${mainItem.order_item_id}'">
                                         리뷰쓰기
                                     </button>
                                 </c:if>
 
                                 <c:if test="${itemCount eq 1}">
-                                    <button type="button"
-                                            class="qna"
-                                            onclick="location.href='/qna_form.do?product_id=${mainItem.product_id}'">
+                                    <button type="button" class="qna" onclick="location.href='/qna_form.do?product_id=${mainItem.product_id}'">
                                         문의하기
                                     </button>
                                 </c:if>
@@ -286,12 +219,9 @@
 
                         </div>
 
-                        <c:if test="${itemCount gt 1}">
+                        <c:if test="${itemCount ne 1}">
 
-                            <button type="button"
-                                    class="myshop-order-toggle"
-                                    data-count="${itemCount}"
-                                    onclick="toggleOrderItems(this)">
+                            <button type="button" class="myshop-order-toggle" data-count="${itemCount}" onclick="toggleOrderItems(this)">
                                 <span class="toggle-text">총 ${itemCount}건 주문 펼쳐보기</span>
                                 <span class="toggle-arrow"></span>
                             </button>
@@ -306,7 +236,7 @@
                                            href="/product_detail.do?product_id=${item.product_id}">
                                             <c:choose>
                                                 <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
-                                                    <img src="${item.imageL}" alt="${item.productName}">
+                                                    <img src="/upload/${item.imageL}" alt="${item.productName}">
                                                 </c:when>
 
                                                 <c:otherwise>
@@ -339,7 +269,6 @@
                                                 <button type="button" onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1'">
                                                     바로 구매하기
                                                 </button>
-
 
                                                 <button type="button" onclick="alert('환불/교환 기능은 준비중입니다.');">
                                                     환불/교환

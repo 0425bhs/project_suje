@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -122,7 +123,7 @@
                     <div class="buyer-product-card">
 
                         <a class="product-img-box" href="/product_detail.do?product_id=${vo.product_id}">
-                            <img src="${vo.image_l}" alt="${vo.name}">
+                            <img src="/upload/${vo.image_l}" alt="${vo.name}">
                         </a>
 
                         <div class="product-name">
