@@ -145,33 +145,29 @@
                                 </c:choose>
 
                                 <c:choose>
+                                    <c:when test="${itemCount eq 1}">
+                                        <strong class="myshop-product-name-text">
+                                            ${mainItem.productName}
+                                        </strong>
+                                    </c:when>
 
-                                    <c:choose>
-                                        <c:when test="${itemCount eq 1}">
-                                            <strong class="myshop-product-name-text">
-                                                ${mainItem.productName}
-                                            </strong>
-                                        </c:when>
+                                    <c:otherwise>
+                                        <button type="button" class="myshop-product-name-text myshop-product-open-btn"
+                                                onclick="toggleOrderItems(this.closest('.myshop-order-card').querySelector('.myshop-order-toggle'))">
+                                            ${mainItem.productName}
+                                            
+                                            <span class="myshop-product-count-text">
+                                                포함 총 ${itemCount}건
+                                            </span>
 
-                                        <c:otherwise>
-                                            <button type="button" class="myshop-product-name-text myshop-product-open-btn"
-                                                    onclick="toggleOrderItems(this.closest('.myshop-order-card').querySelector('.myshop-order-toggle'))">
-                                                ${mainItem.productName}
-                                                <span class="myshop-product-count-text">
-                                                    포함 총 ${itemCount}건
-                                                </span>
-
-                                            </button>
-                                        </c:otherwise>
-                                    </c:choose>
-
-                                    <strong>
-                                        총 결제금액
-                                        <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
-                                    </strong>
-
+                                        </button>
+                                    </c:otherwise>
                                 </c:choose>
 
+                                <strong>
+                                    총 결제금액
+                                    <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
+                                </strong>
                             </div>
 
                             <div class="myshop-order-actions">

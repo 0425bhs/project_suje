@@ -39,14 +39,47 @@
 
                 <div class="seller-profile">
                     <div class="seller-logo">
-                        H
+                        <c:choose>
+                            <c:when test="${not empty seller.photo_name and seller.photo_name ne 'no_file'}">
+                                <img src="/upload/${seller.photo_name}" alt="${seller.company_name}" onerror="this.onerror=null; this.src='/images/no_image.png';">
+                            </c:when>
+
+                            <c:otherwise>
+                                <img src="/images/no_image.png" alt="이미지 없음">
+                            </c:otherwise>
+                        </c:choose>
                     </div>
 
                     <div>
-                        <h1>판매자샵 </h1>  
-                        <strong class="seller-interest-count">
-                            관심 <span id="sellerFavoriteCount">${favoriteCount}</span>
-                        </strong>
+                        <h2>${seller.company_name}</h2>  
+                        <div class="seller-shop-stats">
+                            <strong class="seller-interest-count">
+        
+                                팔로워 
+                                <span id="sellerFavoriteCount" data-raw-count="${favoriteCount}">
+                                    ${sellerFavoriteCountText}
+                                </span>
+                                | 관심
+                                <span id="sellerProductFavoriteCount" data-raw-count="${seller.product_favorite_count}">
+                                    ${productFavoriteCountText}
+                                </span>
+                            </strong>
+
+                            <div class="seller-rating-box">
+                                <span class="seller-star-wrap" style="--rating-percent:${seller.review_avg * 20}%;">
+                                    <span class="seller-star-base">★★★★★</span>
+                                    <span class="seller-star-fill">★★★★★</span>
+                                </span>
+
+                                <strong>
+                                    <fmt:formatNumber value="${seller.review_avg}" pattern="0.0" />
+                                </strong>
+
+                                <span class="seller-review-count">
+                                    (<fmt:formatNumber value="${seller.review_count}" pattern="#,###" />)
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -110,7 +143,7 @@
                 <form class="shop-search" action="/seller_shop_homepage.do" method="get">
                     <input type="hidden" name="seller_id" value="${seller_id}">
                     <input type="hidden" name="sort" value="${sort}">
-                    <input type="text" name="keyword" placeholder="샵 내에서 상품을 검색하세요.">
+                    <input type="text" name="keyword" value="${keyword}" placeholder="샵 내에서 상품을 검색하세요.">
                     <button type="submit">🔍</button>
                 </form>
 
@@ -123,7 +156,17 @@
                     <div class="buyer-product-card">
 
                         <a class="product-img-box" href="/product_detail.do?product_id=${vo.product_id}">
-                            <img src="/upload/${vo.image_l}" alt="${vo.name}">
+                            <c:choose>
+                                <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
+                                    <img src="/upload/${vo.image_l}"
+                                        alt="${vo.name}"
+                                        onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                </c:when>
+
+                                <c:otherwise>
+                                    <img src="/images/no_image.png" alt="이미지 없음">
+                                </c:otherwise>
+                            </c:choose>
                         </a>
 
                         <div class="product-name">
