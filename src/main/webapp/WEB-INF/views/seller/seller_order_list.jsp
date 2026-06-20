@@ -64,15 +64,12 @@
                 </div>
 
                 <c:choose>
-
-                    <!-- 주문이 없을 때 -->
                     <c:when test="${empty orderList}">
                         <div class="empty-box">
                             조회된 주문이 없습니다.
                         </div>
                     </c:when>
 
-                    <!-- 주문이 있을 때 -->
                     <c:otherwise>
 
                         <div class="seller-order-list">
@@ -151,26 +148,22 @@
 
                                     </div>
 
-                                    <!-- 대표 상품 영역 -->
                                     <div class="seller-order-main-item">
 
                                         <div class="seller-order-thumb">
 
                                             <c:choose>
 
-                                                <!-- 대표 상품 이미지가 없으면 기본 이미지 -->
                                                 <c:when test="${empty mainItem or empty mainItem.imageL or fn:trim(mainItem.imageL) eq 'no_file'}">
                                                     <img src="/images/no_image.png" alt="이미지 없음">
                                                 </c:when>
 
-                                                <!-- 대표 상품 이미지가 이미 /upload/파일명 형태면 그대로 사용 -->
                                                 <c:when test="${fn:startsWith(fn:trim(mainItem.imageL), '/upload/')}">
                                                     <img src="${fn:trim(mainItem.imageL)}"
                                                          alt="${mainItem.productName}"
                                                          onerror="this.onerror=null; this.src='/images/no_image.png';">
                                                 </c:when>
 
-                                                <!-- 대표 상품 이미지가 파일명만 있으면 /upload/ 붙여서 사용 -->
                                                 <c:otherwise>
                                                     <img src="/upload/${fn:trim(mainItem.imageL)}"
                                                          alt="${mainItem.productName}"
