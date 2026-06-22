@@ -133,15 +133,26 @@ public class SellerController {
             favorite = check >= 1;
         }
 
+        Map<String, Object> seller = sellerdao.sellerShopInfo(seller_id);
+
         Map<String, Object> listMap = new HashMap<>();
         listMap.put("seller_id", seller_id);
         listMap.put("sort", sort);
 
         List<ProductVO> list = productdao.sellerHomepageProductList(listMap);
-
         int favoriteCount = favoritedao.SellerFavoriteCount(seller_id);
+        
+        Number productFavoriteCount = 0;
 
+        if (seller != null && seller.get("product_favorite_count") != null) {
+            productFavoriteCount = (Number) seller.get("product_favorite_count");
+        }
+
+        model.addAttribute("seller", seller);
         model.addAttribute("favoriteCount", favoriteCount);
+        model.addAttribute("sellerFavoriteCountText", compactCount(favoriteCount));
+        model.addAttribute("productFavoriteCountText", compactCount(productFavoriteCount));
+
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
@@ -153,9 +164,30 @@ public class SellerController {
         return "/seller/seller_shop_homepage";
     }
 
+    private String compactCount(Number number) {
+
+        if (number == null) {
+            return "0";
+        }
+
+        long count = number.longValue();
+
+        if (count < 1000) {
+            return String.valueOf(count);
+        }
+
+        if (count < 10000) {
+            double value = Math.ceil(count / 100.0) / 10.0;
+            return String.format("%.1f천", value);
+        }
+
+        double value = Math.ceil(count / 1000.0) / 10.0;
+        return String.format("%.1f만", value);
+    }
+
     @GetMapping("/seller_statistics.do")
     public String seller_statistics(){
-        return "/seller//seller_statistics";
+        return "/seller/seller_statistics";
     }
 
 }

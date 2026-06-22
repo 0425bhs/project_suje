@@ -140,7 +140,7 @@ public class OrderController {
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);
 
-        model.addAttribute("activeMenu", "orders");
+        model.addAttribute("activeMenu", "order");
         model.addAttribute("contentPage", "/myshop/order_list");
 
         return "myshop/myshop_main";

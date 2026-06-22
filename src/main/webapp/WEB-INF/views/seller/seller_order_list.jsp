@@ -21,11 +21,60 @@
 
                 <div class="seller-main">
 
+<<<<<<< HEAD
                     <div class="seller-main-header">
                         <div>
                             <span class="page-label">ORDER MANAGEMENT</span>
                             <h1>주문 관리</h1>
                             <p>판매자의 상품이 포함된 주문을 상태별로 확인할 수 있습니다.</p>
+=======
+                <div class="seller-main-header">
+                    <div>
+                        <span class="page-label">ORDER MANAGEMENT</span>
+                        <h1>주문 관리</h1>
+                        <p>판매자의 상품이 포함된 주문을 상태별로 확인할 수 있습니다.</p>
+                    </div>
+                </div>
+
+                <div class="filter-box">
+                    <div class="filter-buttons">
+                        <a href="/seller_order_list.do"
+                           class="${empty selectedStatus ? 'active' : ''}">
+                            전체
+                        </a>
+
+                        <a href="/seller_order_list.do?status=PAID"
+                           class="${selectedStatus eq 'PAID' ? 'active' : ''}">
+                            신규주문
+                        </a>
+
+                        <a href="/seller_order_list.do?status=PREPARING"
+                           class="${selectedStatus eq 'PREPARING' ? 'active' : ''}">
+                            배송준비
+                        </a>
+
+                        <a href="/seller_order_list.do?status=SHIPPING"
+                           class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}">
+                            배송중
+                        </a>
+
+                        <a href="/seller_order_list.do?status=DELIVERED"
+                           class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}">
+                            배송완료
+                        </a>
+
+                        <a href="/seller_order_list.do?status=CANCELLED"
+                           class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}">
+                            취소
+                        </a>
+                    </div>
+                </div>
+
+                <c:choose>
+                    <c:when test="${empty orderList}">
+                        <div class="empty-box">
+                            조회된 주문이 없습니다.
+>>>>>>> b9390f1dd8d21c66898473da93865b7b3d96223d
                         </div>
                     </div>
 

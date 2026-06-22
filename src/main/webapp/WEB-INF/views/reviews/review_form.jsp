@@ -272,7 +272,7 @@
             <div class="form-layout">
                 <aside class="product-panel">
                     <span>작가 상품</span>
-                    <img src="${product.image_l}" alt="${product.name}">
+                    <img src="/upload/${product.image_l}" alt="${product.name}">
                     <strong>${product.name}</strong>
                     <p>상품을 선택한 뒤 리뷰 내용과 별점을 입력하면 내 후기 목록에 저장됩니다.</p>
                 </aside>

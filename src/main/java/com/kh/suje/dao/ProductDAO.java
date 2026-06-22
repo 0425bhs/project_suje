@@ -80,4 +80,6 @@ public interface ProductDAO {
     // 선물추천 테마별 상품 목록
     List<ProductVO> product_gift_theme_list(Map<String, Object> map); 
 
+    // 테스트 용도 최근 본 상품 목록 출력
+    List<ProductVO> product_recent(int user_id);
 }

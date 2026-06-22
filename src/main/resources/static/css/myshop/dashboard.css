@@ -1,86 +1,73 @@
 .myshop-dashboard-content {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 0;
 }
 
 .dashboard-status-cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    margin-bottom: 16px;
 }
 
 .dashboard-status-card {
-    background-color: #fff;
-    padding: 24px 20px;
-    border-radius: 18px;
-    border: 1px solid #f0e4dc;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 8px 24px rgba(80, 45, 25, 0.04);
+    gap: 6px;
 }
 
 .dashboard-status-card:hover {
-    border-color: #ff6f4f;
     transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(80, 45, 25, 0.06);
 }
 
-.dashboard-status-card .icon {
-    display: inline-block;
-    margin-bottom: 12px;
-    font-size: 32px;
-}
-
-.dashboard-status-card h4 {
-    margin-bottom: 8px;
-    color: #666;
-    font-size: 14px;
-    font-weight: 500;
+.dashboard-status-card span {
+    font-size: 21px;
 }
 
 .dashboard-status-card strong {
-    display: block;
-    color: #222;
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    font-size: 14px;
+    font-weight: 850;
 }
 
-.dashboard-status-card .sub-info {
+.dashboard-status-card small {
     display: block;
-    margin-top: 8px;
-    color: #a0a0a0;
-    font-size: 12px;
+    color: #888;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.dashboard-status-card .dashboard-order-status-summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 8px;
+    line-height: 1.45;
+}
+
+.dashboard-order-status-summary em {
+    font-style: normal;
+    white-space: nowrap;
 }
 
 .dashboard-lower-layout {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     grid-template-areas:
-        "recent benefit"
         "orders activity";
-    gap: 24px;
-    align-items: stretch;
+    gap: 18px;
+    align-items: start;
 }
 
 .dashboard-activity-sidebar {
     display: flex;
     flex-direction: column;
     grid-area: activity;
-    gap: 24px;
+    gap: 18px;
 }
 
 .recent-viewed-compact {
-    grid-area: recent;
     padding: 18px 20px;
 }
 
 .dashboard-benefit-card {
-    grid-area: benefit;
     margin-bottom: 0;
-    padding: 18px 20px;
+    padding: 22px 24px;
 }
 
 .dashboard-recent-orders {
@@ -104,7 +91,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .dashboard-section-head h3 {
@@ -159,22 +146,63 @@
     color: #ff6f4f;
 }
 
-.dashboard-recent-orders .myshop-list-card {
-    padding: 0 20px;
+.dashboard-recent-orders .myshop-order-card {
+    padding: 0;
+    border-radius: 14px;
+    box-shadow: none;
 }
 
-.dashboard-recent-orders .myshop-list-body {
-    grid-template-columns: 82px minmax(0, 1fr) 92px;
+.dashboard-recent-orders .dashboard-list-compact {
+    padding: 0;
+    gap: 14px;
+    background: transparent;
+}
+
+.dashboard-recent-orders .myshop-order-top {
+    min-height: 50px;
+    padding: 12px 16px;
+}
+
+.dashboard-recent-orders .myshop-order-top > div {
+    gap: 10px;
+}
+
+.dashboard-recent-orders .myshop-order-body {
+    padding: 16px;
+    grid-template-columns: 78px minmax(0, 1fr) 104px;
     gap: 16px;
 }
 
 .dashboard-recent-orders .myshop-product-thumb {
-    width: 82px;
-    height: 82px;
+    width: 78px;
+    height: 78px;
+    border-radius: 10px;
 }
 
-.dashboard-recent-orders .myshop-list-actions {
+.dashboard-order-info {
+    gap: 0;
+}
+
+.dashboard-order-total {
+    margin-top: 2px;
+}
+
+.dashboard-order-empty-text {
+    margin: 4px 0 0;
+    color: #888;
+    font-size: 13px;
+}
+
+.dashboard-recent-orders .myshop-order-actions {
+    flex-direction: column;
+    align-items: stretch;
     justify-content: flex-end;
+}
+
+.dashboard-recent-orders .myshop-order-actions a,
+.dashboard-recent-orders .myshop-order-actions button {
+    width: 100%;
+    min-width: 0;
 }
 
 .compact-prod-list {
@@ -323,38 +351,13 @@
     font-weight: 500;
 }
 
-.dashboard-notice-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: 13px;
-}
-
-.dashboard-notice-list li + li {
-    margin-top: 8px;
-}
-
-.dashboard-notice-list a {
-    color: #555;
-    text-decoration: none;
-}
-
-.dashboard-notice-list a:hover {
-    color: #ff6f4f;
-}
-
-.recent-viewed-compact .dashboard-section-head,
-.dashboard-benefit-card .dashboard-section-head {
-    margin-bottom: 12px;
-}
-
 .recent-viewed-compact .dashboard-section-head h3,
 .dashboard-benefit-card .dashboard-section-head h3 {
     font-size: 16px;
 }
 
 .recent-viewed-compact .recent-prod-grid {
-    grid-template-columns: repeat(4, 64px);
+    grid-template-columns: repeat(5, 64px);
     justify-content: start;
     gap: 10px;
 }
@@ -364,12 +367,15 @@
     border-radius: 6px;
 }
 
+.recent-viewed-compact .prod-item img {
+    width: 100%;
+    height: 100%;
+}
+
 @media (max-width: 1100px) {
     .dashboard-lower-layout {
         grid-template-columns: 1fr;
         grid-template-areas:
-            "recent"
-            "benefit"
             "orders"
             "activity";
     }
@@ -378,5 +384,25 @@
 @media (max-width: 720px) {
     .dashboard-status-cards {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-recent-orders .myshop-order-top {
+        align-items: flex-start;
+    }
+
+    .dashboard-recent-orders .myshop-order-body {
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .dashboard-recent-orders .myshop-product-thumb {
+        width: 72px;
+        height: 72px;
+    }
+
+    .dashboard-recent-orders .myshop-order-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        justify-content: flex-start;
     }
 }

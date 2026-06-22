@@ -1,23 +1,185 @@
+.myshop-status-badge.WATING {
+    background: #fff7dc;
+    color: #b97900;
+}
+
+.myshop-qna-table {
+    padding: 20px 22px 22px;
+}
+
+.myshop-qna-table-head,
+.myshop-qna-row {
+    display: grid;
+    grid-template-columns: 104px minmax(170px, 1.05fr) minmax(260px, 1.8fr) 150px 148px;
+    gap: 16px;
+    align-items: center;
+}
+
+.myshop-qna-table-head {
+    min-height: 42px;
+    padding: 0 16px;
+    border-bottom: 1px solid #f3e7df;
+    color: #8a5a44;
+    font-size: 12px;
+    font-weight: 950;
+}
+
+.myshop-qna-row {
+    padding: 18px 16px;
+    border-bottom: 1px solid #f3e7df;
+    background: #fff;
+}
+
+.myshop-qna-row:last-child {
+    border-bottom: 0;
+}
+
+.myshop-qna-product-cell {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #222;
+    text-decoration: none;
+}
+
+.myshop-qna-product-thumb {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 1px solid #ead8cf;
+    border-radius: 10px;
+    background: #f6f6f6;
+}
+
+.myshop-qna-product-thumb img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.myshop-qna-product-cell strong {
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 950;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.myshop-qna-content-cell {
+    min-width: 0;
+}
+
+.myshop-qna-content-cell > a {
+    display: block;
+    color: #111;
+    font-size: 14px;
+    font-weight: 950;
+    line-height: 1.35;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.myshop-qna-content-cell > a:hover,
+.myshop-qna-product-cell:hover strong {
+    color: #ff6f4f;
+}
+
+.myshop-qna-content-cell > p {
+    margin: 6px 0 0;
+    color: #666;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.45;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .myshop-qna-answer {
-    margin-top: 12px;
-    padding: 14px 16px;
-    background: #fffaf7;
-    border: 1px solid #f3e7df;
-    border-radius: 12px;
+    margin-top: 8px;
+    color: #8a5a44;
+    font-size: 12px;
+    line-height: 1.45;
 }
 
 .myshop-qna-answer span {
-    display: block;
-    margin-bottom: 6px;
-    color: #8a5a44;
-    font-size: 12px;
-    font-weight: 900;
+    margin-right: 6px;
+    font-weight: 950;
 }
 
 .myshop-qna-answer strong {
+    color: #555;
+    font-weight: 800;
+}
+
+.myshop-qna-date-cell span,
+.myshop-qna-date-cell small {
     display: block;
-    color: #333;
-    font-size: 14px;
+    color: #777;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.45;
+}
+
+.myshop-qna-date-cell small {
+    margin-top: 4px;
+    color: #aaa;
+}
+
+.myshop-qna-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.myshop-qna-actions a,
+.myshop-qna-actions button {
+    height: 32px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ead8cf;
+    border-radius: 8px;
+    background: #fff;
+    color: #444;
+    font-size: 12px;
     font-weight: 850;
-    line-height: 1.6;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.myshop-qna-actions a:hover,
+.myshop-qna-actions button:hover {
+    border-color: #ff6f4f;
+    background: #fff7f3;
+    color: #ff6f4f;
+}
+
+@media (max-width: 1100px) {
+    .myshop-qna-table-head {
+        display: none;
+    }
+
+    .myshop-qna-row {
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 12px 16px;
+    }
+
+    .myshop-qna-status-cell,
+    .myshop-qna-date-cell,
+    .myshop-qna-actions {
+        grid-column: 1 / -1;
+    }
+
+    .myshop-qna-actions {
+        justify-content: flex-start;
+    }
 }

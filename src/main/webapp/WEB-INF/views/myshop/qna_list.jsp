@@ -28,30 +28,30 @@
 <section class="myshop-status-card myshop-status-card-compact">
 
     <button type="button"
-            class="${empty selectedStatus ? 'active' : ''}"
-            onclick="location.href='/mypage/qna'">
+            class="${empty status || status eq 'all' ? 'active' : ''}"
+            onclick="location.href='/myshop/qnas'">
         <span>전체 문의</span>
         <strong>${empty totalCount ? 0 : totalCount}</strong>
     </button>
 
     <button type="button"
-            class="${selectedStatus eq 'WAITING' ? 'active' : ''}"
-            onclick="location.href='/mypage/qna?status=WAITING'">
+            class="${status eq 'wating' ? 'active' : ''}"
+            onclick="location.href='/myshop/qnas?status=wating'">
         <span>답변 대기</span>
-        <strong>${waitingCount}</strong>
+        <strong>${empty watingQnaCount ? 0 : watingQnaCount}</strong>
     </button>
 
     <button type="button"
-            class="${selectedStatus eq 'ANSWERED' ? 'active' : ''}"
-            onclick="location.href='/mypage/qna?status=ANSWERED'">
+            class="${status eq 'answered' ? 'active' : ''}"
+            onclick="location.href='/myshop/qnas?status=answered'">
         <span>답변 완료</span>
-        <strong>${answeredCount}</strong>
+        <strong>${empty answeredQnaCount ? 0 : answeredQnaCount}</strong>
     </button>
 
 </section>
 
 <!-- 내 문의 목록 -->
-<section class="myshop-list-section myshop-qna-section">
+<section class="myshop-order-section myshop-qna-section">
 
     <div class="myshop-section-head">
         <div>
@@ -70,86 +70,75 @@
         </c:when>
 
         <c:otherwise>
-            <div class="myshop-list">
+            <div class="myshop-qna-table">
+                <div class="myshop-qna-table-head">
+                    <span>상태</span>
+                    <span>상품</span>
+                    <span>문의 내용</span>
+                    <span>작성일</span>
+                    <span>관리</span>
+                </div>
+
                 <c:forEach var="qna" items="${list}">
-                    <article class="myshop-list-card">
-
-                        <div class="myshop-list-top">
-                            <div>
-                                <strong class="myshop-status-badge ${empty qna.answer ? 'PENDING' : 'DELIVERED'}">
-                                    <c:choose>
-                                        <c:when test="${empty qna.answer}">답변 대기</c:when>
-                                        <c:otherwise>답변 완료</c:otherwise>
-                                    </c:choose>
-                                </strong>
-
-                                <span>
-                                    ${qna.created_at}
-                                    <c:if test="${not empty qna.answered_at}">
-                                        · 답변일 ${qna.answered_at}
-                                    </c:if>
-                                </span>
-                            </div>
-
-                            <a href="/qna_detail.do?qna_id=${qna.qna_id}">
-                                문의상세 &gt;
-                            </a>
+                    <article class="myshop-qna-row">
+                        <div class="myshop-qna-status-cell">
+                            <strong class="myshop-status-badge ${empty qna.answer ? 'WATING' : 'DELIVERED'}">
+                                <c:choose>
+                                    <c:when test="${empty qna.answer}">답변 대기</c:when>
+                                    <c:otherwise>답변 완료</c:otherwise>
+                                </c:choose>
+                            </strong>
                         </div>
 
-                        <div class="myshop-list-body myshop-qna-body">
-                            <div class="myshop-product-thumb">
+                        <a class="myshop-qna-product-cell"
+                           href="/product_detail.do?product_id=${qna.product_id}">
+                            <span class="myshop-qna-product-thumb">
                                 <c:choose>
                                     <c:when test="${not empty qna.image_l}">
-                                        <img src="${qna.image_l}" alt="${qna.product_name}">
+                                        <img src="/upload/${qna.image_l}" alt="${qna.product_name}">
                                     </c:when>
                                     <c:otherwise>
                                         <img src="/images/no_image.png" alt="이미지 없음">
                                     </c:otherwise>
                                 </c:choose>
-                            </div>
+                            </span>
+                            <strong>${qna.product_name}</strong>
+                        </a>
 
-                            <div class="myshop-product-info">
-                                <a href="/qna_detail.do?qna_id=${qna.qna_id}">
-                                    ${qna.title}
-                                </a>
+                        <div class="myshop-qna-content-cell">
+                            <a href="/qna_detail.do?qna_id=${qna.qna_id}">
+                                ${qna.title}
+                            </a>
+                            <p>${qna.content}</p>
 
-                                <p>${qna.product_name}</p>
-
+                            <c:if test="${not empty qna.answer}">
                                 <div class="myshop-qna-answer">
                                     <span>최근 답변</span>
-                                    <strong>
-                                        <c:choose>
-                                            <c:when test="${empty qna.answer}">
-                                                아직 답변이 등록되지 않았습니다.
-                                            </c:when>
-                                            <c:otherwise>
-                                                ${qna.answer}
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </strong>
+                                    <strong>${qna.answer}</strong>
                                 </div>
-                            </div>
+                            </c:if>
+                        </div>
 
-                            <div class="myshop-list-actions">
-                                <a href="/qna_detail.do?qna_id=${qna.qna_id}">
-                                    상세보기
-                                </a>
+                        <div class="myshop-qna-date-cell">
+                            <span>${qna.created_at}</span>
+                            <c:if test="${not empty qna.answered_at}">
+                                <small>답변일 ${qna.answered_at}</small>
+                            </c:if>
+                        </div>
 
-                                <a href="/qna_update_form.do?qna_id=${qna.qna_id}">
-                                    수정
-                                </a>
+                        <div class="myshop-qna-actions">
+                            <a href="/qna_detail.do?qna_id=${qna.qna_id}">
+                                보기
+                            </a>
 
-                                <button type="button"
-                                        onclick="if (confirm('삭제하시겠습니까?')) location.href='/qna_delete.do?qna_id=${qna.qna_id}';">
-                                    삭제
-                                </button>
+                            <a href="/qna_update_form.do?qna_id=${qna.qna_id}">
+                                수정
+                            </a>
 
-                                <button type="button"
-                                        class="qna"
-                                        onclick="alert('답변 등록 시 알림을 보내드리는 기능은 준비중입니다.');">
-                                    답변알림
-                                </button>
-                            </div>
+                            <button type="button"
+                                    onclick="if (confirm('삭제하시겠습니까?')) location.href='/qna_delete.do?qna_id=${qna.qna_id}';">
+                                삭제
+                            </button>
                         </div>
 
                     </article>

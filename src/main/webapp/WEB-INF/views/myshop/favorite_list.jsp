@@ -94,7 +94,7 @@
                                         <c:choose>
 
                                             <c:when test="${not empty item.image_l and item.image_l ne 'no_file'}">
-                                                <img src="${item.image_l}" alt="${item.name}">
+                                                <img src="/upload/${item.image_l}" alt="${item.name}">
                                             </c:when>
 
                                             <c:otherwise>

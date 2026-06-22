@@ -11,8 +11,6 @@ body {
 
 /* =========================================================
    구매자용 판매자샵 화면
-   - 사이드바 없음
-   - 상단 공통 헤더는 product_header.css에서 관리
 ========================================================= */
 
 /* 경로 영역 */
@@ -54,35 +52,134 @@ body {
     gap: 18px;
 }
 
+/* 판매자 프로필 이미지 */
 .seller-logo {
-    width: 70px;
-    height: 70px;
+    width: 78px;
+    height: 78px;
     border-radius: 50%;
+    overflow: hidden;
+
+    background: #f5f5f5;
+    border: 1px solid #eee;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: #ff6b57;
-    color: #fff;
-
-    font-size: 30px;
-    font-weight: 900;
+    flex-shrink: 0;
 }
 
-.seller-profile h1 {
+.seller-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 판매자명 */
+.seller-profile h2 {
     margin: 0;
 
-    font-size: 34px;
+    font-size: 26px;
     font-weight: 900;
-    letter-spacing: -1px;
+    letter-spacing: -0.8px;
+    line-height: 1.25;
+    color: #111;
+
+    max-width: 520px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* 브랜드명이 길면 최대 3줄 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.seller-profile p {
-    margin: 8px 0 0;
+/* 판매자 통계 */
+.seller-shop-stats {
+    display: flex;
+    flex-direction: column; /* 팔로워/관심, 별점을 세로로 쌓음 */
+    align-items: flex-start;
+    gap: 5px;
+
+    margin-top: 8px;
+}
+
+/* 팔로워 / 관심 */
+.seller-interest-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 
     color: #666;
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+/* 별점 영역 */
+.seller-rating-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-top: 2px; /* 별점 한 칸 아래 느낌 */
+    font-size: 14px;
+    font-weight: 800;
+    color: #222;
+}
+
+.seller-interest-count span {
+    color: #ff6b57;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+/* 별점 기본 박스 */
+.seller-star-wrap {
+    position: relative;
+    display: inline-block;
+
+    width: 82px;
+    height: 18px;
+    line-height: 18px;
+
+    font-size: 16px;
+    letter-spacing: -1px;
+
+    overflow: hidden;
+}
+
+/* 회색 별 */
+.seller-star-base {
+    color: #ddd;
+}
+
+/* 채워지는 노란 별 */
+.seller-star-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: var(--rating-percent);
+    max-width: 100%;
+    height: 100%;
+
+    color: #ffb400;
+
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.seller-rating-box strong {
+    color: #222;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.seller-review-count {
+    color: #888;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 /* 작가샵 찜하기 버튼 */
@@ -103,6 +200,12 @@ body {
 
 .wish-shop-btn:hover {
     border-color: #ff6b57;
+    color: #ff4f3a;
+}
+
+.wish-shop-btn.active {
+    border-color: #ff6b57;
+    background: #fff4f1;
     color: #ff4f3a;
 }
 
@@ -165,13 +268,10 @@ body {
     font-weight: 700;
 }
 
-.sort-box a.active {
-    color: #ff4f3a;
-    font-weight: 900;
-}
-
+.sort-box a.active,
 .sort-box a:hover {
     color: #ff4f3a;
+    font-weight: 900;
 }
 
 .sort-box span {
@@ -233,9 +333,9 @@ body {
 }
 
 .buyer-product-card {
-    background: #fff;
     width: 88%;
     max-width: 290px;
+    background: #fff;
 }
 
 /* 상품 이미지 */
@@ -256,6 +356,7 @@ body {
     height: 100%;
 
     object-fit: cover;
+    display: block;
 
     transition: transform 0.2s ease;
 }
@@ -328,7 +429,7 @@ body {
     font-weight: 600;
 }
 
-/* 상품이 없을 때 사용할 수 있음 */
+/* 상품 없음 */
 .empty-product {
     grid-column: 1 / -1;
 
@@ -376,26 +477,35 @@ body {
         grid-template-columns: repeat(2, 1fr);
         gap: 34px 16px;
     }
+
+    .seller-profile h2 {
+        font-size: 22px;
+        max-width: 100%;
+    }
 }
 
-.seller-interest-count {
-    display: inline-block;
-    margin-top: 6px;
+/* 판매자샵 브랜드명 크기 조절 */
+.buyer-shop .buyer-shop-header .seller-profile h2 {
+    margin: 0 !important;
 
-    color: #666;
-    font-size: 14px;
-    font-weight: 800;
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.5px !important;
+    color: #111 !important;
+
+    max-width: 520px !important;
+
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
 }
 
-.seller-interest-count span {
-    color: #ff6b57;
-    font-size: 16px;
-    font-weight: 900;
-}
-
-/* 찜 완료 상태 */
-.wish-shop-btn.active {
-    border-color: #ff6b57;
-    background: #fff4f1;
-    color: #ff4f3a;
+/* 모바일 브랜드명 크기 */
+@media (max-width: 760px) {
+    .buyer-shop .buyer-shop-header .seller-profile h2 {
+        font-size: 20px !important;
+        max-width: 100% !important;
+    }
 }
