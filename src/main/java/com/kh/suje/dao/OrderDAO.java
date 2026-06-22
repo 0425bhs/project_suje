@@ -42,5 +42,8 @@ public interface OrderDAO {
     int getProductId(int order_id);
 
     // 상태별 주문 개수 조회
-    Map<String, Object> selectOrderStatusCounts(int userId);
+    Map<String, Object> selectOrderStatusCounts(int user_id);
+
+    // 주문 수 조회
+    int getOrderCount(int user_id);
 }

@@ -12,4 +12,13 @@ public interface QnaDAO {
     int deleteQna(int qna_id);
 
     List<QnaVO> productQnaList(int product_id);
+    List<QnaVO> getWatingQnaList(int user_id);
+    List<QnaVO> getAnsweredQnaList(int user_id);
+
+    //문의 수 조회
+    int getQnaCount(int user_id);
+    int getWatingQnaCount(int user_id);
+    int getAnsweredQnaCount(int user_id);
+
+
 }

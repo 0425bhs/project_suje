@@ -10,80 +10,56 @@
 </jsp:include>
 
 <!-- 종합 현황 카드 영역 -->
-<section class="dashboard-status-cards">
+<section class="myshop-quick-card dashboard-status-cards">
     
     <%-- 주문 현황 카드 --%>
-    <div class="dashboard-status-card" onclick="location.href='/myshop/orders'">
-        <span class="icon">📦</span>
-        <h4>나의 주문 현황</h4>
-        <strong>${totalCount}건</strong>
-        <span class="sub-info">결제대기 ${pendingCount} / 배송중 ${shippingCount} / 배송완료 ${deliveredCount}</span>
-    </div>
+    <button type="button" class="dashboard-status-card" onclick="location.href='/myshop/orders'">
+        <span>📦</span>
+        <strong>주문/배송조회</strong>
+        <small class="dashboard-order-status-summary">
+            <em>결제대기 ${watingQnaCount}</em>
+            <em>배송중 ${shippingCount}</em>
+            <em>배송완료 ${deliveredCount}</em>
+        </small>
+    </button>
 
     <%-- 리뷰 관리 카드 --%>
-    <div class="dashboard-status-card" onclick="location.href='/myshop/reviews'">
-        <span class="icon">⭐</span>
-        <h4>리뷰 관리</h4>
-        <strong>12건</strong>
-        <span class="sub-info">작성 가능: 3건</span>
-    </div>
+    <button type="button" class="dashboard-status-card" onclick="location.href='/myshop/reviews'">
+        <span>⭐</span>
+        <strong>리뷰관리</strong>
+        <small class="dashboard-order-status-summary">
+            <em>작성완료 ${writtenReviewCount}</em>
+            <em>작성가능 ${writableReviewCount}</em>
+        </small>
+    </button>
 
     <%-- 문의 현황 카드 --%>
-    <div class="dashboard-status-card" onclick="location.href='/myshop/qnas'">
-        <span class="icon">💬</span>
-        <h4>문의 현황</h4>
-        <strong>4건</strong>
-        <span class="sub-info">미답변: 0건</span>
-    </div>
+    <button type="button" class="dashboard-status-card" onclick="location.href='/myshop/qnas'">
+        <span>💬</span>
+        <strong>문의내역</strong>
+        <small class="dashboard-order-status-summary">
+            <em>답변대기 ${watingQnaCount}</em>
+            <em>답변완료 ${answeredQnaCount}</em>
+        </small>
+    </button>
 
     <%-- 관심 상품 카드 --%>
-    <div class="dashboard-status-card" onclick="location.href='/myshop/my_favorite_list.do'">
-        <span class="icon">♡</span>
-        <h4>관심 상품</h4>
-        <strong>18건</strong>
-    </div>
+    <button type="button" class="dashboard-status-card" onclick="alert('찜한 상품 기능은 준비중입니다.');">
+        <span>♡</span>
+        <strong>찜한상품</strong>
+        <small>전체 건</small>
+    </button>
 
 </section>
 
 <div class="dashboard-lower-layout">
 
-    <%-- 최근 본 상품 --%>
-    <section class="dashboard-section recently-viewed recent-viewed-compact">
-        <div class="dashboard-section-head">
-            <h3>최근 본 상품 <span>(4)</span></h3>
-            <a href="/myshop/recent" class="view-all-btn">더보기 &gt;</a>
-        </div>
-        <div class="recent-prod-grid">
-            <div class="prod-item">img</div>
-            <div class="prod-item">img</div>
-            <div class="prod-item">img</div>
-            <div class="prod-item">img</div>
-        </div>
-    </section>
-
-    <%-- 나의 혜택 요약 --%>
-    <section class="dashboard-section dashboard-benefit-card">
-        <div class="dashboard-section-head">
-            <h3>나의 쇼핑 혜택</h3>
-        </div>
-        <div class="dashboard-benefit-row">
-            <div class="dashboard-benefit-item point">
-                <span>적립금</span>
-                <strong>2,500<small>원</small></strong>
-            </div>
-            <div class="dashboard-benefit-item coupon">
-                <span>쿠폰</span>
-                <strong>2<small>장</small></strong>
-            </div>
-        </div>
-    </section>
-
     <!-- ================= 왼쪽: 최근 주문 내역 시작 ================= -->
     <section class="dashboard-section dashboard-recent-orders">
         
             <div class="dashboard-section-head">
-                <h3>[최근 주문 내역]</h3>
-                <a href="/myshop/orders" class="view-all-btn">전체보기 ></a>
+                <h3>최근 주문 내역 <span>최근 3건</span></h3>
+                <a href="/myshop/orders" class="view-all-btn">전체보기 &gt;</a>
             </div>
 
             <c:choose>
@@ -94,13 +70,14 @@
                 </c:when>
 
                 <c:otherwise>
-                    <div class="myshop-order-list dashboard-list-compact">
+                    <div class="myshop-order dashboard-list-compact">
                         <%-- 최근 3건만 출력 --%>
                         <c:forEach var="order" items="${orderList}" varStatus="status">
                             <c:if test="${status.index < 3}"> 
 
                                 <c:set var="items" value="${orderItemMap[order.order_id]}" />
                                 <c:set var="mainItem" value="${items[0]}" />
+                                <c:set var="itemCount" value="${fn:length(items)}" />
 
                                 <article class="myshop-order-card dashboard-order-card">
                                     <div class="myshop-order-top">
@@ -116,7 +93,6 @@
                                                     <c:otherwise>${order.status}</c:otherwise>
                                                 </c:choose>
                                             </strong>
-                                            <span>${order.created_at} · 주문번호 #${order.order_id}</span>
                                         </div>
                                         <a href="/order/detail?order_id=${order.order_id}">주문상세 &gt;</a>
                                     </div>
@@ -125,45 +101,81 @@
                                         <div class="myshop-product-thumb">
                                             <c:choose>
                                                 <c:when test="${not empty mainItem and not empty mainItem.imageL and mainItem.imageL ne 'no_file'}">
-                                                    <img src="${mainItem.imageL}" alt="${mainItem.productName}">
+                                                    <img src="/upload/${mainItem.imageL}" alt="${mainItem.productName}">
                                                 </c:when>
                                                 <c:otherwise>
                                                     <img src="/images/no_image.png" alt="이미지 없음">
                                                 </c:otherwise>
                                             </c:choose>
+
                                         </div>
 
-                                        <div class="myshop-product-info">
+                                        <div class="myshop-product-info dashboard-order-info">
                                             <c:choose>
-                                                <c:when test="${not empty mainItem}">
-                                                    <a href="/product_detail.do?product_id=${mainItem.product_id}">
-                                                        ${mainItem.productName}
-                                                        <c:if test="${fn:length(items) > 1}">
-                                                            외 ${fn:length(items) - 1}건
-                                                        </c:if>
-                                                    </a>
-                                                    <p>
-                                                        수량 ${mainItem.quantity}개 ·
-                                                        <fmt:formatNumber value="${mainItem.price}" pattern="#,###"/>원
-                                                    </p>
+                                                <c:when test="${not empty order.created_at and fn:length(order.created_at) ge 16}">
+                                                    <span class="myshop-order-date-text">
+                                                        ${fn:substring(order.created_at, 0, 16)} 주문
+                                                    </span>
                                                 </c:when>
+
                                                 <c:otherwise>
-                                                    <strong>주문 상품 정보 없음</strong>
+                                                    <span class="myshop-order-date-text">
+                                                        ${order.created_at} 주문
+                                                    </span>
                                                 </c:otherwise>
                                             </c:choose>
-                                            <strong>
-                                                총 결제금액 <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
-                                            </strong>
+
+                                            <c:choose>
+                                                <c:when test="${not empty mainItem}">
+                                                    <strong class="myshop-product-name-text">
+                                                        ${mainItem.productName}
+
+                                                        <c:if test="${itemCount gt 1}">
+                                                            <span class="myshop-product-count-text">
+                                                                포함 총 ${itemCount}건
+                                                            </span>
+                                                        </c:if>
+                                                    </strong>
+
+                                                    <strong class="dashboard-order-total">
+                                                        총 결제금액
+                                                        <fmt:formatNumber value="${order.total_amount}" pattern="#,###"/>원
+                                                    </strong>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <strong class="myshop-product-name-text">주문 상품 정보 없음</strong>
+                                                    <p class="dashboard-order-empty-text">상품 정보를 불러오지 못했습니다.</p>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
 
                                         <div class="myshop-order-actions">
-                                            <a href="/order/detail?order_id=${order.order_id}">
-                                                상세보기
-                                            </a>
                                             <c:if test="${order.status eq 'PENDING'}">
                                                 <a href="/payment/ready?order_id=${order.order_id}" class="primary">
                                                     결제하기
                                                 </a>
+                                            </c:if>
+
+                                            <c:if test="${order.status eq 'PREPARING' || order.status eq 'SHIPPING' || order.status eq 'DELIVERED'}">
+                                                <a href="/order/delivery?order_id=${order.order_id}">
+                                                    배송조회
+                                                </a>
+                                            </c:if>
+
+                                            <c:if test="${order.status eq 'DELIVERED' and not empty mainItem}">
+                                                <button type="button"
+                                                        class="review"
+                                                        onclick="location.href='/review_form.do?order_item_id=${mainItem.order_item_id}'">
+                                                    리뷰쓰기
+                                                </button>
+                                            </c:if>
+
+                                            <c:if test="${itemCount eq 1 and not empty mainItem}">
+                                                <button type="button"
+                                                        class="qna"
+                                                        onclick="location.href='/qna_form.do?product_id=${mainItem.product_id}'">
+                                                    문의하기
+                                                </button>
                                             </c:if>
                                         </div>
                                     </div>
@@ -185,6 +197,36 @@
     <!-- ================= 오른쪽: 최근 활동 알림 시작 ================= -->
     <aside class="dashboard-activity-sidebar">
 
+        <%-- 나의 혜택 요약 --%>
+        <section class="dashboard-section dashboard-benefit-card">
+            <div class="dashboard-section-head">
+                <h3>나의 쇼핑 혜택</h3>
+            </div>
+            <div class="dashboard-benefit-row">
+                <div class="dashboard-benefit-item point">
+                    <span>적립금</span>
+                    <strong>2,500<small>원</small></strong>
+                </div>
+                <div class="dashboard-benefit-item coupon">
+                    <span>쿠폰</span>
+                    <strong>2<small>장</small></strong>
+                </div>
+            </div>
+        </section>
+
+        <%-- 최근 본 상품 --%>
+        <section class="dashboard-section recently-viewed recent-viewed-compact">
+            <div class="dashboard-section-head">
+                <h3>최근 본 상품 <span>(4)</span></h3>
+                <a href="/myshop/recent" class="view-all-btn">더보기 &gt;</a>
+            </div>
+            <div class="recent-prod-grid">
+                <c:forEach var="product" items="${productRecentList}">
+                    <div class="prod-item">${product.product_id}</div>
+                </c:forEach>
+            </div>
+        </section>
+
         <%-- 2. 작성 가능한 리뷰 (워딩 변경) --%>
         <section class="dashboard-section">
             <div class="dashboard-section-head">
@@ -192,13 +234,21 @@
                 <a href="/mypage/review" class="view-all-btn">더보기 &gt;</a>
             </div>
             <ul class="compact-prod-list">
+                <c:forEach var="review" items="${writableReviews}">
                 <li>
-                    <img src="/images/tmp_prod_1.jpg" alt="">
+                    <img src="/upload/${review.image_l}" alt="">
                     <div class="info">
-                        <span>핸드메이드 코스튬 자켓</span>
+                        <span>${review.product_name}</span>
+                        <button type="button"
+                                class="review"
+                                onclick="location.href='/review_form.do?order_item_id=${review.order_item_id}'">
+                            리뷰쓰기
+                        </button>
                         <a href="/mypage/review/write" class="action">리뷰 쓰고 500원 받기</a>
                     </div>
                 </li>
+                </c:forEach>
+                
             </ul>
         </section>
 
@@ -209,21 +259,18 @@
                 <a href="/mypage/qna" class="view-all-btn">더보기 &gt;</a>
             </div>
             <div class="compact-inquiry">
-                <p>배송 지연 문의드립니다.</p>
-                <span class="status">답변 완료</span>
-                <span class="type">2023.10.25</span>
-            </div>
-        </section>
+                <c:forEach var="qna" items="${qnaList}">
+                <p>
+                    <a href="/qna_detail.do?qna_id=${qna.qna_id}">
+                        ${qna.title}
+                    </a>
+                    <span class="status">${qna.status}</span>
+                    <span class="type">${qna.created_at}</span>
+                </p>
 
-        <%-- 4. 공지사항 (추가 제안) --%>
-        <section class="dashboard-section">
-            <div class="dashboard-section-head">
-                <h3>공지사항</h3>
+                </c:forEach>
+
             </div>
-            <ul class="dashboard-notice-list">
-                <li><a href="#">[안내] 설 연휴 배송 일정 안내</a></li>
-                <li><a href="#">[이벤트] 신규 가입 10% 쿠폰 지급</a></li>
-            </ul>
         </section>
 
     </aside>

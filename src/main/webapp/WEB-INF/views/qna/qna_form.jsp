@@ -184,7 +184,7 @@
             <div class="form-layout">
                 <aside class="product-panel">
                     <span>문의 상품</span>
-                    <img src="${product.image_l}" alt="${product.name}">
+                    <img src="/upload/${product.image_l}" alt="${product.name}">
                     <strong>${product.name}</strong>
                     <p>상품 정보와 함께 문의 제목, 내용을 작성해주세요.</p>
                 </aside>

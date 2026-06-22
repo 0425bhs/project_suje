@@ -1102,4 +1102,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LIMIT #{limit}
     </select>
 
+    <!-- 테스트 용도 최근 본 상품 목록 출력 -->
+    <select id="product_recent"
+            parameterType="int"
+            resultType="product">
+        SELECT *
+        FROM (
+            SELECT product_id, MAX(viewed_at) viewed_at
+            FROM product_view_log
+            WHERE user_id = 10
+            GROUP BY product_id
+        ) t
+        JOIN products p ON t.product_id = p.product_id
+        ORDER BY t.viewed_at DESC;
+    </select>
 </mapper>
