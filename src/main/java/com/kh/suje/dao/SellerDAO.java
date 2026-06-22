@@ -8,6 +8,8 @@ import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
 
 public interface SellerDAO {
+    List<SellerVO> getSellerListByKeyword(String status, String keyword);
+    
     int insertSeller(SellerVO svo);
     
     Map<String, Object> getOrderStatusCounts(int seller_id);

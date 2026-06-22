@@ -6,7 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.dao.UserDAO;
+import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.UserVO;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminController {
     private final UserDAO userDao;
+    private final SellerDAO sellerDao;
+
     @GetMapping(value={"/admin", "/admin/dashboard"})
     public String adminDashboard() {
 
@@ -43,8 +47,21 @@ public class AdminController {
     }
 
     @GetMapping("/admin/sellers")
-    public String sellers() {
+    public String sellers(Model model, String status, String keyword) {
+        List<SellerVO> sellerList;
+        
+        if (!"pending".equals(status) && !"approved".equals(status) && !"rejected".equals(status)) {
+            status = "all";
+        }
 
+        sellerList = sellerDao.getSellerListByKeyword(status, keyword);
+        int totalCount = sellerList.size();
+
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sellerList", sellerList);
+        model.addAttribute("totalCount", totalCount);
+        
         return "/admin/admin_seller_approval";
     }
 

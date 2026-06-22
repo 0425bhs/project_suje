@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -47,30 +48,20 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="seller" items="${sellerList}">
                     <tr>
-                        <td>#S-204</td>
-                        <td class="left"><strong>라온공방</strong></td>
-                        <td>박라온</td>
-                        <td>123-45-67890</td>
-                        <td>가죽공예</td>
-                        <td><span class="admin-status pending">대기</span></td>
-                        <td>2026-06-16</td>
+                        <td>${seller.user_id}</td>
+                        <td class="left"><strong>${seller.company_name}</strong></td>
+                        <td>${seller.representative_name}</td>
+                        <td>${seller.business_number}</td>
+                        <td>(미구현)</td>
+                        <td><span class="admin-status pending">${seller.status eq pending ? "승인대기" : "승인완료"}</span></td>
+                        <td>${seller.created_at}</td>
                         <td class="admin-table-actions">
                             <button type="button" class="admin-btn light">상세</button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>#S-203</td>
-                        <td class="left"><strong>소일 세라믹</strong></td>
-                        <td>이소일</td>
-                        <td>222-11-77777</td>
-                        <td>도자기</td>
-                        <td><span class="admin-status pending">대기</span></td>
-                        <td>2026-06-15</td>
-                        <td class="admin-table-actions">
-                            <button type="button" class="admin-btn light">상세</button>
-                        </td>
-                    </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>

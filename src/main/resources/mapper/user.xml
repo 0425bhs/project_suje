@@ -19,18 +19,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             resultType="user">
         SELECT *
         FROM users
-        <where>
-            <if test="role != null and role != 'all'">
-            role = #{role}
-            </if>
-            <if test="keyword != null and keyword != ''">
-                AND (
-                    login_id LIKE CONCAT('%', #{keyword}, '%')
-                    OR name LIKE CONCAT('%', #{keyword}, '%')
-                    OR email LIKE CONCAT('%', #{keyword}, '%')
-                )
-            </if>
-        </where>
     </select>
 
     <!--닉네임 중복체크-->
