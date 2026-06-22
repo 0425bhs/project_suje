@@ -19,11 +19,7 @@
             <div>
                 <span class="admin-page-label">QNA MANAGEMENT</span>
                 <h1>문의 관리</h1>
-                <p>상품 문의와 관리자 문의의 답변 상태를 확인합니다.</p>
-            </div>
-            <div class="admin-header-actions">
-                <button type="button" class="admin-btn">답변 등록</button>
-                <button type="button" class="admin-btn light">담당자 배정</button>
+                <p>상품 문의와 답변 상태를 확인합니다.</p>
             </div>
         </header>
 
@@ -34,7 +30,6 @@
                     <button type="button">미답변</button>
                     <button type="button">답변완료</button>
                     <button type="button">상품문의</button>
-                    <button type="button">운영문의</button>
                 </div>
                 <input type="text" class="admin-search" placeholder="문의 제목, 작성자 검색">
             </div>
@@ -50,8 +45,7 @@
                         <th>대상</th>
                         <th>상태</th>
                         <th>작성일</th>
-                        <th>담당자</th>
-                        <th>처리</th>
+                        <th>관리</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,21 +57,18 @@
                         <td>자수 파우치</td>
                         <td><span class="admin-status pending">미답변</span></td>
                         <td>2026-06-16</td>
-                        <td>미배정</td>
                         <td class="admin-table-actions">
-                            <button type="button" class="admin-btn">답변</button>
                             <button type="button" class="admin-btn light">상세</button>
                         </td>
                     </tr>
                     <tr>
                         <td>#Q-418</td>
-                        <td>운영문의</td>
-                        <td class="left"><strong>판매자 정산 관련 문의</strong></td>
+                        <td>상품문의</td>
+                        <td class="left"><strong>재입고 일정 문의</strong></td>
                         <td>오브제상점</td>
-                        <td>정산</td>
+                        <td>천연비누 세트</td>
                         <td><span class="admin-status done">완료</span></td>
                         <td>2026-06-15</td>
-                        <td>관리자A</td>
                         <td class="admin-table-actions">
                             <button type="button" class="admin-btn light">상세</button>
                         </td>
