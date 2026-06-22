@@ -247,7 +247,6 @@
 
 /* =========================================================
    colgroup 컬럼 너비
-   - px 고정해서 th 간격 틀어짐 줄임
 ========================================================= */
 
 .col-check {
@@ -307,7 +306,6 @@
    대표 이미지
 ========================================================= */
 
-/* td에 image-column 클래스가 있는 경우 */
 .product-manage-table th.image-column,
 .product-manage-table td.image-column {
     width: 120px;
@@ -317,7 +315,6 @@
     padding-right: 0 !important;
 }
 
-/* td 안에 product-thumb 이미지가 있는 경우도 강제로 가운데 */
 .product-manage-table td:has(.product-thumb) {
     text-align: center !important;
     vertical-align: middle;
@@ -325,7 +322,6 @@
     padding-right: 0 !important;
 }
 
-/* 이미지가 a태그나 div로 감싸져 있어도 가운데 */
 .product-manage-table td:has(.product-thumb) > a,
 .product-manage-table td:has(.product-thumb) > div {
     display: inline-flex;
@@ -333,7 +329,6 @@
     align-items: center;
 }
 
-/* 이미지 */
 .product-thumb {
     width: 70px;
     height: 70px;
@@ -596,7 +591,6 @@ button.status-badge {
 
 /* =========================================================
    카드형 가격 관리 정보
-   - 판매자 화면용
 ========================================================= */
 
 .card-price-manage-box {
@@ -738,7 +732,7 @@ button.status-badge {
 
 /* =========================================================
    주문 관리 화면 - 카드형 주문 목록
-   - 주문 하나를 하나의 카드로 보여주기 위한 스타일
+   - 주문상품별 상태 변경 구조
 ========================================================= */
 
 /* 주문 목록 전체 */
@@ -751,7 +745,7 @@ button.status-badge {
 /* 주문 목록 컬럼 제목 */
 .seller-order-head {
     display: grid;
-    grid-template-columns: 110px 150px minmax(360px, 1fr) 90px 130px 150px 170px;
+    grid-template-columns: 110px minmax(360px, 1fr) 140px 90px 130px 150px 170px;
     align-items: center;
 
     padding: 12px 20px;
@@ -770,7 +764,7 @@ button.status-badge {
 /* 주문 카드 */
 .seller-order-card {
     display: grid;
-    grid-template-columns: 110px 150px minmax(360px, 1fr) 90px 130px 150px 170px;
+    grid-template-columns: 110px minmax(360px, 1fr) 140px 90px 130px 150px 170px;
     align-items: stretch;
 
     padding: 14px 20px;
@@ -790,6 +784,9 @@ button.status-badge {
 
 /* 주문번호 영역 */
 .order-no-box {
+    grid-column: 1;
+    grid-row: 1;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -801,13 +798,73 @@ button.status-badge {
     font-weight: 900;
 }
 
-/* 주문 상태 영역 */
-.order-status-area {
+/* 주문 상품 목록 */
+.order-card-items {
+    grid-column: 2 / 6;
+    grid-row: 1;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* 주문 안의 상품 한 줄 */
+.order-item-line {
+    display: grid;
+    grid-template-columns: minmax(360px, 1fr) 140px 90px 130px;
+    align-items: center;
+
+    min-height: 78px;
+    padding: 6px 0;
+
+    border-bottom: 1px solid #eef0f2;
+}
+
+/* 마지막 상품은 구분선 제거 */
+.order-item-line:last-child {
+    border-bottom: none;
+}
+
+/* 상품 이미지 + 상품명 */
+.order-product-info {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    align-items: center;
+    column-gap: 14px;
+
+    text-align: left;
+}
+
+/* 주문관리 상품 이미지 */
+.order-product-info .product-thumb,
+.order-product-info .no-image {
+    width: 64px;
+    height: 64px;
+    margin: 0 !important;
+    flex-shrink: 0;
+}
+
+/* 주문관리 상품명 */
+.order-product-name {
+    color: #111;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.4;
+    text-align: left;
+    word-break: keep-all;
+}
+
+/* 상품별 상태 영역 */
+.order-item-status {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 7px;
+}
+
+/* 상품별 상태 변경 form */
+.order-item-status .order-status-form {
+    margin: 0;
 }
 
 /* 주문 상태 변경 form */
@@ -842,52 +899,12 @@ button.status-badge {
 }
 
 /* 주문관리 화면 상태 배지 크기 */
-.order-status-area .status-badge {
+.order-item-status .status-badge {
     min-width: 74px;
     height: 28px;
     padding: 0 12px;
 
     font-size: 12px;
-}
-
-/* 주문 상품 목록 */
-.order-card-items {
-    display: flex;
-    flex-direction: column;
-}
-
-/* 주문 안의 상품 한 줄 */
-.order-item-line {
-    display: grid;
-    grid-template-columns: minmax(360px, 1fr) 90px 130px;
-    align-items: center;
-
-    min-height: 78px;
-    padding: 6px 0;
-
-    border-bottom: 1px solid #eef0f2;
-}
-
-/* 마지막 상품은 구분선 제거 */
-.order-item-line:last-child {
-    border-bottom: none;
-}
-
-/* 주문관리 상품 이미지 */
-.order-product-info .product-thumb,
-.order-product-info .no-image {
-    width: 64px;
-    height: 64px;
-    flex-shrink: 0;
-}
-
-/* 주문관리 상품명 */
-.order-product-name {
-    color: #111;
-    font-size: 14px;
-    font-weight: 900;
-    line-height: 1.4;
-    word-break: keep-all;
 }
 
 /* 수량 */
@@ -906,6 +923,9 @@ button.status-badge {
 
 /* 주문금액 */
 .order-total-box {
+    grid-column: 6;
+    grid-row: 1;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -919,6 +939,9 @@ button.status-badge {
 
 /* 주문일 */
 .order-date-box {
+    grid-column: 7;
+    grid-row: 1;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -939,27 +962,4 @@ button.status-badge {
     .seller-order-card {
         min-width: 1280px;
     }
-}
-
-/* 주문관리 상품 이미지 영역 정렬 고정 */
-.order-product-info {
-    display: grid;
-    grid-template-columns: 64px 1fr;
-    align-items: center;
-    column-gap: 14px;
-    text-align: left;
-}
-
-/* 실제 이미지와 이미지 없음 박스 위치를 동일하게 고정 */
-.order-product-info .product-thumb,
-.order-product-info .no-image {
-    width: 64px;
-    height: 64px;
-    margin: 0 !important;
-    flex-shrink: 0;
-}
-
-/* 주문관리 상품명 왼쪽 정렬 */
-.order-product-name {
-    text-align: left;
 }

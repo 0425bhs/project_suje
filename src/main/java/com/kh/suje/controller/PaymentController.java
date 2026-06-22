@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -207,6 +209,13 @@ public class PaymentController {
 
                 orderDAO.updateOrderStatus(orderVO);
 
+                // 주문상품 상태도 결제완료로 변경
+                Map<String, Object> itemStatusMap = new HashMap<>();
+                itemStatusMap.put("order_id", order_id);
+                itemStatusMap.put("status", "PAID");
+
+                orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
+
                 // =========================================================
                 // 결제 성공 후 상품 재고 차감
                 // - 결제가 정상 승인되고 주문 상태가 PAID로 변경된 뒤 실행
@@ -385,6 +394,13 @@ public class PaymentController {
                 orderVO.setCancel_reason(cancelReason);
 
                 int orderResult = orderDAO.updateOrderCancelInfo(orderVO);
+
+                // 주문상품 상태도 취소로 변경
+                Map<String, Object> itemStatusMap = new HashMap<>();
+                itemStatusMap.put("order_id", order_id);
+                itemStatusMap.put("status", "CANCELLED");
+
+                orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
 
                 if (paymentResult == 0 || orderResult == 0) {
                     model.addAttribute("order_id", order_id);

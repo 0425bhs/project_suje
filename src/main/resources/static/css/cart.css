@@ -840,3 +840,147 @@ input[type="checkbox"] {
     align-items: center;
     justify-content: center;
 }
+
+/* =========================================================
+   마이쇼핑 주문내역 - 구매확정 버튼
+========================================================= */
+
+/* 주문 카드 오른쪽 버튼 영역 안의 form */
+.myshop-list-actions .inline-form {
+    margin: 0;
+}
+
+/* 구매확정 버튼 */
+.myshop-list-actions .inline-form button.primary {
+    min-width: 82px;
+    height: 32px;
+    padding: 0 12px;
+
+    border: 1px solid #ff654f;
+    border-radius: 999px;
+    background: #ff654f;
+
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+    font-family: inherit;
+
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+/* 구매확정 버튼 hover */
+.myshop-list-actions .inline-form button.primary:hover {
+    background: #fff;
+    color: #ff654f;
+}
+
+/* 리뷰쓰기 버튼 */
+.myshop-list-actions .review {
+    min-width: 82px;
+    height: 32px;
+    padding: 0 12px;
+
+    border: 1px solid #2ecc71;
+    border-radius: 999px;
+    background: #fff;
+
+    color: #2ecc71;
+    font-size: 12px;
+    font-weight: 900;
+    font-family: inherit;
+
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+/* 리뷰쓰기 버튼 hover */
+.myshop-list-actions .review:hover {
+    background: #2ecc71;
+    color: #fff;
+}
+
+/* 문의하기 버튼 */
+.myshop-list-actions .qna {
+    min-width: 82px;
+    height: 32px;
+    padding: 0 12px;
+
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    background: #fff;
+
+    color: #555;
+    font-size: 12px;
+    font-weight: 900;
+    font-family: inherit;
+
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+/* 문의하기 버튼 hover */
+.myshop-list-actions .qna:hover {
+    border-color: #111;
+    color: #111;
+}
+
+/* 버튼이 여러 개 생겼을 때 정렬 */
+.myshop-list-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 7px;
+}
+
+/* 구매확정 / 리뷰쓰기 / 문의하기 버튼 정렬 */
+.myshop-order-item-actions {
+    min-width: 130px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+/* 펼친 상품 안쪽 form 정렬 */
+.myshop-order-item-actions .inline-form {
+    width: 120px;
+    margin: 0;
+}
+
+/* 펼친 상품 안쪽 버튼 공통 */
+.myshop-order-item-actions button {
+    width: 120px;
+    height: 34px;
+
+    border: 1px solid #f0c9bc;
+    border-radius: 8px;
+    background: #fff;
+
+    color: #444;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* 구매확정 버튼 */
+.myshop-order-item-actions button.primary {
+    border-color: #ff6b4a;
+    background: #ff6b4a;
+    color: #fff;
+}
+
+/* 리뷰쓰기 버튼 */
+.myshop-order-item-actions button.review {
+    border-color: #ffb347;
+    background: #fff8ef;
+    color: #d97900;
+}
+
+/* 문의하기 버튼 */
+.myshop-order-item-actions button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}

@@ -505,6 +505,13 @@ public class OrderController {
 
             orderDAO.updateOrderStatus(orderVO);
 
+            // 주문상품 상태도 취소로 변경
+        Map<String, Object> itemStatusMap = new HashMap<>();
+        itemStatusMap.put("order_id", order_id);
+        itemStatusMap.put("status", "CANCELLED");
+
+        orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
+
             PaymentVO paymentVO = new PaymentVO();
             paymentVO.setOrder_id(order_id);
 
@@ -610,5 +617,26 @@ public class OrderController {
         model.addAttribute("couponPrice", couponPrice);
 
         return "order/order_form";
+    }
+
+    // 구매확정 처리
+    @PostMapping("/order_confirm.do")
+    public String orderConfirm(
+            @RequestParam("order_item_id") int order_item_id,
+            HttpSession session
+    ) {
+        UserVO user = (UserVO) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login.do";
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("order_item_id", order_item_id);
+        map.put("user_id", user.getUser_id());
+
+        orderDAO.confirmOrderItem(map);
+
+        return "redirect:/myshop/orders";
     }
 }

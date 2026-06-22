@@ -18,9 +18,14 @@ public class OrderItemVO {
     private int price; // 주문 당시 상품 1개 가격
     private int quantity; // 주문 수량
 
+    // 주문 상품별 상태
+    private String status; // 상품별 주문 상태
+    private String confirmed_at; // 구매확정 일시
+    private String updated_at; // 상태 변경 일시
+
     // 화면 출력용 JOIN 데이터
-    private String productName;  // products.name
-    private String imageL;       // products.image_l
-    private int subtotalAmount;  // price * quantity
+    private String productName; // products.name
+    private String imageL; // products.image_l
+    private int subtotalAmount; // price * quantity
 
 }
