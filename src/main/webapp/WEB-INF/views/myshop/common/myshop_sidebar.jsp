@@ -27,10 +27,9 @@
         <div class="myshop-side-group">
             <strong>리뷰 관리</strong>
 
-            <a href="/myshop/reviews" class="${param.activeMenu eq 'review' ? 'active' : ''}">내가 작성한 리뷰</a>
+            <a href="/myshop/reviews" class="${activeMenu eq 'writtenReview' ? 'active' : ''}">내가 작성한 리뷰</a>
             
-            <button type="button" onclick="alert('작성 가능한 리뷰는 준비중입니다.');">
-                작성 가능한 리뷰
+            <a href="/myshop/reviews?tab=writable" class="${activeMenu eq 'writableReview' ? 'active' : ''}">작성 가능한 리뷰</a>
             </button>
             
         </div>

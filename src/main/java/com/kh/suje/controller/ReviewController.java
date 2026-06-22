@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -35,6 +36,9 @@ public class ReviewController {
     private final ProductDAO productDAO;
     private final ImageDAO imageDAO;
 
+    @Value("${file.upload.path}")
+    private String savePath;
+
     @GetMapping(value={"testmain" ,"/review"})
     public String main() {
         return "/testmain";
@@ -54,18 +58,15 @@ public class ReviewController {
 
     @PostMapping("/review_form.do")
     @Transactional(rollbackFor = Exception.class)
-    public String reviewFormFin(ReviewVO review, List<MultipartFile> images) throws IllegalStateException, IOException {
-        // UserVO user = session.getAttribute("user");
-        // Long id = user.getId();
-
-        int user_id = 2;
+    public String reviewFormFin(HttpSession session, ReviewVO review, List<MultipartFile> images) throws IllegalStateException, IOException {
+        UserVO user = (UserVO)session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login.do";
+        }
+        int user_id = user.getUser_id();
         review.setUser_id(user_id);
 
         reviewDAO.addReview(review);
-
-        //저장경로 지정
-        String savePath = "C:\\upload";
-        // String savePath = "/Users/kkt/Desktop/KKT/Spring_boot/upload";
 
         //저장경로가 없다면 생성
         File dir = new File(savePath);
@@ -115,10 +116,14 @@ public class ReviewController {
         }
 
         List<ReviewVO> list;
+        String activeMenu;
+        
         if ("writable".equals(tab)) {
             list = reviewDAO.getWritableReview(user_id);
+            activeMenu = "writableReview";
         } else {
             list = reviewDAO.getWrittenReview(user_id);
+            activeMenu = "writtenReview";
         }
         
         if (list != null && !list.isEmpty()) {
@@ -151,7 +156,7 @@ public class ReviewController {
         model.addAttribute("tab", tab);
         model.addAttribute("writtenReviewCount", writtenReviewCount);
         model.addAttribute("writableReviewCount", writableReviewCount);
-        model.addAttribute("activeMenu", "review");
+        model.addAttribute("activeMenu", activeMenu);
         model.addAttribute("contentPage", "/myshop/review_list");
 
         return "/myshop/myshop_main";

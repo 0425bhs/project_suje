@@ -7,8 +7,10 @@
 }
 
 .myshop-review-section .myshop-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: 22px;
-    gap: 20px;
+    gap: 18px;
 }
 
 .myshop-review-section .myshop-list-card {
@@ -31,26 +33,39 @@
 }
 
 .myshop-review-section .myshop-list-top {
-    min-height: 58px;
-    padding: 16px 22px;
+    min-height: 52px;
+    padding: 14px 18px;
     background: linear-gradient(90deg, #fff7f3 0%, #ffffff 75%);
 }
 
 .myshop-review-section .myshop-list-top > div {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
     min-width: 0;
 }
 
+.myshop-review-section .myshop-list-top span {
+    color: #777;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.myshop-review-section .myshop-list-top > a {
+    color: #555;
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
 .myshop-review-state {
-    height: 30px;
-    padding: 0 14px;
+    height: 26px;
+    padding: 0 11px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 950;
     white-space: nowrap;
 }
@@ -66,10 +81,78 @@
 }
 
 .myshop-review-section .myshop-list-body {
-    grid-template-columns: 104px minmax(0, 1fr) 184px;
-    gap: 24px;
+    padding: 18px;
+}
+
+.myshop-review-section .myshop-review-card-body {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+}
+
+.myshop-review-product-image {
+    width: 78px;
+    aspect-ratio: 1 / 1;
+    display: block;
+    overflow: hidden;
+    border: 1px solid #ead8cf;
+    border-radius: 12px;
+    background: #f6f6f6;
+    box-shadow: 0 8px 18px rgba(80, 45, 25, 0.05);
+}
+
+.myshop-review-product-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.myshop-review-summary {
+    min-width: 0;
+}
+
+.myshop-review-product-name {
+    display: block;
+    margin: 0 0 7px;
+    color: #111;
+    font-size: 15px;
+    font-weight: 950;
+    line-height: 1.35;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.myshop-review-product-name:hover {
+    color: #ff6f4f;
+}
+
+.myshop-review-score-row {
+    display: flex;
     align-items: center;
-    padding: 22px;
+    gap: 10px;
+    margin: 0 0 8px;
+}
+
+.myshop-review-stars {
+    display: flex;
+    gap: 2px;
+    color: #ead8cf;
+    font-size: 15px;
+    line-height: 1;
+}
+
+.myshop-review-stars span.filled {
+    color: #ff6f4f;
+}
+
+.myshop-review-score-row strong {
+    color: #333;
+    font-size: 12px;
+    font-weight: 950;
 }
 
 .myshop-review-meta {
@@ -94,20 +177,26 @@
 
 .myshop-review-content,
 .myshop-review-guide {
-    padding: 14px 16px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    color: #555;
     border: 1px solid #f3e7df;
     border-radius: 12px;
     background: #fffaf7;
-    color: #333;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 850;
-    line-height: 1.65;
+    line-height: 1.6;
 }
 
 .myshop-review-content {
+    padding: 10px 12px;
+}
+
+.myshop-review-content span {
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
 
@@ -117,6 +206,10 @@
     color: #ff6f4f;
     font-size: 12px;
     font-weight: 950;
+}
+
+.myshop-review-guide {
+    padding: 12px 14px;
 }
 
 .myshop-review-guide strong {
@@ -135,24 +228,27 @@
 
 .myshop-review-photo-list {
     margin-top: 12px;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(5, 42px);
     gap: 8px;
 }
 
 .myshop-review-photo-list img {
-    width: 64px;
-    height: 64px;
+    width: 42px;
+    height: 42px;
     object-fit: cover;
     border: 1px solid #eeeeee;
-    border-radius: 10px;
+    border-radius: 9px;
     background: #f6f6f6;
 }
 
 .myshop-review-section .myshop-list-actions {
+    grid-column: 1 / -1;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
+    justify-self: end;
+    width: 148px;
 }
 
 .myshop-review-section .myshop-list-actions a,
@@ -165,15 +261,77 @@
     grid-column: 1 / -1;
 }
 
-@media (max-width: 1100px) {
-    .myshop-review-section .myshop-list-body {
-        grid-template-columns: 92px minmax(0, 1fr);
-    }
+.myshop-review-actions {
+    align-self: end;
+    margin-top: 2px;
+}
 
-    .myshop-review-section .myshop-list-actions {
-        grid-column: 1 / -1;
-        justify-content: flex-start;
-        max-width: 260px;
+.myshop-review-writable-section .myshop-review-writable-list {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.myshop-review-writable-card .myshop-list-top {
+    background: #fff;
+}
+
+.myshop-review-writable-card .myshop-review-card-body {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+}
+
+.myshop-review-writable-card .myshop-review-product-image {
+    width: 92px;
+}
+
+.myshop-review-writable-card .myshop-review-product-name {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.myshop-review-reward {
+    margin-top: 14px;
+    border-color: #ffe1d6;
+    background: #fff8f5;
+}
+
+.myshop-review-reward span {
+    margin-bottom: 2px;
+    color: #8a5a44;
+}
+
+.myshop-review-reward strong {
+    color: #ff5f3f;
+}
+
+.myshop-review-writable-card .myshop-review-actions {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+    margin-top: 0;
+}
+
+.myshop-review-writable-card .myshop-review-actions .primary {
+    height: 42px;
+    border-color: #ff6f4f;
+    border-radius: 10px;
+    background: #ff6f4f;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 950;
+}
+
+.myshop-review-writable-card .myshop-review-actions .primary:hover {
+    background: #f05c3d;
+    color: #fff;
+}
+
+@media (max-width: 1100px) {
+    .myshop-review-section .myshop-list {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -183,7 +341,19 @@
     }
 
     .myshop-review-section .myshop-list-body {
+        padding: 16px;
+    }
+
+    .myshop-review-section .myshop-review-card-body {
         grid-template-columns: 76px minmax(0, 1fr);
         gap: 14px;
+    }
+
+    .myshop-review-product-image {
+        width: 76px;
+    }
+
+    .myshop-review-actions {
+        width: 148px;
     }
 }

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <!-- 회원 요약 카드 -->
 <jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
@@ -30,7 +31,7 @@
 </section>
 
 <!-- 내 후기 목록 -->
-<section class="myshop-list-section myshop-review-section">
+<section class="myshop-list-section myshop-review-section ${tab eq 'writable' ? 'myshop-review-writable-section' : ''}">
 
     <div class="myshop-section-head">
         <div>
@@ -54,9 +55,9 @@
         </c:when>
 
         <c:otherwise>
-            <div class="myshop-list">
+            <div class="myshop-list ${tab eq 'writable' ? 'myshop-review-writable-list' : ''}">
                 <c:forEach var="review" items="${list}">
-                    <article class="myshop-list-card">
+                    <article class="myshop-list-card ${tab eq 'writable' ? 'myshop-review-writable-card' : ''}">
 
                         <div class="myshop-list-top">
                             <div>
@@ -77,54 +78,61 @@
                             </a>
                         </div>
 
-                        <div class="myshop-list-body myshop-review-body">
-                            <div class="myshop-product-thumb">
+                        <div class="myshop-list-body myshop-review-body myshop-review-card-body">
+                            <a class="myshop-review-product-image"
+                               href="/product_detail.do?product_id=${review.product_id}">
                                 <c:choose>
                                     <c:when test="${not empty review.image_l}">
-                                        <img src="${review.image_l}" alt="${review.product_name}">
+                                        <img src="/upload/${review.image_l}" alt="${review.product_name}">
                                     </c:when>
                                     <c:otherwise>
                                         <img src="/images/no_image.png" alt="이미지 없음">
                                     </c:otherwise>
                                 </c:choose>
-                            </div>
+                            </a>
 
-                            <div class="myshop-product-info">
-                                <a href="/product_detail.do?product_id=${review.product_id}">
+                            <div class="myshop-review-summary">
+                                <a class="myshop-review-product-name"
+                                   href="/product_detail.do?product_id=${review.product_id}">
                                     ${review.product_name}
                                 </a>
 
                                 <c:choose>
                                     <c:when test="${tab eq 'writable'}">
-                                        <div class="myshop-review-guide">
-                                            <span>REVIEW READY</span>
-                                            <strong>이 상품의 후기를 남길 수 있습니다.</strong>
-                                            <p>작품의 사용감, 포장, 배송 경험을 함께 남겨보세요.</p>
+                                        <div class="myshop-review-guide myshop-review-reward">
+                                            <span>리뷰 작성하고</span>
+                                            <strong>포인트 100P 받기</strong>
                                         </div>
                                     </c:when>
 
                                     <c:otherwise>
-                                        <div class="myshop-review-meta">
-                                            <span class="myshop-review-rating">별점 ${review.rating}점</span>
-                                            <span>작성일 ${review.created_at}</span>
+                                        <div class="myshop-review-score-row">
+                                            <div class="myshop-review-stars">
+                                                <c:forEach begin="1" end="5" var="star">
+                                                    <span class="${star le review.rating ? 'filled' : ''}">★</span>
+                                                </c:forEach>
+                                            </div>
+                                            <strong>${review.rating}/5</strong>
                                         </div>
 
                                         <div class="myshop-review-content">
-                                            ${review.content}
+                                            <span>${review.content}</span>
                                         </div>
+
+                                        <c:if test="${not empty review.imageList}">
+                                            <div class="myshop-review-photo-list">
+                                                <c:forEach var="image" items="${review.imageList}" varStatus="photoStatus">
+                                                    <c:if test="${photoStatus.index lt 5}">
+                                                        <img src="/upload/${image.image_url}" alt="리뷰 사진">
+                                                    </c:if>
+                                                </c:forEach>
+                                            </div>
+                                        </c:if>
                                     </c:otherwise>
                                 </c:choose>
-
-                                <c:if test="${not empty review.imageList}">
-                                    <div class="myshop-review-photo-list">
-                                        <c:forEach var="image" items="${review.imageList}">
-                                            <img src="/upload/${image.image_url}" alt="리뷰 사진">
-                                        </c:forEach>
-                                    </div>
-                                </c:if>
                             </div>
 
-                            <div class="myshop-list-actions">
+                            <div class="myshop-list-actions myshop-review-actions">
                                 <c:choose>
                                     <c:when test="${tab eq 'writable'}">
                                         <a class="primary" href="/review_form.do?order_item_id=${review.order_item_id}">

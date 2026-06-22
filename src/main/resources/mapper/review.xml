@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getWrittenReview"
             parameterType="int"
             resultType="review">
-        SELECT r.*, p.name product_name, p.image_s
+        SELECT r.*, p.name product_name, p.image_l
         FROM order_items oi
         JOIN orders o ON oi.order_id = o.order_id
         JOIN reviews r ON oi.order_item_id = r.order_item_id
@@ -50,7 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             oi.order_item_id,
             oi.product_id,
             p.name product_name,
-            p.image_s
+            p.image_l
         FROM order_items oi
         JOIN orders o ON oi.order_id = o.order_id
         LEFT JOIN reviews r ON oi.order_item_id = r.order_item_id

@@ -101,7 +101,7 @@
                                         <div class="myshop-product-thumb">
                                             <c:choose>
                                                 <c:when test="${not empty mainItem and not empty mainItem.imageL and mainItem.imageL ne 'no_file'}">
-                                                    <img src="${mainItem.imageL}" alt="${mainItem.productName}">
+                                                    <img src="/upload/${mainItem.imageL}" alt="${mainItem.productName}">
                                                 </c:when>
                                                 <c:otherwise>
                                                     <img src="/images/no_image.png" alt="이미지 없음">
@@ -221,10 +221,9 @@
                 <a href="/myshop/recent" class="view-all-btn">더보기 &gt;</a>
             </div>
             <div class="recent-prod-grid">
-                <div class="prod-item">img</div>
-                <div class="prod-item">img</div>
-                <div class="prod-item">img</div>
-                <div class="prod-item">img</div>
+                <c:forEach var="product" items="${productRecentList}">
+                    <div class="prod-item">${product.product_id}</div>
+                </c:forEach>
             </div>
         </section>
 
@@ -235,13 +234,21 @@
                 <a href="/mypage/review" class="view-all-btn">더보기 &gt;</a>
             </div>
             <ul class="compact-prod-list">
+                <c:forEach var="review" items="${writableReviews}">
                 <li>
-                    <img src="/images/tmp_prod_1.jpg" alt="">
+                    <img src="/upload/${review.image_l}" alt="">
                     <div class="info">
-                        <span>핸드메이드 코스튬 자켓</span>
+                        <span>${review.product_name}</span>
+                        <button type="button"
+                                class="review"
+                                onclick="location.href='/review_form.do?order_item_id=${review.order_item_id}'">
+                            리뷰쓰기
+                        </button>
                         <a href="/mypage/review/write" class="action">리뷰 쓰고 500원 받기</a>
                     </div>
                 </li>
+                </c:forEach>
+                
             </ul>
         </section>
 
@@ -252,9 +259,17 @@
                 <a href="/mypage/qna" class="view-all-btn">더보기 &gt;</a>
             </div>
             <div class="compact-inquiry">
-                <p>배송 지연 문의드립니다.</p>
-                <span class="status">답변 완료</span>
-                <span class="type">2023.10.25</span>
+                <c:forEach var="qna" items="${qnaList}">
+                <p>
+                    <a href="/qna_detail.do?qna_id=${qna.qna_id}">
+                        ${qna.title}
+                    </a>
+                    <span class="status">${qna.status}</span>
+                    <span class="type">${qna.created_at}</span>
+                </p>
+
+                </c:forEach>
+
             </div>
         </section>
 
