@@ -36,6 +36,11 @@
         <link rel="stylesheet" href="/css/myshop/order.css?v=2">
         <link rel="stylesheet" href="/css/myshop/qna.css?v=1">
     </c:if>
+
+    <c:if test="${contentPage eq '/myshop/recent'}">
+        <link rel="stylesheet" href="/css/product/product_card.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/recent.css?v=1">
+    </c:if>
     
     <script src="/js/product_main.js" defer></script>
     <c:if test="${contentPage eq '/myshop/order_list'}">

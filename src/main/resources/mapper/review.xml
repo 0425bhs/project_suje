@@ -59,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         AND o.status = 'DELIVERED'
         AND r.review_id IS NULL
         ORDER BY o.created_at DESC
+        LIMIT 3
     </select>
 
     <select id="getWrittenReviewCount"

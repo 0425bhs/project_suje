@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.kh.suje.dao.AddressDAO;
+import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
@@ -36,9 +37,10 @@ public class MyShopController {
     private final QnaDAO qnaDAO;
     private final ProductDAO productDAO;
     private final ReviewDAO reviewDAO;
-
+    private final FavoriteDAO favoritedao;
+    
     @GetMapping("/myshop")
-    private String MyShop(HttpSession session, Model model) {
+    public String MyShop(HttpSession session, Model model) {
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
         if (loginUser == null) {
@@ -58,8 +60,12 @@ public class MyShopController {
         int watingQnaCount = qnaDAO.getWatingQnaCount(user_id);
         int answeredQnaCount = qnaDAO.getAnsweredQnaCount(user_id);
         model.addAttribute("watingQnaCount", watingQnaCount);
-        model.addAttribute("answeredQnaCount",   answeredQnaCount);
+        model.addAttribute("answeredQnaCount", answeredQnaCount);
 
+        int productFavoriteCount = favoritedao.getFavoriteProductCount(user_id);
+        int sellerFavoriteCount = favoritedao.getFavoriteSellerCount(user_id);
+        model.addAttribute("productFavoriteCount", productFavoriteCount);
+        model.addAttribute("sellerFavoriteCount", sellerFavoriteCount);
         // int orderCount = orderDAO.getOrderCount(user_id);
         // int reviewCount = reviewDAO.getReviewCount(user_id);
         // int qnaCount = qnaDAO.getQnaCount(user_id);
@@ -120,5 +126,22 @@ public class MyShopController {
         model.addAttribute("contentPage", "/myshop/dashboard");
 
         return "/myshop/address_list";
+    }
+
+    //최근 본 상품 상세
+    @GetMapping("/myshop/recent")
+    public String recentViewedProducts(HttpSession session, Model model) {
+        UserVO loginUser = (UserVO)session.getAttribute("user");
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+        int user_id = loginUser.getUser_id();
+        List<ProductVO> recentList = productDAO.product_recent(user_id);
+
+        model.addAttribute("recentList", recentList);
+        model.addAttribute("activeMenu", "recent");
+        model.addAttribute("contentPage", "/myshop/recent");
+
+        return "/myshop/myshop_main";
     }
 }
