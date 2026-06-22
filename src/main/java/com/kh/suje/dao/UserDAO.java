@@ -1,12 +1,16 @@
 package com.kh.suje.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import com.kh.suje.vo.UserVO;
 
 public interface UserDAO {
+    List<UserVO> getUserList(); //전체 회원 정보 가져오기
+    List<UserVO> getUserListByRole(String role); //특정 권한 회원 정보 가져오기
+    List<UserVO> getUserListByKeyword(String role, String keyword); //키워드로 회원 검색
 
-    int insertUser( UserVO vo); //회원가입
+    int insertUser(UserVO vo); //회원가입
 
     UserVO userNickCheck(String nick_name); //닉네임 중복체크
 

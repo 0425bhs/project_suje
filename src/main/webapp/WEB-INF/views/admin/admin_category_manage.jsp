@@ -19,93 +19,51 @@
             <div>
                 <span class="admin-page-label">CATEGORY MANAGEMENT</span>
                 <h1>카테고리 관리</h1>
-                <p>상품 분류를 추가, 수정, 노출 순서 변경, 비활성화 처리합니다.</p>
-            </div>
-            <div class="admin-header-actions">
-                <button type="button" class="admin-btn">카테고리 추가</button>
-                <button type="button" class="admin-btn light">순서 저장</button>
+                <p>현재 카테고리 구조를 확인합니다. 등록/수정은 DAO 추가 후 확장하면 됩니다.</p>
             </div>
         </header>
 
-        <section class="admin-grid three">
-            <article class="admin-card">
-                <div class="admin-card-head">
-                    <h3>카테고리 등록</h3>
-                </div>
-                <div class="admin-form-grid">
-                    <div class="admin-form-row full">
-                        <label>상위 카테고리</label>
-                        <select>
-                            <option>최상위</option>
-                            <option>패션잡화</option>
-                            <option>생활소품</option>
-                        </select>
-                    </div>
-                    <div class="admin-form-row full">
-                        <label>카테고리명</label>
-                        <input type="text" placeholder="예: 도자기">
-                    </div>
-                    <div class="admin-form-row">
-                        <label>노출 순서</label>
-                        <input type="number" value="1">
-                    </div>
-                    <div class="admin-form-row">
-                        <label>상태</label>
-                        <select>
-                            <option>노출</option>
-                            <option>숨김</option>
-                        </select>
-                    </div>
-                    <div class="admin-form-row full">
-                        <button type="button" class="admin-btn">저장</button>
-                    </div>
-                </div>
-            </article>
-
-            <article class="admin-card span-2">
-                <div class="admin-card-head">
-                    <h3>카테고리 목록</h3>
-                    <span class="admin-status active">노출중 12개</span>
-                </div>
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead>
-                        <tr>
-                            <th>순서</th>
-                            <th>대분류</th>
-                            <th>중분류</th>
-                            <th>상품 수</th>
-                            <th>상태</th>
-                            <th>관리</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td><strong>패션잡화</strong></td>
-                            <td>가방/파우치</td>
-                            <td>128</td>
-                            <td><span class="admin-status active">노출</span></td>
-                            <td class="admin-table-actions">
-                                <button type="button" class="admin-btn light">수정</button>
-                                <button type="button" class="admin-btn muted">숨김</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td><strong>생활소품</strong></td>
-                            <td>도자기</td>
-                            <td>86</td>
-                            <td><span class="admin-status active">노출</span></td>
-                            <td class="admin-table-actions">
-                                <button type="button" class="admin-btn light">수정</button>
-                                <button type="button" class="admin-btn muted">숨김</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </article>
+        <section class="admin-card">
+            <div class="admin-card-head">
+                <h3>카테고리 목록</h3>
+                <span class="admin-status active">조회 가능</span>
+            </div>
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>대분류 번호</th>
+                        <th>대분류</th>
+                        <th>소분류 번호</th>
+                        <th>소분류</th>
+                        <th>상태</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>패션잡화</strong></td>
+                        <td>11</td>
+                        <td>가방/파우치</td>
+                        <td><span class="admin-status active">사용중</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>생활소품</strong></td>
+                        <td>21</td>
+                        <td>도자기</td>
+                        <td><span class="admin-status active">사용중</span></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>반려동물</strong></td>
+                        <td>31</td>
+                        <td>간식/용품</td>
+                        <td><span class="admin-status active">사용중</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 </div>

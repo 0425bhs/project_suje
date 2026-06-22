@@ -1,13 +1,20 @@
 package com.kh.suje.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import com.kh.suje.dao.UserDAO;
+import com.kh.suje.vo.UserVO;
 
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class AdminController {
+    private final UserDAO userDao;
     @GetMapping(value={"/admin", "/admin/dashboard"})
     public String adminDashboard() {
 
@@ -15,8 +22,23 @@ public class AdminController {
     }
 
     @GetMapping("/admin/members")
-    public String members() {
+    public String members(Model model, String role, String keyword) {
 
+        List<UserVO> userList;
+        
+        if (!"user".equals(role) && !"seller".equals(role)) {
+            role = "all";
+        }
+
+        userList = userDao.getUserListByKeyword(role, keyword);
+        int totalCount = userList.size();
+        // userList = userDao.getUserListByRole(role);
+
+        model.addAttribute("role", role);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("userList", userList);
+        model.addAttribute("totalCount", totalCount);
+        
         return "/admin/admin_member_list";
     }
 

@@ -19,11 +19,11 @@
             <div>
                 <span class="admin-page-label">NOTICE MANAGEMENT</span>
                 <h1>공지사항 관리</h1>
-                <p>쇼핑몰 공지, 이벤트, 운영 안내를 작성하고 노출 상태를 관리합니다.</p>
+                <p>쇼핑몰 공지사항을 등록하고 수정합니다.</p>
             </div>
             <div class="admin-header-actions">
-                <button type="button" class="admin-btn">공지 등록</button>
-                <button type="button" class="admin-btn light">미리보기</button>
+                <a href="/notice_form.do" class="admin-btn">공지 등록</a>
+                <a href="/notice_list.do" class="admin-btn light">사용자 공지 보기</a>
             </div>
         </header>
 
@@ -36,8 +36,6 @@
                     <div class="admin-filter-tabs">
                         <button type="button" class="active">전체</button>
                         <button type="button">공지</button>
-                        <button type="button">이벤트</button>
-                        <button type="button">숨김</button>
                     </div>
                     <input type="text" class="admin-search" placeholder="제목 검색">
                 </div>
@@ -61,19 +59,19 @@
                             <td><span class="admin-status active">노출</span></td>
                             <td>2026-06-16</td>
                             <td class="admin-table-actions">
-                                <button type="button" class="admin-btn light">수정</button>
-                                <button type="button" class="admin-btn muted">숨김</button>
+                                <a href="/notice_update_form.do?notice_id=32" class="admin-btn light">수정</a>
+                                <a href="/notice_detail.do?notice_id=32" class="admin-btn light">상세</a>
                             </td>
                         </tr>
                         <tr>
                             <td>#N-31</td>
-                            <td>이벤트</td>
+                            <td>공지</td>
                             <td class="left"><strong>신규 가입 쿠폰 이벤트</strong></td>
-                            <td><span class="admin-status pending">예약</span></td>
+                            <td><span class="admin-status active">노출</span></td>
                             <td>2026-06-15</td>
                             <td class="admin-table-actions">
-                                <button type="button" class="admin-btn light">수정</button>
-                                <button type="button" class="admin-btn danger">삭제</button>
+                                <a href="/notice_update_form.do?notice_id=31" class="admin-btn light">수정</a>
+                                <a href="/notice_detail.do?notice_id=31" class="admin-btn light">상세</a>
                             </td>
                         </tr>
                         </tbody>
@@ -90,7 +88,6 @@
                         <label>공지 유형</label>
                         <select>
                             <option>공지</option>
-                            <option>이벤트</option>
                             <option>배송 안내</option>
                         </select>
                     </div>
@@ -103,7 +100,7 @@
                         <textarea placeholder="공지 내용을 입력하세요"></textarea>
                     </div>
                     <div class="admin-form-row full">
-                        <button type="button" class="admin-btn">등록</button>
+                        <a href="/notice_form.do" class="admin-btn">등록 화면으로 이동</a>
                     </div>
                 </div>
             </article>

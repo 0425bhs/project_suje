@@ -19,10 +19,10 @@
             회원 관리
         </a>
         <a href="/admin/sellers" class="${param.activeMenu eq 'sellers' ? 'menu-active' : ''}">
-            판매자 승인/반려
+            판매자 관리
         </a>
         <a href="/admin/products" class="${param.activeMenu eq 'products' ? 'menu-active' : ''}">
-            상품 승인/반려/숨김
+            상품 관리
         </a>
         <a href="/admin/reviews" class="${param.activeMenu eq 'reviews' ? 'menu-active' : ''}">
             후기 관리
@@ -31,7 +31,7 @@
             문의 관리
         </a>
         <a href="/admin/reports" class="${param.activeMenu eq 'reports' ? 'menu-active' : ''}">
-            신고 처리
+            신고 관리
         </a>
         <a href="/admin/categories" class="${param.activeMenu eq 'categories' ? 'menu-active' : ''}">
             카테고리 관리
@@ -40,7 +40,7 @@
             공지사항 관리
         </a>
         <a href="/admin/statistics" class="${param.activeMenu eq 'statistics' ? 'menu-active' : ''}">
-            매출/상품/판매자 통계
+            기본 통계
         </a>
     </nav>
 
