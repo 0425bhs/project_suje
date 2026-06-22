@@ -44,10 +44,13 @@
     </button>
 
     <%-- 관심 상품 카드 --%>
-    <button type="button" class="dashboard-status-card" onclick="alert('찜한 상품 기능은 준비중입니다.');">
+    <button type="button" class="dashboard-status-card" onclick="location.href='/myshop/my_favorite_list.do'">
         <span>♡</span>
         <strong>찜한상품</strong>
-        <small>전체 건</small>
+        <small class="dashboard-order-status-summary">
+            <em>상품 ${productFavoriteCount}</em>
+            <em>작가 ${sellerFavoriteCount}</em>
+        </small>
     </button>
 
 </section>
@@ -73,7 +76,7 @@
                     <div class="myshop-order dashboard-list-compact">
                         <%-- 최근 3건만 출력 --%>
                         <c:forEach var="order" items="${orderList}" varStatus="status">
-                            <c:if test="${status.index < 3}"> 
+                            <c:if test="${status.index < 5}"> 
 
                                 <c:set var="items" value="${orderItemMap[order.order_id]}" />
                                 <c:set var="mainItem" value="${items[0]}" />
@@ -217,12 +220,25 @@
         <%-- 최근 본 상품 --%>
         <section class="dashboard-section recently-viewed recent-viewed-compact">
             <div class="dashboard-section-head">
-                <h3>최근 본 상품 <span>(4)</span></h3>
+                <h3>최근 본 상품</h3>
                 <a href="/myshop/recent" class="view-all-btn">더보기 &gt;</a>
             </div>
             <div class="recent-prod-grid">
-                <c:forEach var="product" items="${productRecentList}">
-                    <div class="prod-item">${product.product_id}</div>
+                <c:forEach var="product" items="${productRecentList}" varStatus="status">
+                    <c:if test="${status.index lt 5}">
+                        <a href="/product_detail.do?product_id=${product.product_id}">
+                            <div class="prod-item">
+                                <c:choose>
+                                    <c:when test="${not empty product.image_l and product.image_l ne 'no_file'}">
+                                        <img src="/upload/${product.image_l}" alt="${product.name}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="/images/no_image.png" alt="이미지 없음">
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </a>
+                    </c:if>
                 </c:forEach>
             </div>
         </section>

@@ -1,0 +1,31 @@
+.myshop-recent-section {
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #f0e4dc;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(80, 45, 25, 0.04);
+}
+
+.myshop-recent-grid {
+    padding: 22px;
+}
+
+@media (max-width: 1180px) {
+    .myshop-recent-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 940px) {
+    .myshop-recent-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .myshop-recent-grid {
+        padding: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px 12px;
+    }
+}
