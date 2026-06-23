@@ -26,11 +26,18 @@
 
         <section class="admin-card">
             <div class="admin-filter-box">
-                <div class="admin-filter-tabs">
-                    <button type="button" class="active">승인대기</button>
-                    <button type="button">승인완료</button>
-                </div>
-                <input type="text" class="admin-search" placeholder="상점명, 대표자 검색">
+                <form class="admin-filter-form" action="/admin/sellers" method="get">
+                    <div class="admin-filter-tabs">
+                        <a href="/admin/sellers?status=all&keyword=${keyword}" class="${status eq 'all' ? 'active' : ''}">전체</a>
+                        <a href="/admin/sellers?status=pending&keyword=${keyword}" class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
+                        <a href="/admin/sellers?status=approved&keyword=${keyword}" class="${status eq 'approved' ? 'active' : ''}">승인완료</a>
+                        <a href="/admin/sellers?status=rejected&keyword=${keyword}" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
+                    </div>
+                    <span class="admin-filter-count">전체 ${totalCount}건</span>
+                    <input type="hidden" name="status" value="${status}">
+                    <input type="text" class="admin-search" name="keyword" 
+                           placeholder="상점명, 대표자 검색" value="${keyword}">
+                </form>
             </div>
 
             <div class="admin-table-wrap">
@@ -41,7 +48,6 @@
                         <th>상점명</th>
                         <th>대표자</th>
                         <th>사업자번호</th>
-                        <th>주요 카테고리</th>
                         <th>상태</th>
                         <th>신청일</th>
                         <th>관리</th>
@@ -54,8 +60,25 @@
                         <td class="left"><strong>${seller.company_name}</strong></td>
                         <td>${seller.representative_name}</td>
                         <td>${seller.business_number}</td>
-                        <td>(미구현)</td>
-                        <td><span class="admin-status pending">${seller.status eq pending ? "승인대기" : "승인완료"}</span></td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${seller.status eq 'PENDING'}">
+                                    <span class="admin-status pending">승인대기</span>
+                                </c:when>
+
+                                <c:when test="${seller.status eq 'APPROVED'}">
+                                    <span class="admin-status approved">승인완료</span>
+                                </c:when>
+
+                                <c:when test="${seller.status eq 'REJECTED'}">
+                                    <span class="admin-status rejected">반려</span>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <span class="admin-status muted">${seller.status}</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>${seller.created_at}</td>
                         <td class="admin-table-actions">
                             <button type="button" class="admin-btn light">상세</button>

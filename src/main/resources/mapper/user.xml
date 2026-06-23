@@ -9,16 +9,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM users
     </select>
 
-    <select id="getUserListByRole"
-            resultType="user">
-        SELECT *
-        FROM users
-    </select>
-
     <select id="getUserListByKeyword"
             resultType="user">
         SELECT *
         FROM users
+        <where>
+            <if test="role != null and role != 'all'">
+                role = #{role}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    login_id LIKE CONCAT("%", #{keyword}, "%")
+                    or name LIKE CONCAT("%", #{keyword}, "%")
+                    or email LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+        </where>
     </select>
 
     <!--닉네임 중복체크-->

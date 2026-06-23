@@ -33,11 +33,13 @@
                     <h3>공지사항 목록</h3>
                 </div>
                 <div class="admin-filter-box">
-                    <div class="admin-filter-tabs">
-                        <button type="button" class="active">전체</button>
-                        <button type="button">공지</button>
-                    </div>
-                    <input type="text" class="admin-search" placeholder="제목 검색">
+                    <form class="admin-filter-form" action="/admin/notices" method="get">
+                        <div class="admin-filter-tabs">
+                            <button type="button" class="active">전체</button>
+                            <button type="button">공지</button>
+                        </div>
+                        <input type="text" class="admin-search" name="keyword" placeholder="제목 검색">
+                    </form>
                 </div>
                 <div class="admin-table-wrap">
                     <table class="admin-table">

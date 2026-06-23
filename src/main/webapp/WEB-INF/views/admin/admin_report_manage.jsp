@@ -25,13 +25,15 @@
 
         <section class="admin-card">
             <div class="admin-filter-box">
-                <div class="admin-filter-tabs">
-                    <button type="button" class="active">미처리</button>
-                    <button type="button">상품</button>
-                    <button type="button">후기</button>
-                    <button type="button">회원</button>
-                </div>
-                <input type="text" class="admin-search" placeholder="신고 대상, 신고자 검색">
+                <form class="admin-filter-form" action="/admin/reports" method="get">
+                    <div class="admin-filter-tabs">
+                        <button type="button" class="active">미처리</button>
+                        <button type="button">상품</button>
+                        <button type="button">후기</button>
+                        <button type="button">회원</button>
+                    </div>
+                    <input type="text" class="admin-search" name="keyword" placeholder="신고 대상, 신고자 검색">
+                </form>
             </div>
 
             <div class="admin-table-wrap">

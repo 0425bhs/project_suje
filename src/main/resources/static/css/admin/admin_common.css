@@ -320,6 +320,13 @@ body {
     color: #fff;
 }
 
+.admin-filter-count {
+    color: #777;
+    font-size: 13px;
+    font-weight: 850;
+    white-space: nowrap;
+}
+
 .admin-search {
     width: 280px;
     height: 34px;
@@ -567,6 +574,11 @@ a.admin-list-item:hover {
 
     .admin-filter-form {
         display: block;
+    }
+
+    .admin-filter-count {
+        display: inline-block;
+        margin-top: 14px;
     }
 
     .admin-header-actions,

@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.kh.suje.dao.SellerDAO">
     <select id="getSellerListByKeyword"
             resultType="seller">
-        SELECT *
+        SELECT *, seller_status status
         FROM sellers
         <where>
         <if test="status != null and status != 'all'">

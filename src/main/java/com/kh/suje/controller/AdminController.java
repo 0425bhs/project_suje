@@ -6,8 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.dao.UserDAO;
+import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.UserVO;
 
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
     private final UserDAO userDao;
     private final SellerDAO sellerDao;
+    private final ProductDAO productDao;
 
     @GetMapping(value={"/admin", "/admin/dashboard"})
     public String adminDashboard() {
@@ -34,9 +37,11 @@ public class AdminController {
             role = "all";
         }
 
+        System.out.println("role : " + role);
+        System.out.println("keyword : " + keyword);
+        
         userList = userDao.getUserListByKeyword(role, keyword);
         int totalCount = userList.size();
-        // userList = userDao.getUserListByRole(role);
 
         model.addAttribute("role", role);
         model.addAttribute("keyword", keyword);
@@ -66,8 +71,21 @@ public class AdminController {
     }
 
     @GetMapping("/admin/products")
-    public String products() {
+    public String products(Model model, String status, String keyword) {
+        List<ProductVO> productList;
+        
+        if (!"pending".equals(status) && !"approved".equals(status) && !"rejected".equals(status)) {
+            status = "all";
+        }
 
+        productList = productDao.getProductListByKeyword(status, keyword);
+        int totalCount = productList.size();
+
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sellerList", productList);
+        model.addAttribute("totalCount", totalCount);
+        
         return "/admin/admin_product_approval";
     }
 

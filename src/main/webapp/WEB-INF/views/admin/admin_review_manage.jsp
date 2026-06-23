@@ -25,12 +25,14 @@
 
         <section class="admin-card">
             <div class="admin-filter-box">
-                <div class="admin-filter-tabs">
-                    <button type="button" class="active">전체</button>
-                    <button type="button">신규</button>
-                    <button type="button">사진 후기</button>
-                </div>
-                <input type="text" class="admin-search" placeholder="상품명, 작성자, 내용 검색">
+                <form class="admin-filter-form" action="/admin/reviews" method="get">
+                    <div class="admin-filter-tabs">
+                        <button type="button" class="active">전체</button>
+                        <button type="button">신규</button>
+                        <button type="button">사진 후기</button>
+                    </div>
+                    <input type="text" class="admin-search" name="keyword" placeholder="상품명, 작성자, 내용 검색">
+                </form>
             </div>
 
             <div class="admin-table-wrap">

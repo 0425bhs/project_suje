@@ -32,7 +32,7 @@
                         <a href="/admin/members?role=user&keyword=${keyword}" class="${role == 'user' ? 'active' : ''}">일반회원</a>
                         <a href="/admin/members?role=seller&keyword=${keyword}" class="${role == 'seller' ? 'active' : ''}">판매자</a>
                     </div>
-                    ${totalCount}
+                    <span class="admin-filter-count">전체 ${totalCount}명</span>
                     <input type="hidden" id="role" name="role" value="${role}">
                     <input type="text" class="admin-search" id="keyword" name="keyword" 
                            placeholder="아이디, 이름, 이메일 검색" value="${keyword}">

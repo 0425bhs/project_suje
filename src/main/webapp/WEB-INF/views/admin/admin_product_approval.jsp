@@ -25,13 +25,19 @@
 
         <section class="admin-card">
             <div class="admin-filter-box">
-                <div class="admin-filter-tabs">
-                    <button type="button" class="active">전체</button>
-                    <button type="button">판매중</button>
-                    <button type="button">품절</button>
-                    <button type="button">승인대기</button>
-                </div>
-                <input type="text" class="admin-search" placeholder="상품명, 판매자 검색">
+                <form class="admin-filter-form" action="/admin/products" method="get">
+                    <div class="admin-filter-tabs">
+                        <a href="/admin/products?status=all&keyword=${keyword}" class="${status eq 'all' ? 'active' : ''}">전체</a>
+                        <a href="/admin/products?status=pending&keyword=${keyword}" class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
+                        <a href="/admin/products?status=approved&keyword=${keyword}" class="${status eq 'approved' ? 'active' : ''}">판매중</a>
+rejected, hidden
+                        <button type="button">승인대기</button>
+                        <button type="button">판매중</button>
+                        <button type="button">반려</button>
+                        <button type="button">숨김</button>
+                    </div>
+                    <input type="text" class="admin-search" name="keyword" placeholder="상품명, 판매자 검색">
+                </form>
             </div>
 
             <div class="admin-table-wrap">
