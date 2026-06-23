@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -27,11 +28,13 @@
             <div class="admin-filter-box">
                 <form class="admin-filter-form" action="/admin/reviews" method="get">
                     <div class="admin-filter-tabs">
-                        <button type="button" class="active">전체</button>
-                        <button type="button">신규</button>
-                        <button type="button">사진 후기</button>
+                        <a href="/admin/reviews?status=all&keyword=${keyword}" class="${status eq 'all' ? 'active' : ''}">전체</a>
+                        <a href="/admin/reviews?status=public&keyword=${keyword}" class="${status eq 'public' ? 'active' : ''}">공개</a>
+                        <a href="/admin/reviews?status=private&keyword=${keyword}" class="${status eq 'private' ? 'active' : ''}">비공개</a>
                     </div>
-                    <input type="text" class="admin-search" name="keyword" placeholder="상품명, 작성자, 내용 검색">
+                    <input type="hidden" name="status" value="${status}"/>
+                    <input type="text" class="admin-search" name="keyword" 
+                           placeholder="상품명, 작성자, 내용 검색" value="${keyword}">
                 </form>
             </div>
 
@@ -50,30 +53,33 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="review" items="${reviewList}">
                     <tr>
-                        <td>#R-882</td>
-                        <td class="left"><strong>자수 파우치</strong></td>
-                        <td>김하늘</td>
-                        <td>★★★★★</td>
-                        <td class="left">마감이 깔끔하고 선물용으로 좋아요.</td>
-                        <td><span class="admin-status active">노출</span></td>
-                        <td>2026-06-16</td>
+                        <td>${review.review_id}</td>
+                        <td class="left"><strong>${review.product_name}</strong></td>
+                        <td>${review.user_name}</td>
+                        <td>${review.rating}</td>
+                        <td class="left">${review.content}</td>
+
+                        <c:choose>
+
+                        <c:when test="${review.status eq 'public'}">
+                        <td><span class="admin-status active">공개</span></td>
+                        </c:when>
+
+                        <c:when test="${review.status eq 'private'}">
+                        <td><span class="admin-status active">비공개</span></td>
+                        </c:when>
+
+                        </c:choose>
+
+                        <td>${review.created_at}</td>
                         <td class="admin-table-actions">
                             <button type="button" class="admin-btn light">상세</button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>#R-875</td>
-                        <td class="left"><strong>천연비누 세트</strong></td>
-                        <td>문라이트</td>
-                        <td>★★☆☆☆</td>
-                        <td class="left">배송 관련 불만 내용 포함</td>
-                        <td><span class="admin-status active">노출</span></td>
-                        <td>2026-06-15</td>
-                        <td class="admin-table-actions">
-                            <button type="button" class="admin-btn light">상세</button>
-                        </td>
-                    </tr>
+                    </c:forEach>
+                    
                     </tbody>
                 </table>
             </div>

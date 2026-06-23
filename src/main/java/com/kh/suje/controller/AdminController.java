@@ -6,10 +6,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.dao.QnaDAO;
+import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.dao.UserDAO;
+import com.kh.suje.vo.CategoryVO;
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.UserVO;
 
@@ -21,6 +26,9 @@ public class AdminController {
     private final UserDAO userDao;
     private final SellerDAO sellerDao;
     private final ProductDAO productDao;
+    private final ReviewDAO reviewDao;
+    private final QnaDAO qnaDao;
+    private final CategoryDAO categoryDao;
 
     @GetMapping(value={"/admin", "/admin/dashboard"})
     public String adminDashboard() {
@@ -37,9 +45,6 @@ public class AdminController {
             role = "all";
         }
 
-        System.out.println("role : " + role);
-        System.out.println("keyword : " + keyword);
-        
         userList = userDao.getUserListByKeyword(role, keyword);
         int totalCount = userList.size();
 
@@ -74,7 +79,8 @@ public class AdminController {
     public String products(Model model, String status, String keyword) {
         List<ProductVO> productList;
         
-        if (!"pending".equals(status) && !"approved".equals(status) && !"rejected".equals(status)) {
+        if (!"pending".equals(status) && !"approved".equals(status) && 
+            !"rejected".equals(status) && !"hidden".equals(status)) {
             status = "all";
         }
 
@@ -83,21 +89,34 @@ public class AdminController {
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("sellerList", productList);
+        model.addAttribute("productList", productList);
         model.addAttribute("totalCount", totalCount);
         
         return "/admin/admin_product_approval";
     }
 
     @GetMapping("/admin/reviews")
-    public String reviews() {
+    public String reviews(Model model, String status, String keyword) {
+        List<ReviewVO> reviewList;
+        
+        if (!"public".equals(status) && !"private".equals(status)) {
+            status = "all";
+        }
+
+        reviewList = reviewDao.getReviewListByKeyword(status, keyword);
+        int totalCount = reviewList.size();
+
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("reviewList", reviewList);
+        model.addAttribute("totalCount", totalCount);
 
         return "/admin/admin_review_manage";
     }
 
-
     @GetMapping("/admin/qnas")
-    public String qnas() {
+    public String qnas(Model model, String status, String keyword) {
+
 
         return "/admin/admin_qna_manage";
     }
@@ -109,7 +128,9 @@ public class AdminController {
     }
 
     @GetMapping("/admin/categories")
-    public String categories() {
+    public String categories(Model model) {
+        List<CategoryVO> categoryList = categoryDao.getCategoryHierarchy();
+        model.addAttribute("categoryList", categoryList);
 
         return "/admin/admin_category_manage";
     }

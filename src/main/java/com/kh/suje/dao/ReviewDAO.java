@@ -17,6 +17,8 @@ public interface ReviewDAO {
     List<ReviewVO> getMyReviewList(int user_id);
     List<ReviewVO> getLiveReviewList();
 
+    List<ReviewVO> getReviewListByKeyword(String status, String keyword);
+
     // 상품 상세페이지 리뷰 목록
     List<ReviewVO> getProductReviewList(int product_id);
     

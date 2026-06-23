@@ -73,10 +73,6 @@
                                 <c:when test="${seller.status eq 'REJECTED'}">
                                     <span class="admin-status rejected">반려</span>
                                 </c:when>
-
-                                <c:otherwise>
-                                    <span class="admin-status muted">${seller.status}</span>
-                                </c:otherwise>
                             </c:choose>
                         </td>
                         <td>${seller.created_at}</td>

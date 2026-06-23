@@ -19,6 +19,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE user_id = #{user_id}
     </select>
 
+    <select id="getQnaById"
+            parameterType="int"
+            resultType="qna">
+        SELECT q.*, p.name product_name, p.image_l
+        FROM qnas q
+        JOIN products p
+        ON q.product_id = p.product_id
+        WHERE qna_id = #{qna_id}
+    </select>
+
+    <update id="updateQna"
+            parameterType="qna">
+        UPDATE qnas
+        SET title = #{title}, content = #{content}
+        WHERE qna_id = #{qna_id}
+    </update>
+
+    <delete id="deleteQna"
+            parameterType="int">
+        DELETE FROM QNAS
+        WHERE qna_id = #{qna_id}
+    </delete>
+
     <select id="getWatingQnaList"
             parameterType="int"
             resultType="qna">
@@ -39,6 +62,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON q.product_id = p.product_id
         WHERE q.user_id = #{user_id}
           AND q.status = "answered"
+    </select>
+
+    <select id="getQnaListByKeyword"
+            resultType="qna">
+        SELECT *
+        FROM qnas
+        <where>
+            <if test="status != null and status != 'all'">
+                status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    
+                )
+            </if>
+        </where>
     </select>
 
     <select id="getQnaCount"
@@ -66,29 +106,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE user_id = #{user_id}
           AND status = "answered"
     </select>
-
-    <select id="getQnaById"
-            parameterType="int"
-            resultType="qna">
-        SELECT q.*, p.name product_name, p.image_l
-        FROM qnas q
-        JOIN products p
-        ON q.product_id = p.product_id
-        WHERE qna_id = #{qna_id}
-    </select>
-    
-    <update id="updateQna"
-            parameterType="qna">
-        UPDATE qnas
-        SET title = #{title}, content = #{content}
-        WHERE qna_id = #{qna_id}
-    </update>
-
-    <delete id="deleteQna"
-            parameterType="int">
-        DELETE FROM QNAS
-        WHERE qna_id = #{qna_id}
-    </delete>
 
     <select id="productQnaList" resultType="qna">
         SELECT *

@@ -14,4 +14,9 @@ public class CategoryVO {
     private int category_id;
     private String name;
     private Integer parent_id;//parent_id는 대분류일 때 NULL이라서 Integer
+
+    //카테고리 조회용
+    private String parent_name;
+    private int child_id;
+    private String child_name;
 }

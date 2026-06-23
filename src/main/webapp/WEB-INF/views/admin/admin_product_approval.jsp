@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -30,13 +31,12 @@
                         <a href="/admin/products?status=all&keyword=${keyword}" class="${status eq 'all' ? 'active' : ''}">전체</a>
                         <a href="/admin/products?status=pending&keyword=${keyword}" class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
                         <a href="/admin/products?status=approved&keyword=${keyword}" class="${status eq 'approved' ? 'active' : ''}">판매중</a>
-rejected, hidden
-                        <button type="button">승인대기</button>
-                        <button type="button">판매중</button>
-                        <button type="button">반려</button>
-                        <button type="button">숨김</button>
+                        <a href="/admin/products?status=rejected&keyword=${keyword}" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
+                        <a href="/admin/products?status=hidden&keyword=${keyword}" class="${status eq 'hidden' ? 'active' : ''}">숨김</a>
                     </div>
-                    <input type="text" class="admin-search" name="keyword" placeholder="상품명, 판매자 검색">
+                    <input type="hidden" name="status" value="${status}"/>
+                    <input type="text" class="admin-search" name="keyword" 
+                           placeholder="상품명, 판매자 검색" value="${keyword}">
                 </form>
             </div>
 
@@ -55,30 +55,47 @@ rejected, hidden
                     </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="product" items="${productList}">
                     <tr>
-                        <td><span class="admin-thumb">IMG</span></td>
-                        <td class="left"><strong>핸드메이드 라탄 바구니</strong></td>
-                        <td>라탄하우스</td>
-                        <td>생활소품</td>
-                        <td>42,000원</td>
-                        <td><span class="admin-status active">판매중</span></td>
+                        <td>
+                            <span class="admin-thumb">
+                                <img src="/upload/${product.image_l}"/>
+                            </span>
+                        </td>
+                        <td class="left"><strong>${product.name}</strong></td>
+                        <td>${product.company_name}</td>
+                        <td>${product.category_name}</td>
+                        <td>${product.price}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${product.status eq 'PENDING'}">
+                                    <span class="admin-status pending">승인대기</span>
+                                </c:when>
+
+                                <c:when test="${product.status eq 'APPROVED'}">
+                                    <span class="admin-status approved">판매중</span>
+                                </c:when>
+
+                                <c:when test="${product.status eq 'REJECTED'}">
+                                    <span class="admin-status rejected">반려</span>
+                                </c:when>
+
+                                <c:when test="${product.status eq 'HIDDEN'}">
+                                    <span class="admin-status hidden">숨김</span>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <span class="admin-status muted">${product.status}</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>2026-06-16</td>
                         <td class="admin-table-actions">
                             <button type="button" class="admin-btn light">상세</button>
                         </td>
                     </tr>
-                    <tr>
-                        <td><span class="admin-thumb">IMG</span></td>
-                        <td class="left"><strong>천연염색 스카프</strong></td>
-                        <td>물빛공방</td>
-                        <td>패션잡화</td>
-                        <td>58,000원</td>
-                        <td><span class="admin-status active">판매중</span></td>
-                        <td>2026-06-15</td>
-                        <td class="admin-table-actions">
-                            <button type="button" class="admin-btn light">상세</button>
-                        </td>
-                    </tr>
+                    </c:forEach>
+
                     </tbody>
                 </table>
             </div>

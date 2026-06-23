@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.kh.suje.vo.ProductVO;
-import com.kh.suje.vo.UserVO;
 import com.kh.suje.vo.order.OrderItemVO;
 
 public interface ProductDAO {

@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -40,27 +41,16 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="category" items="${categoryList}">
                     <tr>
-                        <td>1</td>
-                        <td><strong>패션잡화</strong></td>
-                        <td>11</td>
-                        <td>가방/파우치</td>
+                        <td>${category.parent_id}</td>
+                        <td><strong>${category.parent_name}</strong></td>
+                        <td>${category.child_id}</td>
+                        <td>${category.child_name}</td>
                         <td><span class="admin-status active">사용중</span></td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td><strong>생활소품</strong></td>
-                        <td>21</td>
-                        <td>도자기</td>
-                        <td><span class="admin-status active">사용중</span></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td><strong>반려동물</strong></td>
-                        <td>31</td>
-                        <td>간식/용품</td>
-                        <td><span class="admin-status active">사용중</span></td>
-                    </tr>
+                    </c:forEach>
+                    
                     </tbody>
                 </table>
             </div>

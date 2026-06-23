@@ -18,6 +18,7 @@ public class ReviewVO {
     private Integer rating;
     private String content;
     private LocalDateTime created_at;
+    private String status;
 
     //user_id
     private String user_name, nick_name;
