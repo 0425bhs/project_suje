@@ -67,7 +67,7 @@
                 </div>
                 <div class="admin-list">
                     <a href="/admin/reviews" class="admin-list-item"><span>후기 관리</span><strong>확인</strong></a>
-                    <a href="/admin/qnas" class="admin-list-item"><span>문의 관리</span><strong>확인</strong></a>
+                    <a href="/admin/inquiries" class="admin-list-item"><span>고객센터 문의 관리</span><strong>확인</strong></a>
                     <a href="/admin/reports" class="admin-list-item"><span>신고 관리</span><strong>확인</strong></a>
                 </div>
             </article>
@@ -112,7 +112,7 @@
                             <td class="left"><strong>배송 일정 문의드립니다.</strong></td>
                             <td><span class="admin-status pending">답변대기</span></td>
                             <td>2026-06-16</td>
-                            <td><a href="/admin/qnas" class="admin-btn light">보기</a></td>
+                            <td><a href="/admin/inquiries" class="admin-btn light">보기</a></td>
                         </tr>
                         <tr>
                             <td>후기</td>
