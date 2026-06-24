@@ -18,4 +18,7 @@ public class ReportVO {
     private int target_id;
     private String reason, status;
     private LocalDateTime created_at;
+
+    //reporter_id(user_id)
+    private String reporter_name;
 }

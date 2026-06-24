@@ -56,7 +56,7 @@
                         <td>${report.report_id}</td>
                         <td class="left"><strong>${report.target_type}${report.target_id}</strong></td>
                         <td>${report.reason}</td>
-                        <td>${report.reporter_id}</td>
+                        <td>${report.reporter_name}</td>
                         <td><span class="admin-status pending">${report.status}</span></td>
                         <td>${report.created_at}</td>
                         <td class="admin-table-actions">
