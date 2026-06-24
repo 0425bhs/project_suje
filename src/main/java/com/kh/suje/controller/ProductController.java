@@ -339,11 +339,7 @@ public class ProductController {
    
 
     @GetMapping("/product_detail.do")
-    public String product_detail_form(
-            int product_id,
-            Model model,
-            HttpSession session
-    ) {
+    public String product_detail_form(int product_id,Model model,HttpSession session){
         // 상품 상세 정보 조회
         ProductVO vo = productdao.product_one(product_id);
 
@@ -355,8 +351,7 @@ public class ProductController {
         List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
         vo.setImageList(productImageList);
 
-        // 상품 상세 JSP로 상품 정보 전달
-        model.addAttribute("vo", vo);
+        List<Map<String, Object>> bestReview = reviewdao.bestReview(product_id);
 
         List<ReviewVO> list = reviewdao.getProductReviewList(product_id);
         // 리뷰 목록 전달
@@ -400,6 +395,9 @@ public class ProductController {
             productdao.insertProductViewLog(viewLogMap);
         }
 
+        model.addAttribute("vo", vo);
+        model.addAttribute("bestReview", bestReview);
+        model.addAttribute("review_list", list);
 
         // 전체 카테고리 헤더용
         model.addAttribute("bigCategoryList", categorydao.big_category_list());

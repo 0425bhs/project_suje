@@ -1,12 +1,13 @@
 window.addEventListener("load",function (){
-    initProductDetailImageSlider();
-    initProductDetailQuantity();
-    initProductDetailTabs();
-    initProductWishButton();
-    initSellerWishButton();
+    productDetailImageSlider();
+    productDetailQuantity();
+    productDetailTabs();
+    productWishButton();
+    sellerWishButton();
+    reviewButton();
 });
 
-function initProductDetailImageSlider(){
+function productDetailImageSlider(){
     const imageBox = document.querySelector(".store-main-image-box");
     const mainImage = document.getElementById("detailMainImage");
     const thumbButtons = document.querySelectorAll(".store-thumb-btn");
@@ -145,7 +146,7 @@ function initProductDetailImageSlider(){
     updateArrowState();
 }
 
-function initProductDetailQuantity(){
+function productDetailQuantity(){
     const qtyInput = document.getElementById("detailQuantity");
     const minusBtn = document.getElementById("qtyMinus");
     const plusBtn = document.getElementById("qtyPlus");
@@ -191,7 +192,7 @@ function initProductDetailQuantity(){
     updateTotal();
 }
 
-function initProductDetailTabs(){
+function productDetailTabs(){
     const tabWrap = document.querySelector(".store-detail-tab-wrap");
     const tabs = Array.from(document.querySelectorAll(".store-detail-tab[data-tab-target]"));
     const panels = Array.from(document.querySelectorAll(".store-tab-panel"));
@@ -268,8 +269,59 @@ function initProductDetailTabs(){
     updateActiveByScroll();
 }
 
+function reviewButton(){
+    const moreBtn = document.querySelector(".review-more-btn");
+
+    // 더보기 버튼이 없는 상품이면 실행 안 함
+    if(moreBtn == null){
+        return;
+    }
+
+    moreBtn.addEventListener("click", function(event){
+        event.preventDefault();
+
+        // ✅ 수정: reviewSection 아님, 실제 id인 reviewBox 사용
+        const reviewSection = document.getElementById("reviewBox");
+        const tabWrap = document.querySelector(".store-detail-tab-wrap");
+
+        if(reviewSection == null){
+            return;
+        }
+
+        let offset = 90;
+
+        if(tabWrap != null){
+            offset += tabWrap.offsetHeight;
+        }
+
+        const targetTop =
+            reviewSection.getBoundingClientRect().top +
+            window.pageYOffset -
+            offset;
+
+        window.scrollTo({
+            top: targetTop,
+            behavior: "smooth"
+        });
+
+        // ✅ 수정: 주소도 #reviewBox
+        history.replaceState(null, "", "#reviewBox");
+
+        const tabs = document.querySelectorAll(".store-detail-tab[data-tab-target]");
+
+        tabs.forEach(function(tab){
+            tab.classList.remove("active");
+
+            // ✅ 수정: 탭 target도 reviewBox
+            if(tab.dataset.tabTarget === "reviewBox"){
+                tab.classList.add("active");
+            }
+        });
+    });
+}
+
 // 상품 찜 버튼
-function initProductWishButton(){
+function productWishButton(){
     const productWishBtn = document.getElementById("productWishBtn");
 
     if(productWishBtn == null){
@@ -310,13 +362,7 @@ function initProductWishButton(){
     });
 }
 
-
-// 판매자 찜 버튼
-window.addEventListener("load", function () {
-    initSellerWishButton();
-});
-
-function initSellerWishButton() {
+function sellerWishButton() {
     const wishBtn = document.getElementById("sellerWishBtn");
 
     if (wishBtn == null) {
