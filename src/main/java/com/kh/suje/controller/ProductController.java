@@ -21,11 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ImageDAO;
+import com.kh.suje.dao.OptionDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ImageVO;
+import com.kh.suje.vo.OptionVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.vo.UserVO;
@@ -42,18 +44,19 @@ public class ProductController {
     private final ReviewDAO reviewdao;
     private final ImageDAO imagedao;
     private final FavoriteDAO favoritedao;
+    private final OptionDAO optiondao;
 
     // 할인 설정값 정리
-    private void applySaleSetting(ProductVO vo) {
+    private void applySaleSetting(ProductVO vo){
 
         String saleType = vo.getSale_discount_type();
 
-        if (saleType == null || saleType.trim().equals("")) {
+        if (saleType == null || saleType.trim().equals("")){
             saleType = "none";
         }
 
         // 할인 없음
-        if ("none".equals(saleType)) {
+        if ("none".equals(saleType)){
             vo.setSale_price(0);
             vo.setSale_start_at(null);
             vo.setSale_end_at(null);
@@ -61,20 +64,20 @@ public class ProductController {
         }
 
         // 상시 할인
-        if ("always".equals(saleType)) {
+        if ("always".equals(saleType)){
             vo.setSale_start_at(null);
             vo.setSale_end_at(null);
             return;
         }
 
         // 기간 할인
-        if ("period".equals(saleType)) {
+        if ("period".equals(saleType)){
 
-            if (vo.getSale_start_at() != null && vo.getSale_start_at().trim().equals("")) {
+            if (vo.getSale_start_at() != null && vo.getSale_start_at().trim().equals("")){
                 vo.setSale_start_at(null);
             }
 
-            if (vo.getSale_end_at() != null && vo.getSale_end_at().trim().equals("")) {
+            if (vo.getSale_end_at() != null && vo.getSale_end_at().trim().equals("")){
                 vo.setSale_end_at(null);
             }
 
@@ -94,7 +97,7 @@ public class ProductController {
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
         if (loginUser != null && productList != null){
-            for (ProductVO product : productList) {
+            for (ProductVO product : productList){
                 Map<String, Object> map = new HashMap<>();
                 map.put("user_id", loginUser.getUser_id());
                 map.put("product_id", product.getProduct_id());
@@ -155,7 +158,7 @@ public class ProductController {
 
         List<ProductVO> discoveryList = null;
 
-        if (loginUser != null) {
+        if (loginUser != null){
 
             int user_id = loginUser.getUser_id();
 
@@ -163,7 +166,7 @@ public class ProductController {
             // ⚠️ 중요: null 체크 필수 - isEmpty() 호출 전에 null 확인
             List<Integer> categoryIds = productdao.product_discovery_category_list(user_id);
 
-            if (categoryIds != null && !categoryIds.isEmpty()) {
+            if (categoryIds != null && !categoryIds.isEmpty()){
 
                 discoveryMap.put("user_id", user_id);
                 discoveryMap.put("categoryIds", categoryIds);
@@ -173,7 +176,7 @@ public class ProductController {
         }
 
         // 비로그인 또는 취향 데이터 없음 또는 추천 결과 없음
-        if (discoveryList == null || discoveryList.isEmpty()) {
+        if (discoveryList == null || discoveryList.isEmpty()){
             discoveryList = productdao.product_discovery_fallback_list(discoveryMap);
         }
 
@@ -181,19 +184,19 @@ public class ProductController {
 
         List<ProductVO> mainFavoriteCheckList = new ArrayList<>();
 
-        if (mainProductList != null) {
+        if (mainProductList != null){
             mainFavoriteCheckList.addAll(mainProductList);
         }
 
-        if (recommendList != null) {
+        if (recommendList != null){
             mainFavoriteCheckList.addAll(recommendList);
         }
 
-        if (categoryBestList != null) {
+        if (categoryBestList != null){
             mainFavoriteCheckList.addAll(categoryBestList);
         }
 
-        if (discoveryList != null) {
+        if (discoveryList != null){
             mainFavoriteCheckList.addAll(discoveryList);
         }
 
@@ -344,9 +347,13 @@ public class ProductController {
         ProductVO vo = productdao.product_one(product_id);
 
         // ✅ 중요: null 체크 필수 - 존재하지 않는 상품 접근 방지
-        if (vo == null) {
+        if (vo == null){
             return "redirect:/product/main.do";
         }
+
+        List<OptionVO> optionList = optiondao.getOptionListByProductId(product_id);
+        vo.setOptionList(optionList);
+
 
         List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
         vo.setImageList(productImageList);
@@ -354,21 +361,19 @@ public class ProductController {
         List<Map<String, Object>> bestReview = reviewdao.bestReview(product_id);
 
         List<ReviewVO> list = reviewdao.getProductReviewList(product_id);
-        // 리뷰 목록 전달
-        model.addAttribute("review_list", list);
 
-        if (list != null && !list.isEmpty()) {
+        if (list != null && !list.isEmpty()){
             List<Integer> reviewIds = new ArrayList<>();
-            for (ReviewVO review : list) {
+            for (ReviewVO review : list){
                 reviewIds.add(review.getReview_id()); 
             }
 
             List<ImageVO> images = imagedao.getImagesByReviewIds(reviewIds);
             
-            for (ReviewVO review : list) {
+            for (ReviewVO review : list){
                 List<ImageVO> matchedImages = new ArrayList<>();
-                for (ImageVO image : images) {
-                    if (review.getReview_id() == image.getTarget_id()) {
+                for (ImageVO image : images){
+                    if (review.getReview_id() == image.getTarget_id()){
                         matchedImages.add(image);
                     }
                 }
@@ -385,7 +390,7 @@ public class ProductController {
         // =========================================================
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
-        if (loginUser != null) {
+        if (loginUser != null){
             Map<String, Object> viewLogMap = new HashMap<>();
 
             viewLogMap.put("user_id", loginUser.getUser_id());
@@ -432,41 +437,41 @@ public class ProductController {
         String targetName = "";
         String priceName = "";
 
-        if ("birthday".equals(occasion)) {
+        if ("birthday".equals(occasion)){
             occasionName = "생일";
-        } else if ("house".equals(occasion)) {
+        } else if ("house".equals(occasion)){
             occasionName = "집들이·개업";
-        } else if ("thanks".equals(occasion)) {
+        } else if ("thanks".equals(occasion)){
             occasionName = "감사·답례";
-        } else if ("couple".equals(occasion)) {
+        } else if ("couple".equals(occasion)){
             occasionName = "커플·기념일";
-        } else if ("pet".equals(occasion)) {
+        } else if ("pet".equals(occasion)){
             occasionName = "반려동물";
-        } else if ("self".equals(occasion)) {
+        } else if ("self".equals(occasion)){
             occasionName = "나를 위한 선물";
         }
 
-        if ("friend".equals(target)) {
+        if ("friend".equals(target)){
             targetName = "친구";
-        } else if ("lover".equals(target)) {
+        } else if ("lover".equals(target)){
             targetName = "연인";
-        } else if ("parents".equals(target)) {
+        } else if ("parents".equals(target)){
             targetName = "부모님";
-        } else if ("coworker".equals(target)) {
+        } else if ("coworker".equals(target)){
             targetName = "직장동료";
-        } else if ("petOwner".equals(target)) {
+        } else if ("petOwner".equals(target)){
             targetName = "반려동물 집사";
-        } else if ("me".equals(target)) {
+        } else if ("me".equals(target)){
             targetName = "나";
         }
 
-        if ("under10000".equals(priceRange)) {
+        if ("under10000".equals(priceRange)){
             priceName = "1만원 이하";
-        } else if ("10000".equals(priceRange)) {
+        } else if ("10000".equals(priceRange)){
             priceName = "1만원대";
-        } else if ("20000".equals(priceRange)) {
+        } else if ("20000".equals(priceRange)){
             priceName = "2만원대";
-        } else if ("over30000".equals(priceRange)) {
+        } else if ("over30000".equals(priceRange)){
             priceName = "3만원 이상";
         }
 
@@ -486,59 +491,59 @@ public class ProductController {
         // =========================================================
         List<Integer> categoryIds = new ArrayList<>();
 
-        if ("birthday".equals(occasion)) {
+        if ("birthday".equals(occasion)){
             // 생일: 주얼리, 키링, 인테리어 소품, 향수
             // ✅ DB category_id 확인: 7=주얼리, 26=키링, 13=인테리어, 24=향수
             categoryIds.addAll(Arrays.asList(7, 26, 13, 24));
 
-        } else if ("house".equals(occasion)) {
+        } else if ("house".equals(occasion)){
             // 집들이/개업: 홈리빙 대분류, 생활용품, 인테리어 소품
             // ✅ DB category_id 확인: 2=홈리빙, 12=생활용품, 13=인테리어
             categoryIds.addAll(Arrays.asList(2, 12, 13));
 
-        } else if ("thanks".equals(occasion)) {
+        } else if ("thanks".equals(occasion)){
             // 감사/답례: 공예 대분류, 비누, 키링, 식품 대분류
             // ✅ DB category_id 확인: 5=공예, 23=비누, 26=키링, 4=식품
             categoryIds.addAll(Arrays.asList(5, 23, 26, 4));
 
-        } else if ("couple".equals(occasion)) {
+        } else if ("couple".equals(occasion)){
             // 커플/기념일: 주얼리, 향수, 인테리어 소품
             categoryIds.addAll(Arrays.asList(7, 24, 13));
 
-        } else if ("pet".equals(occasion)) {
+        } else if ("pet".equals(occasion)){
             // 반려동물: 반려동물 대분류
             categoryIds.add(6);
 
-        } else if ("self".equals(occasion)) {
+        } else if ("self".equals(occasion)){
             // 나를 위한 선물: 패션/주얼리, 홈리빙, 뷰티, 공예
             categoryIds.addAll(Arrays.asList(1, 2, 3, 5));
         }
 
 
         // 상황을 선택하지 않았을 때만 대상 기준 사용
-        if (categoryIds.isEmpty()) {
+        if (categoryIds.isEmpty()){
 
-            if ("friend".equals(target)) {
+            if ("friend".equals(target)){
                 // 친구: 키링, 주얼리, 인테리어 소품, 공예
                 categoryIds.addAll(Arrays.asList(26, 7, 13, 5));
 
-            } else if ("lover".equals(target)) {
+            } else if ("lover".equals(target)){
                 // 연인: 주얼리, 향수, 인테리어 소품
                 categoryIds.addAll(Arrays.asList(7, 24, 13));
 
-            } else if ("parents".equals(target)) {
+            } else if ("parents".equals(target)){
                 // 부모님: 홈리빙, 식품, 공예, 생활용품, 비누
                 categoryIds.addAll(Arrays.asList(2, 4, 5, 12, 23));
 
-            } else if ("coworker".equals(target)) {
+            } else if ("coworker".equals(target)){
                 // 직장동료: 생활용품, 인테리어 소품, 베이커리, 비누
                 categoryIds.addAll(Arrays.asList(12, 13, 22, 23));
 
-            } else if ("petOwner".equals(target)) {
+            } else if ("petOwner".equals(target)){
                 // 반려동물 집사
                 categoryIds.add(6);
 
-            } else if ("me".equals(target)) {
+            } else if ("me".equals(target)){
                 // 나
                 categoryIds.addAll(Arrays.asList(1, 2, 3, 5));
             }
@@ -554,27 +559,27 @@ public class ProductController {
         // =========================================================
         String giftGuideText = "조건을 선택하면 상황에 맞는 선물을 추천해드려요.";
 
-        if ("birthday".equals(occasion)) {
+        if ("birthday".equals(occasion)){
             giftGuideText = "생일 선물은 취향이 드러나는 주얼리, 뷰티, 작은 소품이 잘 어울려요.";
-        } else if ("house".equals(occasion)) {
+        } else if ("house".equals(occasion)){
             giftGuideText = "집들이·개업 선물은 오래 두고 쓰기 좋은 홈리빙, 생활용품, 식품 선물이 좋아요.";
-        } else if ("thanks".equals(occasion)) {
+        } else if ("thanks".equals(occasion)){
             giftGuideText = "감사·답례 선물은 부담스럽지 않으면서 정성이 느껴지는 식품, 비누, 공예품이 좋아요.";
-        } else if ("couple".equals(occasion)) {
+        } else if ("couple".equals(occasion)){
             giftGuideText = "커플·기념일 선물은 오래 간직할 수 있는 주얼리, 향수, 공예 작품이 잘 어울려요.";
-        } else if ("pet".equals(occasion)) {
+        } else if ("pet".equals(occasion)){
             giftGuideText = "반려동물 선물은 함께 쓰거나 기억에 남길 수 있는 반려동물 카테고리 작품을 추천해요.";
-        } else if ("self".equals(occasion)) {
+        } else if ("self".equals(occasion)){
             giftGuideText = "나를 위한 선물은 취향에 맞는 소품, 뷰티, 홈리빙 작품을 편하게 골라보세요.";
-        } else if ("parents".equals(target)) {
+        } else if ("parents".equals(target)){
             giftGuideText = "부모님께는 실용적이고 부담 없는 식품, 뷰티, 생활 선물이 잘 어울려요.";
-        } else if ("friend".equals(target)) {
+        } else if ("friend".equals(target)){
             giftGuideText = "친구에게는 가격 부담이 적고 취향이 드러나는 키링, 소품, 간식 선물이 좋아요.";
-        } else if ("lover".equals(target)) {
+        } else if ("lover".equals(target)){
             giftGuideText = "연인에게는 오래 간직할 수 있는 주얼리, 향수, 공예 작품이 잘 어울려요.";
-        } else if ("coworker".equals(target)) {
+        } else if ("coworker".equals(target)){
             giftGuideText = "직장동료에게는 부담 없는 식품, 생활소품, 공예 선물이 무난해요.";
-        } else if ("petOwner".equals(target)) {
+        } else if ("petOwner".equals(target)){
             giftGuideText = "반려동물 집사에게는 반려동물과 함께 즐길 수 있는 작품을 추천해요.";
         }
 
@@ -588,7 +593,7 @@ public class ProductController {
 
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
-        if (loginUser != null) {
+        if (loginUser != null){
             int user_id = loginUser.getUser_id();
 
             Map<String, Object> personalMap = new HashMap<>();
@@ -599,7 +604,7 @@ public class ProductController {
 
             String loginUserName = loginUser.getName();
 
-            if (loginUserName == null || loginUserName.trim().isEmpty()) {
+            if (loginUserName == null || loginUserName.trim().isEmpty()){
                 loginUserName = loginUser.getNick_name();
             }
 
@@ -613,7 +618,7 @@ public class ProductController {
         // =========================================================
         Map<String, Object> map = new HashMap<>();
 
-        if (!categoryIds.isEmpty()) {
+        if (!categoryIds.isEmpty()){
             map.put("categoryIds", categoryIds);
         }
 
@@ -624,11 +629,11 @@ public class ProductController {
 
         List<ProductVO> giftFavoriteCheckList = new ArrayList<>();
 
-        if (personalGiftList != null) {
+        if (personalGiftList != null){
             giftFavoriteCheckList.addAll(personalGiftList);
         }
 
-        if (giftList != null) {
+        if (giftList != null){
             giftFavoriteCheckList.addAll(giftList);
         }
 
@@ -645,17 +650,17 @@ public class ProductController {
 
         int nowPage = 1;
 
-        if (page != null) {
+        if (page != null){
             nowPage = page;
         }
 
         // ✅ 정렬 기본값 설정
-        if (sort == null || sort.trim().equals("")) {
+        if (sort == null || sort.trim().equals("")){
             sort = "popular";
         }
 
         // ✅ 할인 유형 기본값 설정
-        if (saleType == null || saleType.trim().equals("")) {
+        if (saleType == null || saleType.trim().equals("")){
             saleType = "all";
         }
 
@@ -759,14 +764,14 @@ public class ProductController {
         boolean isFallback = false;
 
         // ✅ 로그인 사용자만 취향 발견 추천 시작
-        if (loginUser != null) {
+        if (loginUser != null){
 
             int user_id = loginUser.getUser_id();
 
             // ⚠️ 중요: 이 메서드 반환값이 null이거나 empty일 수 있음
             List<Integer> categoryIds = productdao.product_discovery_category_list(user_id);
 
-            if (categoryIds != null && !categoryIds.isEmpty()) {
+            if (categoryIds != null && !categoryIds.isEmpty()){
 
                 map.put("user_id", user_id);
                 map.put("categoryIds", categoryIds);
@@ -776,7 +781,7 @@ public class ProductController {
         }
 
         // ⚠️ 주의: list가 null이거나 empty면 fallback 상품 사용
-        if (list == null || list.isEmpty()) {
+        if (list == null || list.isEmpty()){
             list = productdao.product_discovery_fallback_list(map);
             isFallback = true;  // ✅ JSP에서 "fallback 상품입니다" 메시지 표시 용도
         }
@@ -792,11 +797,11 @@ public class ProductController {
     }
 
     @GetMapping("/all_list.do")
-    public String allProductList(Model model,Integer page,HttpSession session) {
+    public String allProductList(Model model,Integer page,HttpSession session){
 
         int nowPage = 1;
 
-        if (page != null) {
+        if (page != null){
             nowPage = page;
         }
 
@@ -845,36 +850,34 @@ public class ProductController {
     @PostMapping("/seller_product_insert.do")
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public Map<String,Object> seller_product_insert(ProductVO vo) throws Exception{
+    public Map<String,Object> seller_product_insert(ProductVO vo,@RequestParam(value = "option_name",required = false)List<String> optionNameList,@RequestParam(value = "option_price",required = false) List<String> optionPriceList,
+        @RequestParam(value = "option_stock", required = false) List<String> optionStockList) throws Exception{
 
-        // ✅ 파일 업로드 경로 설정
-        // ⚠️ 주의: c:/upload/ 경로가 실제로 존재해야 함 (없으면 생성)
-        // ⚠️ Windows/Linux 경로 다를 수 있음 - 배포 시 경로 확인 필수
         String savePath="c:/upload/";
         File dir= new File(savePath);
+
         if(!dir.exists()){
             dir.mkdirs();
         }
 
-        // ✅ 큰 이미지 저장
         MultipartFile image_L=vo.getImage_l_file();
         String filename_l="no_file";
 
         if(image_L!=null && !image_L.isEmpty()){
             filename_l=image_L.getOriginalFilename();
-            File savFile=new File(savePath,filename_l);
+            File saveFile=new File(savePath,filename_l);
 
             // ⚠️ 중요: 같은 파일명 존재 시 덮어씌워짐 - 타임스탬프로 고유화
-            if(savFile.exists()){
+            if(saveFile.exists()){
                 long time=System.currentTimeMillis();
                 filename_l=String.format("%d_%s",time, filename_l);
-                savFile=new File(savePath,filename_l);
+                saveFile=new File(savePath,filename_l);
             }
 
-            image_L.transferTo(savFile);
+            image_L.transferTo(saveFile);
         }
+        vo.setImage_l(filename_l);
 
-        // ✅ 작은 이미지 저장 (같은 로직)
         List<ImageVO> imageList = new ArrayList<>();
 
         int sort_order = 1;
@@ -889,15 +892,15 @@ public class ProductController {
                 }
 
                 String filename = file.getOriginalFilename();
-                File savFile = new File(savePath, filename);
+                File saveFile = new File(savePath, filename);
 
-                if(savFile.exists()){
+                if(saveFile.exists()){
                     long time = System.currentTimeMillis();
                     filename = String.format("%d_%s", time, filename);
-                    savFile = new File(savePath, filename);
+                    saveFile = new File(savePath, filename);
                 }
 
-                file.transferTo(savFile);
+                file.transferTo(saveFile);
 
                 ImageVO image = new ImageVO();
                 image.setTarget_type("PRODUCT");
@@ -908,6 +911,7 @@ public class ProductController {
                 imageList.add(image);
             }
         }
+
         // ✅ DB에 저장할 이미지 경로 설정 (/upload/ + 파일명)
         // ⚠️ 중요: 실제 파일은 c:/upload/에 있지만
         //         DB에는 /upload/파일명 저장 (WebConfig에서 매핑됨)
@@ -924,6 +928,8 @@ public class ProductController {
 
         int res=productdao.seller_product_insert(vo);
 
+        int product_id = vo.getProduct_id();
+        
         // 수정된 부분 시작
         // 상품 등록 후 생성된 product_id를 상세 이미지에 넣고 images 테이블에 저장
         if(!imageList.isEmpty()){
@@ -933,10 +939,58 @@ public class ProductController {
 
             imagedao.insertImageList(imageList);
         }
-        // 수정된 부분 끝
+        if (optionNameList != null){
+
+            List<OptionVO> optionList = new ArrayList<>();
+
+            for (int i = 0; i < optionNameList.size(); i++){
+
+                String optionName = optionNameList.get(i);
+
+                if (optionName == null || optionName.trim().isEmpty()){
+                    continue;
+                }
+
+                int optionPrice = 0;
+                int optionStock = 0;
+
+                if (optionPriceList != null && optionPriceList.size() > i){
+                    String priceText = optionPriceList.get(i)
+                            .replace(",", "")
+                            .trim();
+
+                    if (!priceText.isEmpty()){
+                        optionPrice = Integer.parseInt(priceText);
+                    }
+                }
+
+                if (optionStockList != null && optionStockList.size() > i){
+                    String stockText = optionStockList.get(i)
+                            .replace(",", "")
+                            .trim();
+
+                    if (!stockText.isEmpty()){
+                        optionStock = Integer.parseInt(stockText);
+                    }
+                }
+
+                OptionVO option = new OptionVO();
+                option.setProduct_id(product_id);
+                option.setOption_name(optionName.trim());
+                option.setOption_price(optionPrice);
+                option.setOption_stock(optionStock);
+
+                optionList.add(option);
+            }
+
+            if (!optionList.isEmpty()){
+                optiondao.insertOptionList(optionList);
+            }
+        }
 
         Map<String,Object> map=new HashMap<>();
         map.put("result", res);
+        map.put("product_id", product_id);
 
         return map;
     }
@@ -950,13 +1004,16 @@ public class ProductController {
         List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
         vo.setImageList(productImageList);
 
+        List<OptionVO> optionList = optiondao.getOptionListByProductId(product_id);
+        vo.setOptionList(optionList);
+
         // 현재 상품의 하위 카테고리 id
         int category_id=vo.getCategory_id();
         // 하위 카테고리의 대분류 id 찾기
         Integer selectedBigCategoryId=categorydao.find_parent_id(category_id);
 
         // 기존 데이터가 대분류 id로 저장되어 있던 경우 대비
-        if (selectedBigCategoryId == null) {
+        if (selectedBigCategoryId == null){
             selectedBigCategoryId=category_id;
         }
 
@@ -972,14 +1029,17 @@ public class ProductController {
     @PostMapping("/seller_product_modify.do")
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public Map<String,Object> seller_product_modify(ProductVO vo,String ori_image_l,String del_image_l)throws Exception{
+    public Map<String,Object> seller_product_modify(ProductVO vo,String ori_image_l,String del_image_l,
+        @RequestParam(value = "option_name", required = false) List<String> optionNameList,
+        @RequestParam(value = "option_price", required = false) List<String> optionPriceList,
+        @RequestParam(value = "option_stock", required = false) List<String> optionStockList)throws Exception{
         
         // ✅ 파일 업로드 경로 설정
         // ⚠️ 주의: seller_product_insert와 동일한 경로 필수
         String savePath = "c:/upload/";
         File dir = new File(savePath);
 
-        if (!dir.exists()) {
+        if (!dir.exists()){
             dir.mkdirs();
         }
 
@@ -991,7 +1051,7 @@ public class ProductController {
             image_l_name=vo.getImage_l_file().getOriginalFilename();
             File saveFile=new File(savePath, image_l_name);
 
-            if (saveFile.exists()) {
+            if (saveFile.exists()){
                 long time=System.currentTimeMillis();
                 image_l_name=String.format("%d_%s", time, image_l_name);
                 saveFile=new File(savePath,image_l_name);
@@ -1011,17 +1071,17 @@ public class ProductController {
 
         List<MultipartFile> image_s_file = vo.getImage_s_file();
 
-        if (image_s_file != null && !image_s_file.isEmpty()) {
-            for (MultipartFile file : image_s_file) {
+        if (image_s_file != null && !image_s_file.isEmpty()){
+            for (MultipartFile file : image_s_file){
 
-                if (file == null || file.isEmpty()) {
+                if (file == null || file.isEmpty()){
                     continue;
                 }
 
                 String filename = file.getOriginalFilename();
                 File saveFile = new File(savePath, filename);
 
-                if (saveFile.exists()) {
+                if (saveFile.exists()){
                     long time = System.currentTimeMillis();
                     filename = String.format("%d_%s", time, filename);
                     saveFile = new File(savePath, filename);
@@ -1041,7 +1101,7 @@ public class ProductController {
         }
 
         // ✅ DB에 저장할 이미지 경로 설정
-        if (image_l_name.equals("no_file")) {
+        if (image_l_name.equals("no_file")){
             vo.setImage_l("no_file");
         } else {
             vo.setImage_l(image_l_name);
@@ -1053,19 +1113,73 @@ public class ProductController {
         // ✅ DB 업데이트
         int res = productdao.seller_product_modify(vo);
 
+        if (res == 1) {
+
+            optiondao.deleteOptionsByProductId(vo.getProduct_id());
+
+            if (optionNameList != null) {
+
+                List<OptionVO> optionList = new ArrayList<>();
+
+                for (int i = 0; i < optionNameList.size(); i++) {
+
+                    String optionName = optionNameList.get(i);
+
+                    if (optionName == null || optionName.trim().isEmpty()) {
+                        continue;
+                    }
+
+                    int optionPrice = 0;
+                    int optionStock = 0;
+
+                    if (optionPriceList != null && optionPriceList.size() > i) {
+                        String priceText = optionPriceList.get(i)
+                                .replace(",", "")
+                                .trim();
+
+                        if (!priceText.isEmpty()) {
+                            optionPrice = Integer.parseInt(priceText);
+                        }
+                    }
+
+                    if (optionStockList != null && optionStockList.size() > i) {
+                        String stockText = optionStockList.get(i)
+                                .replace(",", "")
+                                .trim();
+
+                        if (!stockText.isEmpty()) {
+                            optionStock = Integer.parseInt(stockText);
+                        }
+                    }
+
+                    OptionVO option = new OptionVO();
+                    option.setProduct_id(vo.getProduct_id());
+                    option.setOption_name(optionName.trim());
+                    option.setOption_price(optionPrice);
+                    option.setOption_stock(optionStock);
+
+                    optionList.add(option);
+                }
+
+                if (!optionList.isEmpty()) {
+                    optiondao.insertOptionList(optionList);
+                }
+            }
+        }
+
         // ✅ 새 상세 이미지를 올렸으면 images 테이블에 저장
-        if (res == 1 && !imageList.isEmpty()) {
+        if (res == 1 && !imageList.isEmpty()){
             imagedao.deleteImagesByProductId(vo.getProduct_id());
             imagedao.insertImageList(imageList);
         }
 
         // ✅ 수정 성공 시에만 기존 대표 이미지 파일 삭제
-        if (res == 1) {
-            if (del_image_l != null && !del_image_l.equals("no_file")) {
+        if (res == 1){
+            if (del_image_l != null && !del_image_l.equals("no_file")){
                 File delFile = new File(savePath, del_image_l.replace("/upload/", ""));
 
-                if (vo.getImage_l_file() != null && !vo.getImage_l_file().isEmpty()) {
-                    if (delFile.exists()) {
+                if (vo.getImage_l_file() != null && !vo.getImage_l_file().isEmpty()){
+                    if (delFile.exists()){
                         delFile.delete();
                     }
                 }
@@ -1090,7 +1204,7 @@ public class ProductController {
         //int seller_id = 1;
 
         // ✅ 기본 정렬값 설정
-        if (sort == null || sort.equals("")) {
+        if (sort == null || sort.equals("")){
             sort = "new";
         }
 
@@ -1153,13 +1267,13 @@ public class ProductController {
 
         File dir = new File(savePath);
 
-        if (!dir.exists()) {
+        if (!dir.exists()){
             dir.mkdirs();
         }
 
         String originalName = image.getOriginalFilename();
 
-        if (originalName == null || originalName.equals("")) {
+        if (originalName == null || originalName.equals("")){
             map.put("result", 0);
             return map;
         }
@@ -1168,7 +1282,7 @@ public class ProductController {
 
         int dotIndex = originalName.lastIndexOf(".");
 
-        if (dotIndex != -1) {
+        if (dotIndex != -1){
             ext = originalName.substring(dotIndex);
         }
 

@@ -120,17 +120,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM cart_items
         WHERE user_id = #{user_id}
           AND product_id = #{product_id}
+          AND ((option_id = #{option_id}) OR (option_id IS NULL AND #{option_id} IS NULL))
     </select>
 
     <insert id="cartInsert" parameterType="cart">
-        INSERT INTO cart_items(
+        INSERT INTO cart_items (
             user_id,
             product_id,
+            option_id,
             quantity
         )
-        VALUES(
+        VALUES (
             #{user_id},
             #{product_id},
+            #{option_id},
             #{quantity}
         )
     </insert>

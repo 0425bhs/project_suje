@@ -14,6 +14,7 @@ import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.UserVO;
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
@@ -32,11 +33,32 @@ public class SellerController {
     private final SellerDAO sellerdao;
     private final FavoriteDAO favoritedao;
 
+    // 로그인한 회원 기준으로 seller_id 찾기
+    private Integer getLoginSellerId() {
+
+        UserVO user = (UserVO) session.getAttribute("user");
+
+        if (user == null) {
+            return null;
+        }
+
+        SellerVO seller = sellerdao.selectSeller(user.getUser_id());
+
+        if (seller == null) {
+            return null;
+        }
+
+        return seller.getSeller_id();
+    }
+
     @GetMapping("/seller_dashboard.do")
     public String sellerDashboard(Model model) {
-        // SellerVO seller = (SellerVO) session.getAttribute("seller");
-        // int seller_id = seller.getSellerId();
-        int seller_id = 1;
+        
+        Integer seller_id=getLoginSellerId();
+
+        if(seller_id==null){
+            return "redirect:/login.do";
+        }
 
         Map<String, Object> orderStatusCounts = sellerdao.getOrderStatusCounts(seller_id);
         Map<String, Object> productStatusCounts = sellerdao.getProductStatusCounts(seller_id);
@@ -60,8 +82,11 @@ public class SellerController {
     @GetMapping("/seller_order_list.do")
     public String sellerOrderList(Model model, String status) {
 
-        // 로그인 연동 전까지 임시 판매자 번호 사용
-        int seller_id = 1;
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
 
         // 판매자 주문 목록 조회 조건
         Map<String, Object> map = new HashMap<>();
@@ -94,8 +119,11 @@ public class SellerController {
     @PostMapping("/seller_order_status_update.do")
     public String sellerOrderStatusUpdate(int order_id, String status, String selectedStatus) {
 
-        // 로그인 연동 전까지 임시 판매자 번호 사용
-        int seller_id = 1;
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
 
         // 주문 상태 변경 조건
         Map<String, Object> map = new HashMap<>();
@@ -111,6 +139,11 @@ public class SellerController {
         }
 
         return "redirect:/seller_order_list.do";
+    }
+
+    @GetMapping("/seller_review_list.do")
+    public String sellerReviewList(){
+        return "/seller/seller_review_list";
     }
 
     @GetMapping("/seller_qna_list.do")

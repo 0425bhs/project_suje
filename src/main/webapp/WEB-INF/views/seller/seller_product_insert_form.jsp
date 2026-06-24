@@ -65,6 +65,34 @@
                                 <input type="text" name="name" placeholder="상품명을 입력하세요">
                             </div>
 
+                            <div class="form-section">
+                                <label>상품 옵션</label>
+
+                                <p class="form-help">
+                                    옵션이 필요 없으면 비워두세요.
+                                </p>
+
+                                <div id="optionListBox">
+
+                                    <div class="option-row">
+                                        <input type="text" name="option_name" class="option-name-input" placeholder="옵션명">
+
+                                        <input type="text" name="option_price" class="option-price-input" placeholder="추가금액">
+
+                                        <input type="text" name="option_stock" class="option-stock-input" placeholder="옵션재고">
+
+                                        <button type="button" class="option-remove-btn">
+                                            삭제
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                                <button type="button" id="addOptionBtn" class="option-add-btn">
+                                    + 옵션 추가
+                                </button>
+                            </div>
+
                             <div class="form-row">
                                 <label>상품 설명</label>
 
