@@ -36,6 +36,9 @@ public class ProductVO {
     //할인 설정 구분값
     private String sale_discount_type;
 
+    //옵션
+    private List<OptionVO> optionList;
+
     // 상품 상세에서 리뷰 목록 담을 때 사용
     private List<ReviewVO> review_list;
 

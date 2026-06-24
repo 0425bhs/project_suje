@@ -556,3 +556,47 @@ function uploadEditorImage(blob, callback) {
         alert("이미지 업로드 중 오류가 발생했습니다.");
     });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const optionListBox = document.getElementById("optionListBox");
+    const addOptionBtn = document.getElementById("addOptionBtn");
+
+    if (optionListBox && addOptionBtn) {
+
+        addOptionBtn.addEventListener("click", function () {
+            const row = document.createElement("div");
+            row.className = "option-row";
+
+            row.innerHTML = `
+                <input type="text"
+                       name="option_name"
+                       class="option-name-input"
+                       placeholder="옵션명">
+
+                <input type="text"
+                       name="option_price"
+                       class="option-price-input"
+                       placeholder="추가금액">
+
+                <input type="text"
+                       name="option_stock"
+                       class="option-stock-input"
+                       placeholder="옵션재고">
+
+                <button type="button" class="option-remove-btn">
+                    삭제
+                </button>
+            `;
+
+            optionListBox.appendChild(row);
+        });
+
+        optionListBox.addEventListener("click", function (e) {
+            if (e.target.classList.contains("option-remove-btn")) {
+                e.target.closest(".option-row").remove();
+            }
+        });
+    }
+
+});
