@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Alias("report")
 public class ReportVO {
-    private int id, reporter_id;
+    private int report_id, reporter_id;
     private String target_type;
     private int target_id;
     private String reason, status;

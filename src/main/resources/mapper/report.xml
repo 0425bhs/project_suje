@@ -4,7 +4,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.suje.dao.ReportDAO">
     <insert id="addReport">
-        INSERT INTO reports (reporter_id, target_type, target_id, reason, status)
-        VALUES (#{user_id}, #{target_type}, #{target_id}, #{reason}, #{status})
+        INSERT INTO reports (reporter_id, target_type, target_id, reason)
+        VALUES (#{reporter_id}, #{target_type}, #{target_id}, #{reason})
     </insert>
+
+    <select id="getReportListByKeyword" resultType="report">
+        SELECT *
+        FROM reports
+        <where>
+        <if test="status != null and status != 'all'">
+            status = #{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (
+                reason LIKE CONCAT("%", #{keyword} ,"%")
+            )
+        </if>
+        </where>
+    </select>
+
 </mapper>

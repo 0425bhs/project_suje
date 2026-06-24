@@ -3,6 +3,7 @@ package com.kh.suje.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
@@ -45,9 +46,24 @@ public class ReportController {
             QnaVO qna = qnaDao.getQnaById(target_id);
             model.addAttribute("qna", qna);
         }
-        
+
         model.addAttribute("target_type", target_type);
         
+        return "/report/report_form";
+    }
+
+    @PostMapping("/report_form.do")
+    public String reportFormFin(HttpSession session, Model model, ReportVO report) {
+        UserVO loginUser = (UserVO)session.getAttribute("user");
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+        
+        int user_id = loginUser.getUser_id();
+        report.setReporter_id(user_id);
+        reportDao.addReport(report);
+
         return "/report/report_form";
     }
 }

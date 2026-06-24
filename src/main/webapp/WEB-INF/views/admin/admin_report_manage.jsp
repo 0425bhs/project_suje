@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -54,7 +55,7 @@
                     <tr>
                         <td>${report.report_id}</td>
                         <td class="left"><strong>${report.target_type}${report.target_id}</strong></td>
-                        <td>욕설/비방${report.reason}</td>
+                        <td>${report.reason}</td>
                         <td>${report.reporter_id}</td>
                         <td><span class="admin-status pending">${report.status}</span></td>
                         <td>${report.created_at}</td>

@@ -158,7 +158,9 @@
                 return;
             }
 
-            alert("신고 등록 기능은 아직 서버에 연결되어 있지 않습니다.");
+            f.action = "/report_form.do";
+            f.method = "post";
+            f.submit();
         }
     </script>
 </head>
