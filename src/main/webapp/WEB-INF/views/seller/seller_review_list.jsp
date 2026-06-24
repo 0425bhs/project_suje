@@ -13,8 +13,8 @@
         <div class="seller-board">
 
             <jsp:include page="seller_sidebar.jsp">
-                <jsp:param name="activeMenu" value="qnaList" />
-                <jsp:param name="sidebarTitle" value="상품 문의 답변 관리" />
+                <jsp:param name="activeMenu" value="reviewList" />
+                <jsp:param name="sidebarTitle" value="상품 리뷰 관리" />
             </jsp:include>
 
             <div class="seller-main">
@@ -22,8 +22,8 @@
                 <div class="seller-main-header">
                     <div>
                         <span class="page-label">ORDER MANAGEMENT</span>
-                        <h1>문의 관리</h1>
-                        <p>판매자의 각 상품마다의 문의를 확인할 수 있습니다.</p>
+                        <h1>리뷰 관리</h1>
+                        <p>판매자의 각 상품마다의 리뷰를 확인할 수 있습니다.</p>
                     </div>
                 </div>
             </div>

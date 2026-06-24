@@ -42,7 +42,7 @@
                             <div class="funnel-arrow">〉</div>
 
                             <div class="funnel-step clickable" onclick="location.href='/seller_order_list.do?status=PREPARING'">
-                                <span class="label">배송준비</span>
+                                <span class="label">제작중</span>
                                 <span class="count">${preparingCount}<small>건</small></span>
                             </div>
 

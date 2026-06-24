@@ -21,11 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ImageDAO;
+import com.kh.suje.dao.OptionDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ImageVO;
+import com.kh.suje.vo.OptionVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.vo.UserVO;
@@ -42,6 +44,7 @@ public class ProductController {
     private final ReviewDAO reviewdao;
     private final ImageDAO imagedao;
     private final FavoriteDAO favoritedao;
+    private final OptionDAO optiondao;
 
     // 할인 설정값 정리
     private void applySaleSetting(ProductVO vo) {
@@ -347,6 +350,10 @@ public class ProductController {
         if (vo == null) {
             return "redirect:/product/main.do";
         }
+
+        List<OptionVO> optionList = optiondao.getOptionListByProductId(product_id);
+        vo.setOptionList(optionList);
+
 
         List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
         vo.setImageList(productImageList);
@@ -845,36 +852,34 @@ public class ProductController {
     @PostMapping("/seller_product_insert.do")
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public Map<String,Object> seller_product_insert(ProductVO vo) throws Exception{
+    public Map<String,Object> seller_product_insert(ProductVO vo,@RequestParam(value = "option_name",required = false)List<String> optionNameList,@RequestParam(value = "option_price",required = false) List<String> optionPriceList,
+        @RequestParam(value = "option_stock", required = false) List<String> optionStockList) throws Exception{
 
-        // ✅ 파일 업로드 경로 설정
-        // ⚠️ 주의: c:/upload/ 경로가 실제로 존재해야 함 (없으면 생성)
-        // ⚠️ Windows/Linux 경로 다를 수 있음 - 배포 시 경로 확인 필수
         String savePath="c:/upload/";
         File dir= new File(savePath);
+
         if(!dir.exists()){
             dir.mkdirs();
         }
 
-        // ✅ 큰 이미지 저장
         MultipartFile image_L=vo.getImage_l_file();
         String filename_l="no_file";
 
         if(image_L!=null && !image_L.isEmpty()){
             filename_l=image_L.getOriginalFilename();
-            File savFile=new File(savePath,filename_l);
+            File saveFile=new File(savePath,filename_l);
 
             // ⚠️ 중요: 같은 파일명 존재 시 덮어씌워짐 - 타임스탬프로 고유화
-            if(savFile.exists()){
+            if(saveFile.exists()){
                 long time=System.currentTimeMillis();
                 filename_l=String.format("%d_%s",time, filename_l);
-                savFile=new File(savePath,filename_l);
+                saveFile=new File(savePath,filename_l);
             }
 
-            image_L.transferTo(savFile);
+            image_L.transferTo(saveFile);
         }
+        vo.setImage_l(filename_l);
 
-        // ✅ 작은 이미지 저장 (같은 로직)
         List<ImageVO> imageList = new ArrayList<>();
 
         int sort_order = 1;
@@ -889,15 +894,15 @@ public class ProductController {
                 }
 
                 String filename = file.getOriginalFilename();
-                File savFile = new File(savePath, filename);
+                File saveFile = new File(savePath, filename);
 
-                if(savFile.exists()){
+                if(saveFile.exists()){
                     long time = System.currentTimeMillis();
                     filename = String.format("%d_%s", time, filename);
-                    savFile = new File(savePath, filename);
+                    saveFile = new File(savePath, filename);
                 }
 
-                file.transferTo(savFile);
+                file.transferTo(saveFile);
 
                 ImageVO image = new ImageVO();
                 image.setTarget_type("PRODUCT");
@@ -908,6 +913,9 @@ public class ProductController {
                 imageList.add(image);
             }
         }
+
+        int product_id = vo.getProduct_id();
+
         // ✅ DB에 저장할 이미지 경로 설정 (/upload/ + 파일명)
         // ⚠️ 중요: 실제 파일은 c:/upload/에 있지만
         //         DB에는 /upload/파일명 저장 (WebConfig에서 매핑됨)
@@ -923,7 +931,7 @@ public class ProductController {
         applySaleSetting(vo);
 
         int res=productdao.seller_product_insert(vo);
-
+        
         // 수정된 부분 시작
         // 상품 등록 후 생성된 product_id를 상세 이미지에 넣고 images 테이블에 저장
         if(!imageList.isEmpty()){
@@ -933,10 +941,58 @@ public class ProductController {
 
             imagedao.insertImageList(imageList);
         }
-        // 수정된 부분 끝
+        if (optionNameList != null) {
+
+            List<OptionVO> optionList = new ArrayList<>();
+
+            for (int i = 0; i < optionNameList.size(); i++) {
+
+                String optionName = optionNameList.get(i);
+
+                if (optionName == null || optionName.trim().isEmpty()) {
+                    continue;
+                }
+
+                int optionPrice = 0;
+                int optionStock = 0;
+
+                if (optionPriceList != null && optionPriceList.size() > i) {
+                    String priceText = optionPriceList.get(i)
+                            .replace(",", "")
+                            .trim();
+
+                    if (!priceText.isEmpty()) {
+                        optionPrice = Integer.parseInt(priceText);
+                    }
+                }
+
+                if (optionStockList != null && optionStockList.size() > i) {
+                    String stockText = optionStockList.get(i)
+                            .replace(",", "")
+                            .trim();
+
+                    if (!stockText.isEmpty()) {
+                        optionStock = Integer.parseInt(stockText);
+                    }
+                }
+
+                OptionVO option = new OptionVO();
+                option.setProduct_id(product_id);
+                option.setOption_name(optionName.trim());
+                option.setOption_price(optionPrice);
+                option.setOption_stock(optionStock);
+
+                optionList.add(option);
+            }
+
+            if (!optionList.isEmpty()) {
+                optiondao.insertOptionList(optionList);
+            }
+        }
 
         Map<String,Object> map=new HashMap<>();
         map.put("result", res);
+        map.put("product_id", product_id);
 
         return map;
     }

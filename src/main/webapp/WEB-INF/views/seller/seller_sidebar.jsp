@@ -30,6 +30,10 @@
             판매자 주문 관리
         </a>
 
+        <a href="/seller_review_list.do" class="${param.activeMenu eq 'reviewList' ? 'menu-active':''}">
+            상품 리뷰 관리
+        </a>
+
         <a href="/seller_qna_list.do" class="${param.activeMenu eq 'qnaList' ? 'menu-active':''}">
             상품 문의 답변 관리
         </a>

@@ -313,6 +313,27 @@
                                     </button>
                                 </div>
 
+                                <c:if test="${not empty vo.optionList}">
+                                    <div class="product-option-box">
+                                        <label for="option_id">옵션 선택</label>
+
+                                        <select name="option_id" id="option_id" class="product-option-select">
+                                            <option value="">옵션을 선택하세요</option>
+
+                                            <c:forEach var="option" items="${vo.optionList}">
+                                                <option value="${option.option_id}"
+                                                        data-price="${option.option_price}">
+                                                    ${option.option_name}
+                                                    <c:if test="${option.option_price gt 0}">
+                                                        (+<fmt:formatNumber value="${option.option_price}" pattern="#,###" />원)
+                                                    </c:if>
+                                                </option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </c:if>
+
+
                                 <div class="store-option-price">
                                     <fmt:formatNumber value="${unitPrice}" pattern="#,###"/>원
                                 </div>
