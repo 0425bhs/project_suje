@@ -50,28 +50,20 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="report" items="${reportList}">
                     <tr>
-                        <td>#RP-91</td>
-                        <td class="left"><strong>후기 #R-875</strong></td>
-                        <td>욕설/비방</td>
-                        <td>blue***</td>
-                        <td><span class="admin-status pending">미확인</span></td>
-                        <td>2026-06-16</td>
+                        <td>${report.report_id}</td>
+                        <td class="left"><strong>${report.target_type}${report.target_id}</strong></td>
+                        <td>욕설/비방${report.reason}</td>
+                        <td>${report.reporter_id}</td>
+                        <td><span class="admin-status pending">${report.status}</span></td>
+                        <td>${report.created_at}</td>
                         <td class="admin-table-actions">
                             <button type="button" class="admin-btn light">상세</button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>#RP-88</td>
-                        <td class="left"><strong>상품 #P-312</strong></td>
-                        <td>저작권 의심</td>
-                        <td>craft***</td>
-                        <td><span class="admin-status pending">미확인</span></td>
-                        <td>2026-06-15</td>
-                        <td class="admin-table-actions">
-                            <button type="button" class="admin-btn light">상세</button>
-                        </td>
-                    </tr>
+                    </c:forEach>
+                    
                     </tbody>
                 </table>
             </div>

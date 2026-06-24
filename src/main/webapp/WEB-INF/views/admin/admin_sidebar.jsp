@@ -27,8 +27,8 @@
         <a href="/admin/reviews" class="${param.activeMenu eq 'reviews' ? 'menu-active' : ''}">
             후기 관리(진행중)
         </a>
-        <a href="/admin/qnas" class="${param.activeMenu eq 'qnas' ? 'menu-active' : ''}">
-            문의 관리(미구현)
+        <a href="/admin/inquiries" class="${param.activeMenu eq 'inquiries' ? 'menu-active' : ''}">
+            고객센터 문의 관리(진행중)
         </a>
         <a href="/admin/reports" class="${param.activeMenu eq 'reports' ? 'menu-active' : ''}">
             신고 관리(미구현)

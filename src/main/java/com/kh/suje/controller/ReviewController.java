@@ -39,9 +39,9 @@ public class ReviewController {
     @Value("${file.upload.path}")
     private String savePath;
 
-    @GetMapping(value={"testmain" ,"/review"})
+    @GetMapping("/testmain")
     public String main() {
-        return "/testmain";
+        return "/test/testmain";
     }
 
     @GetMapping("/review_form.do")

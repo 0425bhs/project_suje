@@ -7,13 +7,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.kh.suje.dao.CategoryDAO;
+import com.kh.suje.dao.InquiryDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
+import com.kh.suje.dao.ReportDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.dao.UserDAO;
 import com.kh.suje.vo.CategoryVO;
+import com.kh.suje.vo.InquiryVO;
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.ReportVO;
 import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.UserVO;
@@ -29,6 +33,8 @@ public class AdminController {
     private final ReviewDAO reviewDao;
     private final QnaDAO qnaDao;
     private final CategoryDAO categoryDao;
+    private final InquiryDAO inquiryDao;
+    private final ReportDAO reportDao;
 
     @GetMapping(value={"/admin", "/admin/dashboard"})
     public String adminDashboard() {
@@ -114,15 +120,41 @@ public class AdminController {
         return "/admin/admin_review_manage";
     }
 
-    @GetMapping("/admin/qnas")
-    public String qnas(Model model, String status, String keyword) {
+    @GetMapping("/admin/inquiries")
+    public String inquiries(Model model, String status, String keyword) {
+        List<InquiryVO> inquiryList;
+        
+        if (!"waiting".equals(status) && !"answered".equals(status)) {
+            status = "all";
+        }
 
+        inquiryList = inquiryDao.getInquryListByKeyword(status, keyword);
+        int totalCount = inquiryList.size();
 
-        return "/admin/admin_qna_manage";
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("inquiryList", inquiryList);
+        model.addAttribute("totalCount", totalCount);
+
+        return "/admin/admin_inquiry_manage";
     }
 
     @GetMapping("/admin/reports")
-    public String reports() {
+    public String reports(Model model, String status, String keyword) {
+        List<ReportVO> reportList;
+        
+        if (!"PENDING".equals(status) && !"PROCESSED".equals(status) && 
+            !"REJECTED".equals(status)) {
+            status = "all";
+        }
+
+        reportList = reportDao.getReportListByKeyword(status, keyword);
+        int totalCount = reportList.size();
+
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("reportList", reportList);
+        model.addAttribute("totalCount", totalCount);
 
         return "/admin/admin_report_manage";
     }

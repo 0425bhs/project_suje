@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.InquiryDAO">
+    <insert id="addInquiry">
+        INSERT INTO inquiries (
+            user_id, inquiry_type, title, content
+        )
+        VALUES (
+            #{user_id}, #{inquiry_type}, #{title}, #{content}
+        )
+    </insert>
+    <select id="getInquryListByKeyword" resultType="inquiry">
+        SELECT i.*, u.name user_name
+        FROM inquiries i
+        JOIN users u ON u.user_id = i.user_id
+        <where>
+            <if test="status != null and status != 'all'">
+                i.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                and (
+                    i.title LIKE CONCAT("%", #{keyword}, "%")
+                    OR u.name LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+        </where>
+    </select>
+</mapper>
