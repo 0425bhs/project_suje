@@ -1,6 +1,7 @@
 package com.kh.suje.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.kh.suje.vo.ReviewVO;
 
@@ -26,4 +27,6 @@ public interface ReviewDAO {
     int deleteReview(int review_id);
 
     List<ReviewVO> productReviewList(int product_id);
+
+    List<Map<String, Object>> bestReview(int product_id);
 }

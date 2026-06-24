@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.OptionDAO">
+
+    <insert id="insertOptionList">
+        INSERT INTO product_options (
+            product_id,
+            option_name,
+            option_price,
+            option_stock,
+            sort_order
+        )
+        VALUES
+
+        <foreach collection="optionList" item="option" index="idx" separator=",">
+            (
+                #{option.product_id},
+                #{option.option_name},
+                #{option.option_price},
+                #{option.option_stock},
+                #{idx} + 1
+            )
+        </foreach>
+    </insert>
+
+    <select id="getOptionListByProductId" parameterType="int" resultType="option">
+        SELECT
+            option_id,
+            product_id,
+            option_name,
+            option_price,
+            option_stock,
+            sort_order,
+            created_at,
+            updated_at
+        FROM product_options
+        WHERE product_id = #{product_id}
+        ORDER BY sort_order ASC, option_id ASC
+    </select>
+
+    <delete id="deleteOptionsByProductId" parameterType="int">
+        DELETE FROM product_options WHERE product_id = #{product_id}
+    </delete>
+
+</mapper>

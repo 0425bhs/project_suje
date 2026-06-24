@@ -122,6 +122,62 @@
                         </c:if>
                     </div>
 
+                    <c:if test="${not empty bestReview}">
+                        <div class="detail-review-preview-wrap">
+
+                            <div class="review-preview-title">
+                                <span class="review-crown">👑</span>
+                                <span>
+                                    <strong>${vo.review_count}</strong>명의 고객님들이 구매했어요!
+                                </span>
+                            </div>
+
+                            <div class="review-preview-list">
+
+                                <c:forEach var="review" items="${bestReview}" varStatus="status">
+                                    <div class="review-preview-card">
+
+                                        <c:choose>
+                                            <c:when test="${not empty review.review_image}">
+                                                <img class="review-preview-img" src="/upload/${review.review_image}" onerror="this.src='/images/no_image.png'">
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <img class="review-preview-img"
+                                                    src="/images/no_image.png">
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                        <div class="review-preview-content">
+
+                                            <div class="review-preview-top">
+                                                <span class="review-star">★</span>
+                                                <span class="review-rating">${review.rating}</span>
+
+                                                <c:if test="${status.index == 0}">
+                                                    <span class="review-badge">베스트글</span>
+                                                </c:if>
+                                            </div>
+
+                                            <p class="review-preview-text">
+                                                ${review.content}
+                                            </p>
+                                        </div>
+
+                                        <!-- 세 번째 리뷰 카드에만 더보기 버튼 출력 -->
+                                        <c:if test="${status.index == 2}">
+                                            <a class="review-more-btn" href="#reviewBox">
+                                                더보기
+                                            </a>
+                                        </c:if>
+
+                                    </div>
+                                </c:forEach>
+
+                            </div>
+                        </div>
+                    </c:if>
+
                 </section>
 
                 <!-- 오른쪽 상품 정보 / 주문 영역 -->
@@ -256,6 +312,27 @@
                                         +
                                     </button>
                                 </div>
+
+                                <c:if test="${not empty vo.optionList}">
+                                    <div class="product-option-box">
+                                        <label for="option_id">옵션 선택</label>
+
+                                        <select name="option_id" id="option_id" class="product-option-select">
+                                            <option value="">옵션을 선택하세요</option>
+
+                                            <c:forEach var="option" items="${vo.optionList}">
+                                                <option value="${option.option_id}"
+                                                        data-price="${option.option_price}">
+                                                    ${option.option_name}
+                                                    <c:if test="${option.option_price gt 0}">
+                                                        (+<fmt:formatNumber value="${option.option_price}" pattern="#,###" />원)
+                                                    </c:if>
+                                                </option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </c:if>
+
 
                                 <div class="store-option-price">
                                     <fmt:formatNumber value="${unitPrice}" pattern="#,###"/>원

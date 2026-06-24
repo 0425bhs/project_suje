@@ -157,4 +157,45 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM reviews
         WHERE user_id = #{user_id}
     </select>
+
+    <select id="bestReview" parameterType="int" resultType="map">
+        SELECT
+            r.review_id,
+            r.product_id,
+            r.user_id,
+            r.rating,
+            r.content,
+            DATE_FORMAT(r.created_at, '%Y-%m-%d') AS created_at,
+            u.nick_name,
+            u.name,
+            IFNULL(ri.image_count, 0) AS image_count,
+            ri.review_image
+
+        FROM reviews r
+
+        JOIN users u
+            ON r.user_id = u.user_id
+
+        LEFT JOIN (
+            SELECT
+                target_id AS review_id,
+                COUNT(*) AS image_count,
+                MIN(image_url) AS review_image
+            FROM images
+            WHERE target_type = 'REVIEW'
+            GROUP BY target_id
+        ) ri
+            ON r.review_id = ri.review_id
+
+        WHERE r.product_id = #{product_id}
+
+        ORDER BY
+            r.rating DESC,
+            CHAR_LENGTH(r.content) DESC,
+            IFNULL(ri.image_count, 0) DESC,
+            r.created_at DESC
+
+        LIMIT 3
+    </select>
+
 </mapper>

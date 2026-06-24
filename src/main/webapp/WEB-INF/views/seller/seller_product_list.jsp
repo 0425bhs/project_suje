@@ -55,31 +55,22 @@
 
             <div class="view-switch-buttons">
 
-            <!-- 1번: 이미지 없는 테이블 -->
-            <button type="button"
-                    class="view-icon-btn active"
-                    data-view="noImage"
-                    title="이미지 없는 형태">
-                <span class="view-icon icon-table"></span>
-            </button>
+                <!-- 1번: 이미지 없는 테이블 -->
+                <button type="button" class="view-icon-btn active" data-view="noImage" title="이미지 없는 형태">
+                    <span class="view-icon icon-table"></span>
+                </button>
 
-            <!-- 2번: 이미지 있는 테이블 -->
-            <button type="button"
-                    class="view-icon-btn"
-                    data-view="image"
-                    title="이미지 있는 형태">
-                <span class="view-icon icon-list"></span>
-            </button>
+                <!-- 2번: 이미지 있는 테이블 -->
+                <button type="button" class="view-icon-btn" data-view="image" title="이미지 있는 형태">
+                    <span class="view-icon icon-list"></span>
+                </button>
 
-            <!-- 3번: 카드형 -->
-            <button type="button"
-                    class="view-icon-btn"
-                    data-view="card"
-                    title="카드형태">
-                <span class="view-icon icon-grid"></span>
-            </button>
+                <!-- 3번: 카드형 -->
+                <button type="button" class="view-icon-btn" data-view="card" title="카드형태">
+                    <span class="view-icon icon-grid"></span>
+                </button>
 
-        </div>   
+            </div>   
 
             <!-- 필터 / 정렬 영역 -->
             <div class="filter-box">
