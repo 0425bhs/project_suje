@@ -10,6 +10,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM notices
     </select>
 
+    <select id="getNoticeListByKeyword"
+            resultType="notice">
+        SELECT *
+        FROM notices
+        <where>
+            <if test="keyword != null and keyword != ''">
+                title LIKE CONCAT("%", #{keyword},"%")
+                OR content LIKE CONCAT("%", #{keyword},"%")
+            </if>
+        </where>
+    </select>
+
     <select id="getNoticeById"
             parameterType="int"
             resultType="notice">

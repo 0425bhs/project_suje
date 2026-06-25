@@ -10,4 +10,5 @@ public interface NoticeDAO {
     NoticeVO getNoticeById(int notice_id);
     int updateNotice(NoticeVO notice);
     int deleteNotice(int notice_id);
+    List<NoticeVO> getNoticeListByKeyword(String keyword);
 }

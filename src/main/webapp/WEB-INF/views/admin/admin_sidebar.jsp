@@ -31,13 +31,13 @@
             고객센터 문의 관리(진행중)
         </a>
         <a href="/admin/reports" class="${param.activeMenu eq 'reports' ? 'menu-active' : ''}">
-            신고 관리(미구현)
+            신고 관리(진행중)
         </a>
         <a href="/admin/categories" class="${param.activeMenu eq 'categories' ? 'menu-active' : ''}">
             카테고리 관리(진행중)
         </a>
         <a href="/admin/notices" class="${param.activeMenu eq 'notices' ? 'menu-active' : ''}">
-            공지사항 관리
+            공지사항 관리(진행중)
         </a>
         <a href="/admin/statistics" class="${param.activeMenu eq 'statistics' ? 'menu-active' : ''}">
             기본 통계

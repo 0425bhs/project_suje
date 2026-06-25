@@ -9,9 +9,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <select id="getReportListByKeyword" resultType="report">
-        SELECT r.*, u.name reporter_name
+        SELECT r.*, 
+               u.name AS reporter_name
         FROM reports r
         JOIN users u ON u.user_id = r.reporter_id
+        LEFT JOIN products p ON p.product_id = r.target_id AND target_type = 'PRODUCT' 
+        LEFT JOIN reviews rv ON rv.review_id = r.target_id AND target_type = 'REVIEW'
+        LEFT JOIN qnas q ON q.qna_id = r.target_id AND target_type = 'QNA'
         <where>
         <if test="status != null and status != 'all'">
             r.status = #{status}
@@ -24,30 +28,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
         </where>
     </select>
-
-    //임시 제미나이
-    <!-- <select id="getReportListByKeyword" resultType="report">
-        SELECT 
-            r.*, 
-            u.name AS reporter_name,
-            COALESCE(p.product_name, rv.review_title, tu.name) AS target_name
-        FROM reports r
-        JOIN users u ON u.user_id = r.reporter_id
-        LEFT JOIN product p ON r.target_type = 'PRODUCT' AND r.target_id = p.product_id
-        LEFT JOIN review rv ON r.target_type = 'REVIEW' AND r.target_id = rv.review_id
-        LEFT JOIN users tu ON r.target_type = 'USER' AND r.target_id = tu.user_id
-        <where>
-            <if test="status != null and status != 'all'">
-                r.status = #{status}
-            </if>
-            <if test="keyword != null and keyword != ''">
-                AND (
-                    r.reason LIKE CONCAT('%', #{keyword}, '%')
-                    OR u.name LIKE CONCAT('%', #{keyword}, '%')
-                    OR COALESCE(p.product_name, rv.review_title, tu.name) LIKE CONCAT('%', #{keyword}, '%')
-                )
-            </if>
-        </where>
-    </select> -->
-
 </mapper>

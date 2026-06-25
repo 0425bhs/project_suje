@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.InquiryDAO;
+import com.kh.suje.dao.NoticeDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReportDAO;
@@ -16,6 +17,7 @@ import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.dao.UserDAO;
 import com.kh.suje.vo.CategoryVO;
 import com.kh.suje.vo.InquiryVO;
+import com.kh.suje.vo.NoticeVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.ReportVO;
 import com.kh.suje.vo.ReviewVO;
@@ -35,6 +37,7 @@ public class AdminController {
     private final CategoryDAO categoryDao;
     private final InquiryDAO inquiryDao;
     private final ReportDAO reportDao;
+    private final NoticeDAO noticeDao;
 
     @GetMapping(value={"/admin", "/admin/dashboard"})
     public String adminDashboard() {
@@ -143,8 +146,8 @@ public class AdminController {
     public String reports(Model model, String status, String keyword) {
         List<ReportVO> reportList;
         
-        if (!"PENDING".equals(status) && !"PROCESSED".equals(status) && 
-            !"REJECTED".equals(status)) {
+        if (!"pending".equals(status) && !"processed".equals(status) && 
+            !"rejected".equals(status)) {
             status = "all";
         }
 
@@ -168,7 +171,15 @@ public class AdminController {
     }
 
     @GetMapping("/admin/notices")
-    public String notices() {
+    public String notices(Model model, String keyword) {
+       List<NoticeVO> noticeList;
+        
+        noticeList = noticeDao.getNoticeListByKeyword(keyword);
+        int totalCount = noticeList.size();
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("noticeList", noticeList);
+        model.addAttribute("totalCount", totalCount);
 
         return "/admin/admin_notice_manage";
     }
