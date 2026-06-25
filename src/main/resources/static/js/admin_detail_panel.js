@@ -13,7 +13,6 @@ function setupAdminDetailPanel(options) {
     const buttons = master.querySelectorAll('.admin-detail-btn');
     const closeButtons = panel.querySelectorAll('.admin-detail-close');
     const fields = options.fields || {};
-    const onOpen = options.onOpen;
 
     //마스터 패널에 클래스 추가(접혀짐)
     function setCollapsed(collapsed) {
@@ -57,13 +56,9 @@ function setupAdminDetailPanel(options) {
             return;
         }
 
-        if (typeof onOpen === 'function') {
-            onOpen(row);
-        } else {
-            Object.keys(fields).forEach(function(targetId) {
-                setText(targetId, row.dataset[fields[targetId]]);
-            });
-        }
+        Object.keys(fields).forEach(function(targetId) {
+            setText(targetId, row.dataset[fields[targetId]]);
+        });
 
         clearSelectedRows();
         row.classList.add('selected');

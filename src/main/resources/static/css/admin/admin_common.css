@@ -704,17 +704,6 @@ a.admin-list-item:hover {
     overflow-wrap: anywhere;
 }
 
-.admin-detail-image img {
-    display: block;
-    width: 100%;
-    max-width: 220px;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border: 1px solid #edf0f3;
-    border-radius: 7px;
-    background: #fff;
-}
-
 @media (max-width: 1100px) {
     .admin-board {
         display: block;
