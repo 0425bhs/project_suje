@@ -57,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.sale_price_updated_at,
 
             s.company_name,
+            c.name AS category_name,
 
             IFNULL(rv.review_avg, 0) AS review_avg,
             IFNULL(rv.review_count, 0) AS review_count
@@ -65,6 +66,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         LEFT JOIN sellers s
         ON p.seller_id = s.seller_id
+
+        LEFT JOIN categories c
+        ON p.category_id = c.category_id
 
         LEFT JOIN (
             SELECT

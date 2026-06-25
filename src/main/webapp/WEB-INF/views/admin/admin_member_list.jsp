@@ -141,23 +141,5 @@
         </section>
     </main>
 </div>
-
-<script src="/js/admin_detail_panel.js"></script>
-<script>
-    setupAdminDetailPanel({
-        fields: {
-            panelUserId: 'userId',
-            panelRole: 'roleLabel',
-            panelName: 'name',
-            panelNickName: 'nickName',
-            panelLoginId: 'loginId',
-            panelEmail: 'email',
-            panelPhone: 'phone',
-            panelGender: 'gender',
-            panelCreatedAt: 'createdAt',
-            panelUpdatedAt: 'updatedAt'
-        }
-    });
-</script>
 </body>
 </html>

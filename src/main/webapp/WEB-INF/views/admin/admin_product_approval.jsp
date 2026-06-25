@@ -26,90 +26,339 @@
                 </div>
             </header>
 
-            <section class="admin-card">
-                <div class="admin-filter-box">
-                    <form class="admin-filter-form" action="/admin/products" method="get">
-                        <div class="admin-filter-tabs">
-                            <a href="/admin/products?status=all&keyword=${keyword}"
-                                class="${status eq 'all' ? 'active' : ''}">전체</a>
-                            <a href="/admin/products?status=pending&keyword=${keyword}"
-                                class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
-                            <a href="/admin/products?status=approved&keyword=${keyword}"
-                                class="${status eq 'approved' ? 'active' : ''}">판매중</a>
-                            <a href="/admin/products?status=rejected&keyword=${keyword}"
-                                class="${status eq 'rejected' ? 'active' : ''}">반려</a>
-                            <a href="/admin/products?status=hidden&keyword=${keyword}"
-                                class="${status eq 'hidden' ? 'active' : ''}">숨김</a>
-                        </div>
-                        <input type="hidden" name="status" value="${status}" />
-                        <input type="text" class="admin-search" name="keyword" placeholder="상품명, 판매자 검색"
-                            value="${keyword}">
-                    </form>
-                </div>
+            <section class="admin-master-detail is-collapsed" id="adminMasterDetail">
+                <div class="admin-card admin-list-panel">
+                    <div class="admin-filter-box">
+                        <form class="admin-filter-form" action="/admin/products" method="get">
+                            <div class="admin-filter-tabs">
+                                <a href="/admin/products?status=all&keyword=${keyword}"
+                                    class="${status eq 'all' ? 'active' : ''}">전체</a>
+                                <a href="/admin/products?status=pending&keyword=${keyword}"
+                                    class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
+                                <a href="/admin/products?status=approved&keyword=${keyword}"
+                                    class="${status eq 'approved' ? 'active' : ''}">판매중</a>
+                                <a href="/admin/products?status=rejected&keyword=${keyword}"
+                                    class="${status eq 'rejected' ? 'active' : ''}">반려</a>
+                                <a href="/admin/products?status=hidden&keyword=${keyword}"
+                                    class="${status eq 'hidden' ? 'active' : ''}">숨김</a>
+                            </div>
+                            <span class="admin-filter-count">전체 ${totalCount}건</span>
+                            <input type="hidden" name="status" value="${status}" />
+                            <input type="text" class="admin-search" name="keyword" placeholder="상품명, 판매자 검색"
+                                value="${keyword}">
+                        </form>
+                    </div>
 
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>이미지</th>
-                                <th>상품명</th>
-                                <th>판매자</th>
-                                <th>카테고리</th>
-                                <th>가격</th>
-                                <th>상태</th>
-                                <th>등록일</th>
-                                <th>관리</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="product" items="${productList}">
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <span class="admin-thumb">
-                                            <img src="/upload/${product.image_l}" />
-                                        </span>
-                                    </td>
-                                    <td class="left"><strong>${product.name}</strong></td>
-                                    <td>${product.company_name}</td>
-                                    <td>${product.category_name}</td>
-                                    <td>${product.price}</td>
-                                    <td>
-                                        <c:choose>
-                                            <c:when test="${product.status eq 'PENDING'}">
-                                                <span class="admin-status pending">승인대기</span>
-                                            </c:when>
-
-                                            <c:when test="${product.status eq 'APPROVED'}">
-                                                <span class="admin-status approved">판매중</span>
-                                            </c:when>
-
-                                            <c:when test="${product.status eq 'REJECTED'}">
-                                                <span class="admin-status rejected">반려</span>
-                                            </c:when>
-
-                                            <c:when test="${product.status eq 'HIDDEN'}">
-                                                <span class="admin-status hidden">숨김</span>
-                                            </c:when>
-
-                                            <c:otherwise>
-                                                <span class="admin-status muted">${product.status}</span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                    <td>2026-06-16</td>
-                                    <td class="admin-table-actions">
-                                        <button type="button" class="admin-btn light">상세</button>
-                                    </td>
+                                    <th>이미지</th>
+                                    <th>상품명</th>
+                                    <th>판매자</th>
+                                    <th>카테고리</th>
+                                    <th>가격</th>
+                                    <th>상태</th>
+                                    <th>등록일</th>
+                                    <th>관리</th>
                                 </tr>
-                            </c:forEach>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="product" items="${productList}">
+                                    <tr class="admin-clickable-row" data-product-id="${product.product_id}">
+                                        <td>
+                                            <span class="admin-thumb">
+                                                <img src="/upload/${product.image_l}" />
+                                            </span>
+                                        </td>
+                                        <td class="left"><strong>${product.name}</strong></td>
+                                        <td>${product.company_name}</td>
+                                        <td>${product.category_name}</td>
+                                        <td>${product.price}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${product.status eq 'PENDING'}">
+                                                    <span class="admin-status pending">승인대기</span>
+                                                </c:when>
 
-                        </tbody>
-                    </table>
+                                                <c:when test="${product.status eq 'APPROVED'}">
+                                                    <span class="admin-status approved">판매중</span>
+                                                </c:when>
+
+                                                <c:when test="${product.status eq 'REJECTED'}">
+                                                    <span class="admin-status rejected">반려</span>
+                                                </c:when>
+
+                                                <c:when test="${product.status eq 'HIDDEN'}">
+                                                    <span class="admin-status hidden">숨김</span>
+                                                </c:when>
+
+                                                <c:otherwise>
+                                                    <span class="admin-status muted">${product.status}</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>${product.created_at}</td>
+                                        <td class="admin-table-actions">
+                                            <button type="button" class="admin-btn light admin-detail-btn">상세</button>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </section>
 
+                <aside class="admin-card admin-detail-panel" id="adminDetailPanel" aria-labelledby="productDetailTitle">
+                    <div class="admin-detail-panel-inner">
+                        <div class="admin-detail-content" hidden>
+                            <div class="admin-detail-head">
+                                <div>
+                                    <span class="admin-page-label">PRODUCT DETAIL</span>
+                                    <h2 id="productDetailTitle">상품 상세</h2>
+                                </div>
+                                <button type="button" class="admin-detail-close" aria-label="닫기">&times;</button>
+                            </div>
+                            <dl class="admin-detail-grid">
+                                <div>
+                                    <dt>상품번호</dt>
+                                    <dd id="productId">-</dd>
+                                </div>
+                                <div>
+                                    <dt>판매자번호</dt>
+                                    <dd id="sellerId">-</dd>
+                                </div>
+                                <div>
+                                    <dt>카테고리번호</dt>
+                                    <dd id="categoryName">-</dd>
+                                </div>
+                                <div>
+                                    <dt>상품명</dt>
+                                    <dd id="productName">-</dd>
+                                </div>
+                                <div>
+                                    <dt>설명</dt>
+                                    <dd id="description">-</dd>
+                                </div>
+                                <div>
+                                    <dt>가격</dt>
+                                    <dd id="price">-</dd>
+                                </div>
+                                <div>
+                                    <dt>할인가</dt>
+                                    <dd id="salePrice">-</dd>
+                                </div>
+                                <div>
+                                    <dt>재고</dt>
+                                    <dd id="stock">-</dd>
+                                </div>
+                                <div>
+                                    <dt>대표이미지</dt>
+                                    <dd id="imageL">-</dd>
+                                </div>
+                                <div>
+                                    <dt>생성일</dt>
+                                    <dd id="createdAt">-</dd>
+                                </div>
+                                <div>
+                                    <dt>수정일</dt>
+                                    <dd id="updatedAt">-</dd>
+                                </div>
+                                <div>
+                                    <dt>무료배송금액</dt>
+                                    <dd id="freeShipping">-</dd>
+                                </div>
+                                <div>
+                                    <dt>할인가 수정일</dt>
+                                    <dd id="salePriceUpdatedAt">-</dd>
+                                </div>
+                                <div>
+                                    <dt>할인 시작일</dt>
+                                    <dd id="saleStartAt">-</dd>
+                                </div>
+                                <div>
+                                    <dt>할인 종료일</dt>
+                                    <dd id="saleEndAt">-</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </aside>
+            </section>
         </main>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const master = document.getElementById('adminMasterDetail');
+            const panel = document.getElementById('adminDetailPanel');
+
+            if (!master || !panel) {
+                return;
+            }
+
+            const content = panel.querySelector('.admin-detail-content');
+            const rows = master.querySelectorAll('.admin-clickable-row');
+            const closeButton = panel.querySelector('.admin-detail-close');
+
+            const fields = [
+                'productId',
+                'sellerId',
+                'categoryName',
+                'productName',
+                'description',
+                'price',
+                'salePrice',
+                'stock',
+                'imageL',
+                'createdAt',
+                'updatedAt',
+                'freeShipping',
+                'salePriceUpdatedAt',
+                'saleStartAt',
+                'saleEndAt'
+            ];
+
+            function setText(id, value) {
+                const target = document.getElementById(id);
+                const text = value == null ? '' : String(value);
+
+                if (target) {
+                    target.textContent = text.trim() ? text : '-';
+                }
+            }
+
+            function formatNumber(value) {
+                if (value == null || value === '') {
+                    return '-';
+                }
+
+                return Number(value).toLocaleString('ko-KR');
+            }
+
+            function formatWon(value) {
+                const formatted = formatNumber(value);
+                return formatted === '-' ? '-' : formatted + '원';
+            }
+
+            function showPanel() {
+                master.classList.remove('is-collapsed');
+                panel.classList.add('has-selection');
+
+                if (content) {
+                    content.hidden = false;
+                }
+            }
+
+            function closePanel() {
+                master.classList.add('is-collapsed');
+                panel.classList.remove('has-selection');
+
+                if (content) {
+                    content.hidden = true;
+                }
+
+                rows.forEach(function(row) {
+                    row.classList.remove('selected');
+                });
+            }
+
+            function showLoading(productId) {
+                fields.forEach(function(id) {
+                    setText(id, '-');
+                });
+
+                setText('productId', productId);
+                setText('productName', '불러오는 중...');
+            }
+
+            function showProduct(product) {
+                setText('productId', product.product_id);
+                setText('sellerId', product.seller_id);
+                setText('categoryName', product.category_name || product.category_id);
+                setText('productName', product.name);
+                setText('description', product.description);
+                setText('price', formatWon(product.price));
+                setText('salePrice', formatWon(product.sale_price));
+                setText('stock', formatNumber(product.stock));
+                setText('imageL', product.image_l);
+                setText('createdAt', product.created_at);
+                setText('updatedAt', product.updated_at);
+                setText('freeShipping', formatWon(product.free_shipping));
+                setText('salePriceUpdatedAt', product.sale_price_updated_at);
+                setText('saleStartAt', product.sale_start_at);
+                setText('saleEndAt', product.sale_end_at);
+            }
+
+            function selectRow(row) {
+                rows.forEach(function(item) {
+                    item.classList.remove('selected');
+                });
+
+                row.classList.add('selected');
+            }
+
+            function loadProduct(row) {
+                const productId = row.dataset.productId;
+
+                if (!productId) {
+                    return;
+                }
+
+                selectRow(row);
+                showPanel();
+                showLoading(productId);
+
+                fetch('/admin/products/detail?product_id=' + encodeURIComponent(productId), {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('상품 정보를 불러오지 못했습니다.');
+                        }
+
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (!data.success) {
+                            throw new Error(data.message || '상품 정보를 찾을 수 없습니다.');
+                        }
+
+                        showProduct(data.product);
+                    })
+                    .catch(function(error) {
+                        setText('productName', error.message);
+                    });
+            }
+
+            rows.forEach(function(row) {
+                row.addEventListener('click', function() {
+                    loadProduct(row);
+                });
+
+                const detailButton = row.querySelector('.admin-detail-btn');
+
+                if (detailButton) {
+                    detailButton.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        loadProduct(row);
+                    });
+                }
+            });
+
+            if (closeButton) {
+                closeButton.addEventListener('click', closePanel);
+            }
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && panel.classList.contains('has-selection')) {
+                    closePanel();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
