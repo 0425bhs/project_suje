@@ -354,6 +354,15 @@ public class ProductController {
         List<OptionVO> optionList = optiondao.getOptionListByProductId(product_id);
         vo.setOptionList(optionList);
 
+        int optionTotalStock = 0;
+
+        if (optionList != null) {
+            for (OptionVO option : optionList) {
+                optionTotalStock += option.getOption_stock();
+            }
+        }
+
+        vo.setOptionTotalStock(optionTotalStock);
 
         List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
         vo.setImageList(productImageList);

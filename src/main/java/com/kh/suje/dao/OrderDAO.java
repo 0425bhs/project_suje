@@ -39,11 +39,12 @@ public interface OrderDAO {
     // 결제취소 시 주문 상태, 취소 사유, 취소 일시 변경
     int updateOrderCancelInfo(OrderVO vo);
 
-    int getProductId(int order_id);
+    int getProductId(int order_item_id);
 
     // 상태별 주문 개수 조회
     Map<String, Object> selectOrderStatusCounts(int user_id);
 
     // 주문 수 조회
     int getOrderCount(int user_id);
+
 }
