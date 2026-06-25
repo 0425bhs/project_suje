@@ -9,7 +9,10 @@ import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.QnaVO;
+import com.kh.suje.vo.ReviewVO;
+import com.kh.suje.vo.UserVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,15 +34,19 @@ public class QnaController {
     }
     
     @PostMapping("qna_form.do")
-    public String qnaFormFin(QnaVO qna) {
-        // UserVO user = session.getAttribute("user");
-        // Long userId = user.getId();
-        int user_id = 3;
+    public String qnaFormFin(HttpSession session, QnaVO qna) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+        int user_id = loginUser.getUser_id();
 
         qna.setUser_id(user_id);
         qnaDAO.addQna(qna);
 
-        return "redirect:/mypage/qna";
+        return "redirect:/myshop/qnas";
     }
 
     @GetMapping("qna_update_form.do")
@@ -61,19 +68,42 @@ public class QnaController {
     public String qnaDelete(int qna_id) {
        qnaDAO.deleteQna(qna_id);
 
-        return "redirect:/mypage/qna";
+        return "redirect:/myshop/qnas";
     }
 
     @GetMapping("/myshop/qnas")
-    public String myQnaList(Model model) {
-        // UserVO user = session.getAttribute("user");
-        // int userId = user.getId();
-        int user_id = 3;
+    public String myQnaList(HttpSession session, Model model, String status) {
+        UserVO user = (UserVO) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login.do";
+        }
+        int user_id = user.getUser_id();
 
-        List<QnaVO> list = qnaDAO.getMyQnaList(user_id);
+        if (status == null || status.trim().isEmpty()) {
+            status = "all"; 
+        }
+
+        List<QnaVO> list;
+        if ("wating".equals(status)) {
+            list = qnaDAO.getWatingQnaList(user_id);
+        } else if ("answered".equals(status)) {
+            list = qnaDAO.getAnsweredQnaList(user_id);
+        } else {
+            list = qnaDAO.getMyQnaList(user_id);
+        }
+
         model.addAttribute("list", list);
 
+        int totalCount = qnaDAO.getQnaCount(user_id);
+        int watingQnaCount = qnaDAO.getWatingQnaCount(user_id);
+        int answeredQnaCount = qnaDAO.getAnsweredQnaCount(user_id);
+
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("watingQnaCount", watingQnaCount);
+        model.addAttribute("answeredQnaCount", answeredQnaCount);
+
         model.addAttribute("activeMenu", "qna");
+        model.addAttribute("status", status);
         model.addAttribute("contentPage", "/myshop/qna_list");
 
         return "/myshop/myshop_main";
@@ -81,10 +111,6 @@ public class QnaController {
 
     @GetMapping("qna_detail.do")
     public String qnaDetail(Model model, int qna_id) {
-        // UserVO user = session.getAttribute("user");
-        // int userId = user.getId();
-        // int user_id = 3;
-
         QnaVO qna = qnaDAO.getQnaById(qna_id);
         model.addAttribute("qna", qna);
 

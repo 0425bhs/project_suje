@@ -226,7 +226,7 @@
             </article>
 
             <aside class="community-card product-summary">
-                <img src="${qna.image_l}" alt="${qna.product_name}">
+                <img src="/upload/${qna.image_l}" alt="${qna.product_name}">
                 <strong>${qna.product_name}</strong>
                 <span>문의 상품</span>
 

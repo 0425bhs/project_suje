@@ -102,6 +102,65 @@
                             <input type="text" name="name" value="${vo.name}" placeholder="상품명을 입력하세요">
                         </div>
 
+                        <div class="form-section">
+                            <label>상품 옵션</label>
+
+                            <p class="form-help">
+                                옵션이 필요 없으면 비워두세요.
+                            </p>
+
+                            <div id="optionListBox">
+
+                                <c:choose>
+                                    <c:when test="${not empty vo.optionList}">
+
+                                        <c:forEach var="option" items="${vo.optionList}">
+                                            <div class="option-row">
+                                                <input type="text" name="option_name" class="option-name-input" value="${option.option_name}" placeholder="옵션명">
+
+                                                <input type="text" name="option_price" class="option-price-input" value="${option.option_price}" placeholder="추가금액">
+
+                                                <input type="text" name="option_stock" class="option-stock-input" value="${option.option_stock}" placeholder="옵션재고">
+
+                                                <button type="button" class="option-remove-btn">
+                                                    삭제
+                                                </button>
+                                            </div>
+                                        </c:forEach>
+
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <div class="option-row">
+                                            <input type="text"
+                                                name="option_name"
+                                                class="option-name-input"
+                                                placeholder="옵션명">
+
+                                            <input type="text"
+                                                name="option_price"
+                                                class="option-price-input"
+                                                placeholder="추가금액">
+
+                                            <input type="text"
+                                                name="option_stock"
+                                                class="option-stock-input"
+                                                placeholder="옵션재고">
+
+                                            <button type="button" class="option-remove-btn">
+                                                삭제
+                                            </button>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+
+                            </div>
+
+                            <button type="button" id="addOptionBtn" class="option-add-btn">
+                                + 옵션 추가
+                            </button>
+                        </div>
+
                         <div class="form-row">
                             <label>상품 설명</label>
 

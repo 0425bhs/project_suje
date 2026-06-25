@@ -2,6 +2,27 @@ window.addEventListener("load", function(){
     initSellerWishButton();
 });
 
+// 숫자를 1.1천 / 1.4만 형태로 바꾸는 함수
+function compactCount(count){
+    count = Number(count);
+
+    if(isNaN(count) || count < 0){
+        count = 0;
+    }
+
+    if(count < 1000){
+        return String(count);
+    }
+
+    if(count < 10000){
+        const value = Math.ceil(count / 100) / 10;
+        return value.toFixed(1) + "천";
+    }
+
+    const value = Math.ceil(count / 1000) / 10;
+    return value.toFixed(1) + "만";
+}
+
 function initSellerWishButton(){
     const sellerWishBtn = document.getElementById("sellerWishBtn");
     const countBox = document.getElementById("sellerFavoriteCount");
@@ -33,10 +54,14 @@ function initSellerWishButton(){
             const heart = sellerWishBtn.querySelector(".wish-shop-heart");
             const text = sellerWishBtn.querySelector(".wish-shop-text");
 
-            let count = 0;
+            let rawCount = 0;
 
             if(countBox != null){
-                count = Number(countBox.innerText || 0);
+                rawCount = Number(countBox.dataset.rawCount || 0);
+
+                if(isNaN(rawCount)){
+                    rawCount = 0;
+                }
             }
 
             if(data.liked === true){
@@ -51,7 +76,9 @@ function initSellerWishButton(){
                 }
 
                 if(countBox != null){
-                    countBox.innerText = count + 1;
+                    rawCount = rawCount + 1;
+                    countBox.dataset.rawCount = rawCount;
+                    countBox.innerText = compactCount(rawCount);
                 }
             } else {
                 sellerWishBtn.classList.remove("active");
@@ -64,8 +91,15 @@ function initSellerWishButton(){
                     text.innerText = "작가샵 찜하기";
                 }
 
-                if(countBox != null && count > 0){
-                    countBox.innerText = count - 1;
+                if(countBox != null){
+                    rawCount = rawCount - 1;
+
+                    if(rawCount < 0){
+                        rawCount = 0;
+                    }
+
+                    countBox.dataset.rawCount = rawCount;
+                    countBox.innerText = compactCount(rawCount);
                 }
             }
         })

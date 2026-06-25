@@ -1,4 +1,4 @@
-function cartInsert(productId, quantityValue){
+function cartInsert(productId, quantityValue,optionIdValue){
 
     let product_id = productId;
     let quantity = quantityValue;
@@ -28,15 +28,35 @@ function cartInsert(productId, quantityValue){
         quantity = 1;
     }
 
+    const optionSelect = document.getElementById("option_id");
+
+    let optionId = "";
+
+    if(optionSelect != null){
+
+        if(optionSelect.value === ""){
+            alert("옵션을 선택해주세요.");
+            optionSelect.focus();
+            return;
+        }
+
+        optionId = optionSelect.value;
+
+    }else if(optionIdValue != null && optionIdValue !== "" && optionIdValue !== "null"){
+
+        optionId = optionIdValue;
+    }
+
     const params = new URLSearchParams();
     params.append("product_id", product_id);
     params.append("quantity", quantity);
 
-    fetch("/cart_insert.do", {
-        method: "POST",
-        headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        body: params.toString()
-    }).then(response => response.json()).then(data => {
+    if(optionId !== ""){
+        params.append("option_id", optionId);
+    }
+
+    fetch("/cart_insert.do",{method: "POST",headers: {"Content-Type": "application/x-www-form-urlencoded"},body: params.toString()
+    }).then(response=>response.json()).then(data=>{
 
         if(data.result == "login"){
             alert("로그인 후 이용 가능합니다.");
@@ -411,3 +431,4 @@ function cartOrderCheck() {
 
     return true;
 }
+

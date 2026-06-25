@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.kh.suje.dao.OptionDAO;
+import com.kh.suje.vo.OptionVO;
 import com.kh.suje.dao.AddressDAO;
 import com.kh.suje.dao.CartDAO;
 import com.kh.suje.dao.OrderDAO;
@@ -35,6 +37,7 @@ public class OrderController {
     private final PaymentDAO paymentDAO;
     private final ProductDAO productDAO;
     private final CartDAO cartdao;
+    private final OptionDAO optiondao;
     private final AddressDAO addressDao;
 
     // 로그인 회원 정보 가져오기
@@ -140,18 +143,18 @@ public class OrderController {
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);
 
-        model.addAttribute("activeMenu", "orders");
+        model.addAttribute("activeMenu", "order");
         model.addAttribute("contentPage", "/myshop/order_list");
 
         return "myshop/myshop_main";
     }
 
     // 주문서 작성 화면
-    // 주소: /order/form
     @GetMapping("/order/form")
     public String orderForm(
-            @RequestParam("product_id") int product_id,
-            @RequestParam(value = "quantity", defaultValue = "1") int quantity,
+            int product_id,
+            @RequestParam(value = "option_id", required = false) List<Integer> optionIdList,
+            @RequestParam(value = "quantity", required = false) List<Integer> quantityList,
             Model model,
             HttpSession session) {
         UserVO loginUser = getLoginUser(session);
@@ -166,49 +169,145 @@ public class OrderController {
             return "redirect:/product/list.do";
         }
 
-        int price = product.getSale_price() > 0
-                ? product.getSale_price()
-                : product.getPrice();
+        int basePrice = getActiveProductPrice(product);
 
-        int originTotal = product.getPrice() * quantity;
-        int item_amount = price * quantity;
-        int discountTotal = originTotal - item_amount;
+        int totalOriginPrice = 0;
+        int totalDiscountPrice = 0;
+        int totalItemPrice = 0;
+        int couponPrice = 0;
+
+        List<Map<String, Object>> orderItemList = new java.util.ArrayList<>();
+
+        /*
+            옵션 있는 상품
+            option_id, quantity가 여러 개 넘어오는 경우
+        */
+        if (optionIdList != null && !optionIdList.isEmpty()) {
+
+            if (quantityList == null || optionIdList.size() != quantityList.size()) {
+                return "redirect:/product_detail.do?product_id=" + product_id;
+            }
+
+            for (int i = 0; i < optionIdList.size(); i++) {
+
+                Integer option_id = optionIdList.get(i);
+                Integer quantityObj = quantityList.get(i);
+
+                if (option_id == null || quantityObj == null || quantityObj <= 0) {
+                    return "redirect:/product_detail.do?product_id=" + product_id;
+                }
+
+                int quantity = quantityObj;
+
+                OptionVO option = optiondao.selectOptionOne(option_id);
+
+                if (option == null) {
+                    return "redirect:/product_detail.do?product_id=" + product_id;
+                }
+
+                if (option.getProduct_id() != product_id) {
+                    return "redirect:/product_detail.do?product_id=" + product_id;
+                }
+
+                if (option.getOption_stock() < quantity) {
+                    return "redirect:/product_detail.do?product_id=" + product_id;
+                }
+
+                int optionPrice = option.getOption_price();
+                int itemPrice = basePrice + optionPrice;
+
+                int originTotal = (product.getPrice() + optionPrice) * quantity;
+                int itemAmount = itemPrice * quantity;
+                int discountTotal = originTotal - itemAmount;
+
+                totalOriginPrice += originTotal;
+                totalDiscountPrice += discountTotal;
+                totalItemPrice += itemAmount;
+
+                Map<String, Object> item = new HashMap<>();
+                item.put("product_id", product.getProduct_id());
+                item.put("name", product.getName());
+                item.put("image_l", product.getImage_l());
+                item.put("price", product.getPrice());
+                item.put("sale_price", product.getSale_price());
+                item.put("item_price", itemPrice);
+                item.put("quantity", quantity);
+                item.put("origin_total", originTotal);
+                item.put("item_total", itemAmount);
+                item.put("discount_total", discountTotal);
+                item.put("cart_id", 0);
+                item.put("delivery_fee", product.getDelivery_fee());
+                item.put("free_shipping", product.getFree_shipping());
+
+                item.put("option_id", option_id);
+                item.put("option_name", option.getOption_name());
+                item.put("option_price", option.getOption_price());
+
+                orderItemList.add(item);
+            }
+
+        } else {
+
+            /*
+                옵션 없는 일반 상품
+            */
+            int quantity = 1;
+
+            if (quantityList != null && !quantityList.isEmpty() && quantityList.get(0) != null) {
+                quantity = quantityList.get(0);
+            }
+
+            if (quantity <= 0) {
+                return "redirect:/product_detail.do?product_id=" + product_id;
+            }
+
+            if (product.getStock() < quantity) {
+                return "redirect:/product_detail.do?product_id=" + product_id;
+            }
+
+            int itemPrice = basePrice;
+
+            int originTotal = product.getPrice() * quantity;
+            int itemAmount = itemPrice * quantity;
+            int discountTotal = originTotal - itemAmount;
+
+            totalOriginPrice += originTotal;
+            totalDiscountPrice += discountTotal;
+            totalItemPrice += itemAmount;
+
+            Map<String, Object> item = new HashMap<>();
+            item.put("product_id", product.getProduct_id());
+            item.put("name", product.getName());
+            item.put("image_l", product.getImage_l());
+            item.put("price", product.getPrice());
+            item.put("sale_price", product.getSale_price());
+            item.put("item_price", itemPrice);
+            item.put("quantity", quantity);
+            item.put("origin_total", originTotal);
+            item.put("item_total", itemAmount);
+            item.put("discount_total", discountTotal);
+            item.put("delivery_fee", product.getDelivery_fee());
+            item.put("cart_id", 0);
+            item.put("option_id", null);
+
+            orderItemList.add(item);
+        }
 
         int delivery_fee = product.getDelivery_fee();
 
-        if (product.getFree_shipping() > 0 && item_amount >= product.getFree_shipping()) {
+        if (product.getFree_shipping() > 0 && totalItemPrice >= product.getFree_shipping()) {
             delivery_fee = 0;
         }
 
-        Map<String, Object> item = new HashMap<>();
-        item.put("product_id", product.getProduct_id());
-        item.put("name", product.getName());
-        item.put("image_l", product.getImage_l());
-        item.put("price", product.getPrice());
-        item.put("sale_price", product.getSale_price());
-        item.put("item_price", price);
-        item.put("quantity", quantity);
-        item.put("origin_total", originTotal);
-        item.put("item_total", item_amount);
-        item.put("discount_total", discountTotal);
-        item.put("delivery_fee", delivery_fee);
-        item.put("cart_id", 0);
-
-        List<Map<String, Object>> orderItemList = new java.util.ArrayList<>();
-        orderItemList.add(item);
+        int paymentPrice = totalItemPrice + delivery_fee - couponPrice;
 
         model.addAttribute("loginUser", loginUser);
-
-        int couponPrice = 0;
-
-        int total_amount = item_amount + delivery_fee - couponPrice;
-
         model.addAttribute("orderItemList", orderItemList);
-        model.addAttribute("totalOriginPrice", originTotal);
-        model.addAttribute("totalDiscountPrice", discountTotal);
-        model.addAttribute("totalItemPrice", item_amount);
+        model.addAttribute("totalOriginPrice", totalOriginPrice);
+        model.addAttribute("totalDiscountPrice", totalDiscountPrice);
+        model.addAttribute("totalItemPrice", totalItemPrice);
         model.addAttribute("totalDeliveryFee", delivery_fee);
-        model.addAttribute("paymentPrice", total_amount);
+        model.addAttribute("paymentPrice", paymentPrice);
         model.addAttribute("couponPrice", couponPrice);
 
         int user_id = loginUser.getUser_id();
@@ -227,7 +326,8 @@ public class OrderController {
     @Transactional
     public String createOrder(
             @RequestParam(value = "product_id", required = false) Integer product_id,
-            @RequestParam(value = "quantity", required = false, defaultValue = "1") Integer quantity,
+            @RequestParam(value = "quantity", required = false) List<Integer> quantityList,
+            @RequestParam(value = "option_id", required = false) List<Integer> optionIdList,
             @RequestParam(value = "cart_id", required = false) int[] cart_id,
             HttpSession session) {
         UserVO loginUser = getLoginUser(session);
@@ -324,8 +424,15 @@ public class OrderController {
                 int itemPrice = ((Number) item.get("item_price")).intValue();
                 int itemQuantity = ((Number) item.get("quantity")).intValue();
 
+                Integer itemOptionId = null;
+
+                if (item.get("option_id") != null) {
+                    itemOptionId = ((Number) item.get("option_id")).intValue();
+                }
+
                 OrderItemVO itemVO = new OrderItemVO();
                 itemVO.setOrder_id(orderVO.getOrder_id());
+                itemVO.setOption_id(itemOptionId);
                 itemVO.setProduct_id(itemProductId);
                 itemVO.setPrice(itemPrice);
                 itemVO.setQuantity(itemQuantity);
@@ -362,19 +469,100 @@ public class OrderController {
             return "redirect:/product/list.do";
         }
 
-        int price = product.getSale_price() > 0
-                ? product.getSale_price()
-                : product.getPrice();
+        int basePrice = getActiveProductPrice(product);
 
-        int item_amount = price * quantity;
+        int totalItemPrice = 0;
+
+        List<OrderItemVO> directOrderItemList = new java.util.ArrayList<>();
+
+        /*
+            옵션 여러 개 바로구매
+        */
+        if (optionIdList != null && !optionIdList.isEmpty()) {
+
+            if (quantityList == null || optionIdList.size() != quantityList.size()) {
+                return "redirect:/product_detail.do?product_id=" + product_id;
+            }
+
+            for (int i = 0; i < optionIdList.size(); i++) {
+
+                Integer option_id = optionIdList.get(i);
+                Integer quantityObj = quantityList.get(i);
+
+                if (option_id == null || quantityObj == null || quantityObj <= 0) {
+                    return "redirect:/product_detail.do?product_id=" + product_id;
+                }
+
+                int quantity = quantityObj;
+
+                OptionVO option = optiondao.selectOptionOne(option_id);
+
+                if (option == null) {
+                    return "redirect:/product_detail.do?product_id=" + product_id;
+                }
+
+                if (option.getProduct_id() != product_id) {
+                    return "redirect:/product_detail.do?product_id=" + product_id;
+                }
+
+                if (option.getOption_stock() < quantity) {
+                    return "redirect:/product_detail.do?product_id=" + product_id;
+                }
+
+                int price = basePrice + option.getOption_price();
+                int itemAmount = price * quantity;
+
+                totalItemPrice += itemAmount;
+
+                OrderItemVO itemVO = new OrderItemVO();
+                itemVO.setProduct_id(product_id);
+                itemVO.setOption_id(option_id);
+                itemVO.setPrice(price);
+                itemVO.setQuantity(quantity);
+
+                directOrderItemList.add(itemVO);
+            }
+
+        } else {
+
+            /*
+                옵션 없는 일반 상품 바로구매
+            */
+            int quantity = 1;
+
+            if (quantityList != null && !quantityList.isEmpty() && quantityList.get(0) != null) {
+                quantity = quantityList.get(0);
+            }
+
+            if (quantity <= 0) {
+                return "redirect:/product_detail.do?product_id=" + product_id;
+            }
+
+            if (product.getStock() < quantity) {
+                return "redirect:/product_detail.do?product_id=" + product_id;
+            }
+
+            int price = basePrice;
+            int itemAmount = price * quantity;
+
+            totalItemPrice += itemAmount;
+
+            OrderItemVO itemVO = new OrderItemVO();
+            itemVO.setProduct_id(product_id);
+            itemVO.setOption_id(null);
+            itemVO.setPrice(price);
+            itemVO.setQuantity(quantity);
+
+            directOrderItemList.add(itemVO);
+        }
 
         int delivery_fee = product.getDelivery_fee();
 
-        if (product.getFree_shipping() > 0 && item_amount >= product.getFree_shipping()) {
+        if (product.getFree_shipping() > 0 && totalItemPrice >= product.getFree_shipping()) {
             delivery_fee = 0;
         }
 
-        int total_amount = item_amount + delivery_fee - couponPrice;
+        int total_amount = totalItemPrice + delivery_fee - couponPrice;
 
         // 1. orders 테이블에 주문 기본 정보 저장
         OrderVO orderVO = new OrderVO();
@@ -385,14 +573,11 @@ public class OrderController {
 
         orderDAO.insertOrder(orderVO);
 
-        // 2. order_items 테이블에 주문 상품 정보 저장
-        OrderItemVO itemVO = new OrderItemVO();
-        itemVO.setOrder_id(orderVO.getOrder_id());
-        itemVO.setProduct_id(product_id);
-        itemVO.setPrice(price);
-        itemVO.setQuantity(quantity);
-
-        orderDAO.insertOrderItem(itemVO);
+        // 2. order_items 테이블에 여러 옵션 저장
+        for (OrderItemVO itemVO : directOrderItemList) {
+            itemVO.setOrder_id(orderVO.getOrder_id());
+            orderDAO.insertOrderItem(itemVO);
+        }
 
         // 3. payments 테이블에 결제 대기 정보 저장
         PaymentVO paymentVO = new PaymentVO();
