@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.kh.suje.dao.AddressDAO;
 import com.kh.suje.dao.OrderDAO;
+<<<<<<< HEAD
+=======
+import com.kh.suje.dao.SellerDAO;
+import com.kh.suje.dao.UserDAO;
+>>>>>>> dd0ae9eb6da1fe0f282905e8284600fd5b58f512
 import com.kh.suje.vo.AddressVO;
 import com.kh.suje.vo.UserVO;
 import com.kh.suje.vo.order.OrderVO;
@@ -22,6 +27,10 @@ import lombok.RequiredArgsConstructor;
 public class MyShopController {
 
     private final HttpSession session;
+<<<<<<< HEAD
+=======
+    private final UserDAO userDao;
+>>>>>>> dd0ae9eb6da1fe0f282905e8284600fd5b58f512
     private final AddressDAO addressDao;
     private final OrderDAO orderDAO;
 
@@ -61,6 +70,7 @@ public class MyShopController {
         model.addAttribute("activeMenu", "myshop");
         model.addAttribute("contentPage", "/myshop/address_form");
 
+<<<<<<< HEAD
         return "myshop/myshop_main";
     }
 
@@ -91,6 +101,9 @@ public class MyShopController {
        int res = addressDao.insertAddress(vo);
    
         return "redirect:/addressList.do";
+=======
+        return "/myshop/address_list";
+>>>>>>> dd0ae9eb6da1fe0f282905e8284600fd5b58f512
     }
 
 

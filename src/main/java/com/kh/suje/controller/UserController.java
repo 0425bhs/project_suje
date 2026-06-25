@@ -601,7 +601,7 @@ if (sessionUser != null && ori_password != null) {
     model.addAttribute("activeMenu", "update_seller.do");  // 사이드바 강조용
     model.addAttribute("contentPage", "/user/update_seller"); 
 
-    return "myshop/myshop_main";  // myshop_main을 통해서 열기
+    return "myshop/myshop";  // myshop_main을 통해서 열기
  
     }
 

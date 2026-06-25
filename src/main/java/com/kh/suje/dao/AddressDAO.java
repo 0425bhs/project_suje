@@ -21,4 +21,6 @@ public interface AddressDAO {
 
     int modifyAddress(AddressVO vo); //배송지 수정
     
+
+    
 }
