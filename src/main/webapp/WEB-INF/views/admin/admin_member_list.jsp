@@ -24,53 +24,140 @@
             </div>
         </header>
 
-        <section class="admin-card">
-            <div class="admin-filter-box">
-                <form class="admin-filter-form" action="/admin/members" method="get">
-                    <div class="admin-filter-tabs">
-                        <a href="/admin/members?role=all&keyword=${keyword}" class="${role == 'all' ? 'active' : ''}">전체</a>
-                        <a href="/admin/members?role=user&keyword=${keyword}" class="${role == 'user' ? 'active' : ''}">일반회원</a>
-                        <a href="/admin/members?role=seller&keyword=${keyword}" class="${role == 'seller' ? 'active' : ''}">판매자</a>
-                    </div>
-                    <span class="admin-filter-count">전체 ${totalCount}명</span>
-                    <input type="hidden" id="role" name="role" value="${role}">
-                    <input type="text" class="admin-search" id="keyword" name="keyword" 
-                           placeholder="아이디, 이름, 이메일 검색" value="${keyword}">
-                </form>
+        <section class="admin-master-detail is-collapsed" id="adminMasterDetail">
+            <div class="admin-card admin-list-panel">
+                <div class="admin-filter-box">
+                    <form class="admin-filter-form" action="/admin/members" method="get">
+                        <div class="admin-filter-tabs">
+                            <a href="/admin/members?role=all&keyword=${keyword}" class="${role == 'all' ? 'active' : ''}">전체</a>
+                            <a href="/admin/members?role=user&keyword=${keyword}" class="${role == 'user' ? 'active' : ''}">일반회원</a>
+                            <a href="/admin/members?role=seller&keyword=${keyword}" class="${role == 'seller' ? 'active' : ''}">판매자</a>
+                        </div>
+                        <span class="admin-filter-count">전체 ${totalCount}명</span>
+                        <input type="hidden" id="role" name="role" value="${role}">
+                        <input type="text" class="admin-search" id="keyword" name="keyword" 
+                               placeholder="아이디, 이름, 이메일 검색" value="${keyword}">
+                    </form>
+                </div>
+
+                <div class="admin-table-wrap">
+                    <table class="admin-table admin-member-table">
+                        <thead>
+                        <tr>
+                            <th>회원번호</th>
+                            <th>회원명</th>
+                            <th>이메일</th>
+                            <th>유형</th>
+                            <th>상태</th>
+                            <th>가입일</th>
+                            <th>관리</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="user" items="${userList}">
+                        <tr class="admin-clickable-row"
+                            data-user-id="${user.user_id}"
+                            data-name="${user.name}"
+                            data-login-id="${user.login_id}"
+                            data-nick-name="${user.nick_name}"
+                            data-email="${user.email}"
+                            data-phone="${user.phone}"
+                            data-gender="${user.gender}"
+                            data-role="${user.role}"
+                            data-role-label="${user.role eq 'SELLER' ? '판매자' : '일반회원'}"
+                            data-created-at="${user.created_at}"
+                            data-updated-at="${user.updated_at}">
+                            <td>${user.user_id}</td>
+                            <td><strong>${user.name}</strong></td>
+                            <td class="left">${user.email}</td>
+                            <td>${user.role eq 'SELLER' ? "판매자" : "일반회원"}</td>
+                            <td><span class="admin-status active">정상(미구현)</span></td>
+                            <td>${user.created_at}</td>
+                            <td class="admin-table-actions">
+                                <button type="button" class="admin-btn light admin-detail-btn">상세</button>
+                            </td>
+                        </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="admin-table-wrap">
-                <table class="admin-table">
-                    <thead>
-                    <tr>
-                        <th>회원번호</th>
-                        <th>회원명</th>
-                        <th>이메일</th>
-                        <th>유형</th>
-                        <th>상태</th>
-                        <th>가입일</th>
-                        <th>관리</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach var="user" items="${userList}">
-                    <tr>
-                        <td>${user.user_id}</td>
-                        <td><strong>${user.name}</strong></td>
-                        <td class="left">${user.email}</td>
-                        <td>${user.role eq 'SELLER' ? "판매자" : "일반회원"}</td>
-                        <td><span class="admin-status active">정상(미구현)</span></td>
-                        <td>${user.created_at}</td>
-                        <td class="admin-table-actions">
-                            <button type="button" class="admin-btn light">상세</button>
-                        </td>
-                    </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
-            </div>
+            <aside class="admin-card admin-detail-panel" id="adminDetailPanel" aria-labelledby="memberDetailTitle">
+                <div class="admin-detail-panel-inner">
+                    <div class="admin-detail-content" hidden>
+                        <div class="admin-detail-head">
+                            <div>
+                                <span class="admin-page-label">MEMBER DETAIL</span>
+                                <h2 id="memberDetailTitle">회원 상세</h2>
+                            </div>
+                            <button type="button" class="admin-detail-close" aria-label="닫기">&times;</button>
+                        </div>
+                        <dl class="admin-detail-grid">
+                            <div>
+                                <dt>회원번호</dt>
+                                <dd id="panelUserId">-</dd>
+                            </div>
+                            <div>
+                                <dt>회원유형</dt>
+                                <dd id="panelRole">-</dd>
+                            </div>
+                            <div>
+                                <dt>회원명</dt>
+                                <dd id="panelName">-</dd>
+                            </div>
+                            <div>
+                                <dt>닉네임</dt>
+                                <dd id="panelNickName">-</dd>
+                            </div>
+                            <div>
+                                <dt>아이디</dt>
+                                <dd id="panelLoginId">-</dd>
+                            </div>
+                            <div>
+                                <dt>이메일</dt>
+                                <dd id="panelEmail">-</dd>
+                            </div>
+                            <div>
+                                <dt>연락처</dt>
+                                <dd id="panelPhone">-</dd>
+                            </div>
+                            <div>
+                                <dt>성별</dt>
+                                <dd id="panelGender">-</dd>
+                            </div>
+                            <div>
+                                <dt>가입일</dt>
+                                <dd id="panelCreatedAt">-</dd>
+                            </div>
+                            <div>
+                                <dt>수정일</dt>
+                                <dd id="panelUpdatedAt">-</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </aside>
         </section>
     </main>
 </div>
+
+<script src="/js/admin_detail_panel.js"></script>
+<script>
+    setupAdminDetailPanel({
+        fields: {
+            panelUserId: 'userId',
+            panelRole: 'roleLabel',
+            panelName: 'name',
+            panelNickName: 'nickName',
+            panelLoginId: 'loginId',
+            panelEmail: 'email',
+            panelPhone: 'phone',
+            panelGender: 'gender',
+            panelCreatedAt: 'createdAt',
+            panelUpdatedAt: 'updatedAt'
+        }
+    });
+</script>
 </body>
 </html>

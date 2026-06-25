@@ -1,10 +1,14 @@
 package com.kh.suje.controller;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.InquiryDAO;
@@ -102,6 +106,40 @@ public class AdminController {
         model.addAttribute("totalCount", totalCount);
         
         return "/admin/admin_product_approval";
+    }
+
+    @GetMapping("/admin/products/{productId}")
+    @ResponseBody
+    public Map<String, Object> productDetail(@PathVariable int productId) {
+        ProductVO product = productDao.product_one(productId);
+        Map<String, Object> result = new LinkedHashMap<>();
+
+        if (product == null) {
+            result.put("success", false);
+            return result;
+        }
+
+        result.put("success", true);
+        result.put("product_id", product.getProduct_id());
+        result.put("seller_id", product.getSeller_id());
+        result.put("category_id", product.getCategory_id());
+        result.put("name", product.getName());
+        result.put("description", product.getDescription());
+        result.put("price", product.getPrice());
+        result.put("sale_price", product.getSale_price());
+        result.put("stock", product.getStock());
+        result.put("delivery_fee", product.getDelivery_fee());
+        result.put("status", product.getStatus());
+        result.put("image_l", product.getImage_l());
+        result.put("created_at", product.getCreated_at());
+        result.put("updated_at", product.getUpdated_at());
+        result.put("free_shipping", product.getFree_shipping());
+        result.put("sale_price_updated_at", product.getSale_price_updated_at());
+        result.put("sale_start_at", product.getSale_start_at());
+        result.put("sale_end_at", product.getSale_end_at());
+        result.put("company_name", product.getCompany_name());
+
+        return result;
     }
 
     @GetMapping("/admin/reviews")
