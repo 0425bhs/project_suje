@@ -1,7 +1,7 @@
 let currentLogin = 'id';
 
 
-function switchLogin(type) {
+/*function switchLogin(type) {
     currentLogin = type;
 
     const emailDiv = document.getElementById('idLogin');
@@ -21,6 +21,7 @@ function switchLogin(type) {
         btns[1].classList.add('active');
     }
 }
+*/
 
 function togglePwdVisibility1(e) {
     e.preventDefault();

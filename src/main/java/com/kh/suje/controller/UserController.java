@@ -75,7 +75,6 @@ public class UserController {
         map.put("nick_name", nick_name);
 
         return map;
-
     }
 
 
@@ -128,16 +127,23 @@ public class UserController {
     @ResponseBody
     public Map<String, String> mailCheck(String email) {
 
-        String res = mss.joinEmail(email);
+        UserVO vo = userDao.mailDuplicateCheck(email);
+        String res = "no";
+        String authNumber = "";
 
-        Map<String, String> map = new HashMap<>();
-        map.put("authNumber", res);
+        // 사용이 가능한 상태
+        if (vo == null) {
+        res = "yes";
+        authNumber = mss.joinEmail(email); 
+        }
+
+      Map<String, String> map = new HashMap<>();
+        map.put("res", res);
+        map.put("authNumber", authNumber);
 
         return map;
 
     }
-
-
 
     //일반회원 가입
     @PostMapping("/join.do")
@@ -351,6 +357,22 @@ if(naver_id != null) {
 }
 
 
+//아이디 메일발송
+@PostMapping("/idMailSend.do")
+  @ResponseBody
+    public String idMailSend(String login_id, String email) {
+  
+      try {
+        mss.idSendMail(login_id, email);
+        return "yes";
+    } catch (Exception e) {
+        return "no";
+    }
+
+}
+
+
+
 @PostMapping("/phoneMailCheck.do")
   @ResponseBody
     public Map<String, Object> findPassword( UserVO vo) {
@@ -372,7 +394,22 @@ if(naver_id != null) {
        return map; 
 }
 
+        // 비번찾기시 인증메일발송
+    @PostMapping("/mailAuthCheck.do")
+    @ResponseBody
+    public Map<String, String> mailAuthCheck(String email) {
 
+        String authNumber = "";
+
+        authNumber = mss.joinEmail(email);      
+
+      Map<String, String> map = new HashMap<>();
+
+        map.put("authNumber", authNumber);
+
+        return map;
+
+    }
 
 // 임시비번발송
 @PostMapping("/newPwdSend.do")
@@ -400,7 +437,7 @@ if(naver_id != null) {
     
     //회원 정보수정폼으로
     @GetMapping("/user_modify.do")
-    public String user_modifyForm( Model model, HttpSession session) {
+    public String user_modifyForm( Model model ) {
 
        //로그인한 사람의 정보 꺼내기
     UserVO sessionUser = (UserVO) session.getAttribute("user");
@@ -419,17 +456,10 @@ if(naver_id != null) {
         dto.setSeller(sellerDao.selectSeller(sessionUser.getUser_id()));
     }
     
-    if (sessionUser.getRole().equalsIgnoreCase("SELLER")) {
-    dto.setSeller(sellerDao.selectSeller(sessionUser.getUser_id()));
-}
-
-// 추가
-System.out.println("role: " + sessionUser.getRole());
-System.out.println("seller: " + dto.getSeller());
     //JSP 화면
     model.addAttribute("dto", dto);  // "user" 대신 "dto"로 변경
     model.addAttribute("activeMenu", "myinfo");
- model.addAttribute("contentPage", "user/user_edit");
+    model.addAttribute("contentPage", "/user/user_edit");
    
     return "myshop/myshop_main";  // myshop_main을 통해서 열기
 }
@@ -509,10 +539,10 @@ System.out.println("seller: " + dto.getSeller());
     }
 
 
-    
+    //현재비번확인
 @PostMapping("/check_currPassword.do")
     @ResponseBody
-    public Map<String, Object> checkCurrentPassword( String ori_password, HttpSession session ){
+    public Map<String, Object> checkCurrentPassword( String ori_password ){
 
         
         Map<String, Object> map = new HashMap<>();
@@ -568,8 +598,8 @@ if (sessionUser != null && ori_password != null) {
 
 
     model.addAttribute("sessionUser", sessionUser);
-    model.addAttribute("activeMenu", "myinfo");  // 사이드바 강조용
-    model.addAttribute("contentPage", "user/update_seller"); 
+    model.addAttribute("activeMenu", "update_seller.do");  // 사이드바 강조용
+    model.addAttribute("contentPage", "/user/update_seller"); 
 
     return "myshop/myshop_main";  // myshop_main을 통해서 열기
  
@@ -587,7 +617,7 @@ if (sessionUser != null && ori_password != null) {
         UserVO updatedUser = userDao.selectUser(user_id);
     session.setAttribute("user", updatedUser);
 
-       return "redirect:/myshop_main";
+       return "redirect:/myshop";
     }
 
 
@@ -601,7 +631,7 @@ if (sessionUser != null && ori_password != null) {
 
  /* 
    @GetMapping("/user_mypage.do")
-    public String user_mypage( Model model, HttpSession session) {
+    public String user_mypage( Model model) {
 
        //로그인한 사람의 정보 꺼내기
     UserVO sessionUser = (UserVO) session.getAttribute("user");

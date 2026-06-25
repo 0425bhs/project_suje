@@ -2,6 +2,39 @@ let nickCheck = true;
 let idCheck = true;
 let isPwdVerified = false;
 
+let isPwdOpen = false; 
+
+// 테이블 구조를 깨지 않고 부드럽게 클래스를 제어하는 토글 함수
+function togglePassword(){
+    let pwdSections = document.querySelectorAll(".pwd-section");
+    let toggleBtn = document.getElementById("toggle-pwd-btn");
+
+    if (isPwdOpen === false) {
+        // [열기] 화면에 표시
+        pwdSections.forEach(section => section.style.display = "table-row");
+        toggleBtn.value = "변경 취소";
+        isPwdOpen = true;
+    } else {
+        // [닫기] 숨김
+        pwdSections.forEach(section => section.style.display = "none");
+        toggleBtn.value = "비밀번호 변경하기";
+        isPwdOpen = false;
+        
+        // 닫힐 때 초기화
+        document.getElementById("ori_password").value = "";
+        document.getElementById("password").value = "";
+        document.getElementById("checkPassword").value = "";
+        document.getElementById("pwd-rules").innerHTML = "";
+        document.getElementById("pwd-match").innerHTML = "";
+        
+        // 인증 상태 초기화 및 비활성화 복구
+        isPwdVerified = false;
+        document.getElementById("password").disabled = true;
+        document.getElementById("checkPassword").disabled = true;
+    }
+}
+
+
 function chk() {
     let currentId = document.getElementById("login_id").value.trim();
 
@@ -42,6 +75,36 @@ function chknick() {
         nick_check_btn.disabled = false;
         nickCheck = false;
     }
+}
+
+function check_loginId() {
+
+    let login_id = document.getElementById("login_id").value.trim();
+
+    if (login_id === '') {
+        alert("아이디를 입력하세요");
+        document.getElementById("login_id").focus();
+        return;
+    }
+
+    fetch('/checkLoginId.do', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'login_id=' + login_id
+    }).then(response => response.json())
+        .then(data => {
+
+            if (data.result === 'no') {
+                alert(data.login_id + "는 이미 사용중입니다");
+
+            } else {
+                alert(data.login_id + "는 사용 가능합니다");
+                idCheck = true;
+            }
+
+        })
 }
 
 function check_nick() {
@@ -223,7 +286,7 @@ function send(f) {
 
             if (data.result == 1) {
                 alert("수정성공");
-                location.href = "/myshop/myshop_main";
+                location.href = "/myshop";
             } else {
                 alert("수정실패");
             }

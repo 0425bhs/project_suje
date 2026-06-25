@@ -15,7 +15,7 @@ public class MailSendService {
     
     private final JavaMailSender javaMailSender;
     private int authNumber;
-    String temporaryPwd = makeRandomPassword();
+   
     
     public MailSendService( JavaMailSender javaMailSender ){
         this.javaMailSender = javaMailSender;
@@ -99,8 +99,8 @@ public class MailSendService {
 
 //임시비번발송
         public String newPwdEmail( String email ){
-
-        makeRandomNumber();
+String temporaryPwd = makeRandomPassword();
+        
         
         String setFrom = "ktkim0209@naver.com"; //보내는 사람 메일 
         String toMail = email; //받는 사람 메일 
@@ -134,6 +134,41 @@ public class MailSendService {
 
     }//newPwdEmail
 
+
+    //아이디 발송
+    public void idSendMail( String login_id, String email ) throws Exception{
+
+        String setFrom = "ktkim0209@naver.com"; //보내는 사람 메일 
+        String toMail = email; //받는 사람 메일 
+        
+        //메일 제목
+        String title = "가입하신 아이디입니다"; 
+
+        //메일 내용
+        StringBuffer content = new StringBuffer();
+        content.append("<h1>가입하신 아이디는</h1>");
+        content.append("<h1><b>" + login_id + "</b></h1>");
+        content.append("<h1> 입니다. </h1>");
+
+        try {
+            
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper( message, true, "UTF-8" );
+
+            helper.setFrom(setFrom);
+            helper.setTo(toMail);
+            helper.setSubject(title);
+
+            helper.setText( content.toString(),true );
+
+            javaMailSender.send( message );
+
+        } catch (Exception e) {
+           e.printStackTrace();
+           throw e;
+        }
+
+    }//idSendMail
 
 
 }
