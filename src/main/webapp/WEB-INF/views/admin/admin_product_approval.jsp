@@ -26,309 +26,90 @@
                 </div>
             </header>
 
-            <section class="admin-master-detail is-collapsed" id="adminMasterDetail">
-                <div class="admin-card admin-list-panel">
-                    <div class="admin-filter-box">
-                        <form class="admin-filter-form" action="/admin/products" method="get">
-                            <div class="admin-filter-tabs">
-                                <a href="/admin/products?status=all&keyword=${keyword}"
-                                    class="${status eq 'all' ? 'active' : ''}">전체</a>
-                                <a href="/admin/products?status=pending&keyword=${keyword}"
-                                    class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
-                                <a href="/admin/products?status=approved&keyword=${keyword}"
-                                    class="${status eq 'approved' ? 'active' : ''}">판매중</a>
-                                <a href="/admin/products?status=rejected&keyword=${keyword}"
-                                    class="${status eq 'rejected' ? 'active' : ''}">반려</a>
-                                <a href="/admin/products?status=hidden&keyword=${keyword}"
-                                    class="${status eq 'hidden' ? 'active' : ''}">숨김</a>
-                            </div>
-                            <input type="hidden" name="status" value="${status}" />
-                            <input type="text" class="admin-search" name="keyword" placeholder="상품명, 판매자 검색"
-                                value="${keyword}">
-                        </form>
-                    </div>
-
-                    <div class="admin-table-wrap">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>이미지</th>
-                                    <th>상품명</th>
-                                    <th>판매자</th>
-                                    <th>카테고리</th>
-                                    <th>가격</th>
-                                    <th>상태</th>
-                                    <th>등록일</th>
-                                    <th>관리</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="product" items="${productList}">
-                                    <tr class="admin-clickable-row"
-                                        data-product-id="${product.product_id}">
-                                        <td>
-                                            <span class="admin-thumb">
-                                                <img src="/upload/${product.image_l}" />
-                                            </span>
-                                        </td>
-                                        <td class="left"><strong>${product.name}</strong></td>
-                                        <td>${product.company_name}</td>
-                                        <td>${product.category_name}</td>
-                                        <td>${product.price}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${product.status eq 'PENDING'}">
-                                                    <span class="admin-status pending">승인대기</span>
-                                                </c:when>
-
-                                                <c:when test="${product.status eq 'APPROVED'}">
-                                                    <span class="admin-status approved">판매중</span>
-                                                </c:when>
-
-                                                <c:when test="${product.status eq 'REJECTED'}">
-                                                    <span class="admin-status rejected">반려</span>
-                                                </c:when>
-
-                                                <c:when test="${product.status eq 'HIDDEN'}">
-                                                    <span class="admin-status hidden">숨김</span>
-                                                </c:when>
-
-                                                <c:otherwise>
-                                                    <span class="admin-status muted">${product.status}</span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td>2026-06-16</td>
-                                        <td class="admin-table-actions">
-                                            <button type="button" class="admin-btn light admin-detail-btn">상세</button>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-
-                            </tbody>
-                        </table>
-                    </div>
+            <section class="admin-card">
+                <div class="admin-filter-box">
+                    <form class="admin-filter-form" action="/admin/products" method="get">
+                        <div class="admin-filter-tabs">
+                            <a href="/admin/products?status=all&keyword=${keyword}"
+                                class="${status eq 'all' ? 'active' : ''}">전체</a>
+                            <a href="/admin/products?status=pending&keyword=${keyword}"
+                                class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
+                            <a href="/admin/products?status=approved&keyword=${keyword}"
+                                class="${status eq 'approved' ? 'active' : ''}">판매중</a>
+                            <a href="/admin/products?status=rejected&keyword=${keyword}"
+                                class="${status eq 'rejected' ? 'active' : ''}">반려</a>
+                            <a href="/admin/products?status=hidden&keyword=${keyword}"
+                                class="${status eq 'hidden' ? 'active' : ''}">숨김</a>
+                        </div>
+                        <input type="hidden" name="status" value="${status}" />
+                        <input type="text" class="admin-search" name="keyword" placeholder="상품명, 판매자 검색"
+                            value="${keyword}">
+                    </form>
                 </div>
 
-                <aside class="admin-card admin-detail-panel" id="adminDetailPanel"
-                    aria-labelledby="productDetailTitle">
-                    <div class="admin-detail-panel-inner">
-                        <div class="admin-detail-content" hidden>
-                            <div class="admin-detail-head">
-                                <div>
-                                    <span class="admin-page-label">PRODUCT DETAIL</span>
-                                    <h2 id="productDetailTitle">상품 상세</h2>
-                                </div>
-                                <button type="button" class="admin-detail-close"
-                                    aria-label="닫기">&times;</button>
-                            </div>
-                            <dl class="admin-detail-grid">
-                                <div>
-                                    <dt>상품번호</dt>
-                                    <dd id="productPanelProductId">-</dd>
-                                </div>
-                                <div>
-                                    <dt>판매자번호</dt>
-                                    <dd id="productPanelSellerId">-</dd>
-                                </div>
-                                <div>
-                                    <dt>카테고리 번호</dt>
-                                    <dd id="productPanelCategoryId">-</dd>
-                                </div>
-                                <div>
-                                    <dt>상품명</dt>
-                                    <dd id="productPanelProductName">-</dd>
-                                </div>
-                                <div>
-                                    <dt>상품 소개</dt>
-                                    <dd id="productPanelDescription">-</dd>
-                                </div>
-                                <div>
-                                    <dt>가격</dt>
-                                    <dd id="productPanelPrice">-</dd>
-                                </div>
-                                <div>
-                                    <dt>할인가</dt>
-                                    <dd id="productPanelSalePirce">-</dd>
-                                </div>
-                                <div>
-                                    <dt>재고</dt>
-                                    <dd id="productPanelStock">-</dd>
-                                </div>
-                                <div>
-                                    <dt>배송비</dt>
-                                    <dd id="productPanelDeliveryFee">-</dd>
-                                </div>
-                                <div>
-                                    <dt>상태</dt>
-                                    <dd id="productPanelStatus">-</dd>
-                                </div>
-                                <div>
-                                    <dt>대표 이미지</dt>
-                                    <dd id="productPanelImageL" class="admin-detail-image">-</dd>
-                                </div>
-                                <div>
-                                    <dt>등록일</dt>
-                                    <dd id="productPanelCreatedAt">-</dd>
-                                </div>
-                                <div>
-                                    <dt>수정일</dt>
-                                    <dd id="productPanelUpdatedAt">-</dd>
-                                </div>
-                                <div>
-                                    <dt>무료배송?</dt>
-                                    <dd id="productPanelFreeShipping">-</dd>
-                                </div>
-                                <div>
-                                    <dt>할인가 수정일</dt>
-                                    <dd id="productPanelSalePriceUpdated">-</dd>
-                                </div>
-                                <div>
-                                    <dt>할인 시작일</dt>
-                                    <dd id="productPanelSaleStartAt">-</dd>
-                                </div>
-                                <div>
-                                    <dt>할인 종료일</dt>
-                                    <dd id="productPanelSaleEndAt">-</dd>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
-                </aside>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>이미지</th>
+                                <th>상품명</th>
+                                <th>판매자</th>
+                                <th>카테고리</th>
+                                <th>가격</th>
+                                <th>상태</th>
+                                <th>등록일</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="product" items="${productList}">
+                                <tr>
+                                    <td>
+                                        <span class="admin-thumb">
+                                            <img src="/upload/${product.image_l}" />
+                                        </span>
+                                    </td>
+                                    <td class="left"><strong>${product.name}</strong></td>
+                                    <td>${product.company_name}</td>
+                                    <td>${product.category_name}</td>
+                                    <td>${product.price}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${product.status eq 'PENDING'}">
+                                                <span class="admin-status pending">승인대기</span>
+                                            </c:when>
+
+                                            <c:when test="${product.status eq 'APPROVED'}">
+                                                <span class="admin-status approved">판매중</span>
+                                            </c:when>
+
+                                            <c:when test="${product.status eq 'REJECTED'}">
+                                                <span class="admin-status rejected">반려</span>
+                                            </c:when>
+
+                                            <c:when test="${product.status eq 'HIDDEN'}">
+                                                <span class="admin-status hidden">숨김</span>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <span class="admin-status muted">${product.status}</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>2026-06-16</td>
+                                    <td class="admin-table-actions">
+                                        <button type="button" class="admin-btn light">상세</button>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
         </main>
     </div>
-    <script src="/js/admin_detail_panel.js"></script>
-    <script>
-        const productCache = {};
-        let currentProductId = null;
-
-        function setPanelText(id, value) {
-            const target = document.getElementById(id);
-            const text = value == null ? '' : String(value);
-
-            if (target) {
-                target.textContent = text.trim() ? text : '-';
-            }
-        }
-
-        function setPanelHtml(id, value) {
-            const target = document.getElementById(id);
-            const html = value == null ? '' : String(value);
-
-            if (target) {
-                target.innerHTML = html.trim() ? html : '-';
-            }
-        }
-
-        function setPanelImage(id, value) {
-            const target = document.getElementById(id);
-            const imageName = value == null ? '' : String(value).trim();
-
-            if (!target) {
-                return;
-            }
-
-            if (!imageName || imageName === 'no_file') {
-                target.textContent = '-';
-                return;
-            }
-
-            let imageSrc = imageName;
-
-            if (!imageSrc.startsWith('/upload/') && !imageSrc.startsWith('/images/') &&
-                    !imageSrc.startsWith('http://') && !imageSrc.startsWith('https://')) {
-                imageSrc = '/upload/' + imageSrc;
-            }
-
-            target.innerHTML = '';
-
-            const image = document.createElement('img');
-            image.src = imageSrc;
-            image.alt = '대표 이미지';
-            image.onerror = function() {
-                this.onerror = null;
-                this.src = '/images/no_image.png';
-            };
-
-            target.appendChild(image);
-        }
-
-        function renderProductDetail(product) {
-            setPanelText('productPanelProductId', product.product_id);
-            setPanelText('productPanelSellerId', product.seller_id);
-            setPanelText('productPanelCategoryId', product.category_id);
-            setPanelText('productPanelProductName', product.name);
-            setPanelHtml('productPanelDescription', product.description);
-            setPanelText('productPanelPrice', product.price);
-            setPanelText('productPanelSalePirce', product.sale_price);
-            setPanelText('productPanelStock', product.stock);
-            setPanelText('productPanelDeliveryFee', product.delivery_fee);
-            setPanelText('productPanelStatus', product.status);
-            setPanelImage('productPanelImageL', product.image_l);
-            setPanelText('productPanelCreatedAt', product.created_at);
-            setPanelText('productPanelUpdatedAt', product.updated_at);
-            setPanelText('productPanelFreeShipping', product.free_shipping);
-            setPanelText('productPanelSalePriceUpdated', product.sale_price_updated_at);
-            setPanelText('productPanelSaleStartAt', product.sale_start_at);
-            setPanelText('productPanelSaleEndAt', product.sale_end_at);
-        }
-
-        function clearProductDetail() {
-            renderProductDetail({});
-            setPanelText('productPanelProductName', '불러오는 중...');
-        }
-
-        function loadProductDetail(row) {
-            const productId = row.dataset.productId;
-
-            if (!productId) {
-                return;
-            }
-
-            currentProductId = productId;
-
-            if (productCache[productId]) {
-                renderProductDetail(productCache[productId]);
-                return;
-            }
-
-            clearProductDetail();
-
-            fetch('/admin/products/' + encodeURIComponent(productId))
-                .then(function(response) {
-                    if (!response.ok) {
-                        throw new Error('상품 상세 조회 실패');
-                    }
-
-                    return response.json();
-                })
-                .then(function(product) {
-                    if (currentProductId !== productId) {
-                        return;
-                    }
-
-                    if (!product.success) {
-                        throw new Error('상품 정보가 없습니다.');
-                    }
-
-                    productCache[productId] = product;
-                    renderProductDetail(product);
-                })
-                .catch(function() {
-                    if (currentProductId !== productId) {
-                        return;
-                    }
-
-                    setPanelText('productPanelProductName', '상품 정보를 불러오지 못했습니다.');
-                });
-        }
-
-        setupAdminDetailPanel({
-            onOpen: loadProductDetail
-        });
-    </script>
 </body>
 
 </html>
