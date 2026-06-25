@@ -38,6 +38,7 @@ public class ProductVO {
 
     //옵션
     private List<OptionVO> optionList;
+    private int optionTotalStock;
 
     // 상품 상세에서 리뷰 목록 담을 때 사용
     private List<ReviewVO> review_list;

@@ -245,15 +245,17 @@
                                                 </td>
 
                                                 <td>
-                                                    <div class="simple-action-buttons">
-                                                        <button type="button" class="simple-receipt-btn refund">
-                                                            환불
-                                                        </button>
+                                                    <c:if test="${order.status eq 'DELIVERED'}">
+                                                        <div class="simple-action-buttons">
+                                                            <button type="button" class="simple-receipt-btn refund">
+                                                                환불
+                                                            </button>
 
-                                                        <button type="button" class="simple-receipt-btn return">
-                                                            반품
-                                                        </button>
-                                                    </div>
+                                                            <button type="button" class="simple-receipt-btn return">
+                                                                반품
+                                                            </button>
+                                                        </div>
+                                                    </c:if>
                                                 </td>
 
                                             </tr>
@@ -291,6 +293,24 @@
                                                 <div class="seller-order-info-item">
                                                     <span>주문일</span>
                                                     <strong>${order.created_at}</strong>
+                                                </div>
+
+                                                <!-- 추가: 주문일과 주문금액 사이 -->
+                                                <div class="seller-order-info-item seller-order-delivery-mini">
+                                                    <div class="delivery-mini-row">
+                                                        <span>수취인</span>
+                                                        <strong>${order.receiver_name}</strong>
+                                                    </div>
+
+                                                    <div class="delivery-mini-row">
+                                                        <span>연락처</span>
+                                                        <strong>${order.receiver_phone}</strong>
+                                                    </div>
+
+                                                    <div class="delivery-mini-row">
+                                                        <span>배송지</span>
+                                                        <strong>${order.delivery_address}</strong>
+                                                    </div>
                                                 </div>
 
                                                 <div class="seller-order-info-item">
@@ -345,25 +365,6 @@
 
                                                 </form>
 
-                                            </div>
-
-                                        </div>
-
-                                        <div class="seller-order-delivery-info">
-
-                                            <div class="seller-delivery-info-item">
-                                                <span>수취인</span>
-                                                <strong>${order.receiver_name}</strong>
-                                            </div>
-
-                                            <div class="seller-delivery-info-item">
-                                                <span>연락처</span>
-                                                <strong>${order.receiver_phone}</strong>
-                                            </div>
-
-                                            <div class="seller-delivery-info-item address">
-                                                <span>배송지</span>
-                                                <strong>${order.delivery_address}</strong>
                                             </div>
 
                                         </div>
@@ -427,15 +428,17 @@
 
                                             </div>
 
-                                            <div class="seller-order-card-actions">
-                                                <button type="button" class="card-receipt-btn refund">
-                                                    환불 접수
-                                                </button>
+                                            <c:if test="${order.status eq 'DELIVERED'}">
+                                                <div class="seller-order-card-actions">
+                                                    <button type="button" class="card-receipt-btn refund">
+                                                        환불 접수
+                                                    </button>
 
-                                                <button type="button" class="card-receipt-btn return">
-                                                    반품 접수
-                                                </button>
-                                            </div>
+                                                    <button type="button" class="card-receipt-btn return">
+                                                        반품 접수
+                                                    </button>
+                                                </div>
+                                            </c:if>
 
                                         </div>
 

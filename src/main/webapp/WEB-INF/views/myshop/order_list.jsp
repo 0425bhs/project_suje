@@ -12,7 +12,6 @@
 <!-- 빠른 메뉴 -->
 <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
-<!-- 주문 상태 요약 -->
  <!-- 주문 상태 요약 -->
 <section class="myshop-status-card">
 
@@ -149,6 +148,16 @@
                                         <strong class="myshop-product-name-text">
                                             ${mainItem.productName}
                                         </strong>
+
+                                        <c:if test="${not empty mainItem.optionName}">
+                                            <span class="myshop-order-option-text">
+                                                옵션 : ${mainItem.optionName}
+
+                                                <c:if test="${mainItem.optionPrice gt 0}">
+                                                    (+<fmt:formatNumber value="${mainItem.optionPrice}" pattern="#,###" />원)
+                                                </c:if>
+                                            </span>
+                                        </c:if>
                                     </c:when>
 
                                     <c:otherwise>
@@ -247,24 +256,42 @@
                                                 ${item.productName}
                                             </a>
 
+                                            <c:if test="${not empty item.optionName}">
+                                                <p class="myshop-order-option-text">
+                                                    옵션 : ${item.optionName}
+
+                                                    <c:if test="${item.optionPrice gt 0}">
+                                                        (+<fmt:formatNumber value="${item.optionPrice}" pattern="#,###" />원)
+                                                    </c:if>
+                                                </p>
+                                            </c:if>
+
                                             <p>
                                                 수량 ${item.quantity}개 ·
                                                 <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
                                             </p>
-
                                         </div>
 
                                         <div class="myshop-order-item-actions">
 
                                             <c:if test="${order.status eq 'DELIVERED'}">
                                                 
-                                                <button type="button" onclick="cartInsert('${item.product_id}', 1)">
+                                                <button type="button" onclick="cartInsert('${item.product_id}', 1, '${item.option_id}')">
                                                     장바구니 담기
                                                 </button>
+                                                <c:choose>
+                                                    <c:when test="${not empty item.option_id}">
+                                                        <button type="button" onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1&option_id=${item.option_id}'">
+                                                            바로 구매하기
+                                                        </button>
+                                                    </c:when>
 
-                                                <button type="button" onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1'">
-                                                    바로 구매하기
-                                                </button>
+                                                    <c:otherwise>
+                                                        <button type="button" onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1'">
+                                                            바로 구매하기
+                                                        </button>
+                                                    </c:otherwise>
+                                                </c:choose>
 
                                                 <button type="button" onclick="alert('환불/교환 기능은 준비중입니다.');">
                                                     환불/교환
@@ -311,9 +338,7 @@
                 <p>취소 사유와 안내사항을 확인해주세요.</p>
             </div>
 
-            <button type="button"
-                    class="cancel-modal-close"
-                    onclick="closeCancelModal()">
+            <button type="button" class="cancel-modal-close" onclick="closeCancelModal()">
                 ×
             </button>
         </div>

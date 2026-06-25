@@ -33,14 +33,12 @@ body {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-
     margin-bottom: 24px;
 }
 
 .page-label {
     display: inline-block;
     margin-bottom: 8px;
-
     color: #ff654f;
     font-size: 12px;
     font-weight: 900;
@@ -49,7 +47,6 @@ body {
 
 .seller-main-header h1 {
     margin: 0 0 8px;
-
     color: #111;
     font-size: 30px;
     font-weight: 900;
@@ -64,570 +61,7 @@ body {
 }
 
 /* =========================================================
-   필터 영역
-========================================================= */
-
-.seller-order-filter-box {
-    margin-bottom: 22px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.seller-order-filter-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: flex-end;
-}
-
-.seller-order-filter-buttons a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-width: 68px;
-    height: 32px;
-    padding: 0 14px;
-
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    background: #fff;
-
-    color: #444;
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-    line-height: 1;
-
-    transition: all 0.15s ease;
-}
-
-.seller-order-filter-buttons a:hover {
-    border-color: #ff654f;
-    color: #ff654f;
-    background: #fff8f6;
-}
-
-.seller-order-filter-buttons a.active {
-    border-color: #ff654f;
-    background: #ff654f;
-    color: #fff;
-}
-
-/* =========================================================
-   주문 목록
-========================================================= */
-
-.seller-order-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-/* 주문 카드 */
-.seller-order-card {
-    width: 100%;
-
-    padding: 26px 28px;
-
-    background: #fff;
-    border: 1px solid #eceef1;
-    border-radius: 22px;
-
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-
-    transition: 0.18s;
-}
-
-.seller-order-card:hover {
-    border-color: #ffd3ca;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.065);
-}
-
-/* =========================================================
-   카드 상단 정보
-========================================================= */
-
-.seller-order-card-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 28px;
-
-    padding-bottom: 22px;
-    margin-bottom: 22px;
-
-    border-bottom: 1px solid #f0f1f3;
-}
-
-/* 주문번호 / 주문일 / 주문금액 묶음 */
-.seller-order-info-group {
-    flex: 1;
-
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 22px;
-}
-
-/* 정보 한 칸 */
-.seller-order-info-item {
-    min-width: 0;
-    padding-right: 22px;
-
-    border-right: 1px solid #edf0f2;
-}
-
-.seller-order-info-item:last-child {
-    border-right: none;
-}
-
-.seller-order-info-item span {
-    display: block;
-    margin-bottom: 7px;
-
-    color: #777;
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.seller-order-info-item strong {
-    display: block;
-
-    color: #111;
-    font-size: 17px;
-    font-weight: 900;
-    line-height: 1.35;
-    word-break: keep-all;
-}
-
-.seller-order-info-item .order-total-price {
-    color: #ff4f35;
-}
-
-/* 상태 영역 */
-.seller-order-status-box {
-    width: 250px;
-    flex-shrink: 0;
-}
-
-.status-title {
-    display: block;
-    margin-bottom: 7px;
-
-    color: #777;
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.order-status-form {
-    margin: 0;
-}
-
-/* 상태 select */
-.seller-status-select {
-    width: 100%;
-    height: 40px;
-
-    padding: 0 14px;
-
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #fff;
-
-    color: #333;
-    font-size: 14px;
-    font-weight: 900;
-    font-family: inherit;
-
-    outline: none;
-    cursor: pointer;
-
-    transition: 0.15s;
-}
-
-.seller-status-select:focus {
-    box-shadow: 0 0 0 3px rgba(255, 101, 79, 0.12);
-}
-
-/* 상태 변경 중 */
-.seller-status-select.is-changing {
-    opacity: 0.65;
-    pointer-events: none;
-}
-
-/* 상태별 select 색상 */
-.seller-status-select.status-PAID {
-    border-color: #ffd0c7;
-    background: #fff7f5;
-    color: #ff4f35;
-}
-
-.seller-status-select.status-PREPARING {
-    border-color: #ffe1a8;
-    background: #fffaf0;
-    color: #d98200;
-}
-
-.seller-status-select.status-SHIPPING {
-    border-color: #b8d7ff;
-    background: #f3f8ff;
-    color: #2376d9;
-}
-
-.seller-status-select.status-DELIVERED {
-    border-color: #bde7ce;
-    background: #f2fbf5;
-    color: #219653;
-}
-
-.seller-status-select.status-RETURN_EXCHANGE {
-    border-color: #d8c8ff;
-    background: #f7f3ff;
-    color: #6b4fd9;
-}
-
-.seller-status-select.status-CANCELLED {
-    border-color: #ffc9c9;
-    background: #fff5f5;
-    color: #e03131;
-}
-
-/* =========================================================
-   대표 상품 영역
-========================================================= */
-
-.seller-order-body {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 24px;
-}
-
-/* 대표 상품 */
-.seller-order-main-item {
-    min-width: 0;
-
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    align-items: center;
-    gap: 20px;
-}
-
-/* 대표 이미지 박스 */
-.seller-order-thumb {
-    width: 110px;
-    height: 110px;
-
-    border-radius: 16px;
-    overflow: hidden;
-
-    background: #f2f3f5;
-    border: 1px solid #eee;
-}
-
-/* 대표 이미지 */
-.seller-order-thumb img {
-    width: 100%;
-    height: 100%;
-
-    display: block;
-    object-fit: cover;
-}
-
-/* 대표 상품 텍스트 */
-.seller-order-product-info {
-    min-width: 0;
-}
-
-/* 대표 상품명 */
-.seller-order-product-name {
-    display: block;
-
-    color: #111;
-    font-size: 18px;
-    font-weight: 900;
-    line-height: 1.4;
-    letter-spacing: -0.4px;
-
-    word-break: keep-all;
-    overflow-wrap: break-word;
-}
-
-/* 수량 / 금액 */
-.seller-order-product-sub {
-    margin: 8px 0 0;
-
-    color: #555;
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1.5;
-}
-
-.seller-order-product-sub span {
-    margin: 0 4px;
-    color: #bbb;
-}
-
-/* 상품 개수 안내 */
-.seller-order-count-text {
-    margin: 10px 0 0;
-
-    color: #777;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.seller-order-count-text strong {
-    color: #ff654f;
-    font-weight: 900;
-}
-
-/* =========================================================
-   나머지 주문 펼쳐보기 버튼
-========================================================= */
-
-.seller-order-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-
-    min-width: 210px;
-    height: 40px;
-
-    padding: 0 16px;
-
-    border: 1px solid #d8dde3;
-    border-radius: 8px;
-    background: #fff;
-
-    color: #333;
-    font-size: 13px;
-    font-weight: 900;
-    font-family: inherit;
-
-    cursor: pointer;
-
-    transition: 0.15s;
-}
-
-.seller-order-toggle:hover {
-    border-color: #ff654f;
-    background: #fff7f5;
-    color: #ff654f;
-}
-
-.seller-order-toggle .toggle-arrow {
-    display: inline-block;
-    font-size: 15px;
-    line-height: 1;
-
-    transition: 0.15s;
-}
-
-.seller-order-toggle.is-open {
-    border-color: #ff654f;
-    background: #fff7f5;
-    color: #ff654f;
-}
-
-.seller-order-toggle.is-open .toggle-arrow {
-    transform: rotate(180deg);
-}
-
-/* =========================================================
-   펼쳐진 나머지 상품 목록
-========================================================= */
-
-.seller-order-items-panel {
-    display: none;
-
-    margin-top: 22px;
-    padding: 14px 18px;
-
-    background: #fafafa;
-    border: 1px solid #eeeeee;
-    border-radius: 16px;
-}
-
-/* 열렸을 때 */
-.seller-order-items-panel.is-open {
-    display: flex;
-    flex-direction: column;
-}
-
-/* 나머지 상품 한 줄 */
-.seller-order-item-row {
-    display: grid;
-    grid-template-columns: 70px 1fr;
-    align-items: center;
-    gap: 16px;
-
-    min-height: 86px;
-    padding: 10px 0;
-
-    border-bottom: 1px solid #e9ecef;
-}
-
-.seller-order-item-row:last-child {
-    border-bottom: none;
-}
-
-/* 나머지 상품 이미지 박스 */
-.seller-order-item-thumb {
-    width: 70px;
-    height: 70px;
-
-    border-radius: 12px;
-    overflow: hidden;
-
-    background: #f2f3f5;
-    border: 1px solid #eee;
-}
-
-.seller-order-item-thumb img {
-    width: 100%;
-    height: 100%;
-
-    display: block;
-    object-fit: cover;
-}
-
-/* 나머지 상품 정보 */
-.seller-order-item-info {
-    min-width: 0;
-}
-
-.seller-order-item-info strong {
-    display: block;
-
-    color: #111;
-    font-size: 15px;
-    font-weight: 900;
-    line-height: 1.4;
-
-    word-break: keep-all;
-    overflow-wrap: break-word;
-}
-
-.seller-order-item-info p {
-    margin: 6px 0 0;
-
-    color: #555;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.seller-order-item-info p span {
-    margin: 0 4px;
-    color: #bbb;
-}
-
-/* =========================================================
-   빈 주문
-========================================================= */
-
-.seller-order-empty-box {
-    padding: 90px 20px;
-
-    background: #fff;
-    border: 1px solid #eceef1;
-    border-radius: 22px;
-
-    color: #777;
-    font-size: 15px;
-    font-weight: 800;
-    text-align: center;
-
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.035);
-}
-
-/* =========================================================
-   반응형
-========================================================= */
-
-@media (max-width: 1200px) {
-    .seller-main {
-        padding: 28px 26px 50px;
-    }
-
-    .seller-order-card-top {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .seller-order-status-box {
-        width: 100%;
-    }
-
-    .seller-order-body {
-        grid-template-columns: 1fr;
-        align-items: stretch;
-    }
-
-    .seller-order-toggle {
-        width: 100%;
-    }
-}
-
-@media (max-width: 768px) {
-    .seller-main {
-        padding: 22px 16px 40px;
-    }
-
-    .seller-main-header h1 {
-        font-size: 25px;
-    }
-
-    .seller-order-card {
-        padding: 20px;
-        border-radius: 18px;
-    }
-
-    .seller-order-info-group {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-
-    .seller-order-info-item {
-        padding-right: 0;
-        padding-bottom: 14px;
-
-        border-right: none;
-        border-bottom: 1px solid #edf0f2;
-    }
-
-    .seller-order-info-item:last-child {
-        border-bottom: none;
-    }
-
-    .seller-order-main-item {
-        grid-template-columns: 86px 1fr;
-        gap: 14px;
-    }
-
-    .seller-order-thumb {
-        width: 86px;
-        height: 86px;
-        border-radius: 13px;
-    }
-
-    .seller-order-product-name {
-        font-size: 16px;
-    }
-
-    .seller-order-item-row {
-        grid-template-columns: 58px 1fr;
-    }
-
-    .seller-order-item-thumb {
-        width: 58px;
-        height: 58px;
-    }
-}
-
-/* =========================================================
-   주문관리 보기 전환 버튼
+   보기 전환 버튼
 ========================================================= */
 
 .view-switch-buttons {
@@ -689,18 +123,8 @@ body {
     gap: 3px;
 }
 
-.view-icon.card::before,
-.view-icon.card::after {
-    content: "";
-}
-
-.view-icon.card::before,
-.view-icon.card::after,
-.view-icon.card {
-    color: #555;
-}
-
 .view-icon.card::before {
+    content: "";
     width: 6px;
     height: 6px;
     background: #555;
@@ -721,6 +145,430 @@ body {
 
 [data-view-panel].active {
     display: block;
+}
+
+/* =========================================================
+   필터 영역
+========================================================= */
+
+.seller-order-filter-box {
+    margin-bottom: 22px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.seller-order-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.seller-order-filter-buttons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 68px;
+    height: 32px;
+    padding: 0 14px;
+
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background: #fff;
+
+    color: #444;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    line-height: 1;
+
+    transition: all 0.15s ease;
+}
+
+.seller-order-filter-buttons a:hover {
+    border-color: #ff654f;
+    color: #ff654f;
+    background: #fff8f6;
+}
+
+.seller-order-filter-buttons a.active {
+    border-color: #ff654f;
+    background: #ff654f;
+    color: #fff;
+}
+
+/* =========================================================
+   빈 주문
+========================================================= */
+
+.seller-order-empty-box {
+    padding: 90px 20px;
+
+    background: #fff;
+    border: 1px solid #eceef1;
+    border-radius: 22px;
+
+    color: #777;
+    font-size: 15px;
+    font-weight: 800;
+    text-align: center;
+
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.035);
+}
+
+/* =========================================================
+   주문 카드형
+========================================================= */
+
+.seller-order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.seller-order-card {
+    width: 100%;
+    padding: 26px 28px;
+
+    background: #fff;
+    border: 1px solid #eceef1;
+    border-radius: 22px;
+
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    transition: 0.18s;
+}
+
+.seller-order-card:hover {
+    border-color: #ffd3ca;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.065);
+}
+
+/* 카드 상단 */
+.seller-order-card-top {
+    display: grid;
+    grid-template-columns: 1fr 250px;
+    align-items: start;
+    gap: 28px;
+
+    padding-bottom: 22px;
+    margin-bottom: 22px;
+
+    border-bottom: 1px solid #f0f1f3;
+}
+
+/* 주문번호 / 주문일 / 배송정보 / 주문금액 */
+.seller-order-info-group {
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr 2.35fr 1fr;
+    gap: 22px;
+    align-items: start;
+}
+
+.seller-order-info-item {
+    min-width: 0;
+    min-height: 48px;
+    padding-right: 22px;
+    border-right: 1px solid #edf0f2;
+}
+
+.seller-order-info-item:last-child {
+    border-right: none;
+}
+
+.seller-order-info-item > span {
+    display: block;
+    margin-bottom: 7px;
+
+    color: #777;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.seller-order-info-item > strong {
+    display: block;
+
+    color: #111;
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1.35;
+
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+.seller-order-info-item .order-total-price {
+    color: #ff4f35;
+}
+
+/* 카드 상단에 들어가는 수취인 / 연락처 / 배송지 */
+.seller-order-delivery-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.delivery-mini-row {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    align-items: start;
+    gap: 8px;
+
+    line-height: 1.35;
+}
+
+.delivery-mini-row span {
+    color: #777;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.delivery-mini-row strong {
+    color: #111;
+    font-size: 13px;
+    font-weight: 900;
+
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+/* 상태 영역 */
+.seller-order-status-box {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.status-title {
+    display: block;
+    margin-bottom: 7px;
+
+    color: #777;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.order-status-form {
+    margin: 0;
+}
+
+/* 상태 select */
+.seller-status-select {
+    width: 100%;
+    height: 40px;
+
+    padding: 0 14px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+
+    color: #333;
+    font-size: 14px;
+    font-weight: 900;
+    font-family: inherit;
+
+    outline: none;
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+.seller-status-select:focus {
+    box-shadow: 0 0 0 3px rgba(255, 101, 79, 0.12);
+}
+
+.seller-status-select.is-changing {
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+/* 상태별 select 색상 */
+.seller-status-select.status-PAID {
+    border-color: #ffd0c7;
+    background: #fff7f5;
+    color: #ff4f35;
+}
+
+.seller-status-select.status-PREPARING {
+    border-color: #ffe1a8;
+    background: #fffaf0;
+    color: #d98200;
+}
+
+.seller-status-select.status-SHIPPING {
+    border-color: #b8d7ff;
+    background: #f3f8ff;
+    color: #2376d9;
+}
+
+.seller-status-select.status-DELIVERED {
+    border-color: #bde7ce;
+    background: #f2fbf5;
+    color: #219653;
+}
+
+.seller-status-select.status-RETURN_EXCHANGE {
+    border-color: #d8c8ff;
+    background: #f7f3ff;
+    color: #6b4fd9;
+}
+
+.seller-status-select.status-CANCELLED {
+    border-color: #ffc9c9;
+    background: #fff5f5;
+    color: #e03131;
+}
+
+/* 카드 본문 */
+.seller-order-body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 24px;
+}
+
+.seller-order-main-item {
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: center;
+    gap: 20px;
+}
+
+/* 대표 이미지 */
+.seller-order-thumb {
+    width: 110px;
+    height: 110px;
+
+    padding: 0;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    background: #f2f3f5;
+
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.seller-order-thumb img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    object-fit: cover;
+}
+
+/* 대표 상품 정보 */
+.seller-order-product-info {
+    min-width: 0;
+}
+
+.seller-order-product-name {
+    display: block;
+
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    color: #111;
+    font-size: 18px;
+    font-weight: 900;
+    text-align: left;
+    line-height: 1.4;
+    letter-spacing: -0.4px;
+
+    word-break: keep-all;
+    overflow-wrap: break-word;
+
+    cursor: pointer;
+}
+
+.seller-order-product-name:hover {
+    color: #ff654f;
+}
+
+.seller-order-product-sub {
+    margin: 8px 0 0;
+
+    color: #555;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.seller-order-product-sub span {
+    margin: 0 4px;
+    color: #bbb;
+}
+
+.seller-order-count-text {
+    margin: 10px 0 0;
+
+    color: #777;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.seller-order-count-text strong {
+    color: #ff654f;
+    font-weight: 900;
+}
+
+.seller-order-modal-link {
+    margin-left: 6px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #ff654f;
+    font-size: 13px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.seller-order-modal-link:hover {
+    text-decoration: underline;
+}
+
+/* 카드형 환불 / 반품 버튼 */
+.seller-order-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+}
+
+.card-receipt-btn {
+    width: 90px;
+    height: 32px;
+
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+
+    color: #444;
+    font-size: 12px;
+    font-weight: 900;
+    font-family: inherit;
+
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.card-receipt-btn.refund:hover {
+    border-color: #2376d9;
+    background: #f3f8ff;
+    color: #2376d9;
+}
+
+.card-receipt-btn.return:hover {
+    border-color: #ff654f;
+    background: #fff7f5;
+    color: #ff654f;
 }
 
 /* =========================================================
@@ -903,7 +751,7 @@ body {
     font-size: 12px !important;
 }
 
-/* 접수 버튼 */
+/* 심플형 환불 / 반품 버튼 */
 .simple-action-buttons {
     display: flex;
     justify-content: center;
@@ -921,135 +769,21 @@ body {
     color: #444;
     font-size: 11px;
     font-weight: 800;
+    font-family: inherit;
 
     cursor: pointer;
+    transition: 0.15s;
 }
 
 .simple-receipt-btn.refund:hover {
     border-color: #2376d9;
+    background: #f3f8ff;
     color: #2376d9;
 }
 
 .simple-receipt-btn.return:hover {
     border-color: #ff654f;
-    color: #ff654f;
-}
-
-/* =========================================================
-   카드형 배송 정보 추가
-========================================================= */
-
-.seller-order-delivery-info {
-    display: grid;
-    grid-template-columns: 130px 160px 1fr;
-    gap: 14px;
-
-    padding: 14px 16px;
-    margin-bottom: 20px;
-
-    background: #fafafa;
-    border: 1px solid #eeeeee;
-    border-radius: 12px;
-}
-
-.seller-delivery-info-item {
-    min-width: 0;
-}
-
-.seller-delivery-info-item span {
-    display: block;
-    margin-bottom: 5px;
-
-    color: #888;
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.seller-delivery-info-item strong {
-    display: block;
-
-    color: #222;
-    font-size: 13px;
-    font-weight: 900;
-    line-height: 1.45;
-
-    word-break: keep-all;
-    overflow-wrap: break-word;
-}
-
-/* 카드형 상품명 버튼 */
-.seller-order-product-name {
-    padding: 0;
-    border: none;
-    background: transparent;
-
-    color: #111;
-    font-size: 18px;
-    font-weight: 900;
-    text-align: left;
-    line-height: 1.4;
-
-    cursor: pointer;
-}
-
-.seller-order-product-name:hover {
-    color: #ff654f;
-}
-
-.seller-order-thumb {
-    padding: 0;
-    border: 1px solid #eee;
-    cursor: pointer;
-}
-
-.seller-order-modal-link {
-    margin-left: 6px;
-    padding: 0;
-
-    border: none;
-    background: transparent;
-
-    color: #ff654f;
-    font-size: 13px;
-    font-weight: 900;
-
-    cursor: pointer;
-}
-
-.seller-order-modal-link:hover {
-    text-decoration: underline;
-}
-
-/* 카드형 접수 버튼 */
-.seller-order-card-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: flex-end;
-}
-
-.card-receipt-btn {
-    width: 90px;
-    height: 32px;
-
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #fff;
-
-    color: #444;
-    font-size: 12px;
-    font-weight: 900;
-
-    cursor: pointer;
-}
-
-.card-receipt-btn.refund:hover {
-    border-color: #2376d9;
-    color: #2376d9;
-}
-
-.card-receipt-btn.return:hover {
-    border-color: #ff654f;
+    background: #fff7f5;
     color: #ff654f;
 }
 
@@ -1212,17 +946,136 @@ body.modal-open {
     overflow: hidden;
 }
 
-/* 반응형 */
+/* =========================================================
+   반응형
+========================================================= */
+
+@media (max-width: 1400px) {
+    .seller-order-card-top {
+        grid-template-columns: 1fr 230px;
+        gap: 20px;
+    }
+
+    .seller-order-info-group {
+        grid-template-columns: 0.8fr 1.1fr 2fr 1fr;
+        gap: 16px;
+    }
+
+    .seller-order-info-item {
+        padding-right: 16px;
+    }
+}
+
 @media (max-width: 1200px) {
-    .seller-order-delivery-info {
+    .seller-main {
+        padding: 28px 26px 50px;
+    }
+
+    .seller-order-card-top {
         grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .seller-order-status-box {
+        width: 100%;
+    }
+
+    .seller-order-body {
+        grid-template-columns: 1fr;
+        align-items: stretch;
     }
 
     .seller-order-card-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .seller-order-info-group {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .seller-order-info-item:nth-child(2) {
+        border-right: none;
+    }
+
+    .seller-order-info-item:nth-child(3),
+    .seller-order-info-item:nth-child(4) {
+        padding-top: 14px;
+        border-top: 1px solid #edf0f2;
+    }
+}
+
+@media (max-width: 768px) {
+    .seller-main {
+        padding: 22px 16px 40px;
+    }
+
+    .seller-main-header h1 {
+        font-size: 25px;
+    }
+
+    .seller-order-filter-box {
+        justify-content: flex-start;
+    }
+
+    .seller-order-filter-buttons {
+        justify-content: flex-start;
+    }
+
+    .seller-order-card {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .seller-order-info-group {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .seller-order-info-item {
+        padding-right: 0;
+        padding-bottom: 14px;
+
+        border-right: none;
+        border-bottom: 1px solid #edf0f2;
+    }
+
+    .seller-order-info-item:nth-child(3),
+    .seller-order-info-item:nth-child(4) {
+        padding-top: 0;
+        border-top: none;
+    }
+
+    .seller-order-info-item:last-child {
+        border-bottom: none;
+    }
+
+    .seller-order-main-item {
+        grid-template-columns: 86px 1fr;
+        gap: 14px;
+    }
+
+    .seller-order-thumb {
+        width: 86px;
+        height: 86px;
+        border-radius: 13px;
+    }
+
+    .seller-order-product-name {
+        font-size: 16px;
+    }
+
+    .seller-order-card-actions {
+        flex-direction: column;
         align-items: stretch;
     }
 
     .card-receipt-btn {
         width: 100%;
+    }
+
+    .delivery-mini-row {
+        grid-template-columns: 48px 1fr;
     }
 }
