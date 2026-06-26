@@ -17,9 +17,7 @@
         <div class="myshop-side-group">
             <strong>주문 관리</strong>
             <a href="/myshop/orders" class="${param.activeMenu eq 'order' ? 'active' : ''}">주문/배송내역</a>
-            <button type="button" onclick="alert('취소/환불내역은 준비중입니다.');">
-                취소/환불내역
-            </button>
+            <a href="/order/cancel" class="${param.activeMenu eq 'order/cancel' ? 'active' : ''}">취소/환불내역</a>
         </div>
 
         <div class="myshop-side-group">

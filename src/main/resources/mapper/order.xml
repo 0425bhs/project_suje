@@ -171,4 +171,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE user_id = #{value}
     </select>
 
+
+
+    <select id = "selectCancelList" parameterType = "int" resultType = "order">
+
+    select * from orders where user_id = #{user_id} and status = 'CANCELLED'
+    ORDER BY updated_at DESC
+    </select>
+
+
+
+
+
+
 </mapper>

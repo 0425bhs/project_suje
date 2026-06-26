@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.suje.dao.OptionDAO;
+import com.kh.suje.vo.AddressVO;
 import com.kh.suje.vo.OptionVO;
+import com.kh.suje.dao.AddressDAO;
 import com.kh.suje.dao.CartDAO;
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.PaymentDAO;
@@ -36,6 +38,7 @@ public class OrderController {
     private final ProductDAO productDAO;
     private final CartDAO cartdao;
     private final OptionDAO optiondao;
+    private final AddressDAO addressDao;
 
 
     // 로그인 회원 정보 가져오기
@@ -311,6 +314,14 @@ public class OrderController {
         model.addAttribute("paymentPrice", paymentPrice);
         model.addAttribute("couponPrice", couponPrice);
 
+
+               int user_id = loginUser.getUser_id();
+        List<AddressVO> list = addressDao.selectList(user_id);
+        AddressVO defaultAddr = addressDao.selectDefault(user_id);
+
+        model.addAttribute("list", list);
+        model.addAttribute("defaultAddr", defaultAddr);
+
         return "order/order_form";
     }
 
@@ -333,8 +344,15 @@ public class OrderController {
 
         int user_id = getLoginUserId(session);
 
-        // 배송지 기능 붙기 전까지 임시 사용
-        int address_id = 1;
+       AddressVO defaultAddr = addressDao.selectDefault(user_id);
+
+    // 방어 코드 : 기본 배송지가 없으면 리다이렉트 시키거나 에러 처리
+    if (defaultAddr == null) {
+    // 배송지 관리 페이지나 주문서 폼으로 다시 보내며 메시지 전달
+    return "redirect:/myshop/address?error=no_address"; 
+}
+
+        int address_id = defaultAddr.getAddress_id();
 
         int couponPrice = 0;
 
@@ -792,6 +810,15 @@ public class OrderController {
         model.addAttribute("paymentPrice", paymentPrice);
         model.addAttribute("couponPrice", couponPrice);
 
+
+         List<AddressVO> list = addressDao.selectList(user_id);
+        AddressVO defaultAddr = addressDao.selectDefault(user_id);
+
+        model.addAttribute("list", list);
+        model.addAttribute("defaultAddr", defaultAddr);
+
         return "order/order_form";
     }
+
+    
 }
