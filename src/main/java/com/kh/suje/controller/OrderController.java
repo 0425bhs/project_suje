@@ -336,6 +336,7 @@ public class OrderController {
             return "redirect:/login.do";
         }
 
+        
         int user_id = getLoginUserId(session);
 
         // 배송지 기능 붙기 전까지 임시 사용
