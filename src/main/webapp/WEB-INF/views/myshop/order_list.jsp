@@ -201,7 +201,7 @@
 
                             <div class="myshop-order-actions">
 
-                                <c:if test="${order.status eq 'PENDING'}">
+                                <c:if test="${order.status eq 'PENDING' and order.total_amount > 0}">
                                     <a href="/payment/ready?order_id=${order.order_id}" class="primary">
                                         결제하기
                                     </a>
@@ -305,24 +305,25 @@
                                                     <input type="hidden" name="order_item_id" value="${item.order_item_id}">
 
                                                     <button type="submit"
-                                                            class="primary"
                                                             onclick="return confirm('구매확정 처리하시겠습니까?');">
                                                         구매확정
                                                     </button>
                                                 </form>
                                             </c:if>
 
-                                            <c:if test="${item.status eq 'CONFIRMED'}">
-                                                <button type="button"
-                                                        class="review"
-                                                        onclick="location.href='/review_form.do?order_item_id=${item.order_item_id}'">
-                                                    리뷰쓰기
-                                                </button>
-                                            </c:if>
-
-                                            <button type="button" onclick="location.href='/qna_form.do?product_id=${item.product_id}'">
-                                                문의하기
+                                        <c:if test="${item.status eq 'CONFIRMED'}">
+                                            <button type="button"
+                                                    class="myshop-order-action-btn review"
+                                                    onclick="location.href='/review_form.do?order_item_id=${item.order_item_id}'">
+                                                리뷰쓰기
                                             </button>
+                                        </c:if>
+
+                                        <button type="button"
+                                                class="myshop-order-action-btn qna"
+                                                onclick="location.href='/qna_form.do?product_id=${item.product_id}'">
+                                            문의하기
+                                        </button>
 
                                         </div>
 

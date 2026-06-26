@@ -34,7 +34,6 @@ public class OrderController {
     private final ProductDAO productDAO;
     private final CartDAO cartdao;
 
-
     // 로그인 회원 정보 가져오기
     private UserVO getLoginUser(HttpSession session) {
         return (UserVO) session.getAttribute("user");
@@ -94,7 +93,53 @@ public class OrderController {
         return price;
     }
 
-    
+    // 선택한 쿠폰 할인금액 조회
+    private int getCouponPrice(int user_id, int user_coupon_id) {
+
+        int couponPrice = 0;
+
+        if (user_coupon_id <= 0) {
+            return couponPrice;
+        }
+
+        List<Map<String, Object>> couponList = orderDAO.selectAvailableCouponList(user_id);
+
+        for (Map<String, Object> coupon : couponList) {
+            int dbUserCouponId = ((Number) coupon.get("user_coupon_id")).intValue();
+
+            if (dbUserCouponId == user_coupon_id) {
+                couponPrice = ((Number) coupon.get("discount_amount")).intValue();
+                break;
+            }
+        }
+
+        return couponPrice;
+    }
+
+    // 포인트/쿠폰 사용으로 결제금액이 0원인 경우 Toss 결제 없이 바로 결제완료 처리
+    private String completeZeroPaymentOrder(int order_id) {
+
+        PaymentVO successPaymentVO = new PaymentVO();
+        successPaymentVO.setOrder_id(order_id);
+        successPaymentVO.setTransaction_id("POINT_PAYMENT");
+
+        paymentDAO.updatePaymentSuccess(successPaymentVO);
+
+        OrderVO paidOrderVO = new OrderVO();
+        paidOrderVO.setOrder_id(order_id);
+        paidOrderVO.setStatus("PAID");
+
+        orderDAO.updateOrderStatus(paidOrderVO);
+
+        Map<String, Object> itemStatusMap = new HashMap<>();
+        itemStatusMap.put("order_id", order_id);
+        itemStatusMap.put("status", "PAID");
+
+        orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
+
+        return "redirect:/order/complete?order_id=" + order_id;
+    }
+
     // 내 주문 내역
     // 주소: /myshop/orders
     @GetMapping("/myshop/orders")
@@ -111,7 +156,6 @@ public class OrderController {
 
         int user_id = getLoginUserId(session);
 
-        // 1. 상태별 개수를 DB에서 한 번에 가져옴 (위의 CASE WHEN 쿼리 실행)
         Map<String, Object> statusCounts = orderDAO.selectOrderStatusCounts(user_id);
         
         List<OrderVO> orderList;
@@ -122,7 +166,6 @@ public class OrderController {
             orderList = orderDAO.selectOrderListByUserIdAndStatus(user_id, status);
         }
 
-        // 주문별 주문상품 목록
         Map<Integer, List<OrderItemVO>> orderItemMap = new HashMap<>();
 
         for (OrderVO order : orderList) {
@@ -132,10 +175,7 @@ public class OrderController {
         }
         
         model.addAttribute("loginUser", loginUser);
-        
-        // model에 Map의 값들을 통째로 넘겨줌
         model.addAllAttributes(statusCounts);
-        
         model.addAttribute("orderList", orderList);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);
@@ -167,9 +207,7 @@ public class OrderController {
             return "redirect:/product/list.do";
         }
 
-        int price = product.getSale_price() > 0
-                ? product.getSale_price()
-                : product.getPrice();
+        int price = getActiveProductPrice(product);
 
         int originTotal = product.getPrice() * quantity;
         int item_amount = price * quantity;
@@ -180,8 +218,6 @@ public class OrderController {
         if (product.getFree_shipping() > 0 && item_amount >= product.getFree_shipping()) {
             delivery_fee = 0;
         }
-
-        
 
         Map<String, Object> item = new HashMap<>();
         item.put("product_id", product.getProduct_id());
@@ -202,9 +238,14 @@ public class OrderController {
 
         model.addAttribute("loginUser", loginUser);
 
+        List<Map<String, Object>> couponList = orderDAO.selectAvailableCouponList(loginUser.getUser_id());
+
         int couponPrice = 0;
 
         int total_amount = item_amount + delivery_fee - couponPrice;
+
+        int pointBalance = orderDAO.getUserPoint(loginUser.getUser_id());
+        model.addAttribute("pointBalance", pointBalance);
 
         model.addAttribute("orderItemList", orderItemList);
         model.addAttribute("totalOriginPrice", originTotal);
@@ -213,6 +254,7 @@ public class OrderController {
         model.addAttribute("totalDeliveryFee", delivery_fee);
         model.addAttribute("paymentPrice", total_amount);
         model.addAttribute("couponPrice", couponPrice);
+        model.addAttribute("couponList", couponList);
 
         return "order/order_form";
     }
@@ -225,6 +267,8 @@ public class OrderController {
             @RequestParam(value = "product_id", required = false) Integer product_id,
             @RequestParam(value = "quantity", required = false, defaultValue = "1") Integer quantity,
             @RequestParam(value = "cart_id", required = false) int[] cart_id,
+            @RequestParam(value = "user_coupon_id", required = false, defaultValue = "0") int user_coupon_id,
+            @RequestParam(value = "use_point", required = false, defaultValue = "0") int use_point,
             HttpSession session
     ) {
         UserVO loginUser = getLoginUser(session);
@@ -235,16 +279,20 @@ public class OrderController {
 
         int user_id = getLoginUserId(session);
 
-        // 배송지 기능 붙기 전까지 임시 사용
         int address_id = 1;
 
-        int couponPrice = 0;
+        int couponPrice = getCouponPrice(user_id, user_coupon_id);
 
+        int pointBalance = orderDAO.getUserPoint(user_id);
 
-        // =========================================================
-        // 1. 장바구니 주문
-        // cart_id 배열이 넘어온 경우
-        // =========================================================
+        if (use_point < 0) {
+            use_point = 0;
+        }
+
+        if (use_point > pointBalance) {
+            use_point = pointBalance;
+        }
+
         if (cart_id != null && cart_id.length > 0) {
 
             Map<String, Object> map = new HashMap<>();
@@ -304,18 +352,31 @@ public class OrderController {
                 }
             }
 
-            int total_amount = totalItemPrice + totalDeliveryFee - couponPrice;
+            int maxUsePoint = totalItemPrice + totalDeliveryFee - couponPrice;
 
-            // 1. orders 테이블에 주문 기본 정보 저장
+            if (maxUsePoint < 0) {
+                maxUsePoint = 0;
+            }
+
+            if (use_point > maxUsePoint) {
+                use_point = maxUsePoint;
+            }
+
+            int total_amount = totalItemPrice + totalDeliveryFee - couponPrice - use_point;
+
+            if (total_amount < 0) {
+                total_amount = 0;
+            }
+
             OrderVO orderVO = new OrderVO();
             orderVO.setUser_id(user_id);
             orderVO.setTotal_amount(total_amount);
+            orderVO.setUsed_point(use_point);
             orderVO.setAddress_id(address_id);
             orderVO.setStatus("PENDING");
 
             orderDAO.insertOrder(orderVO);
 
-            // 2. order_items 테이블에 장바구니 상품 여러 개 저장
             for (Map<String, Object> item : orderCartList) {
 
                 int itemProductId = ((Number) item.get("product_id")).intValue();
@@ -331,7 +392,6 @@ public class OrderController {
                 orderDAO.insertOrderItem(itemVO);
             }
 
-            // 3. payments 테이블에 결제 대기 정보 저장
             PaymentVO paymentVO = new PaymentVO();
             paymentVO.setOrder_id(orderVO.getOrder_id());
             paymentVO.setPayment_method("TOSS");
@@ -341,16 +401,35 @@ public class OrderController {
 
             paymentDAO.insertPayment(paymentVO);
 
+            if (use_point > 0) {
+                Map<String, Object> pointMap = new HashMap<>();
+                pointMap.put("user_id", user_id);
+                pointMap.put("point_amount", use_point);
+
+                int pointResult = orderDAO.useUserPoint(pointMap);
+
+                if (pointResult > 0) {
+                    orderDAO.insertUsePointHistory(pointMap);
+                }
+            }
+
+            if (user_coupon_id > 0 && couponPrice > 0) {
+                Map<String, Object> couponMap = new HashMap<>();
+                couponMap.put("user_coupon_id", user_coupon_id);
+                couponMap.put("user_id", user_id);
+
+                orderDAO.useCoupon(couponMap);
+            }
+
             cartdao.cartDeleteSelected(map);
+
+            if (total_amount == 0) {
+                return completeZeroPaymentOrder(orderVO.getOrder_id());
+            }
 
             return "redirect:/payment/ready?order_id=" + orderVO.getOrder_id();
         }
 
-
-        // =========================================================
-        // 2. 바로구매 주문
-        // product_id 하나가 넘어온 경우
-        // =========================================================
         if (product_id == null) {
             return "redirect:/product/list.do";
         }
@@ -361,9 +440,7 @@ public class OrderController {
             return "redirect:/product/list.do";
         }
 
-        int price = product.getSale_price() > 0
-                ? product.getSale_price()
-                : product.getPrice();
+        int price = getActiveProductPrice(product);
 
         int item_amount = price * quantity;
 
@@ -373,18 +450,31 @@ public class OrderController {
             delivery_fee = 0;
         }
 
-        int total_amount = item_amount + delivery_fee - couponPrice;
+        int maxUsePoint = item_amount + delivery_fee - couponPrice;
 
-        // 1. orders 테이블에 주문 기본 정보 저장
+        if (maxUsePoint < 0) {
+            maxUsePoint = 0;
+        }
+
+        if (use_point > maxUsePoint) {
+            use_point = maxUsePoint;
+        }
+
+        int total_amount = item_amount + delivery_fee - couponPrice - use_point;
+
+        if (total_amount < 0) {
+            total_amount = 0;
+        }
+
         OrderVO orderVO = new OrderVO();
         orderVO.setUser_id(user_id);
         orderVO.setTotal_amount(total_amount);
+        orderVO.setUsed_point(use_point);
         orderVO.setAddress_id(address_id);
         orderVO.setStatus("PENDING");
 
         orderDAO.insertOrder(orderVO);
 
-        // 2. order_items 테이블에 주문 상품 정보 저장
         OrderItemVO itemVO = new OrderItemVO();
         itemVO.setOrder_id(orderVO.getOrder_id());
         itemVO.setProduct_id(product_id);
@@ -393,7 +483,6 @@ public class OrderController {
 
         orderDAO.insertOrderItem(itemVO);
 
-        // 3. payments 테이블에 결제 대기 정보 저장
         PaymentVO paymentVO = new PaymentVO();
         paymentVO.setOrder_id(orderVO.getOrder_id());
         paymentVO.setPayment_method("TOSS");
@@ -402,6 +491,30 @@ public class OrderController {
         paymentVO.setTransaction_id(null);
 
         paymentDAO.insertPayment(paymentVO);
+
+        if (use_point > 0) {
+            Map<String, Object> pointMap = new HashMap<>();
+            pointMap.put("user_id", user_id);
+            pointMap.put("point_amount", use_point);
+
+            int pointResult = orderDAO.useUserPoint(pointMap);
+
+            if (pointResult > 0) {
+                orderDAO.insertUsePointHistory(pointMap);
+            }
+        }
+
+        if (user_coupon_id > 0 && couponPrice > 0) {
+            Map<String, Object> couponMap = new HashMap<>();
+            couponMap.put("user_coupon_id", user_coupon_id);
+            couponMap.put("user_id", user_id);
+
+            orderDAO.useCoupon(couponMap);
+        }
+
+        if (total_amount == 0) {
+            return completeZeroPaymentOrder(orderVO.getOrder_id());
+        }
 
         return "redirect:/payment/ready?order_id=" + orderVO.getOrder_id();
     }
@@ -497,7 +610,6 @@ public class OrderController {
             return "redirect:/myshop/orders";
         }
 
-        // 결제 전 주문만 여기서 바로 취소
         if ("PENDING".equals(order.getStatus())) {
             OrderVO orderVO = new OrderVO();
             orderVO.setOrder_id(order_id);
@@ -505,12 +617,11 @@ public class OrderController {
 
             orderDAO.updateOrderStatus(orderVO);
 
-            // 주문상품 상태도 취소로 변경
-        Map<String, Object> itemStatusMap = new HashMap<>();
-        itemStatusMap.put("order_id", order_id);
-        itemStatusMap.put("status", "CANCELLED");
+            Map<String, Object> itemStatusMap = new HashMap<>();
+            itemStatusMap.put("order_id", order_id);
+            itemStatusMap.put("status", "CANCELLED");
 
-        orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
+            orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
 
             PaymentVO paymentVO = new PaymentVO();
             paymentVO.setOrder_id(order_id);
@@ -569,22 +680,18 @@ public class OrderController {
 
             boolean isFreeDelivery = false;
 
-            // 배송비가 0원이면 무료배송 상품
             if (delivery_fee == 0) {
                 isFreeDelivery = true;
             }
 
-            // 무료배송 조건 금액을 달성했으면 무료배송
             if (free_shipping > 0 && item_total >= free_shipping) {
                 isFreeDelivery = true;
             }
 
-            // 같은 판매자 상품 중 하나라도 무료배송이면 판매자 전체 배송비 0원
             if (isFreeDelivery) {
                 sellerFreeDeliveryMap.put(seller_id, true);
             }
 
-            // 무료배송이 하나도 없을 때 적용할 판매자별 최대 배송비 저장
             int currentMaxDeliveryFee = sellerMaxDeliveryMap.getOrDefault(seller_id, 0);
 
             if (delivery_fee > currentMaxDeliveryFee) {
@@ -603,9 +710,14 @@ public class OrderController {
             }
         }
 
+        List<Map<String, Object>> couponList = orderDAO.selectAvailableCouponList(user_id);
+
         int couponPrice = 0;
 
         int paymentPrice = totalItemPrice + totalDeliveryFee - couponPrice;
+
+        int pointBalance = orderDAO.getUserPoint(user_id);
+        model.addAttribute("pointBalance", pointBalance);
 
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("orderItemList", orderCartList);
@@ -615,12 +727,14 @@ public class OrderController {
         model.addAttribute("totalDeliveryFee", totalDeliveryFee);
         model.addAttribute("paymentPrice", paymentPrice);
         model.addAttribute("couponPrice", couponPrice);
+        model.addAttribute("couponList", couponList);
 
         return "order/order_form";
     }
 
     // 구매확정 처리
     @PostMapping("/order_confirm.do")
+    @Transactional
     public String orderConfirm(
             @RequestParam("order_item_id") int order_item_id,
             HttpSession session
@@ -635,7 +749,29 @@ public class OrderController {
         map.put("order_item_id", order_item_id);
         map.put("user_id", user.getUser_id());
 
-        orderDAO.confirmOrderItem(map);
+        int result = orderDAO.confirmOrderItem(map);
+
+        if (result > 0) {
+
+            int pointCheck = orderDAO.checkPointHistory(map);
+
+            if (pointCheck == 0) {
+
+                OrderItemVO item = orderDAO.selectOrderItemById(map);
+
+                if (item != null) {
+                    int pointAmount = (int) Math.floor((item.getPrice() * item.getQuantity()) * 0.03);
+
+                    if (pointAmount > 0) {
+                        map.put("point_amount", pointAmount);
+
+                        orderDAO.insertUserPointIfNotExists(map);
+                        orderDAO.updateUserPoint(map);
+                        orderDAO.insertPointHistory(map);
+                    }
+                }
+            }
+        }
 
         return "redirect:/myshop/orders";
     }

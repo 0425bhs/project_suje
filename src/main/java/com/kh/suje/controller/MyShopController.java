@@ -49,6 +49,14 @@ public class MyShopController {
 
         int user_id = loginUser.getUser_id();
 
+        // 보유 포인트 조회
+        int pointBalance = orderDAO.getUserPoint(user_id);
+        model.addAttribute("pointBalance", pointBalance);
+
+        // 사용 가능한 쿠폰 개수 조회
+        int couponCount = orderDAO.getAvailableCouponCount(user_id);
+        model.addAttribute("couponCount", couponCount);
+
         Map<String, Object> statusCounts = orderDAO.selectOrderStatusCounts(user_id);
         model.addAllAttributes(statusCounts);
 
@@ -136,11 +144,35 @@ public class MyShopController {
             return "redirect:/login.do";
         }
         int user_id = loginUser.getUser_id();
+        
         List<ProductVO> recentList = productDAO.product_recent(user_id);
 
         model.addAttribute("recentList", recentList);
         model.addAttribute("activeMenu", "recent");
         model.addAttribute("contentPage", "/myshop/recent");
+
+        return "/myshop/myshop_main";
+    }
+
+    // 포인트 내역
+    @GetMapping("/myshop/points")
+    public String pointHistory(HttpSession session, Model model) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+        int user_id = loginUser.getUser_id();
+
+        int pointBalance = orderDAO.getUserPoint(user_id);
+        List<Map<String, Object>> pointHistoryList = orderDAO.selectPointHistoryList(user_id);
+
+        model.addAttribute("pointBalance", pointBalance);
+        model.addAttribute("pointHistoryList", pointHistoryList);
+
+        model.addAttribute("activeMenu", "point");
+        model.addAttribute("contentPage", "/myshop/point_history");
 
         return "/myshop/myshop_main";
     }

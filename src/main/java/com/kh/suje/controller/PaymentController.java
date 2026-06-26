@@ -34,8 +34,6 @@ public class PaymentController {
 
     private final PaymentDAO paymentDAO;
     private final OrderDAO orderDAO;
-
-    // 상품 재고 차감 / 복구를 위해 사용하는 DAO
     private final ProductDAO productDAO;
 
     @Value("${toss.client-key}")
@@ -44,9 +42,6 @@ public class PaymentController {
     @Value("${toss.secret-key}")
     private String tossSecretKey;
 
-
-    // 결제 대기 화면
-    // 주소: /payment/ready?order_id=1
     @GetMapping("/payment/ready")
     public String paymentReady(
             @RequestParam("order_id") int order_id,
@@ -72,7 +67,6 @@ public class PaymentController {
             return "payment/payment_fail";
         }
 
-        // Toss orderId는 한 번 승인/취소되면 재사용할 수 없으므로 매번 고유하게 생성
         String tossOrderId = "ORDER_" + order_id + "_" + System.currentTimeMillis();
 
         String orderName = "핸드메이드 상품 주문";
@@ -97,8 +91,6 @@ public class PaymentController {
         return "payment/payment_ready";
     }
 
-    // Toss orderId에서 실제 DB order_id 꺼내기
-    // 예: ORDER_10_1716950000000 -> 10
     private Integer extractOrderId(String tossOrderId) {
         if (tossOrderId == null || !tossOrderId.startsWith("ORDER_")) {
             return null;
@@ -117,8 +109,6 @@ public class PaymentController {
         }
     }
 
-    // Toss 결제 인증 성공 후 돌아오는 주소
-    // Toss successUrl: /payment/toss/success
     @GetMapping("/payment/toss/success")
     @Transactional
     public String tossSuccess(
@@ -209,24 +199,15 @@ public class PaymentController {
 
                 orderDAO.updateOrderStatus(orderVO);
 
-                // 주문상품 상태도 결제완료로 변경
                 Map<String, Object> itemStatusMap = new HashMap<>();
                 itemStatusMap.put("order_id", order_id);
                 itemStatusMap.put("status", "PAID");
 
                 orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
 
-                // =========================================================
-                // 결제 성공 후 상품 재고 차감
-                // - 결제가 정상 승인되고 주문 상태가 PAID로 변경된 뒤 실행
-                // - order_items에 저장된 상품 목록을 가져온다.
-                // - 각 상품의 주문 수량만큼 products.stock을 감소시킨다.
-                // - stock이 부족해서 차감 실패하면 결제 완료 화면으로 보내지 않고 실패 화면으로 보낸다.
-                // =========================================================
                 List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order_id);
 
                 for (OrderItemVO item : itemList) {
-
                     int stockResult = productDAO.decreaseStock(item);
 
                     if (stockResult == 0) {
@@ -264,10 +245,6 @@ public class PaymentController {
         }
     }
 
-    
-
-    // Toss 결제 실패 후 돌아오는 주소
-    // Toss failUrl: /payment/toss/fail
     @GetMapping("/payment/toss/fail")
     public String tossFail(
             @RequestParam(value = "orderId", required = false) String tossOrderId,
@@ -289,7 +266,6 @@ public class PaymentController {
         return "payment/payment_fail";
     }
 
-    // Toss 결제 취소
     @PostMapping("/payment/toss/cancel")
     @Transactional
     public String tossCancel(
@@ -312,21 +288,18 @@ public class PaymentController {
             return "payment/payment_fail";
         }
 
-        // 주문 상태 기준 확인
         if (!"PAID".equals(order.getStatus())) {
             model.addAttribute("order_id", order_id);
             model.addAttribute("message", "결제완료 상태의 주문만 취소할 수 있습니다.");
             return "payment/payment_fail";
         }
 
-        // 결제 상태 기준 확인
         if (!"SUCCESS".equals(payment.getStatus())) {
             model.addAttribute("order_id", order_id);
             model.addAttribute("message", "Toss 결제 성공 상태가 아니라 취소할 수 없습니다. 현재 결제상태: " + payment.getStatus());
             return "payment/payment_fail";
         }
 
-        // Toss paymentKey 확인
         if (payment.getTransaction_id() == null || payment.getTransaction_id().trim().isEmpty()) {
             model.addAttribute("order_id", order_id);
             model.addAttribute("message", "Toss paymentKey가 저장되어 있지 않아 결제취소를 요청할 수 없습니다.");
@@ -382,12 +355,6 @@ public class PaymentController {
 
                 int paymentResult = paymentDAO.updatePaymentCancel(paymentVO);
 
-                // =========================================================
-                // 결제취소 성공 후 주문 취소 정보 저장
-                // - orders.status = CANCELLED
-                // - orders.cancel_reason = 사용자가 선택한 취소 사유
-                // - orders.cancelled_at = 현재 시간
-                // =========================================================
                 OrderVO orderVO = new OrderVO();
                 orderVO.setOrder_id(order_id);
                 orderVO.setStatus("CANCELLED");
@@ -395,7 +362,6 @@ public class PaymentController {
 
                 int orderResult = orderDAO.updateOrderCancelInfo(orderVO);
 
-                // 주문상품 상태도 취소로 변경
                 Map<String, Object> itemStatusMap = new HashMap<>();
                 itemStatusMap.put("order_id", order_id);
                 itemStatusMap.put("status", "CANCELLED");
@@ -408,13 +374,17 @@ public class PaymentController {
                     return "payment/payment_fail";
                 }
 
-                // =========================================================
-                // 결제 취소 성공 후 상품 재고 복구
-                // - Toss 결제취소가 성공하고,
-                // - payments.status = CANCELLED,
-                // - orders.status = CANCELLED 로 변경된 뒤 실행
-                // - 주문 상품 목록을 가져와서 주문 수량만큼 products.stock을 다시 증가시킨다.
-                // =========================================================
+                // 결제 취소 성공 후 사용 포인트 복구
+                int usedPoint = order.getUsed_point();
+
+                if (usedPoint > 0) {
+                    Map<String, Object> pointMap = new HashMap<>();
+                    pointMap.put("user_id", order.getUser_id());
+                    pointMap.put("point_amount", usedPoint);
+
+                    orderDAO.updateUserPoint(pointMap);
+                }
+
                 List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order_id);
 
                 for (OrderItemVO item : itemList) {

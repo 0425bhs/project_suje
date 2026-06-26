@@ -170,9 +170,19 @@
                 return;
             }
 
-            paymentButton.addEventListener("click", requestTossPayment);
-
+            const amount = Number(paymentButton.dataset.amount || 0);
             const paymentStatus = paymentButton.dataset.paymentStatus;
+
+            // 0원 결제는 Toss 결제창을 열지 않음
+            if (amount <= 0) {
+                paymentButton.innerText = "결제완료 처리 중...";
+                paymentButton.disabled = true;
+
+                location.href = "/order/complete?order_id=${order.order_id}";
+                return;
+            }
+
+            paymentButton.addEventListener("click", requestTossPayment);
 
             if (paymentStatus === "READY") {
                 setTimeout(function () {
@@ -192,13 +202,19 @@
                 return;
             }
 
+            const amount = Number(paymentButton.dataset.amount || 0);
+
+            if (amount <= 0) {
+                location.href = "/order/complete?order_id=${order.order_id}";
+                return;
+            }
+
             paymentRequested = true;
 
             paymentButton.innerText = "결제창을 여는 중...";
             paymentButton.disabled = true;
 
             const clientKey = paymentButton.dataset.clientKey;
-            const amount = Number(paymentButton.dataset.amount);
             const orderId = paymentButton.dataset.orderId;
             const orderName = paymentButton.dataset.orderName;
 

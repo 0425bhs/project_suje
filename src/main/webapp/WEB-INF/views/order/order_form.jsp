@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="/css/order-payment.css">
 
         <script src="/js/product_main.js" defer></script>
+        <script src="/js/order/order_form.js" defer></script>
     </head>
 
     <body>
@@ -32,6 +33,11 @@
                 </div>
 
                 <form action="/order/create" method="post">
+
+                    <input type="hidden" id="totalItemPrice" value="${totalItemPrice}">
+                    <input type="hidden" id="totalDeliveryFee" value="${totalDeliveryFee}">
+                    <input type="hidden" id="usePoint" value="0">
+                    <input type="hidden" id="pointBalance" value="${empty pointBalance ? 0 : pointBalance}">
 
                     <div class="order-layout">
                         <div class="panel">
@@ -142,10 +148,61 @@
                                 </strong>
                             </div>
 
+                            <div class="summary-line">
+                                <span>쿠폰 선택</span>
+
+                                <strong>
+                                    <select name="user_coupon_id" id="userCouponId">
+                                        <option value="0" data-discount="0">쿠폰 사용 안 함</option>
+
+                                        <c:forEach var="coupon" items="${couponList}">
+                                            <option value="${coupon.user_coupon_id}"
+                                                    data-discount="${coupon.discount_amount}">
+                                                ${coupon.coupon_name}
+                                                (-<fmt:formatNumber value="${coupon.discount_amount}" pattern="#,###"/>원)
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </strong>
+                            </div>
+
                             <div class="summary-line discount">
                                 <span>쿠폰 할인금액</span>
                                 <strong>
-                                    -<fmt:formatNumber value="${couponPrice}" pattern="#,###" />원
+                                    <span id="couponPriceText">
+                                        -<fmt:formatNumber value="${couponPrice}" pattern="#,###" />원
+                                    </span>
+                                </strong>
+                            </div>
+
+                            <div class="summary-line">
+                                <span>보유 포인트</span>
+                                <strong>
+                                    <fmt:formatNumber value="${empty pointBalance ? 0 : pointBalance}" pattern="#,###" /> P
+                                </strong>
+                            </div>
+
+                            <div class="summary-line">
+                                <span>사용 포인트</span>
+
+                                <strong>
+                                    <input type="number"
+                                           name="use_point"
+                                           id="usePointInput"
+                                           min="0"
+                                           max="${empty pointBalance ? 0 : pointBalance}"
+                                           value="0">
+
+                                    <button type="button" id="useAllPointBtn">
+                                        전액사용
+                                    </button>
+                                </strong>
+                            </div>
+
+                            <div class="summary-line discount">
+                                <span>포인트 할인</span>
+                                <strong id="pointPriceText">
+                                    -0원
                                 </strong>
                             </div>
 
@@ -163,7 +220,9 @@
 
                             <div class="summary-total">
                                 <span>총 결제금액</span>
-                                <strong><fmt:formatNumber value="${paymentPrice}" pattern="#,###" />원</strong>
+                                <strong id="paymentPriceText">
+                                    <fmt:formatNumber value="${paymentPrice}" pattern="#,###" />원
+                                </strong>
                             </div>
 
                             <div class="btn-row">

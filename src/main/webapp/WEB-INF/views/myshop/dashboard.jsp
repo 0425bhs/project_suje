@@ -153,7 +153,7 @@
                                         </div>
 
                                         <div class="myshop-order-actions">
-                                            <c:if test="${order.status eq 'PENDING'}">
+                                            <c:if test="${order.status eq 'PENDING' and order.total_amount > 0}"> 
                                                 <a href="/payment/ready?order_id=${order.order_id}" class="primary">
                                                     결제하기
                                                 </a>
@@ -206,13 +206,18 @@
                 <h3>나의 쇼핑 혜택</h3>
             </div>
             <div class="dashboard-benefit-row">
-                <div class="dashboard-benefit-item point">
+                <div class="dashboard-benefit-item point"
+                    onclick="location.href='/myshop/points'"
+                    style="cursor:pointer;">
                     <span>적립금</span>
-                    <strong>2,500<small>원</small></strong>
-                </div>
+                    <strong>
+                        <fmt:formatNumber value="${empty pointBalance ? 0 : pointBalance}" pattern="#,###"/>
+                        <small>P</small>
+                    </strong>
+                </div>  
                 <div class="dashboard-benefit-item coupon">
                     <span>쿠폰</span>
-                    <strong>2<small>장</small></strong>
+                    <strong>${empty couponCount ? 0 : couponCount}<small>장</small></strong>
                 </div>
             </div>
         </section>
