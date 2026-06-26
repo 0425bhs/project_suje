@@ -1,3 +1,6 @@
+
+////////////////////////USERCONTROLLER
+
 package com.kh.suje.controller;
 
 import java.io.File;
@@ -32,7 +35,7 @@ public class UserController {
    
     private final HttpSession session;
     private final UserDAO userDao;
-    private final SellerDAO sellerdao;
+    private final SellerDAO sellerDao;
     private final PwdSecurity pwdSecurity;
     private final MailSendService mss;
 
@@ -246,7 +249,7 @@ if(naver_id != null) {
 
         svo.setUser_id(vo.getUser_id());
 
-        int resultS = sellerdao.insertSeller(svo); 
+        int resultS = sellerDao.insertSeller(svo); 
         
         
         return "redirect:/login.do";
@@ -453,7 +456,7 @@ if(naver_id != null) {
 
     // 판매자면 seller 정보도 담기
     if (sessionUser.getRole().equalsIgnoreCase("SELLER")) {
-        dto.setSeller(sellerdao.selectSeller(sessionUser.getUser_id()));
+        dto.setSeller(sellerDao.selectSeller(sessionUser.getUser_id()));
     }
     
     //JSP 화면
@@ -515,7 +518,7 @@ if(naver_id != null) {
         int res = userDao.userModify( vo );
         if(vo.getRole().equalsIgnoreCase("SELLER")){
             svo.setUser_id(vo.getUser_id());
-            int sres = sellerdao.sellerModify( svo );
+            int sres = sellerDao.sellerModify( svo );
         }
 
         //업데이트 후 필요없어진 이미지가 있다면 삭제
@@ -578,14 +581,14 @@ if (sessionUser != null && ori_password != null) {
 
         svo.setUser_id(vo.getUser_id());
 
-        int resultS = sellerdao.insertSeller(svo);      
+        int resultS = sellerDao.insertSeller(svo);      
         
         return "redirect:/login.do";
     }
 
 
      //일반회원=>판매자회원폼
-    @GetMapping("/update_seller.do")
+  @GetMapping("/update_seller.do")
     public String updgradeSeller(Model model) {
 
              //로그인한 사람의 정보 꺼내기
@@ -596,28 +599,29 @@ if (sessionUser != null && ori_password != null) {
     return "redirect:/myshop";
 }
 
+
     model.addAttribute("sessionUser", sessionUser);
     model.addAttribute("activeMenu", "update_seller.do");  // 사이드바 강조용
     model.addAttribute("contentPage", "/user/update_seller"); 
 
-    return "myshop/myshop";  // myshop_main을 통해서 열기
+    return "myshop/myshop_main";  // myshop_main을 통해서 열기
  
     }
 
 
     //일반 => 사업자회원으로 변경
-    @Transactional
-    @PostMapping("/update_seller.do")
+ @Transactional
+  @PostMapping("/update_seller.do")
     public String updateSeller(int user_id, SellerVO vo) throws Exception {
 
-        userDao.updateSeller(user_id);
-        vo.setUser_id(user_id);
-        sellerdao.insertSeller(vo); 
+       userDao.updateSeller(user_id);
+       vo.setUser_id(user_id);
+        sellerDao.insertSeller(vo); 
         
         UserVO updatedUser = userDao.selectUser(user_id);
-        session.setAttribute("user", updatedUser);
+    session.setAttribute("user", updatedUser);
 
-        return "redirect:/myshop";
+       return "redirect:/myshop";
     }
 
 

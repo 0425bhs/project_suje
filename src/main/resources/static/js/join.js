@@ -387,5 +387,3 @@ function send(f) {
     f.method = "POST";
     f.submit();
 }
-
-

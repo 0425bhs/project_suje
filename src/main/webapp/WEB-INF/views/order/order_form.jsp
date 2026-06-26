@@ -1,203 +1,265 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+            <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>주문서 작성</title>
+                <!DOCTYPE html>
+                <html>
 
-        <link rel="stylesheet" href="/css/product/product_main.css">
-        <link rel="stylesheet" href="/css/order-payment.css">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>주문서 작성</title>
 
-        <script src="/js/product_main.js" defer></script>
-    </head>
+                    <link rel="stylesheet" href="/css/product/product_main.css">
+                    <link rel="stylesheet" href="/css/order-payment.css">
 
-    <body>
+                    <script src="/js/product_main.js" defer></script>
+                    <script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-        <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-            <jsp:param name="activeMenu" value="detail" />
-        </jsp:include>
+                    <script>
+                        function openAddressModal() {
+                            document.getElementById("addressModal").classList.add("open");
+                        }
+                        function closeAddressModal() {
+                            document.getElementById("addressModal").classList.remove("open");
+                        }
 
-        <section class="page-block soft">
-            <div class="block-inner">
-                <div class="page-title-row">
-                    <div>
-                        <span>ORDER FORM</span>
-                        <h2>주문서 작성</h2>
-                    </div>
-                    <p>주문 상품과 결제 금액을 확인합니다.</p>
-                </div>
+                        function selectAddress(id, name, address) {
+                            document.getElementById("selectedAddressId").value = id;
+                            // 화면에 보이는 텍스트 변경
+                            document.getElementById("selectedAddressText").innerText = name + " | " + address;
+                            closeAddressModal();
+                        }
 
-                <form action="/order/create" method="post">
+                        function search() {
+                            new kakao.Postcode({
+                                oncomplete: function (data) {
+                                    // 카카오 주소 API 결과 처리 (필요 시 주소 등록 팝업이나 인풋에 연동 가능)
+                                    alert("선택된 주소: " + data.roadAddress + " (" + data.zonecode + ")");
+                                }
+                            }).open();
+                        }
+                    </script>
+                </head>
 
-                    <div class="order-layout">
-                        <div class="panel">
-                            <h3 class="panel-title">주문 상품</h3>
+                <body>
 
-                            <c:forEach var="vo" items="${orderItemList}">
+                    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
+                        <jsp:param name="activeMenu" value="detail" />
+                    </jsp:include>
 
-                                <c:choose>
-                                    <c:when test="${vo.cart_id ne 0}">
-                                        <input type="hidden" name="cart_id" value="${vo.cart_id}">
-                                    </c:when>
+                    <section class="page-block soft">
+                        <div class="block-inner">
+                            <div class="page-title-row">
+                                <div>
+                                    <span>ORDER FORM</span>
+                                    <h2>주문서 작성</h2>
+                                </div>
+                                <p>주문 상품과 결제 금액을 확인합니다.</p>
+                            </div>
 
-                                    <c:otherwise>
-                                        <input type="hidden" name="product_id" value="${vo.product_id}">
-                                        <input type="hidden" name="quantity" value="${vo.quantity}">
+                            <form action="/order/create" method="post">
+                                <div class="order-layout">
+                                    <div class="panel">
+                                        <h3 class="panel-title">주문 상품</h3>
 
-                                        <c:if test="${not empty vo.option_id}">
-                                            <input type="hidden" name="option_id" value="${vo.option_id}">
-                                        </c:if>
-                                    </c:otherwise>
-                                </c:choose>
-
-                                <div class="order-item">
-
-                                    <c:choose>
-                                        <c:when test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
-                                            <c:set var="orderImagePath" value="${fn:trim(vo.image_l)}" />
-
+                                        <c:forEach var="vo" items="${orderItemList}">
                                             <c:choose>
-                                                <c:when test="${fn:startsWith(orderImagePath, '/upload/')}">
-                                                    <img src="${orderImagePath}"
-                                                         alt="${vo.name}"
-                                                         onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
+                                                <c:when test="${vo.cart_id ne 0}">
+                                                    <input type="hidden" name="cart_id" value="${vo.cart_id}">
                                                 </c:when>
-
                                                 <c:otherwise>
-                                                    <img src="/upload/${orderImagePath}"
-                                                         alt="${vo.name}"
-                                                         onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
+                                                    <input type="hidden" name="product_id" value="${vo.product_id}">
+                                                    <input type="hidden" name="quantity" value="${vo.quantity}">
                                                 </c:otherwise>
                                             </c:choose>
-                                        </c:when>
 
-                                        <c:otherwise>
-                                            <div class="order-no-image">이미지 없음</div>
-                                        </c:otherwise>
-                                    </c:choose>
+                                            <div class="order-item">
+                                                <c:choose>
+                                                    <c:when
+                                                        test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
+                                                        <c:set var="orderImagePath" value="${fn:trim(vo.image_l)}" />
+                                                        <c:choose>
+                                                            <c:when test="${fn:startsWith(orderImagePath, '/upload/')}">
+                                                                <img src="${orderImagePath}" alt="${vo.name}"
+                                                                    onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <img src="/upload/${orderImagePath}" alt="${vo.name}"
+                                                                    onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="order-no-image">이미지 없음</div>
+                                                    </c:otherwise>
+                                                </c:choose>
 
-                                    <div class="item-info">
-                                        <div class="creator-line">작가 상품</div>
-                                        <strong>${vo.name}</strong>
+                                                <div class="item-info">
+                                                    <div class="creator-line">작가 상품</div>
+                                                    <strong>${vo.name}</strong>
 
-                                        <c:if test="${not empty vo.option_name}">
-                                            <p class="order-option-text">
-                                                옵션 : ${vo.option_name}
-
-                                                <c:if test="${vo.option_price gt 0}">
-                                                    (+<fmt:formatNumber value="${vo.option_price}" pattern="#,###" />원)
-                                                </c:if>
-                                            </p>
-                                        </c:if>
-
-                                        <c:choose>
-                                            <c:when test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
-
-                                                <div class="order-price-box">
-                                                    <p class="order-origin-price">
-                                                        <fmt:formatNumber value="${vo.price}" pattern="#,###" />원
-                                                    </p>
-
-                                                    <p class="order-sale-price">
-                                                        가격
-                                                        <strong>
-                                                            <fmt:formatNumber value="${vo.item_price}" pattern="#,###" />원
-                                                        </strong>
-                                                    </p>
+                                                    <c:choose>
+                                                        <c:when
+                                                            test="${vo.sale_price > 0 and vo.sale_price < vo.price}">
+                                                            <div class="order-price-box">
+                                                                <p class="order-origin-price">
+                                                                    <fmt:formatNumber value="${vo.price}"
+                                                                        pattern="#,###" />원
+                                                                </p>
+                                                                <p class="order-sale-price">
+                                                                    가격
+                                                                    <strong>
+                                                                        <fmt:formatNumber value="${vo.item_price}"
+                                                                            pattern="#,###" />원
+                                                                    </strong>
+                                                                </p>
+                                                            </div>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <p class="order-normal-price">
+                                                                가격
+                                                                <strong>
+                                                                    <fmt:formatNumber value="${vo.item_price}"
+                                                                        pattern="#,###" />원
+                                                                </strong>
+                                                            </p>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <p>수량 ${vo.quantity}개</p>
                                                 </div>
 
-                                            </c:when>
-
-                                            <c:otherwise>
-
-                                                <p class="order-normal-price">
-                                                    가격
+                                                <div class="item-price">
                                                     <strong>
-                                                        <fmt:formatNumber value="${vo.item_price}" pattern="#,###" />원
+                                                        <fmt:formatNumber value="${vo.item_total}" pattern="#,###" />원
                                                     </strong>
-                                                </p>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
 
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <div class="artist-note">
+                                            <strong>작가 안내</strong>
+                                            <p>핸드메이드 상품은 결제 완료 후 제작 및 포장 준비가 시작됩니다.</p>
+                                        </div>
 
-                                        <p>수량 ${vo.quantity}개</p>
+                                        <div class="delivery-section">
+                                            <div class="artist-note"
+                                                style="display:flex; justify-content:space-between; align-items:center;">
+                                                <div>
+                                                    <strong
+                                                        style="font-size:16px; font-weight:900; color:#171717;">배송지</strong>
+                                                    <p id="selectedAddressText">
+                                                        ${defaultAddr.address_name} | ${defaultAddr.address}
+                                                        ${defaultAddr.detail_address}
+                                                    </p>
+                                                </div>
+                                                <button type="button" class="btn light"
+                                                    onclick="openAddressModal()">변경</button>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="item-price">
-                                        <strong>
-                                            <fmt:formatNumber value="${vo.item_total}" pattern="#,###" />원
-                                        </strong>
-                                    </div>
+                                    <input type="hidden" name="address_id" id="selectedAddressId"
+                                        value="${defaultAddr.address_id}" />
+
+                                    <aside class="panel side-panel">
+                                        <h3 class="panel-title">결제 요약</h3>
+
+                                        <div class="summary-line">
+                                            <span>총 상품금액</span>
+                                            <strong>
+                                                <fmt:formatNumber value="${totalOriginPrice}" pattern="#,###" />원
+                                            </strong>
+                                        </div>
+
+                                        <div class="summary-line discount">
+                                            <span>즉시 할인금액</span>
+                                            <strong>-
+                                                <fmt:formatNumber value="${totalDiscountPrice}" pattern="#,###" />원
+                                            </strong>
+                                        </div>
+
+                                        <div class="summary-line discount">
+                                            <span>쿠폰 할인금액</span>
+                                            <strong>-
+                                                <fmt:formatNumber value="${couponPrice}" pattern="#,###" />원
+                                            </strong>
+                                        </div>
+
+                                        <div class="summary-line">
+                                            <span>상품 금액</span>
+                                            <strong>
+                                                <fmt:formatNumber value="${totalItemPrice}" pattern="#,###" />원
+                                            </strong>
+                                        </div>
+
+                                        <div class="summary-line">
+                                            <span>배송비</span>
+                                            <strong>
+                                                <fmt:formatNumber value="${totalDeliveryFee}" pattern="#,###" />원
+                                            </strong>
+                                        </div>
+
+                                        <div class="summary-total">
+                                            <span>총 결제금액</span>
+                                            <strong>
+                                                <fmt:formatNumber value="${paymentPrice}" pattern="#,###" />원
+                                            </strong>
+                                        </div>
+
+                                        <div class="btn-row">
+                                            <button type="submit" class="btn primary full">주문하고 결제하기</button>
+                                        </div>
+                                    </aside>
                                 </div>
-                            </c:forEach>
+                            </form>
+                        </div>
+                    </section>
 
-                            <div class="artist-note">
-                                <strong>작가 안내</strong>
-                                <p>핸드메이드 상품은 결제 완료 후 제작 및 포장 준비가 시작됩니다.</p>
+                    <footer class="site-footer">
+                        <div class="footer-inner">
+                            <strong>HANDMADE</strong>
+                            <p>주문 상품과 결제 금액을 확인한 뒤 결제를 진행합니다.</p>
+                        </div>
+                    </footer>
+
+                    <div class="cancel-modal-wrap" id="addressModal">
+                        <div class="cancel-modal-bg" onclick="closeAddressModal()"></div>
+                        <div class="cancel-modal-box">
+                            <div class="cancel-modal-head">
+                                <h3>배송지 선택</h3>
+                                <button type="button" class="cancel-modal-close"
+                                    onclick="closeAddressModal()">×</button>
+                            </div>
+                            <div class="cancel-modal-body">
+                                <div style="margin-bottom: 16px; display: flex; justify-content: flex-end;">
+                                    <a href="/insertAddress.do" class="btn light">+ 새 배송지 추가</a>
+                                </div>
+
+                                <div>
+                                    <c:forEach var="addr" items="${list}">
+                                        <div
+                                            style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #eee;">
+                                            <div>
+                                                <c:if test="${addr.is_default == 'true'}">
+                                                     <span class="default-badge">기본배송지</span>
+                                                </c:if>
+                                                <strong>${addr.address_name}</strong>
+                                                <p style="margin:4px 0; color:#666; font-size:14px;">
+                                                    ${addr.address} ${addr.detail_address}
+                                                </p>
+                                            </div>
+                                            <button type="button" class="btn light"
+                                                onclick="selectAddress(${addr.address_id}, '${addr.address_name}', '${addr.address} ${addr.detail_address}')">
+                                                선택
+                                            </button>
+                                        </div>
+                                    </c:forEach>
+                                </div>
                             </div>
                         </div>
-
-                        <aside class="panel side-panel">
-                            <h3 class="panel-title">결제 요약</h3>
-
-                            <div class="summary-line">
-                                <span>총 상품금액</span>
-                                <strong><fmt:formatNumber value="${totalOriginPrice}" pattern="#,###" />원</strong>
-                            </div>
-
-                            <div class="summary-line discount">
-                                <span>즉시 할인금액</span>
-                                <strong>
-                                    -<fmt:formatNumber value="${totalDiscountPrice}" pattern="#,###" />원
-                                </strong>
-                            </div>
-
-                            <div class="summary-line discount">
-                                <span>쿠폰 할인금액</span>
-                                <strong>
-                                    -<fmt:formatNumber value="${couponPrice}" pattern="#,###" />원
-                                </strong>
-                            </div>
-
-                            <div class="summary-line">
-                                <span>상품 금액</span>
-                                <strong>
-                                    <fmt:formatNumber value="${totalItemPrice}" pattern="#,###" />원
-                                </strong>
-                            </div>
-
-                            <div class="summary-line">
-                                <span>배송비</span>
-                                <strong><fmt:formatNumber value="${totalDeliveryFee}" pattern="#,###" />원</strong>
-                            </div>
-
-                            <div class="summary-total">
-                                <span>총 결제금액</span>
-                                <strong><fmt:formatNumber value="${paymentPrice}" pattern="#,###" />원</strong>
-                            </div>
-
-                            <div class="btn-row">
-                                <button type="submit" class="btn primary full">
-                                    주문하고 결제하기
-                                </button>
-                            </div>
-
-                        </aside>
                     </div>
-                </form>
-            </div>
-        </section>
 
-        <footer class="site-footer">
-            <div class="footer-inner">
-                <strong>HANDMADE</strong>
-                <p>주문 상품과 결제 금액을 확인한 뒤 결제를 진행합니다.</p>
-            </div>
-        </footer>
+                </body>
 
-    </body>
-</html>
+                </html>

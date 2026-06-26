@@ -354,5 +354,3 @@ function deletePhoto() {
     ori_photo_name.value = "no_file";
     photo_div.style.display = 'none';
 }
-
-

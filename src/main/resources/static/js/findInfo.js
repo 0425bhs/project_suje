@@ -1,4 +1,4 @@
-     let checkuser_id;
+let checkuser_id;
         let currentFind;
          let authNumber;
 
