@@ -234,9 +234,7 @@
                                                     <fmt:formatNumber value="${item.item_total}" pattern="#,###"/>원
                                                 </div>
 
-                                                <button type="button"
-                                                        class="cart-option-delete"
-                                                        onclick="event.stopPropagation(); deleteOneCart('${item.cart_id}');">
+                                                <button type="button" class="cart-option-delete" data-cart-id="${item.cart_id}" onclick="event.stopPropagation(); deleteOneCart(this);">
                                                     ×
                                                 </button>
 

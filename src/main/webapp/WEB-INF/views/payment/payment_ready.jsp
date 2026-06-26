@@ -37,37 +37,6 @@
                                 </div>
 
                                 <p>잠시 후 결제창이 자동으로 열립니다.</p>
-            <div class="order-layout">
-
-                <!-- 왼쪽 주문 상품 -->
-                <section class="panel">
-
-                    <h3 class="panel-title">주문 상품</h3>
-
-                    <c:forEach var="item" items="${orderItemList}">
-                        <div class="order-item">
-
-                            <c:choose>
-                                <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
-                                    <img src="/upload/${item.imageL}" alt="${item.productName}">
-                                </c:when>
-
-                                <c:otherwise>
-                                    <img src="/images/no_image.png" alt="이미지 없음">
-                                </c:otherwise>
-                            </c:choose>
-
-                            <div class="item-info">
-                                <div class="creator-line">작가 상품</div>
-
-                                <strong>${item.productName}</strong>
-
-                                <p>
-                                    가격
-                                    <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
-                                </p>
-
-                                <p>수량 ${item.quantity}개</p>
                             </div>
 
                             <div class="order-layout">
@@ -82,7 +51,7 @@
 
                                             <c:choose>
                                                 <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
-                                                    <img src="${item.imageL}" alt="${item.productName}">
+                                                    <img src="/upload/${item.imageL}" alt="${item.productName}">
                                                 </c:when>
 
                                                 <c:otherwise>
@@ -95,6 +64,16 @@
 
                                                 <strong>${item.productName}</strong>
 
+                                                <c:if test="${not empty item.optionName}">
+                                                    <p class="order-option-text">
+                                                        옵션 : ${item.optionName}
+
+                                                        <c:if test="${item.optionPrice gt 0}">
+                                                            (+<fmt:formatNumber value="${item.optionPrice}" pattern="#,###" />원)
+                                                        </c:if>
+                                                    </p>
+                                                </c:if>
+
                                                 <p>
                                                     가격
                                                     <fmt:formatNumber value="${item.price}" pattern="#,###" />원
@@ -104,20 +83,18 @@
                                             </div>
 
                                             <div class="item-price">
-                                                <fmt:formatNumber value="${item.price * item.quantity}"
-                                                    pattern="#,###" />원
+                                                <fmt:formatNumber value="${item.price * item.quantity}" pattern="#,###" />원
                                             </div>
 
                                         </div>
                                     </c:forEach>
 
-                                </section>
-
-
                                     <div class="artist-note">
                                         <strong>결제 안내</strong>
                                         <p>결제창이 자동으로 열리지 않으면 오른쪽의 결제 진행 버튼을 눌러주세요.</p>
                                     </div>
+
+                                </section>
 
                                 <!-- 오른쪽 결제 요약 -->
                                 <aside class="panel side-panel">
@@ -161,10 +138,14 @@
                                     </div>
 
                                     <div class="btn-row">
-                                        <button type="button" class="btn primary full" id="paymentButton"
-                                            data-client-key="${tossClientKey}" data-amount="${payment.amount}"
-                                            data-order-id="${tossOrderId}" data-order-name="${fn:escapeXml(orderName)}"
-                                            data-payment-status="${payment.status}">
+                                        <button type="button"
+                                                class="btn primary full"
+                                                id="paymentButton"
+                                                data-client-key="${tossClientKey}"
+                                                data-amount="${payment.amount}"
+                                                data-order-id="${tossOrderId}"
+                                                data-order-name="${fn:escapeXml(orderName)}"
+                                                data-payment-status="${payment.status}">
                                             결제 진행하기
                                         </button>
                                     </div>
@@ -183,12 +164,12 @@
 
                     </section>
 
-                    <footer class="site-footer">
-                        <div class="footer-inner">
-                            <strong>HANDMADE</strong>
-                            <p>결제창이 자동으로 열리지 않으면 결제 진행하기 버튼을 눌러주세요.</p>
-                        </div>
-                    </footer>
+                                    <footer class="site-footer">
+                                        <div class="footer-inner">
+                                            <strong>HANDMADE</strong>
+                                            <p>결제창이 자동으로 열리지 않으면 결제 진행하기 버튼을 눌러주세요.</p>
+                                        </div>
+                                    </footer>
 
                     <script>
                         let paymentRequested = false;

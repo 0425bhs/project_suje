@@ -77,7 +77,6 @@ function cartInsert(productId, quantityValue, optionIdValue){
 
         Promise.all(requestList)
             .then(function(resultList){
-                console.log("장바구니 여러 옵션 결과:", resultList);
 
                 const loginResult = resultList.some(function(data){
                     return data.result == "login";
@@ -158,12 +157,17 @@ function allCartCheck(){
     const allCheck = document.getElementById("allCheck");
     const sellerChecks = document.querySelectorAll(".seller-check");
     const checks = document.querySelectorAll(".cart-check");
+    const productGroupChecks = document.querySelectorAll(".product-group-check");
 
     sellerChecks.forEach(chk => {
         chk.checked = allCheck.checked;
     });
 
     checks.forEach(chk => {
+        chk.checked = allCheck.checked;
+    });
+
+    productGroupChecks.forEach(chk => {
         chk.checked = allCheck.checked;
     });
 
@@ -175,8 +179,13 @@ function sellerCartCheck(sellerCheck){
 
     const sellerId = sellerCheck.dataset.sellerId;
     const checks = document.querySelectorAll(".cart-check[data-seller-id='" + sellerId + "']");
+    const productGroupChecks = document.querySelectorAll(".product-group-check[data-seller-id='" + sellerId + "']");
 
     checks.forEach(chk => {
+        chk.checked = sellerCheck.checked;
+    });
+
+    productGroupChecks.forEach(chk => {
         chk.checked = sellerCheck.checked;
     });
 
@@ -246,6 +255,23 @@ function calcCartTotal(){
     if(orderCountBadge != null){
         orderCountBadge.innerText = checked.length;
     }
+
+    const productGroupChecks = document.querySelectorAll(".product-group-check");
+
+    productGroupChecks.forEach(productCheck => {
+
+        const productId = productCheck.dataset.productId;
+
+        const productItems = document.querySelectorAll(
+            ".cart-check[data-product-id='" + productId + "']"
+        );
+
+        const productChecked = document.querySelectorAll(
+            ".cart-check[data-product-id='" + productId + "']:checked"
+        );
+
+        productCheck.checked = productItems.length > 0 && productItems.length == productChecked.length;
+    });
 
     sellerChecks.forEach(sellerCheck => {
 
@@ -521,7 +547,15 @@ function productGroupCheck(productCheck) {
     calcCartTotal();
 }
 
-function deleteOneCart(cartId) {
+function deleteOneCart(btn) {
+
+    const cartId = btn.dataset.cartId;
+
+    if (cartId == null || cartId === "") {
+        alert("삭제할 장바구니 정보를 찾을 수 없습니다.");
+        return;
+    }
+
     if (!confirm("선택한 옵션을 삭제하시겠습니까?")) {
         return;
     }
