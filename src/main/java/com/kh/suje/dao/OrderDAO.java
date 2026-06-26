@@ -101,4 +101,7 @@ public interface OrderDAO {
     // 포인트 내역 조회
     List<Map<String, Object>> selectPointHistoryList(int user_id);
 
+    //취소 내역 조회
+    List<OrderVO> selectCancelList(int user_id);
+
 }
