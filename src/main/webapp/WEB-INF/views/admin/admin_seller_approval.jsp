@@ -8,6 +8,46 @@
     <meta charset="UTF-8">
     <title>관리자 센터 - 판매자 관리</title>
     <link rel="stylesheet" href="/css/admin/admin_common.css">
+    <link rel="stylesheet" href="/css/admin/admin_detail_panel.css">
+    <script src="/js/admin_detail_common.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const master = document.getElementById("adminMasterDetail");
+            const rows = document.querySelectorAll(".admin-clickable-row");
+
+            rows.forEach((row) => {
+                //모든 행에 클릭 이벤트 부여
+                row.addEventListener("click", () => {
+                    //상세 패널이 열려있고 이미 선택된 행을 눌렀을 때
+                    if (!master.classList.contains("is-collapsed") && row.classList.contains("selected")) {
+                        closeDetailPanel(master, row);
+                        return;
+                    }
+
+                    openDetailPanel(master, rows, row);
+
+                    //상세 패널 내용 변경
+                    const sellerId = row.dataset.sellerId;
+
+                    fetch("/admin/sellers/detail?seller_id=" + encodeURIComponent(sellerId))
+                    .then(res => res.json())
+                    .then(data => {
+                        const seller = data.seller;
+
+                        setText("sellerId", seller.seller_id);
+                        setText("userId", seller.user_id);
+                        setText("companyName", seller.company_name);
+                        setText("representativeName", seller.representaitive_name);
+                        setText("businessNumber", seller.business_number);
+                        setText("openingDate", seller.opening_date);
+                        setText("businessAddress", seller.business_address);
+                        setText("status", seller.status);
+                        setText("createdAt", seller.created_at);
+                    })
+                });
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -106,7 +146,7 @@
                 <aside class="admin-card admin-detail-panel" id="adminDetailPanel"
                     aria-labelledby="sellerDetailTitle">
                     <div class="admin-detail-panel-inner">
-                        <div class="admin-detail-content" hidden>
+                        <div class="admin-detail-content">
                             <div class="admin-detail-head">
                                 <div>
                                     <span class="admin-page-label">SELLER DETAIL</span>
@@ -118,39 +158,39 @@
                             <dl class="admin-detail-grid">
                                 <div>
                                     <dt>신청번호</dt>
-                                    <dd id="sellerPanelUserId">-</dd>
+                                    <dd id="sellerId">-</dd>
                                 </div>
                                 <div>
                                     <dt>판매자번호</dt>
-                                    <dd id="sellerPanelSellerId">-</dd>
+                                    <dd id="userId">-</dd>
                                 </div>
                                 <div>
                                     <dt>상점명</dt>
-                                    <dd id="sellerPanelCompanyName">-</dd>
+                                    <dd id="companyName">-</dd>
                                 </div>
                                 <div>
                                     <dt>대표자</dt>
-                                    <dd id="sellerPanelRepresentativeName">-</dd>
+                                    <dd id="representativeName">-</dd>
                                 </div>
                                 <div>
                                     <dt>사업자번호</dt>
-                                    <dd id="sellerPanelBusinessNumber">-</dd>
+                                    <dd id="businessNumber">-</dd>
                                 </div>
                                 <div>
                                     <dt>개업일자</dt>
-                                    <dd id="sellerPanelOpeningDate">-</dd>
+                                    <dd id="openingDate">-</dd>
                                 </div>
                                 <div>
                                     <dt>사업자 주소</dt>
-                                    <dd id="sellerPanelBusinessAddress">-</dd>
+                                    <dd id="businessAddress">-</dd>
                                 </div>
                                 <div>
                                     <dt>상태</dt>
-                                    <dd id="sellerPanelStatus">-</dd>
+                                    <dd id="status">-</dd>
                                 </div>
                                 <div>
                                     <dt>신청일</dt>
-                                    <dd id="sellerPanelCreatedAt">-</dd>
+                                    <dd id="createdAt">-</dd>
                                 </div>
                             </dl>
                         </div>

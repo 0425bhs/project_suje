@@ -71,9 +71,7 @@ public class AdminController {
 
     @GetMapping("/admin/members/detail")
     @ResponseBody
-    public Map<String, Object> members(int user_id) {
-        System.out.print(user_id);
-
+    public Map<String, Object> memberDetail(int user_id) {
         Map<String, Object> map = new HashMap<>();
         UserVO user = userDao.selectUser(user_id);
 
@@ -101,6 +99,17 @@ public class AdminController {
         return "/admin/admin_seller_approval";
     }
 
+    @GetMapping("/admin/sellers/detail")
+    @ResponseBody
+    public Map<String, Object> sellerDetail(int seller_id) {
+        Map<String, Object> map = new HashMap<>();
+        SellerVO seller = sellerDao.getSellerById(seller_id);
+
+        map.put("seller", seller);
+
+        return map;
+    }
+
     @GetMapping("/admin/products")
     public String products(Model model, String status, String keyword) {
         List<ProductVO> productList;
@@ -123,20 +132,13 @@ public class AdminController {
 
     @GetMapping("/admin/products/detail")
     @ResponseBody
-    public Map<String, Object> productDetail(@RequestParam("product_id") int product_id) {
-        Map<String, Object> result = new HashMap<>();
+    public Map<String, Object> productDetail(int product_id) {
+        Map<String, Object> map = new HashMap<>();
         ProductVO product = productDao.product_one(product_id);
 
-        if (product == null) {
-            result.put("success", false);
-            result.put("message", "상품 정보를 찾을 수 없습니다.");
-            return result;
-        }
+        map.put("product", product);
 
-        result.put("success", true);
-        result.put("product", product);
-
-        return result;
+        return map;
     }
 
     @GetMapping("/admin/reviews")
@@ -158,6 +160,17 @@ public class AdminController {
         return "/admin/admin_review_manage";
     }
 
+    @GetMapping("/admin/reviews/detail")
+    @ResponseBody
+    public Map<String, Object> reviewDetail(int review_id) {
+        Map<String, Object> map = new HashMap<>();
+        ReviewVO review = reviewDao.getReviewById(review_id);
+
+        map.put("review", review);
+
+        return map;
+    }
+
     @GetMapping("/admin/inquiries")
     public String inquiries(Model model, String status, String keyword) {
         List<InquiryVO> inquiryList;
@@ -175,6 +188,17 @@ public class AdminController {
         model.addAttribute("totalCount", totalCount);
 
         return "/admin/admin_inquiry_manage";
+    }
+
+    @GetMapping("/admin/inquiries/detail")
+    @ResponseBody
+    public Map<String, Object> inquiryDetail(int inquiry_id) {
+        Map<String, Object> map = new HashMap<>();
+        InquiryVO inquiry = inquiryDao.getInquiryById(inquiry_id);
+
+        map.put("inquiry", inquiry);
+
+        return map;
     }
 
     @GetMapping("/admin/reports")

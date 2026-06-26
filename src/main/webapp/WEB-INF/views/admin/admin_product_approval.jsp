@@ -8,6 +8,51 @@
     <meta charset="UTF-8">
     <title>관리자 센터 - 상품 관리</title>
     <link rel="stylesheet" href="/css/admin/admin_common.css">
+    <link rel="stylesheet" href="/css/admin/admin_detail_panel.css">
+    <script src="/js/admin_detail_common.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const master = document.getElementById("adminMasterDetail");
+            const rows = document.querySelectorAll(".admin-clickable-row");
+
+            rows.forEach((row) => {
+                row.addEventListener("click", () => {
+                    if (!master.classList.contains("is-collapsed") && row.classList.contains("selected")) {
+                        closeDetailPanel(master, row);
+                        return;
+                    }
+
+                    openDetailPanel(master, rows, row);
+
+                    const productId = row.dataset.productId;
+
+                    fetch("/admin/products/detail?product_id=" + encodeURIComponent(productId))
+                    .then(res => res.json())
+                    .then(data => {
+                        const product = data.product;
+
+                        setText("productId", product.product_id);
+                        setText("sellerId", product.seller_id);
+                        setText("categoryId", product.category_id);
+                        // setText("description", product.description);
+                        setText("price", product.price);
+                        setText("salePrice", product.sale_price);
+                        setText("stock", product.stock);
+                        setText("deliveryFee", product.delivery_fee);
+                        setText("status", product.status);
+                        document.getElementById("imageL").src = "/upload/" + product.image_l;
+                        setText("createdAt", product.created_at);
+                        setText("updatedAt", product.updated_at);
+                        setText("freeShipping", product.free_shipping);
+                        setText("salePriceUpdatedAt", product.sale_price_updated_at);
+                        setText("saleStartAt", product.sale_start_at);
+                        setText("saleEndAt", product.sale_end);
+                        
+                    })
+                })
+            })
+        })
+    </script>
 </head>
 
 <body>
@@ -110,9 +155,9 @@
                     </div>
                 </div>
 
-                <aside class="admin-card admin-detail-panel" id="adminDetailPanel" aria-labelledby="productDetailTitle">
+                <aside class="admin-card admin-detail-panel" id="adminDetailPanel">
                     <div class="admin-detail-panel-inner">
-                        <div class="admin-detail-content" hidden>
+                        <div class="admin-detail-content">
                             <div class="admin-detail-head">
                                 <div>
                                     <span class="admin-page-label">PRODUCT DETAIL</span>
@@ -121,6 +166,12 @@
                                 <button type="button" class="admin-detail-close" aria-label="닫기">&times;</button>
                             </div>
                             <dl class="admin-detail-grid">
+                                <div>
+                                    <dt>대표 이미지</dt>
+                                    <dd>
+                                        <img id="imageL" src="" alt="대표이미지" style="width:80px;">
+                                    </dd>
+                                </div>      
                                 <div>
                                     <dt>상품번호</dt>
                                     <dd id="productId">-</dd>
@@ -131,16 +182,13 @@
                                 </div>
                                 <div>
                                     <dt>카테고리번호</dt>
-                                    <dd id="categoryName">-</dd>
+                                    <dd id="categoryId">-</dd>
                                 </div>
-                                <div>
-                                    <dt>상품명</dt>
-                                    <dd id="productName">-</dd>
-                                </div>
-                                <div>
+                                
+                                <!-- <div>
                                     <dt>설명</dt>
                                     <dd id="description">-</dd>
-                                </div>
+                                </div> -->
                                 <div>
                                     <dt>가격</dt>
                                     <dd id="price">-</dd>
@@ -154,8 +202,12 @@
                                     <dd id="stock">-</dd>
                                 </div>
                                 <div>
-                                    <dt>대표이미지</dt>
-                                    <dd id="imageL">-</dd>
+                                    <dt>배송비</dt>
+                                    <dd id="deliveryFee">-</dd>
+                                </div>
+                                <div>
+                                    <dt>상태</dt>
+                                    <dd id="status">-</dd>
                                 </div>
                                 <div>
                                     <dt>생성일</dt>

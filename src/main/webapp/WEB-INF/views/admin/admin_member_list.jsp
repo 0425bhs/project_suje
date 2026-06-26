@@ -7,36 +7,47 @@
     <meta charset="UTF-8">
     <title>관리자 센터 - 회원 관리</title>
     <link rel="stylesheet" href="/css/admin/admin_common.css">
+    <link rel="stylesheet" href="/css/admin/admin_detail_panel.css">
+    <script src="/js/admin_detail_common.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
 
             rows.forEach((row) => {
+                //모든 행에 클릭 이벤트 부여
                 row.addEventListener("click", () => {
+                    //상세 패널이 열려있고 이미 선택된 행을 눌렀을 때
+                    if (!master.classList.contains("is-collapsed") && row.classList.contains("selected")) {
+                        closeDetailPanel(master, row);
+                        return;
+                    }
+
+                    openDetailPanel(master, rows, row);
+
+                    //상세 패널 내용 변경
                     const userId = row.dataset.userId;
 
-                    fetch("/admin/members/detail?user_id=" + userId)
+                    fetch("/admin/members/detail?user_id=" + encodeURIComponent(userId))
                     .then(res => res.json())
                     .then(data => {
                         const user = data.user;
+                        
+                        console.log(user.role);
 
-                        setText("panelUserId", user.user_id);
-                        setText("panelRole", user.role);
-                        setText("panelName", user.name);
-                        setText("panelNickName", user.nick_name);
-                        setText("panelLoginId", user.login_id);
-                        setText("panelEmail", user.email);
-                        setText("panelPhone", user.phone);
-                        setText("panelGender", user.gender);
-                        setText("panelCreatedAt", user.created_at);
-                        setText("panelUpdatedAt", user.updated_at);
+                        setText("userId", user.user_id);
+                        setText("role", user.role);
+                        setText("name", user.name);
+                        setText("nickName", user.nick_name);
+                        setText("loginId", user.login_id);
+                        setText("email", user.email);
+                        setText("phone", user.phone);
+                        setText("gender", user.gender);
+                        setText("createdAt", user.created_at);
+                        setText("updatedAt", user.updated_at);
                     })
                 });
             });
-
-            function setText(id, value) {
-                document.getElementById(id).textContent = value ?? "-";
-            }
         });
     </script>
 </head>
@@ -56,7 +67,7 @@
             </div>
         </header>
 
-        <section class="admin-master-detail" id="adminMasterDetail">
+        <section class="admin-master-detail is-collapsed" id="adminMasterDetail">
             <div class="admin-card admin-list-panel">
                 <div class="admin-filter-box">
                     <form class="admin-filter-form" action="/admin/members" method="get">
@@ -66,8 +77,8 @@
                             <a href="/admin/members?role=seller&keyword=${keyword}" class="${role == 'seller' ? 'active' : ''}">판매자</a>
                         </div>
                         <span class="admin-filter-count">전체 ${totalCount}명</span>
-                        <input type="hidden" id="role" name="role" value="${role}">
-                        <input type="text" class="admin-search" id="keyword" name="keyword" 
+                        <input type="hidden" name="role" value="${role}">
+                        <input type="text" class="admin-search" name="keyword" 
                                placeholder="아이디, 이름, 이메일 검색" value="${keyword}">
                     </form>
                 </div>
@@ -104,9 +115,9 @@
                 </div>
             </div>
 
-            <aside class="admin-card admin-detail-panel" id="adminDetailPanel" aria-labelledby="memberDetailTitle">
+            <aside class="admin-card admin-detail-panel" id="adminDetailPanel">
                 <div class="admin-detail-panel-inner">
-                    <div class="admin-detail-content" hidden>
+                    <div class="admin-detail-content">
                         <div class="admin-detail-head">
                             <div>
                                 <span class="admin-page-label">MEMBER DETAIL</span>
@@ -117,43 +128,43 @@
                         <dl class="admin-detail-grid">
                             <div>
                                 <dt>회원번호</dt>
-                                <dd id="panelUserId">-</dd>
+                                <dd id="userId">-</dd>
                             </div>
                             <div>
-                                <dt>회원유형</dt>
-                                <dd id="panelRole">-</dd>
+                                <dt>회원 유형</dt>
+                                <dd id="role">-</dd>
                             </div>
                             <div>
                                 <dt>회원명</dt>
-                                <dd id="panelName">-</dd>
+                                <dd id="name">-</dd>
                             </div>
                             <div>
                                 <dt>닉네임</dt>
-                                <dd id="panelNickName">-</dd>
+                                <dd id="nickName">-</dd>
                             </div>
                             <div>
                                 <dt>아이디</dt>
-                                <dd id="panelLoginId">-</dd>
+                                <dd id="loginId">-</dd>
                             </div>
                             <div>
                                 <dt>이메일</dt>
-                                <dd id="panelEmail">-</dd>
+                                <dd id="email">-</dd>
                             </div>
                             <div>
                                 <dt>연락처</dt>
-                                <dd id="panelPhone">-</dd>
+                                <dd id="phone">-</dd>
                             </div>
                             <div>
                                 <dt>성별</dt>
-                                <dd id="panelGender">-</dd>
+                                <dd id="gender">-</dd>
                             </div>
                             <div>
                                 <dt>가입일</dt>
-                                <dd id="panelCreatedAt">-</dd>
+                                <dd id="createdAt">-</dd>
                             </div>
                             <div>
                                 <dt>수정일</dt>
-                                <dd id="panelUpdatedAt">-</dd>
+                                <dd id="updatedAt">-</dd>
                             </div>
                         </dl>
                     </div>
