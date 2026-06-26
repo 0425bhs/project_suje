@@ -120,7 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE c.user_id = #{value}
         AND p.status = 'APPROVED'
 
-        ORDER BY p.seller_id ASC, c.cart_id DESC
+        ORDER BY p.seller_id ASC, c.product_id ASC, c.cart_id ASC
     </select>
 
     <select id="cartCheck" parameterType="cart" resultType="int">

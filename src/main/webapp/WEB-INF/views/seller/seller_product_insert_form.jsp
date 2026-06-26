@@ -179,10 +179,7 @@
                             <div class="form-row free-shipping-row">
                                 <label>무료배송 기준 금액</label>
 
-                                <input type="text"
-                                       id="free_shipping_view"
-                                       class="free-shipping-input"
-                                       placeholder="무료배송 기준 금액 입력">
+                                <input type="text" id="free_shipping_view" class="free-shipping-input" placeholder="무료배송 기준 금액 입력">
 
                                 <input type="hidden" name="free_shipping" id="free_shipping" value="0">
 
@@ -226,15 +223,9 @@
                         </div>
 
                         <div class="form-actions">
-                            <input type="button"
-                                   value="등록"
-                                   class="btn btn-primary"
-                                   onclick="send(this.form)">
+                            <input type="button" value="등록" class="btn btn-primary" onclick="send(this.form)">
 
-                            <input type="button"
-                                   value="취소"
-                                   class="btn btn-white"
-                                   onclick="location.href='/seller_product_list.do'">
+                            <input type="button" value="취소" class="btn btn-white" onclick="location.href='/seller_product_list.do'">
                         </div>
 
                     </form>

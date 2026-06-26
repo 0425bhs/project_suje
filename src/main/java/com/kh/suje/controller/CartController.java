@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.suje.dao.CartDAO;
 import com.kh.suje.vo.CartVO;
@@ -95,38 +96,44 @@ public class CartController {
 
     @ResponseBody
     @PostMapping("/cart_insert.do")
-    public Map<String, Object> cartInsert(CartVO vo){
+    public Map<String, Object> cartInsert(
+            @RequestParam("product_id") int product_id,
+            @RequestParam (value = "quantity", required = false, defaultValue = "1") int quantity,
+            @RequestParam(value = "option_id", required = false) Integer option_id
+    ) {
 
-        Map<String, Object> map=new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
 
-        UserVO user=(UserVO)session.getAttribute("user");
+        UserVO user = (UserVO) session.getAttribute("user");
 
-        if (user == null){
+        if (user == null) {
             map.put("result", "login");
             return map;
         }
 
-        int user_id=user.getUser_id();
-
-        vo.setUser_id(user_id);
-
-        if (vo.getQuantity()<=0){
-            vo.setQuantity(1);
+        if (quantity <= 0) {
+            quantity = 1;
         }
 
-        int count=cartdao.cartCheck(vo);
+        CartVO vo = new CartVO();
+        vo.setUser_id(user.getUser_id());
+        vo.setProduct_id(product_id);
+        vo.setQuantity(quantity);
+        vo.setOption_id(option_id);
 
-        int res=0;
+        int count = cartdao.cartCheck(vo);
 
-        if (count>0){
-            res=cartdao.cartQuantityPlus(vo);
+        int res = 0;
+
+        if (count > 0) {
+            res = cartdao.cartQuantityPlus(vo);
         } else {
-            res=cartdao.cartInsert(vo);
+            res = cartdao.cartInsert(vo);
         }
 
-        if (res>0){
+        if (res > 0) {
             map.put("result", "success");
-        } else{
+        } else {
             map.put("result", "fail");
         }
 
@@ -174,5 +181,6 @@ public class CartController {
         }
 
         return "redirect:/cart_list.do";
+        
     }
 }
