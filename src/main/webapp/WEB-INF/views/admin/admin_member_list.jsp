@@ -7,6 +7,38 @@
     <meta charset="UTF-8">
     <title>관리자 센터 - 회원 관리</title>
     <link rel="stylesheet" href="/css/admin/admin_common.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const rows = document.querySelectorAll(".admin-clickable-row");
+
+            rows.forEach((row) => {
+                row.addEventListener("click", () => {
+                    const userId = row.dataset.userId;
+
+                    fetch("/admin/members/detail?user_id=" + userId)
+                    .then(res => res.json())
+                    .then(data => {
+                        const user = data.user;
+
+                        setText("panelUserId", user.user_id);
+                        setText("panelRole", user.role);
+                        setText("panelName", user.name);
+                        setText("panelNickName", user.nick_name);
+                        setText("panelLoginId", user.login_id);
+                        setText("panelEmail", user.email);
+                        setText("panelPhone", user.phone);
+                        setText("panelGender", user.gender);
+                        setText("panelCreatedAt", user.created_at);
+                        setText("panelUpdatedAt", user.updated_at);
+                    })
+                });
+            });
+
+            function setText(id, value) {
+                document.getElementById(id).textContent = value ?? "-";
+            }
+        });
+    </script>
 </head>
 <body>
 <div class="admin-board">
@@ -24,7 +56,7 @@
             </div>
         </header>
 
-        <section class="admin-master-detail is-collapsed" id="adminMasterDetail">
+        <section class="admin-master-detail" id="adminMasterDetail">
             <div class="admin-card admin-list-panel">
                 <div class="admin-filter-box">
                     <form class="admin-filter-form" action="/admin/members" method="get">
@@ -55,18 +87,7 @@
                         </thead>
                         <tbody>
                         <c:forEach var="user" items="${userList}">
-                        <tr class="admin-clickable-row"
-                            data-user-id="${user.user_id}"
-                            data-name="${user.name}"
-                            data-login-id="${user.login_id}"
-                            data-nick-name="${user.nick_name}"
-                            data-email="${user.email}"
-                            data-phone="${user.phone}"
-                            data-gender="${user.gender}"
-                            data-role="${user.role}"
-                            data-role-label="${user.role eq 'SELLER' ? '판매자' : '일반회원'}"
-                            data-created-at="${user.created_at}"
-                            data-updated-at="${user.updated_at}">
+                        <tr class="admin-clickable-row" data-user-id="${user.user_id}">
                             <td>${user.user_id}</td>
                             <td><strong>${user.name}</strong></td>
                             <td class="left">${user.email}</td>

@@ -69,6 +69,19 @@ public class AdminController {
         return "/admin/admin_member_list";
     }
 
+    @GetMapping("/admin/members/detail")
+    @ResponseBody
+    public Map<String, Object> members(int user_id) {
+        System.out.print(user_id);
+
+        Map<String, Object> map = new HashMap<>();
+        UserVO user = userDao.selectUser(user_id);
+
+        map.put("user", user);
+
+        return map;
+    }
+
     @GetMapping("/admin/sellers")
     public String sellers(Model model, String status, String keyword) {
         List<SellerVO> sellerList;

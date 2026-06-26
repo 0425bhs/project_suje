@@ -159,22 +159,6 @@
             </section>
         </main>
     </div>
-    <script src="/js/admin_detail_panel.js"></script>
-    <script>
-        setupAdminDetailPanel({
-            fields: {
-                sellerPanelUserId: 'userId',
-                sellerPanelSellerId: 'sellerId',
-                sellerPanelCompanyName: 'companyName',
-                sellerPanelRepresentativeName: 'representativeName',
-                sellerPanelBusinessNumber: 'businessNumber',
-                sellerPanelOpeningDate: 'openingDate',
-                sellerPanelBusinessAddress: 'businessAddress',
-                sellerPanelStatus: 'statusLabel',
-                sellerPanelCreatedAt: 'createdAt'
-            }
-        });
-    </script>
 </body>
 
 </html>
