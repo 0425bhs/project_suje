@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="/css/seller/seller_form_common.css">
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
     <link rel="stylesheet" href="/css/seller/seller_review.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <script src="/js/seller_review.js" defer></script>
 </head>
 
