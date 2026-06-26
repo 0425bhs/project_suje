@@ -67,20 +67,19 @@
     <td>
         <div class="input-row">
             <input name="email" id="authEmail" placeholder="email을 입력하세요" />
-            <input type="button" value="중복체크" class="btn-secondary" onclick="mailDupliCheck()" />
+            <input type="button" value="인증번호 전송" class="btn-secondary" onclick="mailCheck(this.form)" />
         </div>
         <div class="input-row">
             <input id="authInput" placeholder="인증번호 6자리" maxlength="6" disabled="disabled" />
-            <input type="button" value="인증번호 전송" class="btn-secondary" onclick="mailCheck(this.form)" />
             <input type="button" value="인증" onclick="authCheck()" class="btn-secondary" />
         </div>
     </td>
 </tr>
             
             <tr>
-                <th>이름</th>
-                <td><input name="name" /></td>
-            </tr>
+     <th>이름</th> 
+     <td><input name="name" id="name" placeholder="이름을 입력하세요" /></td>
+</tr>
 
             <tr>
                 <th>성별</th>

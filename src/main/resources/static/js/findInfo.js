@@ -38,8 +38,8 @@ function switchFind(type) {
 function nameMailCheck(f){
 
     let name = f.name.value.trim();
-     let email = f.email.value.trim();
-     let authSendbtn = document.getElementById("authSendbtn");
+    let email = f.email.value.trim();
+    let authSendbtn = document.getElementById("authSendbtn");
 
     if (name === '') {
         alert("이름을 입력하세요");
@@ -62,8 +62,8 @@ console.log(data);
         if (data.param == 'no') {
             alert("일치하는 정보가 없습니다");
         } else if(data.param === 'clear') { //자바에서 보낸 "clear"와 일치할 때만 성공 처리
-         alert("가입하신 아이디는" + data.login_id + "입니다")
-            
+
+            idMailSend(data.login_id, email);
         } else {
             // 그 외에 서버에서 예상치 못한 값이나 에러가 왔을 경우
             alert("처리 중 오류가 발생했습니다.");
@@ -75,7 +75,35 @@ console.log(data);
 }
 
 
-function phoneMailCheck(f){
+function idMailSend(login_id, email){
+
+    
+let formData = new URLSearchParams();
+formData.append("login_id", login_id);
+formData.append("email", email);
+
+    fetch("/idMailSend.do", { method: "post", body: formData })
+    .then(res => res.text())
+    .then(data => {
+
+        console.log("=== 서버가 보낸 리얼 데이터 확인 ===");
+        if( data == "yes"){
+            alert("메일 발송 성공");
+            
+        }else if( data == "no"){
+            alert("메일 발송 실패");
+        }
+
+    console.log(data); })
+
+   .catch(err => {
+        console.error("Fetch 통신 에러 발생:", err);
+    });     
+}
+
+
+
+function authSend(f){
 
     
     let email = document.getElementById('pwdFindEmail').value.trim();
@@ -98,36 +126,20 @@ function phoneMailCheck(f){
 
         console.log("=== 서버가 보낸 리얼 데이터 확인 ===");
 
-console.log(data); 
+        console.log(data); 
 
-        if (data.param == 'no') {
+        if (data.param == 'no') { 
             alert("일치하는 정보가 없습니다");
-        } else if (data.param === 'clear') { //자바에서 보낸 "clear"와 일치할 때만 성공 처리     
+            return;
+
+
+        } else if (data.param === 'clear') {     
    
         checkuser_id = data.user.user_id;
      
-document.getElementById('hiddenUserId').value = checkuser_id; 
-        
-           let authSendbtn = document.getElementById("authSendbtn");
-           authSendbtn.disabled = false;
-        } else {
-            // 그 외에 서버에서 예상치 못한 값이나 에러가 왔을 경우
-            alert("처리 중 오류가 발생했습니다.");
-        }
-    })
-    .catch(err => {
-        console.error("Fetch 통신 에러 발생:", err);
-    });
+        document.getElementById('hiddenUserId').value = checkuser_id; 
 
-}
-
-
-
-function authSend(f) {
-
-   let formData = new URLSearchParams(new FormData(f));
-
-    fetch("/mailCheck.do", {
+            fetch("/mailAuthCheck.do", {
         method: "post",
         body: formData
     })
@@ -146,7 +158,18 @@ function authSend(f) {
 
         })
             .catch(err => console.error("인증 메일 전송 오류:", err));
+
+
+        } else {
+            // 그 외에 서버에서 예상치 못한 값이나 에러가 왔을 경우
+            alert("처리 중 오류가 발생했습니다.");
         }
+    })
+    .catch(err => {
+        console.error("Fetch 통신 에러 발생:", err);
+    });
+
+}
 
 
 //인증번호확인
@@ -155,7 +178,7 @@ function authSend(f) {
 
                 if( authInput == authNumber ){
                     alert("일치");
-                    // 최종 임시 비번 발급 버튼을 활성화해 줍니다.
+                    // 최종 임시 비번 발급 버튼을 활성화
                 document.getElementById("newPwdSendBtn").disabled = false;
                     
                 }else{

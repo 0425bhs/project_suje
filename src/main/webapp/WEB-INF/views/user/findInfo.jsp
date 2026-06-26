@@ -38,8 +38,8 @@
 
                 <input name="email" id="pwdFindEmail" placeholder="가입한 email" />
                 <div class="btn-row">
-                    <input type="button" value="확인" class="btn-secondary" onclick="phoneMailCheck(this.form)" />
-                    <input type="button" value="인증번호 전송" id="authSendbtn" disabled="disabled"
+        
+                    <input type="button" value="인증번호 전송" id="authSendbtn" 
                            class="btn-secondary" onclick="authSend(this.form)" />
                 </div>
 

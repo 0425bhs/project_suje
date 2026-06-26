@@ -1,197 +1,223 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
-    background: #f5f5f0;
+    background-color: #FAFAFA;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333333;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    font-family: sans-serif;
 }
 
+/* ── 전체 컨테이너 ── */
 .login-container {
-    background: #fff;
-    border-radius: 20px;
-    border: 0.5px solid rgba(0,0,0,0.1);
-    padding: 2.5rem 2rem;
-    width: 400px;
-    max-width: 100%;
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 560px;
+    margin: 40px 20px;
+    padding: 56px 52px 52px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* ── 로고 ── */
 .logo {
+    font-size: 30px;
+    font-weight: 900;
+    color: #333333;
     text-align: center;
-    font-size: 22px;
-    font-weight: 500;
+    margin-bottom: 36px;
     letter-spacing: 1px;
-    margin-bottom: 2rem;
-    color: #1a1a1a;
 }
 
 .logo span {
-    color: #E8642A;
+    color: #FF7E36;
+    font-weight: 900;
 }
 
+/* ── 로그인 토글 ── */
 .login-toggle {
     display: flex;
-    border-bottom: 1.5px solid #e0e0e0;
-    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #EEEEEE;
+    margin-bottom: 28px;
 }
 
 .toggle-btn {
     flex: 1;
-    background: none;
+    height: 46px;
     border: none;
-    padding: 0.75rem 0;
-    font-size: 14px;
-    color: #888;
+    background: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    color: #AAAAAA;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;  /* -1.5px → -2px */
-    transition: color 0.2s;
+    position: relative;
+    transition: color 0.15s;
 }
 
 .toggle-btn.active {
-    color: #E8642A;
-    border-bottom: 2px solid #E8642A;
-    font-weight: 500;
+    color: #FF7E36;
+    font-weight: 700;
 }
 
+.toggle-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #FF7E36;
+    border-radius: 2px 2px 0 0;
+}
+
+/* ── 입력창 공통 ── */
 .input-wrapper {
     display: flex;
     flex-direction: column;
     gap: 14px;
-    margin-bottom: 0.75rem;
 }
 
-#findIdForm .input-wrapper {
-    gap: 20px;
+.input-wrapper input[type="text"],
+.input-wrapper input[type="email"],
+.input-wrapper input:not([type="button"]):not([type="hidden"]) {
+    width: 100%;
+    height: 54px;
+    padding: 0 18px;
+    border: 1.5px solid #EEEEEE;
+    border-radius: 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    color: #333333;
+    background: #FFFFFF;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
 }
 
+.input-wrapper input:focus {
+    border-color: #FF7E36;
+    box-shadow: 0 0 0 3px rgba(255, 126, 54, 0.1);
+}
+
+.input-wrapper input::placeholder {
+    color: #CCCCCC;
+}
+
+.input-wrapper input[disabled] {
+    background-color: #F5F5F5;
+    color: #AAAAAA;
+    border-color: #E8E8E8;
+    cursor: not-allowed;
+}
+
+/* ── 인증번호 전송 버튼 행 ── */
+.btn-row {
+    display: flex;
+}
+
+.btn-row .btn-secondary {
+    width: 100%;
+}
+
+/* ── 인증번호 입력 + 인증 버튼 행 ── */
 .input-row {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
 }
 
-.btn-row {
-    display: flex;
-    gap: 8px;
-}
-
-input[type=text],
-input[type=email],
-input[type=password],
-input[type=tel],
-input[placeholder] {
-    width: 100%;
-    height: 48px;
-    padding: 0 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #1a1a1a;
-    background: #fff;
+.input-row input:not([type="button"]):not([type="hidden"]) {
+    flex: 1;
+    height: 54px;
+    padding: 0 18px;
+    border: 1.5px solid #EEEEEE;
+    border-radius: 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    color: #333333;
+    background: #FFFFFF;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-input:focus {
-    border-color: #E8642A;
-    box-shadow: 0 0 0 2px rgba(232, 100, 42, 0.12);
+.input-row input:not([type="button"]):not([type="hidden"]):focus {
+    border-color: #FF7E36;
+    box-shadow: 0 0 0 3px rgba(255, 126, 54, 0.1);
 }
 
-input:disabled {
-    background: #f5f5f5;
-    color: #aaa;
+.input-row input[disabled] {
+    background-color: #F5F5F5;
+    color: #AAAAAA;
+    border-color: #E8E8E8;
     cursor: not-allowed;
 }
 
+/* ── 서브 버튼 (인증번호 전송, 인증) ── */
 .btn-secondary {
-    height: 36px;
-    padding: 0 0.85rem;
-    background: #fff;
-    border: 1px solid #E8642A;
-    border-radius: 8px;
-    font-size: 13px;
-    color: #E8642A;
+    height: 54px;
+    padding: 0 32px;
+    background-color: #FFFFFF;
+    border: 1.5px solid #FF7E36;
+    border-radius: 10px;
+    color: #FF7E36;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
-    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+    transition: background-color 0.15s;
 }
 
 .btn-secondary:hover {
-    background: #fff5f0;
+    background-color: #FFF5F0;
 }
 
-.btn-secondary:disabled {
-    border-color: #f0c4a8;
-    color: #f0c4a8;
-    cursor: not-allowed;
-}
-
+/* ── 임시 비번 받기 버튼 ── */
 #newPwdSendBtn {
-    display: block;
     width: 100%;
-    height: 48px;
-    margin-top: 0.5rem;
-    background: #E8642A;
+    height: 54px;
     border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #fff;
+    border-radius: 10px;
+    background-color: #FF7E36;
+    color: #FFFFFF;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background-color 0.2s;
+    margin-top: 4px;
 }
 
-#newPwdSendBtn:hover {
-    background: #d4581f;
+#newPwdSendBtn:hover:not([disabled]) {
+    background-color: #E66A23;
 }
 
-#newPwdSendBtn:disabled {
-    background: #f0c4a8;
+#newPwdSendBtn[disabled] {
+    background-color: #FFCAAA;
     cursor: not-allowed;
 }
 
+/* ── 아이디 찾기 확인 버튼 ── */
 #findIdForm .btn-secondary {
-    display: block;
     width: 100%;
-    height: 48px;
-    margin-top: 0.5rem;
-    background: #E8642A;
+    height: 54px;
+    background-color: #FF7E36;
     border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.2s;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 10px;
+    margin-top: 4px;
 }
 
 #findIdForm .btn-secondary:hover {
-    background: #d4581f;
-}
-
-.btn-main {
-    width: 100%;
-    height: 48px;
-    background: #E8642A;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: 0.75rem;
-    transition: background 0.2s;
-}
-
-.btn-main:hover {
-    background: #d4581f;
-}
-
-.btn-row {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
+    background-color: #E66A23;
 }

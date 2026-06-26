@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.suje.dao.OptionDAO;
 import com.kh.suje.vo.OptionVO;
+import com.kh.suje.dao.AddressDAO;
 import com.kh.suje.dao.CartDAO;
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.PaymentDAO;
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.vo.AddressVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.UserVO;
 import com.kh.suje.vo.order.OrderItemVO;
@@ -36,7 +38,7 @@ public class OrderController {
     private final ProductDAO productDAO;
     private final CartDAO cartdao;
     private final OptionDAO optiondao;
-
+    private final AddressDAO addressDao;
 
     // 로그인 회원 정보 가져오기
     private UserVO getLoginUser(HttpSession session) {
@@ -54,14 +56,14 @@ public class OrderController {
         return user.getUser_id();
     }
 
-    //현재 날짜 기준으로 실제 적용할 상품 가격 구하기
-    private int getActiveProductPrice(ProductVO product){
+    // 현재 날짜 기준으로 실제 적용할 상품 가격 구하기
+    private int getActiveProductPrice(ProductVO product) {
 
         int price = product.getPrice();
         int salePrice = product.getSale_price();
 
-        //할인가가 없거나 원가보다 크거나 같으먄 원가 사용
-        if(salePrice <=0 || salePrice >= price){
+        // 할인가가 없거나 원가보다 크거나 같으먄 원가 사용
+        if (salePrice <= 0 || salePrice >= price) {
             return price;
         }
 
@@ -71,14 +73,14 @@ public class OrderController {
         boolean emtyStart = saleStartAt == null || saleStartAt.trim().isEmpty();
         boolean emtyEnd = saleEndAt == null || saleEndAt.trim().isEmpty();
 
-        //할인 시작일, 종료일 둘 다 없으면 상시 할인
-        if(emtyStart && emtyEnd){
+        // 할인 시작일, 종료일 둘 다 없으면 상시 할인
+        if (emtyStart && emtyEnd) {
             return salePrice;
         }
 
-        //할인 시작일, 종료일 둘 다 있으면 기간 할인
-        if(!emtyStart && !emtyEnd){
-            try{
+        // 할인 시작일, 종료일 둘 다 있으면 기간 할인
+        if (!emtyStart && !emtyEnd) {
+            try {
                 LocalDate today = LocalDate.now();
 
                 LocalDate startDate = LocalDate.parse(saleStartAt.substring(0, 10));
@@ -97,15 +99,13 @@ public class OrderController {
         return price;
     }
 
-    
     // 내 주문 내역
     // 주소: /myshop/orders
     @GetMapping("/myshop/orders")
     public String myOrderList(
             @RequestParam(value = "status", required = false) String status,
             Model model,
-            HttpSession session
-    ) {
+            HttpSession session) {
         UserVO loginUser = getLoginUser(session);
 
         if (loginUser == null) {
@@ -116,7 +116,7 @@ public class OrderController {
 
         // 1. 상태별 개수를 DB에서 한 번에 가져옴 (위의 CASE WHEN 쿼리 실행)
         Map<String, Object> statusCounts = orderDAO.selectOrderStatusCounts(user_id);
-        
+
         List<OrderVO> orderList;
 
         if (status == null || status.trim().isEmpty()) {
@@ -133,12 +133,12 @@ public class OrderController {
 
             orderItemMap.put(order.getOrder_id(), itemList);
         }
-        
+
         model.addAttribute("loginUser", loginUser);
-        
+
         // model에 Map의 값들을 통째로 넘겨줌
         model.addAllAttributes(statusCounts);
-        
+
         model.addAttribute("orderList", orderList);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderItemMap", orderItemMap);
@@ -156,8 +156,7 @@ public class OrderController {
             @RequestParam(value = "option_id", required = false) List<Integer> optionIdList,
             @RequestParam(value = "quantity", required = false) List<Integer> quantityList,
             Model model,
-            HttpSession session
-    ) {
+            HttpSession session) {
         UserVO loginUser = getLoginUser(session);
 
         if (loginUser == null) {
@@ -311,6 +310,13 @@ public class OrderController {
         model.addAttribute("paymentPrice", paymentPrice);
         model.addAttribute("couponPrice", couponPrice);
 
+        int user_id = loginUser.getUser_id();
+        List<AddressVO> list = addressDao.selectList(user_id);
+        AddressVO defaultAddr = addressDao.selectDefault(user_id);
+
+        model.addAttribute("list", list);
+        model.addAttribute("defaultAddr", defaultAddr);
+
         return "order/order_form";
     }
 
@@ -323,21 +329,20 @@ public class OrderController {
             @RequestParam(value = "quantity", required = false) List<Integer> quantityList,
             @RequestParam(value = "option_id", required = false) List<Integer> optionIdList,
             @RequestParam(value = "cart_id", required = false) int[] cart_id,
-            HttpSession session
-    ) {
+            HttpSession session) {
         UserVO loginUser = getLoginUser(session);
 
         if (loginUser == null) {
             return "redirect:/login.do";
         }
 
+        
         int user_id = getLoginUserId(session);
 
         // 배송지 기능 붙기 전까지 임시 사용
         int address_id = 1;
 
         int couponPrice = 0;
-
 
         // =========================================================
         // 1. 장바구니 주문
@@ -450,7 +455,6 @@ public class OrderController {
 
             return "redirect:/payment/ready?order_id=" + orderVO.getOrder_id();
         }
-
 
         // =========================================================
         // 2. 바로구매 주문
@@ -595,8 +599,7 @@ public class OrderController {
     public String orderComplete(
             @RequestParam("order_id") int order_id,
             Model model,
-            HttpSession session
-    ) {
+            HttpSession session) {
         UserVO loginUser = getLoginUser(session);
 
         if (loginUser == null) {
@@ -621,8 +624,7 @@ public class OrderController {
     public String orderDetail(
             @RequestParam("order_id") int order_id,
             Model model,
-            HttpSession session
-    ) {
+            HttpSession session) {
         UserVO loginUser = getLoginUser(session);
 
         if (loginUser == null) {
@@ -647,8 +649,7 @@ public class OrderController {
     public String deliveryStatus(
             @RequestParam("order_id") int order_id,
             Model model,
-            HttpSession session
-    ) {
+            HttpSession session) {
         UserVO loginUser = getLoginUser(session);
 
         if (loginUser == null) {
@@ -666,8 +667,7 @@ public class OrderController {
     @PostMapping("/order/cancel")
     public String cancelOrder(
             @RequestParam("order_id") int order_id,
-            HttpSession session
-    ) {
+            HttpSession session) {
         UserVO loginUser = getLoginUser(session);
 
         if (loginUser == null) {
@@ -701,8 +701,7 @@ public class OrderController {
     public String orderCartForm(
             @RequestParam(value = "cart_id", required = false) int[] cart_id,
             Model model,
-            HttpSession session
-    ) {
+            HttpSession session) {
         UserVO loginUser = getLoginUser(session);
 
         if (loginUser == null) {
@@ -791,6 +790,12 @@ public class OrderController {
         model.addAttribute("totalDeliveryFee", totalDeliveryFee);
         model.addAttribute("paymentPrice", paymentPrice);
         model.addAttribute("couponPrice", couponPrice);
+
+        List<AddressVO> list = addressDao.selectList(user_id);
+        AddressVO defaultAddr = addressDao.selectDefault(user_id);
+
+        model.addAttribute("list", list);
+        model.addAttribute("defaultAddr", defaultAddr);
 
         return "order/order_form";
     }
