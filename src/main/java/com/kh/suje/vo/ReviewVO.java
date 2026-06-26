@@ -26,4 +26,9 @@ public class ReviewVO {
     private String product_name, image_l;
 
     private List<ImageVO> imageList;
+
+    private String created_at_text;//화면 표시용
+
+    private String photo_name;   // 회원 프로필 사진
+    private String option_name;  // 주문 옵션명
 }

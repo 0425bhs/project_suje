@@ -30,4 +30,7 @@ public interface SellerDAO {
     SellerVO selectSeller(int user_id);
 
     int sellerModify(SellerVO vo);
+
+    
+    SellerVO selectSellerByUserId(int user_id);
 }

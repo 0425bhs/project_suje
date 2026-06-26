@@ -528,7 +528,7 @@
                                 <strong>${review.rating}</strong>
                             </div>
 
-                            <p>${review.content}</p>
+                            <p><pre>${review.content}</pre></p>
                             <small>${review.created_at}</small>
 
                             <c:if test="${not empty review.imageList}">

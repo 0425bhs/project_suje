@@ -1,5 +1,7 @@
 package com.kh.suje.controller;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.kh.suje.dao.ImageDAO;
+import com.kh.suje.vo.ImageVO;
+import com.kh.suje.dao.ReviewDAO;
+import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.ProductDAO;
@@ -32,6 +38,8 @@ public class SellerController {
     private final CategoryDAO categorydao;
     private final SellerDAO sellerdao;
     private final FavoriteDAO favoritedao;
+    private final ReviewDAO reviewdao;
+    private final ImageDAO imagedao;
 
     // 로그인한 회원 기준으로 seller_id 찾기
     private Integer getLoginSellerId() {
@@ -142,13 +150,40 @@ public class SellerController {
     }
 
     @GetMapping("/seller_review_list.do")
-    public String sellerReviewList(){
-        return "/seller/seller_review_list";
-    }
+    public String sellerReviewList(Model model) {
 
-    @GetMapping("/seller_qna_list.do")
-    public String sellerQnaList(){
-        return "/seller/seller_qna_list";
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
+
+        List<ReviewVO> reviewList = reviewdao.sellerReviewList(seller_id);
+        List<ReviewVO> productList = reviewdao.sellerReviewProductList(seller_id);
+
+        if (reviewList != null && !reviewList.isEmpty()) {
+            List<Integer> reviewIds = reviewList.stream()
+                    .map(ReviewVO::getReview_id)
+                    .collect(Collectors.toList());
+
+            List<ImageVO> images = imagedao.getImagesByReviewIds(reviewIds);
+
+            if (images != null && !images.isEmpty()) {
+                Map<Integer, List<ImageVO>> imageMap = images.stream()
+                        .collect(Collectors.groupingBy(ImageVO::getTarget_id));
+
+                for (ReviewVO review : reviewList) {
+                    review.setImageList(
+                            imageMap.getOrDefault(review.getReview_id(), new ArrayList<>())
+                    );
+                }
+            }
+        }
+
+        model.addAttribute("reviewList", reviewList);
+        model.addAttribute("productList", productList);
+
+        return "/seller/seller_review_list";
     }
 
     // 구매자용 판매자샵

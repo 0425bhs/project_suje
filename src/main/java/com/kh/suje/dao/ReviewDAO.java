@@ -3,6 +3,8 @@ package com.kh.suje.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.kh.suje.vo.ReviewVO;
 
 public interface ReviewDAO {
@@ -27,4 +29,8 @@ public interface ReviewDAO {
     List<ReviewVO> productReviewList(int product_id);
 
     List<Map<String, Object>> bestReview(int product_id);
+    
+    List<ReviewVO> sellerReviewList(@Param ("seller_id") int seller_id);
+    List<ReviewVO> sellerReviewProductList(@Param("seller_id") int seller_id);
+
 }
