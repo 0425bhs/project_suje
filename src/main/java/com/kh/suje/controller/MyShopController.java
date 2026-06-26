@@ -229,4 +229,44 @@ if ("true".equals(vo.getIs_default())) {
 
         return "/myshop/myshop_main";
     }
+
+
+    // 취소내역 화면
+    @GetMapping("/order/cancel")
+    public String cancelDetail( 
+            Model model,
+            HttpSession session
+    ) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");  
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+         int user_id = loginUser.getUser_id();
+        
+        List<OrderVO> cancelList = orderDAO.selectCancelList(user_id);
+
+        // 주문별 상품 목록 map
+    Map<Integer, List<OrderItemVO>> cancelItemMap = new HashMap<>();
+    
+    for (OrderVO order : cancelList) {
+        List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order.getOrder_id());
+        cancelItemMap.put(order.getOrder_id(), itemList);
+    }
+        
+
+        model.addAttribute("loginUser", loginUser);        
+        model.addAttribute("cancelList", cancelList);       
+         model.addAttribute("cancelItemMap", cancelItemMap);
+
+        model.addAttribute("activeMenu", "order/cancel");
+        model.addAttribute("contentPage", "/order/cancel_list");
+
+        return "myshop/myshop_main";
+    }
+
+
+    
+
+
 }
