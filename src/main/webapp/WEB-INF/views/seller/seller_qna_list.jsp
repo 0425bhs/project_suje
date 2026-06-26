@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="/css/seller/seller_product_list.css">
         <link rel="stylesheet" href="/css/seller/seller_qna.css">
 
-        <script src="/js/seller_qna.js"></script>
+        <script src="/js/seller_qna.js" defer></script>
     </head>
 
     <body>

@@ -182,4 +182,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             AND p.seller_id = #{seller_id}
         )
     </update>
+
+    
+    <select id="selectSellerByUserId" parameterType="int" resultType="seller">
+        SELECT *
+        FROM sellers
+        WHERE user_id = #{value}
+    </select>
+    
 </mapper>

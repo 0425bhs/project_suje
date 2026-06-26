@@ -177,4 +177,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LIMIT 3
     </select>
 
+    <select id="sellerReviewList" resultType="review">
+        SELECT
+            r.review_id,
+            r.user_id,
+            r.product_id,
+            r.order_item_id,
+            r.rating,
+            r.content,
+            r.created_at,
+
+            DATE_FORMAT(r.created_at, '%Y.%m.%d') AS created_at_text,
+
+            p.name AS product_name,
+            p.image_l,
+
+            u.name AS user_name,
+            u.nick_name,
+            u.photo_name,
+
+            oi.option_name AS option_name
+
+        FROM reviews r
+        JOIN products p
+            ON r.product_id = p.product_id
+        JOIN users u
+            ON r.user_id = u.user_id
+        LEFT JOIN order_items oi
+            ON r.order_item_id = oi.order_item_id
+
+        WHERE p.seller_id = #{seller_id}
+
+        ORDER BY r.created_at DESC
+    </select>
+
+
+    <select id="sellerReviewProductList" resultType="review">
+        SELECT DISTINCT
+            p.product_id,
+            p.name AS product_name
+        FROM products p
+        JOIN reviews r
+            ON p.product_id = r.product_id
+        WHERE p.seller_id = #{seller_id}
+        ORDER BY p.name ASC
+    </select>
+
 </mapper>
