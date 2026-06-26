@@ -236,7 +236,7 @@
 
                                                 <button type="button"
                                                         class="cart-option-delete"
-                                                        onclick="event.stopPropagation(); deleteOneCart(${item.cart_id});">
+                                                        onclick="event.stopPropagation(); deleteOneCart('${item.cart_id}');">
                                                     ×
                                                 </button>
 
