@@ -1,5 +1,7 @@
 package com.kh.suje.controller;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +11,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.kh.suje.dao.ImageDAO;
+import com.kh.suje.vo.ImageVO;
+import com.kh.suje.dao.ReviewDAO;
+import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.vo.ProductVO;
+import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.UserVO;
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
@@ -31,12 +38,35 @@ public class SellerController {
     private final CategoryDAO categorydao;
     private final SellerDAO sellerdao;
     private final FavoriteDAO favoritedao;
+    private final ReviewDAO reviewdao;
+    private final ImageDAO imagedao;
+
+    // 로그인한 회원 기준으로 seller_id 찾기
+    private Integer getLoginSellerId() {
+
+        UserVO user = (UserVO) session.getAttribute("user");
+
+        if (user == null) {
+            return null;
+        }
+
+        SellerVO seller = sellerdao.selectSeller(user.getUser_id());
+
+        if (seller == null) {
+            return null;
+        }
+
+        return seller.getSeller_id();
+    }
 
     @GetMapping("/seller_dashboard.do")
     public String sellerDashboard(Model model) {
-        // SellerVO seller = (SellerVO) session.getAttribute("seller");
-        // int seller_id = seller.getSellerId();
-        int seller_id = 1;
+        
+        Integer seller_id=getLoginSellerId();
+
+        if(seller_id==null){
+            return "redirect:/login.do";
+        }
 
         Map<String, Object> orderStatusCounts = sellerdao.getOrderStatusCounts(seller_id);
         Map<String, Object> productStatusCounts = sellerdao.getProductStatusCounts(seller_id);
@@ -60,8 +90,11 @@ public class SellerController {
     @GetMapping("/seller_order_list.do")
     public String sellerOrderList(Model model, String status) {
 
-        // 로그인 연동 전까지 임시 판매자 번호 사용
-        int seller_id = 1;
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("seller_id", seller_id);
@@ -91,8 +124,11 @@ public class SellerController {
     @PostMapping("/seller_order_status_update.do")
     public String sellerOrderStatusUpdate(int order_item_id, String status, String selectedStatus) {
 
-        // 로그인 연동 전까지 임시 판매자 번호 사용
-        int seller_id = 1;
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("seller_id", seller_id);
@@ -107,6 +143,44 @@ public class SellerController {
 
         return "redirect:/seller_order_list.do";
     }
+
+    @GetMapping("/seller_review_list.do")
+    public String sellerReviewList(Model model) {
+
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
+
+        List<ReviewVO> reviewList = reviewdao.sellerReviewList(seller_id);
+        List<ReviewVO> productList = reviewdao.sellerReviewProductList(seller_id);
+
+        if (reviewList != null && !reviewList.isEmpty()) {
+            List<Integer> reviewIds = reviewList.stream()
+                    .map(ReviewVO::getReview_id)
+                    .collect(Collectors.toList());
+
+            List<ImageVO> images = imagedao.getImagesByReviewIds(reviewIds);
+
+            if (images != null && !images.isEmpty()) {
+                Map<Integer, List<ImageVO>> imageMap = images.stream()
+                        .collect(Collectors.groupingBy(ImageVO::getTarget_id));
+
+                for (ReviewVO review : reviewList) {
+                    review.setImageList(
+                            imageMap.getOrDefault(review.getReview_id(), new ArrayList<>())
+                    );
+                }
+            }
+        }
+
+        model.addAttribute("reviewList", reviewList);
+        model.addAttribute("productList", productList);
+
+        return "/seller/seller_review_list";
+    }
+
     // 구매자용 판매자샵
     @GetMapping("/seller_shop_homepage.do")
     public String sellerShopHomepage(Model model, Integer seller_id, String sort) {

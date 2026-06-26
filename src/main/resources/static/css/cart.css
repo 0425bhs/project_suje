@@ -182,7 +182,9 @@ input[type="checkbox"] {
 }
 
 /* =========================================================
-   상품 한 줄
+   기존 상품 한 줄 구조
+   - 예전 구조 남겨둠
+   - 현재 옵션 묶음 구조에서는 cart-product-group 사용
 ========================================================= */
 
 .cart-item-row {
@@ -252,6 +254,191 @@ input[type="checkbox"] {
     font-size: 18px;
     font-weight: 900;
     letter-spacing: -0.04em;
+}
+
+/* =========================================================
+   장바구니 상품 가격
+========================================================= */
+
+.cart-price-box {
+    margin-bottom: 12px;
+}
+
+.cart-origin-price {
+    margin: 0 0 4px;
+
+    color: #999;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: line-through;
+}
+
+.cart-sale-price {
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.cart-sale-price span {
+    color: #f45b3f;
+    font-size: 15px;
+    font-weight: 950;
+}
+
+.cart-sale-price strong {
+    color: #111;
+    font-size: 16px;
+    font-weight: 950;
+    letter-spacing: -0.04em;
+}
+
+.cart-normal-price {
+    margin: 0 0 12px;
+
+    color: #111;
+    font-size: 16px;
+    font-weight: 950;
+    letter-spacing: -0.04em;
+}
+
+/* 장바구니 상품 이미지가 없을 때 표시 */
+.cart-no-image {
+    width: 110px;
+    height: 110px;
+
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #f7f7f7;
+
+    color: #999;
+    font-size: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================================================
+   같은 상품 옵션 묶음 디자인
+========================================================= */
+
+.cart-product-group {
+    padding: 24px 0 22px;
+    border-bottom: 1px solid #ededed;
+}
+
+.cart-product-head {
+    display: grid;
+    grid-template-columns: 42px 110px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+
+    cursor: pointer;
+}
+
+.cart-product-head-info {
+    min-width: 0;
+    padding-top: 2px;
+}
+
+/* 옵션 박스는 상품명/가격 영역과 같은 시작점에 맞춤 */
+.cart-option-list {
+    margin-left: 188px;
+    margin-top: 14px;
+}
+
+.cart-option-row {
+    position: relative;
+
+    min-height: 74px;
+    margin-bottom: 10px;
+    padding: 14px 46px 14px 16px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 132px 130px;
+    gap: 16px;
+    align-items: center;
+
+    background: #f7f8fb;
+    border: 1px solid #edf0f5;
+    border-radius: 2px;
+}
+
+.cart-option-row:last-child {
+    margin-bottom: 0;
+}
+
+/* 실제 주문/계산용 체크박스는 숨김 */
+.cart-option-check {
+    display: none;
+}
+
+.cart-option-name {
+    min-width: 0;
+
+    color: #111;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.45;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cart-option-price {
+    text-align: right;
+
+    color: #111;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.cart-option-delete {
+    position: absolute;
+    right: 14px;
+    top: 12px;
+
+    width: 24px;
+    height: 24px;
+    padding: 0;
+
+    border: 0;
+    background: transparent;
+
+    color: #999;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.cart-option-delete:hover {
+    color: #111;
+}
+
+/* 옵션 박스 안 수량 버튼 */
+.cart-option-row .cart-quantity-box {
+    justify-self: start;
+
+    height: 32px;
+    border: 1px solid #d9dfe7;
+    background: #fff;
+}
+
+.cart-option-row .cart-qty-btn {
+    width: 36px;
+    height: 30px;
+    font-size: 18px;
+}
+
+.cart-option-row .cart-qty-input {
+    width: 48px;
+    height: 30px;
 }
 
 /* =========================================================
@@ -686,6 +873,17 @@ input[type="checkbox"] {
 }
 
 /* =========================================================
+   공통 커서
+========================================================= */
+
+.cart-item-check,
+.cart-quantity-box,
+.cart-qty-btn,
+.cart-qty-input {
+    cursor: default;
+}
+
+/* =========================================================
    반응형
 ========================================================= */
 
@@ -748,13 +946,18 @@ input[type="checkbox"] {
         font-size: 13px;
     }
 
+    .seller-cart-box {
+        padding: 16px 14px 0;
+    }
+
     .cart-item-row {
         grid-template-columns: 34px 86px minmax(0, 1fr);
         gap: 12px;
     }
 
     .cart-item-img-box,
-    .cart-product-img {
+    .cart-product-img,
+    .cart-no-image {
         width: 86px;
         height: 86px;
     }
@@ -764,8 +967,26 @@ input[type="checkbox"] {
         text-align: left;
     }
 
-    .seller-cart-box {
-        padding: 16px 14px 0;
+    .cart-product-head {
+        grid-template-columns: 34px 86px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .cart-option-list {
+        margin-left: 0;
+        margin-top: 14px;
+    }
+
+    .cart-option-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+
+        min-height: auto;
+        padding: 14px 42px 14px 14px;
+    }
+
+    .cart-option-price {
+        text-align: left;
     }
 
     .delivery-tip-box {

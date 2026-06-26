@@ -1,0 +1,268 @@
+.review-top-box {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 24px;
+    margin-bottom: 18px;
+    padding: 18px 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #fff7f3;
+    border: 1px solid #ffe1d6;
+    border-radius: 16px;
+}
+
+.review-top-box strong {
+    font-size: 18px;
+    font-weight: 900;
+    color: #222;
+}
+
+.review-count {
+    margin-left: 8px;
+    color: #ff6f4f;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.review-filter-select {
+    min-width: 240px;
+    height: 42px;
+    padding: 0 14px;
+
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fff;
+
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    outline: none;
+}
+
+.review-filter-select:focus {
+    border-color: #ff6f4f;
+}
+
+.empty-review-box {
+    padding: 70px 20px;
+    text-align: center;
+
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 18px;
+
+    color: #888;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.seller-review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.seller-review-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 22px;
+
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* 작성자 상단 */
+.review-user-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.review-user-photo-box {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+    overflow: hidden;
+    background: #e9edf2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.review-user-photo-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.review-user-photo-empty {
+    width: 100%;
+    height: 100%;
+    background: #dbe1e8;
+    border-radius: 50%;
+}
+
+.review-user-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.review-user-name {
+    font-size: 16px;
+    font-weight: 900;
+    color: #222;
+    line-height: 1.2;
+}
+
+.review-score-date {
+    margin-top: 4px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.review-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.star {
+    font-size: 16px;
+    color: #d9d9d9;
+    line-height: 1;
+}
+
+.star.on {
+    color: #ff8a3d;
+}
+
+.review-write-date {
+    font-size: 14px;
+    font-weight: 700;
+    color: #8a8f98;
+}
+
+/* 상품명 + 옵션명 */
+.review-product-line {
+    margin-top: 14px;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #333;
+    word-break: keep-all;
+}
+
+.review-product-title {
+    font-weight: 800;
+    color: #2d3748;
+}
+
+.review-option-title {
+    font-weight: 700;
+    color: #667085;
+}
+
+/* 리뷰 사진 */
+.review-photo-list {
+    margin-top: 14px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.review-photo-item {
+    width: 96px;
+    height: 96px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f4f4f4;
+    flex-shrink: 0;
+}
+
+.review-photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 리뷰 글 */
+.review-content {
+    margin-top: 16px;
+
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: keep-all;
+}
+
+/* 버튼 */
+.review-btn-area {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.review-report-btn {
+    height: 34px;
+    padding: 0 14px;
+
+    border: 1px solid #ffb4a0;
+    border-radius: 999px;
+    background: #fff;
+
+    color: #ff5a3c;
+    font-size: 13px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.review-report-btn:hover {
+    background: #fff1ec;
+}
+
+@media (max-width: 768px) {
+    .review-top-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .review-filter-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .review-user-top {
+        align-items: flex-start;
+    }
+
+    .review-photo-item {
+        width: calc(33.333% - 6px);
+        height: 90px;
+    }
+
+    .review-product-line {
+        font-size: 15px;
+    }
+
+    .review-content {
+        font-size: 14px;
+    }
+}

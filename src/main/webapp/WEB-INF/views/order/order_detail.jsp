@@ -46,17 +46,42 @@
 
                             <c:forEach var="item" items="${orderItemList}">
                                 <div class="order-item">
-                                    <img src="/upload/${item.imageL}" alt="상품 이미지">
+                                    <c:choose>
+                                        <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
+                                            <img src="/upload/${item.imageL}"
+                                                alt="${item.productName}"
+                                                onerror="this.src='/images/no_image.png';">
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <img src="/images/no_image.png" alt="이미지 없음">
+                                        </c:otherwise>
+                                    </c:choose>
 
                                     <div class="item-info">
                                         <div class="creator-line">작가 상품</div>
                                         <strong>${item.productName}</strong>
-                                        <p>가격 ${item.price}원</p>
+
+                                        <c:if test="${not empty item.optionName}">
+                                            <p class="order-option-text">
+                                                옵션 : ${item.optionName}
+
+                                                <c:if test="${item.optionPrice gt 0}">
+                                                    (+<fmt:formatNumber value="${item.optionPrice}" pattern="#,###" />원)
+                                                </c:if>
+                                            </p>
+                                        </c:if>
+
+                                        <p>
+                                            가격
+                                            <fmt:formatNumber value="${item.price}" pattern="#,###" />원
+                                        </p>
+
                                         <p>수량 ${item.quantity}개</p>
                                     </div>
 
                                     <div class="item-price">
-                                        ${item.subtotalAmount}원
+                                        <fmt:formatNumber value="${item.subtotalAmount}" pattern="#,###" />원
                                     </div>
                                 </div>
                             </c:forEach>

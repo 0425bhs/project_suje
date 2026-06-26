@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             c.cart_id,
             c.user_id,
             c.product_id,
+            c.option_id,
             c.quantity,
             c.created_at,
 
@@ -29,7 +30,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.image_l AS image_l,
             p.status,
 
-            p.price * c.quantity AS origin_total,
+            po.option_name,
+            IFNULL(po.option_price, 0) AS option_price,
+            po.option_stock,
+
+            (p.price + IFNULL(po.option_price, 0)) * c.quantity AS origin_total,
 
             CASE
                 WHEN p.sale_price > 0
@@ -46,8 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                         AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
                     )
                 )
-                THEN p.sale_price
-                ELSE p.price
+                THEN p.sale_price + IFNULL(po.option_price, 0)
+                ELSE p.price + IFNULL(po.option_price, 0)
             END AS item_price,
 
             CASE
@@ -65,8 +70,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                         AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
                     )
                 )
-                THEN p.sale_price * c.quantity
-                ELSE p.price * c.quantity
+                THEN (p.sale_price + IFNULL(po.option_price, 0)) * c.quantity
+                ELSE (p.price + IFNULL(po.option_price, 0)) * c.quantity
             END AS item_total,
 
             CASE
@@ -110,27 +115,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM cart_items c
         JOIN products p ON c.product_id = p.product_id
         JOIN sellers s ON p.seller_id = s.seller_id
+        LEFT JOIN product_options po ON c.option_id = po.option_id
+
         WHERE c.user_id = #{value}
         AND p.status = 'APPROVED'
-        ORDER BY p.seller_id ASC, c.cart_id DESC
+
+        ORDER BY p.seller_id ASC, c.product_id ASC, c.cart_id ASC
     </select>
 
     <select id="cartCheck" parameterType="cart" resultType="int">
         SELECT COUNT(*)
         FROM cart_items
         WHERE user_id = #{user_id}
-          AND product_id = #{product_id}
+        AND product_id = #{product_id}
+
+        <choose>
+            <when test="option_id == null">
+                AND option_id IS NULL
+            </when>
+            <otherwise>
+                AND option_id = #{option_id}
+            </otherwise>
+        </choose>
     </select>
 
     <insert id="cartInsert" parameterType="cart">
-        INSERT INTO cart_items(
+        INSERT INTO cart_items (
             user_id,
             product_id,
+            option_id,
             quantity
         )
-        VALUES(
+        VALUES (
             #{user_id},
             #{product_id},
+            #{option_id},
             #{quantity}
         )
     </insert>
@@ -139,7 +158,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         UPDATE cart_items
         SET quantity = quantity + #{quantity}
         WHERE user_id = #{user_id}
-          AND product_id = #{product_id}
+        AND product_id = #{product_id}
+
+        <choose>
+            <when test="option_id == null">
+                AND option_id IS NULL
+            </when>
+            <otherwise>
+                AND option_id = #{option_id}
+            </otherwise>
+        </choose>
     </update>
 
     <update id="cartQuantityUpdate" parameterType="map">
@@ -171,6 +199,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             c.cart_id,
             c.user_id,
             c.product_id,
+            c.option_id,
             c.quantity,
 
             p.seller_id,
@@ -188,7 +217,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.stock,
             p.image_l,
 
-            p.price * c.quantity AS origin_total,
+            po.option_name,
+            IFNULL(po.option_price, 0) AS option_price,
+            po.option_stock,
+
+            (p.price + IFNULL(po.option_price, 0)) * c.quantity AS origin_total,
 
             CASE
                 WHEN p.sale_price > 0
@@ -205,8 +238,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                         AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
                     )
                 )
-                THEN p.sale_price
-                ELSE p.price
+                THEN p.sale_price + IFNULL(po.option_price, 0)
+                ELSE p.price + IFNULL(po.option_price, 0)
             END AS item_price,
 
             CASE
@@ -224,8 +257,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                         AND CURDATE() BETWEEN DATE(p.sale_start_at) AND DATE(p.sale_end_at)
                     )
                 )
-                THEN p.sale_price * c.quantity
-                ELSE p.price * c.quantity
+                THEN (p.sale_price + IFNULL(po.option_price, 0)) * c.quantity
+                ELSE (p.price + IFNULL(po.option_price, 0)) * c.quantity
             END AS item_total,
 
             CASE
@@ -269,6 +302,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM cart_items c
         JOIN products p ON c.product_id = p.product_id
         JOIN sellers s ON p.seller_id = s.seller_id
+        LEFT JOIN product_options po ON c.option_id = po.option_id
 
         WHERE c.user_id = #{user_id}
         AND p.status = 'APPROVED'

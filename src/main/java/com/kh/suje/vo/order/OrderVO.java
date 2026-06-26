@@ -28,5 +28,9 @@ public class OrderVO {
 
     //유저 포인트
     private int used_point;
+    //판매자 주문 관리
+    private String receiver_name;
+    private String receiver_phone;
+    private String delivery_address;
 
 }

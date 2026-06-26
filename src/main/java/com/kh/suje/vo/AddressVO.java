@@ -19,7 +19,6 @@ public class AddressVO {
     private String zipcode;
     private String address;
     private String detail_address;
-
-    private boolean is_default;
+    private String is_default;
     
 }

@@ -65,6 +65,34 @@
                                 <input type="text" name="name" placeholder="상품명을 입력하세요">
                             </div>
 
+                            <div class="form-section">
+                                <label>상품 옵션</label>
+
+                                <p class="form-help">
+                                    옵션이 필요 없으면 비워두세요.
+                                </p>
+
+                                <div id="optionListBox">
+
+                                    <div class="option-row">
+                                        <input type="text" name="option_name" class="option-name-input" placeholder="옵션명">
+
+                                        <input type="text" name="option_price" class="option-price-input" placeholder="추가금액">
+
+                                        <input type="text" name="option_stock" class="option-stock-input" placeholder="옵션재고">
+
+                                        <button type="button" class="option-remove-btn">
+                                            삭제
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                                <button type="button" id="addOptionBtn" class="option-add-btn">
+                                    + 옵션 추가
+                                </button>
+                            </div>
+
                             <div class="form-row">
                                 <label>상품 설명</label>
 
@@ -151,10 +179,7 @@
                             <div class="form-row free-shipping-row">
                                 <label>무료배송 기준 금액</label>
 
-                                <input type="text"
-                                       id="free_shipping_view"
-                                       class="free-shipping-input"
-                                       placeholder="무료배송 기준 금액 입력">
+                                <input type="text" id="free_shipping_view" class="free-shipping-input" placeholder="무료배송 기준 금액 입력">
 
                                 <input type="hidden" name="free_shipping" id="free_shipping" value="0">
 
@@ -198,15 +223,9 @@
                         </div>
 
                         <div class="form-actions">
-                            <input type="button"
-                                   value="등록"
-                                   class="btn btn-primary"
-                                   onclick="send(this.form)">
+                            <input type="button" value="등록" class="btn btn-primary" onclick="send(this.form)">
 
-                            <input type="button"
-                                   value="취소"
-                                   class="btn btn-white"
-                                   onclick="location.href='/seller_product_list.do'">
+                            <input type="button" value="취소" class="btn btn-white" onclick="location.href='/seller_product_list.do'">
                         </div>
 
                     </form>

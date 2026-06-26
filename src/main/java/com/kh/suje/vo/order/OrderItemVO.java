@@ -28,4 +28,9 @@ public class OrderItemVO {
     private String imageL; // products.image_l
     private int subtotalAmount; // price * quantity
 
+    //옵션
+    private Integer option_id;
+    private String optionName;
+    private int optionPrice;
+
 }

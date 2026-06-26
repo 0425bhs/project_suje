@@ -52,7 +52,10 @@ th {
     white-space: nowrap;
 }
 
-#usertable tr th::after,
+#usertable tr:nth-child(1) th::after,
+#usertable tr:nth-child(3) th::after,
+#usertable tr:nth-child(7) th::after,
+#usertable tr:nth-child(8) th::after,
 #sellertable th::after {
     content: " *";
     color: #FF3B30;
@@ -107,9 +110,9 @@ input:disabled {
     align-items: center;
     border: 1px solid #DDD;
     border-radius: 6px;
-    overflow: hidden;
     background: #FAFAFA;
     transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
 }
 
 .input-wrapper:focus-within {
@@ -123,6 +126,8 @@ input:disabled {
     background: transparent !important;
     box-shadow: none !important;
     flex: 1;
+    width: 0;
+    min-width: 0;
     height: 44px;
     padding: 0 12px;
 }
@@ -227,7 +232,6 @@ input[type="file"] {
     justify-content: center;
     gap: 10px;
     margin-top: 30px;
-    flex-wrap: wrap;
 }
 
 .btn-main {
@@ -242,15 +246,33 @@ input[type="file"] {
     font-family: 'Noto Sans KR', sans-serif;
     cursor: pointer;
     transition: background 0.15s;
+    flex: 1;
 }
 
 .btn-main:hover { background: #E66A23; }
 
+.btn-seller {
+    height: 50px;
+    padding: 0 32px;
+    background: #FF7E36;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex: 1;
+}
+
+.btn-seller:hover { background: #E66A23; }
+
 .btn-cancel {
     height: 50px;
     padding: 0 32px;
-    background: #EEE;
-    color: #666;
+    background: #FF7E36;
+    color: #fff;
     border: none;
     border-radius: 8px;
     font-size: 15px;
@@ -258,6 +280,13 @@ input[type="file"] {
     font-family: 'Noto Sans KR', sans-serif;
     cursor: pointer;
     transition: background 0.15s;
+    flex: 1;
 }
 
-.btn-cancel:hover { background: #DDD; color: #333; }
+.btn-cancel:hover { background: #E66A23; }
+
+#toggle-pwd-btn {
+    width: 100%;
+    height: 44px;
+}
+

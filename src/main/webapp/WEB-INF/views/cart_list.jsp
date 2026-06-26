@@ -83,108 +83,169 @@
                             </div>
 
 
-                            <c:forEach var="item" items="${group.itemList}">
+                            <c:set var="prevProductId" value="-1" />
+
+                            <c:forEach var="item" items="${group.itemList}" varStatus="status">
 
                                 <c:set var="sellerOriginTotal" value="${sellerOriginTotal + item.origin_total}" />
                                 <c:set var="sellerItemTotal" value="${sellerItemTotal + item.item_total}" />
                                 <c:set var="sellerDiscountTotal" value="${sellerDiscountTotal + item.discount_total}" />
 
-                                <div class="cart-item-row" data-product-id="${item.product_id}" onclick="goProductDetail(this)">
+                                <c:if test="${prevProductId ne item.product_id}">
 
-                                    <div class="cart-item-check">
-                                        <input type="checkbox"name="cart_id"value="${item.cart_id}"class="cart-check"data-seller-id="${group.seller_id}"data-price="${item.item_total}"
-                                            data-origin-price="${item.origin_total}" data-discount="${item.discount_total}"data-delivery-fee="${item.delivery_fee}"
-                                            data-free-shipping="${item.free_shipping}" checked onclick="event.stopPropagation(); calcCartTotal();" />
-                                    </div>
+                                    <div class="cart-product-group"
+                                        data-product-id="${item.product_id}">
 
-                                    <div class="cart-item-img-box">
-                                        <c:choose>
-                                            <c:when test="${not empty item.image_l and fn:trim(item.image_l) ne 'no_file'}">
-                                                <c:set var="cartImagePath" value="${fn:trim(item.image_l)}" />
+                                        <div class="cart-product-head"
+                                            data-product-id="${item.product_id}"
+                                            onclick="goProductDetail(this)">
 
+                                            <div class="cart-item-check">
+                                                <input type="checkbox"
+                                                    class="product-group-check"
+                                                    data-seller-id="${group.seller_id}"
+                                                    data-product-id="${item.product_id}"
+                                                    checked
+                                                    onclick="event.stopPropagation(); productGroupCheck(this);" />
+                                            </div>
+
+                                            <div class="cart-item-img-box">
                                                 <c:choose>
-                                                    <c:when test="${fn:startsWith(cartImagePath, '/upload/')}">
-                                                        <img class="cart-product-img"
-                                                            src="${cartImagePath}"
-                                                            alt="${item.name}"
-                                                            onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;cart-no-image&quot;>이미지 없음</div>';">
+                                                    <c:when test="${not empty item.image_l and fn:trim(item.image_l) ne 'no_file'}">
+                                                        <c:set var="cartImagePath" value="${fn:trim(item.image_l)}" />
+
+                                                        <c:choose>
+                                                            <c:when test="${fn:startsWith(cartImagePath, '/upload/')}">
+                                                                <img class="cart-product-img"
+                                                                    src="${cartImagePath}"
+                                                                    alt="${item.name}"
+                                                                    onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;cart-no-image&quot;>이미지 없음</div>';">
+                                                            </c:when>
+
+                                                            <c:otherwise>
+                                                                <img class="cart-product-img"
+                                                                    src="/upload/${cartImagePath}"
+                                                                    alt="${item.name}"
+                                                                    onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;cart-no-image&quot;>이미지 없음</div>';">
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </c:when>
 
                                                     <c:otherwise>
-                                                        <img class="cart-product-img"
-                                                            src="/upload/${cartImagePath}"
-                                                            alt="${item.name}"
-                                                            onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;cart-no-image&quot;>이미지 없음</div>';">
+                                                        <div class="cart-no-image">이미지 없음</div>
                                                     </c:otherwise>
                                                 </c:choose>
-                                            </c:when>
+                                            </div>
 
-                                            <c:otherwise>
-                                                <div class="cart-no-image">이미지 없음</div>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </div>
+                                            <div class="cart-product-head-info">
 
-                                    <div class="cart-item-info">
+                                                <div class="cart-product-name">
+                                                    ${item.name}
+                                                </div>
 
-                                        <div class="cart-product-name">
-                                            ${item.name}
+                                                <c:choose>
+                                                    <c:when test="${item.sale_price > 0 and item.sale_price < item.price}">
+                                                        <div class="cart-price-box">
+                                                            <p class="cart-origin-price">
+                                                                <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
+                                                            </p>
+
+                                                            <p class="cart-sale-price">
+                                                                <span>${item.sale_rate}%</span>
+                                                                <strong>
+                                                                    <fmt:formatNumber value="${item.sale_price}" pattern="#,###"/>원
+                                                                </strong>
+                                                            </p>
+                                                        </div>
+                                                    </c:when>
+
+                                                    <c:otherwise>
+                                                        <p class="cart-normal-price">
+                                                            <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
+                                                        </p>
+                                                    </c:otherwise>
+                                                </c:choose>
+
+                                            </div>
+
                                         </div>
 
-                                        <c:choose>
-                                            <c:when test="${item.sale_price > 0 and item.sale_price < item.price}">
+                                        <div class="cart-option-list">
+                                </c:if>
 
-                                                <div class="cart-price-box">
+                                            <div class="cart-option-row"
+                                                data-product-id="${item.product_id}"
+                                                data-cart-id="${item.cart_id}">
 
-                                                    <p class="cart-origin-price">
-                                                        <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
-                                                    </p>
+                                                <input type="checkbox"
+                                                    name="cart_id"
+                                                    value="${item.cart_id}"
+                                                    class="cart-check cart-option-check"
+                                                    data-seller-id="${group.seller_id}"
+                                                    data-product-id="${item.product_id}"
+                                                    data-price="${item.item_total}"
+                                                    data-origin-price="${item.origin_total}"
+                                                    data-discount="${item.discount_total}"
+                                                    data-delivery-fee="${item.delivery_fee}"
+                                                    data-free-shipping="${item.free_shipping}"
+                                                    checked
+                                                    onclick="calcCartTotal();" />
 
-                                                    <p class="cart-sale-price">
-                                                        <span>${item.sale_rate}%</span>
+                                                <div class="cart-option-name">
+                                                    <c:choose>
+                                                        <c:when test="${not empty item.option_name}">
+                                                            ${item.option_name}
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            기본 옵션
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
 
-                                                        <strong>
-                                                            <fmt:formatNumber value="${item.sale_price}" pattern="#,###"/>원
-                                                        </strong>
-                                                    </p>
+                                                <div class="cart-quantity-box">
+
+                                                    <button type="button"
+                                                            class="cart-qty-btn"
+                                                            onclick="event.stopPropagation(); cartQtyMinus(this)"
+                                                            ${not empty item.option_id ? (item.option_stock le 0 ? 'disabled' : '') : (item.stock le 0 ? 'disabled' : '')}>
+                                                        −
+                                                    </button>
+
+                                                    <input type="number"
+                                                        class="cart-qty-input"
+                                                        name="quantity"
+                                                        value="${item.quantity}"
+                                                        min="1"
+                                                        max="${not empty item.option_id ? item.option_stock : item.stock}"
+                                                        data-cart-id="${item.cart_id}"
+                                                        onclick="event.stopPropagation();"
+                                                        ${not empty item.option_id ? (item.option_stock le 0 ? 'disabled' : '') : (item.stock le 0 ? 'disabled' : '')} />
+
+                                                    <button type="button"
+                                                            class="cart-qty-btn"
+                                                            onclick="event.stopPropagation(); cartQtyPlus(this)"
+                                                            ${not empty item.option_id ? (item.option_stock le 0 ? 'disabled' : '') : (item.stock le 0 ? 'disabled' : '')}>
+                                                        +
+                                                    </button>
 
                                                 </div>
 
-                                            </c:when>
+                                                <div class="cart-option-price">
+                                                    <fmt:formatNumber value="${item.item_total}" pattern="#,###"/>원
+                                                </div>
 
-                                            <c:otherwise>
+                                                <button type="button" class="cart-option-delete" data-cart-id="${item.cart_id}" onclick="event.stopPropagation(); deleteOneCart(this);">
+                                                    ×
+                                                </button>
 
-                                                <p class="cart-normal-price">
-                                                    <fmt:formatNumber value="${item.price}" pattern="#,###"/>원
-                                                </p>
+                                            </div>
 
-                                            </c:otherwise>
-                                        </c:choose>
-
-                                        <div class="cart-quantity-box">
-
-                                            <button type="button" class="cart-qty-btn" onclick="event.stopPropagation(); cartQtyMinus(this)"  ${item.stock le 0 ? 'disabled' : ''}>
-                                                −
-                                            </button>
-
-                                            <input type="number" class="cart-qty-input" name="quantity" value="${item.quantity}" min="1" max="${item.stock}" data-cart-id="${item.cart_id}"
-                                                onclick="event.stopPropagation();" ${item.stock le 0 ? 'disabled' : ''} />
-
-                                            <button type="button" class="cart-qty-btn" onclick="event.stopPropagation(); cartQtyPlus(this)" ${item.stock le 0 ? 'disabled' : ''}>
-                                                +
-                                            </button>
-
+                                <c:if test="${status.last or group.itemList[status.index + 1].product_id ne item.product_id}">
                                         </div>
-
                                     </div>
+                                </c:if>
 
-                                    <div class="cart-item-total">
-                                        <strong>
-                                            <fmt:formatNumber value="${item.item_total}" pattern="#,###"/>원
-                                        </strong>
-                                    </div>
-
-                                </div>
+                                <c:set var="prevProductId" value="${item.product_id}" />
 
                             </c:forEach>
 

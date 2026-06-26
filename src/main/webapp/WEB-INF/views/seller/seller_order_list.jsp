@@ -9,6 +9,9 @@
 <head>
     <link rel="stylesheet" href="/css/seller/seller_form_common.css">
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
+    <link rel="stylesheet" href="/css/seller/seller_order_list.css">
+
+    <script src="/js/seller_order.js"></script>
 </head>
 
 <body>
@@ -19,18 +22,31 @@
             <jsp:param name="sidebarTitle" value="판매자 주문관리" />
         </jsp:include>
 
-        <div class="seller-main">
+        <main class="seller-main">
 
             <div class="seller-main-header">
                 <div>
                     <span class="page-label">ORDER MANAGEMENT</span>
                     <h1>주문 관리</h1>
-                    <p>판매자의 상품이 포함된 주문을 상태별로 확인할 수 있습니다.</p>
+                    <p>판매자의 상품이 포함된 주문을 확인하고 주문 상태를 관리할 수 있습니다.</p>
                 </div>
             </div>
 
-            <div class="filter-box">
-                <div class="filter-buttons">
+            <div class="view-switch-buttons">
+
+                <button type="button" class="view-icon-btn" data-view="simple" title="심플 형태">
+                    <span class="view-icon simple"></span>
+                </button>
+
+                <button type="button" class="view-icon-btn" data-view="card" title="카드형태">
+                    <span class="view-icon card"></span>
+                </button>
+
+            </div>
+
+            <div class="seller-order-filter-box">
+                <div class="seller-order-filter-buttons">
+
                     <a href="/seller_order_list.do"
                        class="${empty selectedStatus ? 'active' : ''}">
                         전체
@@ -43,7 +59,7 @@
 
                     <a href="/seller_order_list.do?status=PREPARING"
                        class="${selectedStatus eq 'PREPARING' ? 'active' : ''}">
-                        배송준비
+                        제작준비
                     </a>
 
                     <a href="/seller_order_list.do?status=SHIPPING"
@@ -56,6 +72,11 @@
                         배송완료
                     </a>
 
+                    <a href="/seller_order_list.do?status=RETURN_EXCHANGE"
+                       class="${selectedStatus eq 'RETURN_EXCHANGE' ? 'active' : ''}">
+                        반품/교환
+                    </a>
+
                     <a href="/seller_order_list.do?status=CANCELLED"
                        class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}">
                         취소
@@ -64,163 +85,478 @@
             </div>
 
             <c:choose>
+
                 <c:when test="${empty orderList}">
-                    <div class="empty-box">
+                    <div class="seller-order-empty-box">
                         조회된 주문이 없습니다.
                     </div>
                 </c:when>
 
                 <c:otherwise>
 
-                    <div class="seller-order-list">
+                    <div class="seller-order-view-wrap">
 
-                        <div class="seller-order-head">
-                            <div>주문번호</div>
-                            <div>상품정보</div>
-                            <div>상품상태</div>
-                            <div>수량</div>
-                            <div>상품금액</div>
-                            <div>주문금액</div>
-                            <div>주문일</div>
-                        </div>
+                        <section class="seller-order-simple-view" data-view-panel="simple">
 
-                        <c:forEach var="order" items="${orderList}">
-                            <c:set var="itemList" value="${orderItemMap[order.order_id]}" />
+                            <div class="simple-order-table-wrap">
 
-                            <div class="seller-order-card">
+                                <table class="simple-order-table">
+                                    <thead>
+                                        <tr>
+                                            <th>주문번호</th>
+                                            <th>상품이미지</th>
+                                            <th>상품명 / 옵션</th>
+                                            <th>수량</th>
+                                            <th>상품가격</th>
+                                            <th>수취인 / 연락처</th>
+                                            <th>배송지</th>
+                                            <th>배송상태</th>
+                                            <th>주문일</th>
+                                            <th>접수</th>
+                                        </tr>
+                                    </thead>
 
-                                <div class="order-no-box">
-                                    <strong>#${order.order_id}</strong>
-                                </div>
+                                    <tbody>
 
-                                <div class="order-card-items">
-                                    <c:forEach var="item" items="${itemList}">
-                                        <div class="order-item-line">
+                                        <c:forEach var="order" items="${orderList}">
 
-                                            <div class="order-product-info">
-                                                <c:choose>
-                                                    <c:when test="${not empty item.imageL and fn:trim(item.imageL) ne 'no_file'}">
-                                                        <c:set var="orderImagePath" value="${fn:trim(item.imageL)}" />
+                                            <c:set var="itemList" value="${orderItemMap[order.order_id]}" />
+                                            <c:set var="mainItem" value="${itemList[0]}" />
+                                            <c:set var="itemCount" value="${fn:length(itemList)}" />
+
+                                            <tr>
+                                                <td class="simple-order-no">
+                                                    #${order.order_id}
+                                                </td>
+
+                                                <td>
+                                                    <button type="button"
+                                                            class="simple-product-img-btn"
+                                                            data-modal-target="order-modal-${order.order_id}">
 
                                                         <c:choose>
-                                                            <c:when test="${fn:startsWith(orderImagePath, '/upload/')}">
-                                                                <img src="${orderImagePath}"
-                                                                     class="product-thumb"
-                                                                     alt="${item.productName}"
-                                                                     onerror="this.outerHTML='<div class=&quot;no-image&quot;>이미지 없음</div>';">
+                                                            <c:when test="${empty mainItem or empty mainItem.imageL or fn:trim(mainItem.imageL) eq 'no_file'}">
+                                                                <img src="/images/no_image.png" alt="이미지 없음">
+                                                            </c:when>
+
+                                                            <c:when test="${fn:startsWith(fn:trim(mainItem.imageL), '/upload/')}">
+                                                                <img src="${fn:trim(mainItem.imageL)}"
+                                                                     alt="${mainItem.productName}"
+                                                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
                                                             </c:when>
 
                                                             <c:otherwise>
-                                                                <img src="/upload/${orderImagePath}"
-                                                                     class="product-thumb"
-                                                                     alt="${item.productName}"
-                                                                     onerror="this.outerHTML='<div class=&quot;no-image&quot;>이미지 없음</div>';">
+                                                                <img src="/upload/${fn:trim(mainItem.imageL)}"
+                                                                     alt="${mainItem.productName}"
+                                                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
                                                             </c:otherwise>
                                                         </c:choose>
-                                                    </c:when>
 
-                                                    <c:otherwise>
-                                                        <div class="no-image">이미지 없음</div>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                    </button>
+                                                </td>
 
-                                                <div class="order-product-name">
-                                                    ${item.productName}
+                                                <td class="simple-product-cell">
+                                                    <button type="button"
+                                                            class="simple-product-name-btn"
+                                                            data-modal-target="order-modal-${order.order_id}">
+                                                        ${mainItem.productName}
+                                                    </button>
+
+                                                    <div class="simple-product-option">
+                                                        <c:choose>
+                                                            <c:when test="${not empty mainItem.optionName}">
+                                                                옵션: ${mainItem.optionName}
+                                                            </c:when>
+
+                                                            <c:otherwise>
+                                                                옵션 없음
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </div>
+
+                                                    <c:if test="${itemCount gt 1}">
+                                                        <div class="simple-more-count">
+                                                            외 ${itemCount - 1}건
+                                                        </div>
+                                                    </c:if>
+                                                </td>
+
+                                                <td>
+                                                    ${mainItem.quantity}개
+                                                </td>
+
+                                                <td class="simple-price">
+                                                    <fmt:formatNumber value="${mainItem.subtotalAmount}" pattern="#,###" />원
+                                                </td>
+
+                                                <td class="simple-receiver">
+                                                    <strong>${order.receiver_name}</strong>
+                                                    <span>${order.receiver_phone}</span>
+                                                </td>
+
+                                                <td class="simple-address">
+                                                    ${order.delivery_address}
+                                                </td>
+
+                                                <td>
+                                                    <form action="/seller_order_status_update.do"
+                                                          method="post"
+                                                          class="order-status-form">
+
+                                                        <input type="hidden" name="order_id" value="${order.order_id}">
+                                                        <input type="hidden" name="selectedStatus" value="${selectedStatus}">
+
+                                                        <select name="status"
+                                                                class="seller-status-select simple-status-select status-${order.status}"
+                                                                data-current="${order.status}">
+
+                                                            <option value="PAID" ${order.status eq 'PAID' ? 'selected' : ''}>
+                                                                신규주문
+                                                            </option>
+
+                                                            <option value="PREPARING" ${order.status eq 'PREPARING' ? 'selected' : ''}>
+                                                                제작준비
+                                                            </option>
+
+                                                            <option value="SHIPPING" ${order.status eq 'SHIPPING' ? 'selected' : ''}>
+                                                                배송중
+                                                            </option>
+
+                                                            <option value="DELIVERED" ${order.status eq 'DELIVERED' ? 'selected' : ''}>
+                                                                배송완료
+                                                            </option>
+
+                                                            <option value="RETURN_EXCHANGE" ${order.status eq 'RETURN_EXCHANGE' ? 'selected' : ''}>
+                                                                반품/교환
+                                                            </option>
+
+                                                            <option value="CANCELLED" ${order.status eq 'CANCELLED' ? 'selected' : ''}>
+                                                                취소
+                                                            </option>
+
+                                                        </select>
+
+                                                    </form>
+                                                </td>
+
+                                                <td class="simple-date">
+                                                    ${order.created_at}
+                                                </td>
+
+                                                <td>
+                                                    <c:if test="${order.status eq 'DELIVERED'}">
+                                                        <div class="simple-action-buttons">
+                                                            <button type="button" class="simple-receipt-btn refund">
+                                                                환불
+                                                            </button>
+
+                                                            <button type="button" class="simple-receipt-btn return">
+                                                                반품
+                                                            </button>
+                                                        </div>
+                                                    </c:if>
+                                                </td>
+
+                                            </tr>
+
+                                        </c:forEach>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </section>
+
+                        <section class="seller-order-card-view" data-view-panel="card">
+
+                            <div class="seller-order-list">
+
+                                <c:forEach var="order" items="${orderList}">
+
+                                    <c:set var="itemList" value="${orderItemMap[order.order_id]}" />
+                                    <c:set var="mainItem" value="${itemList[0]}" />
+                                    <c:set var="itemCount" value="${fn:length(itemList)}" />
+
+                                    <article class="seller-order-card">
+
+                                        <div class="seller-order-card-top">
+
+                                            <div class="seller-order-info-group">
+
+                                                <div class="seller-order-info-item">
+                                                    <span>주문번호</span>
+                                                    <strong>#${order.order_id}</strong>
                                                 </div>
+
+                                                <div class="seller-order-info-item">
+                                                    <span>주문일</span>
+                                                    <strong>${order.created_at}</strong>
+                                                </div>
+
+                                                <!-- 추가: 주문일과 주문금액 사이 -->
+                                                <div class="seller-order-info-item seller-order-delivery-mini">
+                                                    <div class="delivery-mini-row">
+                                                        <span>수취인</span>
+                                                        <strong>${order.receiver_name}</strong>
+                                                    </div>
+
+                                                    <div class="delivery-mini-row">
+                                                        <span>연락처</span>
+                                                        <strong>${order.receiver_phone}</strong>
+                                                    </div>
+
+                                                    <div class="delivery-mini-row">
+                                                        <span>배송지</span>
+                                                        <strong>${order.delivery_address}</strong>
+                                                    </div>
+                                                </div>
+
+                                                <div class="seller-order-info-item">
+                                                    <span>주문금액</span>
+                                                    <strong class="order-total-price">
+                                                        <fmt:formatNumber value="${order.total_amount}" pattern="#,###" />원
+                                                    </strong>
+                                                </div>
+
                                             </div>
 
-                                            <div class="order-item-status">
-                                                <c:choose>
-                                                    <c:when test="${item.status eq 'PENDING'}">
-                                                        <span class="status-badge status-pending">주문접수</span>
-                                                    </c:when>
+                                            <div class="seller-order-status-box">
 
-                                                    <c:when test="${item.status eq 'PAID'}">
-                                                        <span class="status-badge status-pending">신규주문</span>
+                                                <span class="status-title">배송상태</span>
 
-                                                        <form action="/seller_order_status_update.do" method="post" class="order-status-form">
-                                                            <input type="hidden" name="order_item_id" value="${item.order_item_id}">
-                                                            <input type="hidden" name="selectedStatus" value="${selectedStatus}">
-                                                            <button type="submit" name="status" value="PREPARING" class="status-change-btn">
-                                                                배송준비 처리
-                                                            </button>
-                                                        </form>
-                                                    </c:when>
+                                                <form action="/seller_order_status_update.do"
+                                                      method="post"
+                                                      class="order-status-form">
 
-                                                    <c:when test="${item.status eq 'PREPARING'}">
-                                                        <span class="status-badge status-approved">배송준비</span>
+                                                    <input type="hidden" name="order_id" value="${order.order_id}">
+                                                    <input type="hidden" name="selectedStatus" value="${selectedStatus}">
 
-                                                        <form action="/seller_order_status_update.do" method="post" class="order-status-form">
-                                                            <input type="hidden" name="order_item_id" value="${item.order_item_id}">
-                                                            <input type="hidden" name="selectedStatus" value="${selectedStatus}">
-                                                            <button type="submit" name="status" value="SHIPPING" class="status-change-btn">
-                                                                배송중 처리
-                                                            </button>
-                                                        </form>
-                                                    </c:when>
+                                                    <select name="status"
+                                                            class="seller-status-select status-${order.status}"
+                                                            data-current="${order.status}">
 
-                                                    <c:when test="${item.status eq 'SHIPPING'}">
-                                                        <span class="status-badge status-hidden">배송중</span>
+                                                        <option value="PAID" ${order.status eq 'PAID' ? 'selected' : ''}>
+                                                            신규주문
+                                                        </option>
 
-                                                        <form action="/seller_order_status_update.do" method="post" class="order-status-form">
-                                                            <input type="hidden" name="order_item_id" value="${item.order_item_id}">
-                                                            <input type="hidden" name="selectedStatus" value="${selectedStatus}">
-                                                            <button type="submit" name="status" value="DELIVERED" class="status-change-btn">
-                                                                배송완료 처리
-                                                            </button>
-                                                        </form>
-                                                    </c:when>
+                                                        <option value="PREPARING" ${order.status eq 'PREPARING' ? 'selected' : ''}>
+                                                            제작준비
+                                                        </option>
 
-                                                    <c:when test="${item.status eq 'DELIVERED'}">
-                                                        <span class="status-badge status-approved">배송완료</span>
-                                                    </c:when>
+                                                        <option value="SHIPPING" ${order.status eq 'SHIPPING' ? 'selected' : ''}>
+                                                            배송중
+                                                        </option>
 
-                                                    <c:when test="${item.status eq 'CONFIRMED'}">
-                                                        <span class="status-badge status-approved">구매확정</span>
-                                                    </c:when>
+                                                        <option value="DELIVERED" ${order.status eq 'DELIVERED' ? 'selected' : ''}>
+                                                            배송완료
+                                                        </option>
 
-                                                    <c:when test="${item.status eq 'CANCELLED'}">
-                                                        <span class="status-badge status-rejected">취소</span>
-                                                    </c:when>
+                                                        <option value="RETURN_EXCHANGE" ${order.status eq 'RETURN_EXCHANGE' ? 'selected' : ''}>
+                                                            반품/교환
+                                                        </option>
 
-                                                    <c:otherwise>
-                                                        <span class="status-badge status-rejected">${item.status}</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </div>
+                                                        <option value="CANCELLED" ${order.status eq 'CANCELLED' ? 'selected' : ''}>
+                                                            취소
+                                                        </option>
 
-                                            <div class="order-item-qty">
-                                                ${item.quantity}개
-                                            </div>
+                                                    </select>
 
-                                            <div class="order-item-price">
-                                                <fmt:formatNumber value="${item.subtotalAmount}" pattern="#,###" />원
+                                                </form>
+
                                             </div>
 
                                         </div>
-                                    </c:forEach>
-                                </div>
 
-                                <div class="order-total-box">
-                                    <strong>
-                                        <fmt:formatNumber value="${order.total_amount}" pattern="#,###" />원
-                                    </strong>
-                                </div>
+                                        <div class="seller-order-body">
 
-                                <div class="order-date-box">
-                                    ${order.created_at}
-                                </div>
+                                            <div class="seller-order-main-item">
+
+                                                <button type="button"
+                                                        class="seller-order-thumb"
+                                                        data-modal-target="order-modal-${order.order_id}">
+
+                                                    <c:choose>
+                                                        <c:when test="${empty mainItem or empty mainItem.imageL or fn:trim(mainItem.imageL) eq 'no_file'}">
+                                                            <img src="/images/no_image.png" alt="이미지 없음">
+                                                        </c:when>
+
+                                                        <c:when test="${fn:startsWith(fn:trim(mainItem.imageL), '/upload/')}">
+                                                            <img src="${fn:trim(mainItem.imageL)}"
+                                                                 alt="${mainItem.productName}"
+                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                        </c:when>
+
+                                                        <c:otherwise>
+                                                            <img src="/upload/${fn:trim(mainItem.imageL)}"
+                                                                 alt="${mainItem.productName}"
+                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+                                                </button>
+
+                                                <div class="seller-order-product-info">
+
+                                                    <button type="button"
+                                                            class="seller-order-product-name modal-product-open"
+                                                            data-modal-target="order-modal-${order.order_id}">
+                                                        ${mainItem.productName}
+                                                    </button>
+
+                                                    <p class="seller-order-product-sub">
+                                                        수량 ${mainItem.quantity}개
+                                                        <span>·</span>
+                                                        상품금액
+                                                        <fmt:formatNumber value="${mainItem.subtotalAmount}" pattern="#,###" />원
+                                                    </p>
+
+                                                    <c:if test="${itemCount gt 1}">
+                                                        <p class="seller-order-count-text">
+                                                            이 주문에는 총 <strong>${itemCount}</strong>개의 상품이 포함되어 있습니다.
+
+                                                            <button type="button"
+                                                                    class="seller-order-modal-link"
+                                                                    data-modal-target="order-modal-${order.order_id}">
+                                                                전체 상품 보기
+                                                            </button>
+                                                        </p>
+                                                    </c:if>
+
+                                                </div>
+
+                                            </div>
+
+                                            <c:if test="${order.status eq 'DELIVERED'}">
+                                                <div class="seller-order-card-actions">
+                                                    <button type="button" class="card-receipt-btn refund">
+                                                        환불 접수
+                                                    </button>
+
+                                                    <button type="button" class="card-receipt-btn return">
+                                                        반품 접수
+                                                    </button>
+                                                </div>
+                                            </c:if>
+
+                                        </div>
+
+                                    </article>
+
+                                </c:forEach>
 
                             </div>
-                        </c:forEach>
+
+                        </section>
+
+                        <!-- 주문 상품 모달 템플릿 -->
+                        <div class="seller-order-modal-templates">
+
+                            <c:forEach var="order" items="${orderList}">
+
+                                <c:set var="itemList" value="${orderItemMap[order.order_id]}" />
+
+                                <div id="order-modal-${order.order_id}" class="order-modal-template">
+
+                                    <div class="order-modal-title-area">
+                                        <h3>주문번호 #${order.order_id}</h3>
+
+                                        <p>
+                                            수취인 ${order.receiver_name}
+                                            <span>·</span>
+                                            ${order.receiver_phone}
+                                        </p>
+
+                                        <p class="modal-address">
+                                            ${order.delivery_address}
+                                        </p>
+                                    </div>
+
+                                    <div class="order-modal-product-list">
+
+                                        <c:forEach var="item" items="${itemList}">
+
+                                            <div class="order-modal-product-row">
+
+                                                <div class="order-modal-thumb">
+
+                                                    <c:choose>
+                                                        <c:when test="${empty item.imageL or fn:trim(item.imageL) eq 'no_file'}">
+                                                            <img src="/images/no_image.png" alt="이미지 없음">
+                                                        </c:when>
+
+                                                        <c:when test="${fn:startsWith(fn:trim(item.imageL), '/upload/')}">
+                                                            <img src="${fn:trim(item.imageL)}"
+                                                                 alt="${item.productName}"
+                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                        </c:when>
+
+                                                        <c:otherwise>
+                                                            <img src="/upload/${fn:trim(item.imageL)}"
+                                                                 alt="${item.productName}"
+                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+                                                </div>
+
+                                                <div class="order-modal-product-info">
+                                                    <strong>${item.productName}</strong>
+
+                                                    <p>
+                                                        <c:choose>
+                                                            <c:when test="${not empty item.optionName}">
+                                                                옵션: ${item.optionName}
+                                                            </c:when>
+
+                                                            <c:otherwise>
+                                                                옵션 없음
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </p>
+
+                                                    <p>
+                                                        수량 ${item.quantity}개
+                                                        <span>·</span>
+                                                        상품금액
+                                                        <fmt:formatNumber value="${item.subtotalAmount}" pattern="#,###" />원
+                                                    </p>
+                                                </div>
+
+                                            </div>
+
+                                        </c:forEach>
+
+                                    </div>
+
+                                </div>
+
+                            </c:forEach>
+
+                        </div>
+
+                        <!-- 실제 모달 -->
+                        <div class="seller-order-modal" id="sellerOrderModal">
+                            <div class="seller-order-modal-dim" data-modal-close></div>
+
+                            <div class="seller-order-modal-box">
+                                <button type="button" class="seller-order-modal-close" data-modal-close>
+                                    ×
+                                </button>
+
+                                <div class="seller-order-modal-content" id="sellerOrderModalContent"></div>
+                            </div>
+                        </div>
 
                     </div>
 
                 </c:otherwise>
+
             </c:choose>
 
-        </div>
-    </div>
-</body>
+        </main>
 
+    </div>
+
+</body>
 </html>

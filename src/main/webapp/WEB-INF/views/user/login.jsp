@@ -10,15 +10,10 @@
 <body>
 
 <div class="login-container">
-
+ <form onkeydown="if(event.key === 'Enter') send(event.currentTarget)">
     <div class="logo">HAND<span>MADE</span></div>
 
-<form id="loginForm">  
-    <%-- 토글 버튼 --%>
-<div class="login-toggle">
-    <button type="button" class="toggle-btn active" onclick="switchLogin('id')">아이디로 로그인</button>
-    <button type="button" class="toggle-btn" onclick="switchLogin('qr')">QR코드로 로그인</button>
-</div>
+<div class="login-title">아이디로 로그인</div>
 
 <%-- 아이디 로그인 --%>
 <div id="idLogin">

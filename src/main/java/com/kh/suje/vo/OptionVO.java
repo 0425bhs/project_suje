@@ -9,11 +9,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Alias("cart")
-public class CartVO {
-    private int cart_id,user_id,product_id,quantity;
-    private String created_at;
-    
-    private Integer option_id;
-}
+@Alias("option")
+public class OptionVO {
+    private int option_id;
+    private int product_id;
 
+    private String option_name;
+
+    private int option_price;
+    private int option_stock;
+
+    private String created_at;
+}

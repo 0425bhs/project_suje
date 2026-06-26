@@ -236,7 +236,17 @@
 
                         <div class="store-info-row">
                             <span>재고</span>
-                            <strong>${vo.stock}개</strong>
+                            <strong>
+                                <c:choose>
+                                    <c:when test="${not empty vo.optionList}">
+                                        옵션 선택 후 확인
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        ${vo.stock}개
+                                    </c:otherwise>
+                                </c:choose>
+                            </strong>
                         </div>
 
                         <div class="store-info-row">
@@ -288,44 +298,148 @@
 
                     <!-- 주문 수량 및 가격 선택 영역 -->
                     <form action="/order/form" method="get" class="store-order-box">
+
                         <input type="hidden" id="product_id" name="product_id" value="${vo.product_id}">
 
-                        <div class="store-option-box">
-                            <p class="store-option-name">${vo.name}</p>
+                        <!-- 옵션이 있는 상품인지 확인 -->
+                        <c:set var="hasOption" value="${not empty vo.optionList}" />
 
-                            <div class="store-option-bottom">
-                                <div class="store-quantity-box">
-                                    <button type="button" id="qtyMinus" ${vo.stock le 0 or vo.status ne 'APPROVED' ? 'disabled' : ''}>
-                                        −
-                                    </button>
+                        <!-- 실제 판매 가능 재고 -->
+                        <c:set var="sellableStock" value="${hasOption ? vo.optionTotalStock : vo.stock}" />
 
-                                    <input type="number"
-                                           id="detailQuantity"
-                                           name="quantity"
-                                           value="1"
-                                           min="1"
-                                           max="${vo.stock}"
-                                           data-unit-price="${unitPrice}"
-                                           ${vo.stock le 0 or vo.status ne 'APPROVED' ? 'disabled' : ''} />
+                        <!-- 품절 여부 -->
+                        <c:set var="isSoldOut" value="${sellableStock le 0}" />
 
-                                    <button type="button" id="qtyPlus" ${vo.stock le 0 or vo.status ne 'APPROVED' ? 'disabled' : ''}>
-                                        +
-                                    </button>
+                        <c:choose>
+
+                            <%-- 옵션이 있는 상품 --%>
+                            <c:when test="${hasOption}">
+
+                                <!-- 옵션 선택 영역 -->
+                                <div class="product-option-box">
+                                    <label for="option_id" class="option-select-label">
+                                        옵션 선택 (필수)<span>*</span>
+                                    </label>
+
+                                    <%--
+                                        중요:
+                                        여러 옵션 추가형에서는 select에 name을 주면 안 됨.
+                                        select는 "선택용"이고,
+                                        실제 주문으로 넘어갈 option_id / quantity는 JS가 hidden input으로 만들어줌.
+                                    --%>
+                                    <select id="option_id"
+                                            class="product-option-select"
+                                            data-unit-price="${unitPrice}"
+                                            ${vo.status ne 'APPROVED' or isSoldOut ? 'disabled' : ''}>
+
+                                        <option value="">컬러</option>
+
+                                        <c:forEach var="option" items="${vo.optionList}">
+                                            <option value="${option.option_id}"
+                                                    data-option-name="${option.option_name}"
+                                                    data-price="${option.option_price}"
+                                                    data-stock="${option.option_stock}"
+                                                    ${option.option_stock le 0 ? 'disabled' : ''}>
+
+                                                ${option.option_name}
+
+                                                <c:if test="${option.option_price gt 0}">
+                                                    (+<fmt:formatNumber value="${option.option_price}" pattern="#,###" />원)
+                                                </c:if>
+
+                                                <c:if test="${option.option_stock le 0}">
+                                                    - 품절
+                                                </c:if>
+                                            </option>
+                                        </c:forEach>
+
+                                    </select>
                                 </div>
 
-                                <div class="store-option-price">
-                                    <fmt:formatNumber value="${unitPrice}" pattern="#,###"/>원
+                                <%--
+                                    기본 상품 가격 저장용.
+                                    name이 없으니까 서버로 전송 안 됨.
+                                    JS에서 가격 계산할 때만 씀.
+                                --%>
+                                <input type="hidden" id="optionBasePrice" value="${unitPrice}">
+
+                                <%--
+                                    옵션 선택하면 JS가 여기에 옵션 박스를 여러 개 추가함.
+
+                                    예:
+                                    아이보리 1개
+                                    블랙 2개
+                                    베이지 1개
+                                --%>
+                                <div id="selectedOptionBox"
+                                    class="selected-option-list"
+                                    style="display:none;">
                                 </div>
-                            </div>
-                        </div>
+
+                            </c:when>
+
+                            <%-- 옵션이 없는 일반 상품 --%>
+                            <c:otherwise>
+
+                                <div class="store-option-box">
+
+                                    <p class="store-option-name">${vo.name}</p>
+
+                                    <div class="store-option-bottom">
+
+                                        <div class="store-quantity-box">
+
+                                            <button type="button"
+                                                    id="qtyMinus"
+                                                    ${vo.stock le 0 or vo.status ne 'APPROVED' ? 'disabled' : ''}>
+                                                −
+                                            </button>
+
+                                            <input type="number"
+                                                id="detailQuantity"
+                                                name="quantity"
+                                                value="1"
+                                                min="1"
+                                                max="${vo.stock}"
+                                                data-unit-price="${unitPrice}"
+                                                ${vo.stock le 0 or vo.status ne 'APPROVED' ? 'disabled' : ''} />
+
+                                            <button type="button"
+                                                    id="qtyPlus"
+                                                    ${vo.stock le 0 or vo.status ne 'APPROVED' ? 'disabled' : ''}>
+                                                +
+                                            </button>
+
+                                        </div>
+
+                                        <div class="store-option-price">
+                                            <fmt:formatNumber value="${unitPrice}" pattern="#,###"/>원
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </c:otherwise>
+
+                        </c:choose>
 
                         <div class="store-total-row">
                             <span>총 상품금액</span>
 
                             <strong>
-                                총 <em id="detailTotalCount">1</em>개
+                                총 <em id="detailTotalCount">${hasOption ? 0 : 1}</em>개
+
                                 <b id="detailTotalPrice">
-                                    <fmt:formatNumber value="${unitPrice}" pattern="#,###"/>원
+                                    <c:choose>
+                                        <c:when test="${hasOption}">
+                                            0원
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <fmt:formatNumber value="${unitPrice}" pattern="#,###"/>원
+                                        </c:otherwise>
+                                    </c:choose>
                                 </b>
                             </strong>
                         </div>
@@ -333,33 +447,43 @@
                         <div class="store-main-buttons">
 
                             <c:choose>
+
                                 <c:when test="${vo.status ne 'APPROVED'}">
                                     <button type="button" class="store-cart-btn disabled" disabled>
                                         판매중지
                                     </button>
                                 </c:when>
 
-                                <c:when test="${vo.stock le 0}">
+                                <c:when test="${isSoldOut}">
                                     <button type="button" class="store-cart-btn disabled" disabled>
                                         품절
                                     </button>
                                 </c:when>
 
                                 <c:otherwise>
-                                    <button type="button" class="store-cart-btn" onclick="cartInsert()">
+
+                                    <button type="button"
+                                            class="store-cart-btn"
+                                            id="cartBtn"
+                                            onclick="cartInsert()"
+                                            ${hasOption ? 'disabled' : ''}>
                                         장바구니
                                     </button>
 
-                                    <button type="submit" class="store-order-btn">
+                                    <button type="submit"
+                                            class="store-order-btn"
+                                            id="orderBtn"
+                                            ${hasOption ? 'disabled' : ''}>
                                         주문하기
                                     </button>
+
                                 </c:otherwise>
+
                             </c:choose>
 
                         </div>
 
                     </form>
-
                 </section>
 
             </div>
@@ -404,7 +528,7 @@
                                 <strong>${review.rating}</strong>
                             </div>
 
-                            <p>${review.content}</p>
+                            <p><pre>${review.content}</pre></p>
                             <small>${review.created_at}</small>
 
                             <c:if test="${not empty review.imageList}">
