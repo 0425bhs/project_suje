@@ -7,6 +7,9 @@
     <head>
         <link rel="stylesheet" href="/css/seller/seller_form_common.css">
         <link rel="stylesheet" href="/css/seller/seller_product_list.css">
+        <link rel="stylesheet" href="/css/seller/seller_qna.css">
+
+        <script src="/js/seller_qna.js"></script>
     </head>
 
     <body>

@@ -840,3 +840,118 @@ input[type="checkbox"] {
     align-items: center;
     justify-content: center;
 }
+
+/* =========================================================
+   같은 상품 옵션 묶음 디자인
+========================================================= */
+
+.cart-product-group {
+    padding: 22px 0 18px;
+    border-bottom: 1px solid #ededed;
+}
+
+.cart-product-head {
+    display: grid;
+    grid-template-columns: 42px 110px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+
+    cursor: pointer;
+}
+
+.cart-product-head-info {
+    min-width: 0;
+    padding-top: 2px;
+}
+
+.cart-option-list {
+    margin-left: 40px;
+    margin-top: 16px;
+}
+
+.cart-option-row {
+    position: relative;
+
+    min-height: 86px;
+    margin-bottom: 10px;
+    padding: 16px 48px 14px 14px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 130px 130px;
+    gap: 16px;
+    align-items: center;
+
+    background: #f7f8fb;
+    border-radius: 6px;
+}
+
+.cart-option-row:last-child {
+    margin-bottom: 0;
+}
+
+.cart-option-check {
+    display: none;
+}
+
+.cart-option-name {
+    color: #111;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.cart-option-price {
+    text-align: right;
+
+    color: #111;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.cart-option-delete {
+    position: absolute;
+    right: 16px;
+    top: 15px;
+
+    width: 22px;
+    height: 22px;
+    padding: 0;
+
+    border: 0;
+    background: transparent;
+
+    color: #999;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.cart-option-delete:hover {
+    color: #111;
+}
+
+/* 기존 cart-item-row 대신 새 구조 사용 */
+.cart-product-group .cart-quantity-box {
+    justify-self: start;
+}
+
+/* 옵션 박스 안 수량 버튼은 사진처럼 각지게 */
+.cart-option-row .cart-quantity-box {
+    height: 32px;
+    border: 1px solid #d9dfe7;
+    background: #fff;
+}
+
+.cart-option-row .cart-qty-btn {
+    width: 36px;
+    height: 30px;
+    font-size: 18px;
+}
+
+.cart-option-row .cart-qty-input {
+    width: 48px;
+    height: 30px;
+}
