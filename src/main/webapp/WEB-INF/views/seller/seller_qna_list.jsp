@@ -205,9 +205,7 @@
                                             정확하고 친절한 답변을 남겨주세요.
                                         </p>
 
-                                        <button type="button"
-                                                class="answer-write-btn"
-                                                data-qna-id="${qna.qna_id}">
+                                        <button type="button" class="answer-write-btn" data-qna-id="${qna.qna_id}">
                                             답변 작성
                                         </button>
                                     </div>
@@ -222,9 +220,7 @@
                                             등록된 판매자 답변입니다.
                                         </div>
 
-                                        <button type="button"
-                                                class="answer-edit-btn"
-                                                data-qna-id="${qna.qna_id}">
+                                        <button type="button" class="answer-edit-btn" data-qna-id="${qna.qna_id}">
                                             답변 수정
                                         </button>
                                     </div>

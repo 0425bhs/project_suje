@@ -127,16 +127,25 @@
                                 <c:forEach var="review" items="${bestReview}" varStatus="status">
                                     <div class="review-preview-card">
 
-                                        <c:choose>
-                                            <c:when test="${not empty review.review_image}">
-                                                <img class="review-preview-img" src="/upload/${review.review_image}" onerror="this.src='/images/no_image.png'">
-                                            </c:when>
+                                        <c:set var="reviewPreviewImage" value="${fn:trim(review.review_image)}" />
 
-                                            <c:otherwise>
-                                                <img class="review-preview-img"
-                                                    src="/images/no_image.png">
-                                            </c:otherwise>
-                                        </c:choose>
+                                            <c:choose>
+                                                <c:when test="${not empty reviewPreviewImage and reviewPreviewImage ne 'no_file'}">
+                                                    <c:choose>
+                                                        <c:when test="${fn:startsWith(reviewPreviewImage, '/upload/')}">
+                                                            <img class="review-preview-img" src="${reviewPreviewImage}">
+                                                        </c:when>
+
+                                                        <c:otherwise>
+                                                            <img class="review-preview-img" src="/upload/${reviewPreviewImage}">
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:when>
+
+                                                <c:otherwise>
+                                                    <img class="review-preview-img" src="/images/no_image.png">
+                                                </c:otherwise>
+                                            </c:choose>
 
                                         <div class="review-preview-content">
 

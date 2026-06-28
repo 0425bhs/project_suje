@@ -76,20 +76,20 @@
 
                                             <div class="order-item">
                                                 <c:choose>
-                                                    <c:when
-                                                        test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
+                                                    <c:when test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
                                                         <c:set var="orderImagePath" value="${fn:trim(vo.image_l)}" />
+
                                                         <c:choose>
                                                             <c:when test="${fn:startsWith(orderImagePath, '/upload/')}">
-                                                                <img src="${orderImagePath}" alt="${vo.name}"
-                                                                    onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
+                                                                <img src="${orderImagePath}" alt="${vo.name}">
                                                             </c:when>
+
                                                             <c:otherwise>
-                                                                <img src="/upload/${orderImagePath}" alt="${vo.name}"
-                                                                    onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
+                                                                <img src="/upload/${orderImagePath}" alt="${vo.name}">
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </c:when>
+
                                                     <c:otherwise>
                                                         <div class="order-no-image">이미지 없음</div>
                                                     </c:otherwise>
@@ -250,7 +250,7 @@
                                                 </p>
                                             </div>
                                             <button type="button" class="btn light"
-                                                onclick="selectAddress(${addr.address_id}, '${addr.address_name}', '${addr.address} ${addr.detail_address}')">
+                                                onclick="selectAddress('${addr.address_id}', '${addr.address_name}', '${addr.address} ${addr.detail_address}')">
                                                 선택
                                             </button>
                                         </div>

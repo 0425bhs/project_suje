@@ -121,19 +121,19 @@
                                 <div class="review-user-area">
 
                                     <div class="review-user-photo-box">
+                                        <c:set var="profileName" value="${fn:trim(review.photo_name)}" />
+
                                         <c:choose>
 
-                                            <c:when test="${not empty review.photo_name}">
+                                            <c:when test="${not empty profileName and profileName ne 'no_file'}">
                                                 <c:choose>
-
-                                                    <c:when test="${fn:startsWith(review.photo_name, '/upload/')}">
-                                                        <img src="${review.photo_name}">
+                                                    <c:when test="${fn:startsWith(profileName, '/upload/')}">
+                                                        <img src="${profileName}">
                                                     </c:when>
 
                                                     <c:otherwise>
-                                                        <img src="/upload/${review.photo_name}">
+                                                        <img src="/upload/${profileName}">
                                                     </c:otherwise>
-
                                                 </c:choose>
                                             </c:when>
 
@@ -197,19 +197,25 @@
                                 <div class="review-photo-list">
                                     <c:if test="${not empty review.imageList}">
                                         <c:forEach var="img" items="${review.imageList}" varStatus="st">
-                                            <c:if test="${st.index < 5}">
+
+                                            <c:set var="reviewImgUrl" value="${fn:trim(img.image_url)}" />
+
+                                            <c:if test="${st.index < 5 and not empty reviewImgUrl and reviewImgUrl ne 'no_file'}">
                                                 <div class="review-photo-item">
                                                     <c:choose>
-                                                        <c:when test="${fn:startsWith(img.image_url, '/upload/')}">
-                                                            <img src="${img.image_url}" onerror="this.src='/images/no_image.png'">
+
+                                                        <c:when test="${fn:startsWith(reviewImgUrl, '/upload/')}">
+                                                            <img src="${reviewImgUrl}">
                                                         </c:when>
 
                                                         <c:otherwise>
-                                                            <img src="/upload/${img.image_url}" onerror="this.src='/images/no_image.png'">
+                                                            <img src="/upload/${reviewImgUrl}">
                                                         </c:otherwise>
+
                                                     </c:choose>
                                                 </div>
                                             </c:if>
+
                                         </c:forEach>
                                     </c:if>
                                 </div>
@@ -242,9 +248,7 @@
                                     </div>
 
                                     <div class="review-btn-area">
-                                        <button type="button"
-                                                class="review-report-btn"
-                                                data-review-id="${review.review_id}">
+                                        <button type="button" class="review-report-btn" data-review-id="${review.review_id}">
                                             <i class="bi bi-exclamation-triangle"></i>
                                             신고
                                         </button>
