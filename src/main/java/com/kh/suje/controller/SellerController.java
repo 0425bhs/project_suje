@@ -186,6 +186,20 @@ public class SellerController {
         return "/seller/seller_review_list";
     }
 
+    @GetMapping("/seller_qna_list.do")
+    public String sellerQnaList(HttpSession session, Model model) {
+
+        UserVO user = (UserVO) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login_form.do";
+        }
+
+        model.addAttribute("activeMenu", "qna");
+
+        return "seller/seller_qna_list";
+    }
+
     // 구매자용 판매자샵
     @GetMapping("/seller_shop_homepage.do")
     public String sellerShopHomepage(Model model, Integer seller_id, String sort) {

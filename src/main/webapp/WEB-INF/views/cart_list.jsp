@@ -116,17 +116,11 @@
 
                                                         <c:choose>
                                                             <c:when test="${fn:startsWith(cartImagePath, '/upload/')}">
-                                                                <img class="cart-product-img"
-                                                                    src="${cartImagePath}"
-                                                                    alt="${item.name}"
-                                                                    onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;cart-no-image&quot;>이미지 없음</div>';">
+                                                                <img class="cart-product-img" src="${cartImagePath}" alt="${item.name}">
                                                             </c:when>
 
                                                             <c:otherwise>
-                                                                <img class="cart-product-img"
-                                                                    src="/upload/${cartImagePath}"
-                                                                    alt="${item.name}"
-                                                                    onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;cart-no-image&quot;>이미지 없음</div>';">
+                                                                <img class="cart-product-img" src="/upload/${cartImagePath}" alt="${item.name}">
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </c:when>

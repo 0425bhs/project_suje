@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/css/seller/seller_form_common.css">
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
     <link rel="stylesheet" href="/css/seller/seller_order_list.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <script src="/js/seller_order.js"></script>
 </head>
@@ -141,15 +142,11 @@
                                                             </c:when>
 
                                                             <c:when test="${fn:startsWith(fn:trim(mainItem.imageL), '/upload/')}">
-                                                                <img src="${fn:trim(mainItem.imageL)}"
-                                                                     alt="${mainItem.productName}"
-                                                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                                <img src="${fn:trim(mainItem.imageL)}" alt="${mainItem.productName}">
                                                             </c:when>
 
                                                             <c:otherwise>
-                                                                <img src="/upload/${fn:trim(mainItem.imageL)}"
-                                                                     alt="${mainItem.productName}"
-                                                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                                <img src="/upload/${fn:trim(mainItem.imageL)}" alt="${mainItem.productName}">
                                                             </c:otherwise>
                                                         </c:choose>
 
@@ -383,15 +380,11 @@
                                                         </c:when>
 
                                                         <c:when test="${fn:startsWith(fn:trim(mainItem.imageL), '/upload/')}">
-                                                            <img src="${fn:trim(mainItem.imageL)}"
-                                                                 alt="${mainItem.productName}"
-                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                            <img src="${fn:trim(mainItem.imageL)}" alt="${mainItem.productName}">
                                                         </c:when>
 
                                                         <c:otherwise>
-                                                            <img src="/upload/${fn:trim(mainItem.imageL)}"
-                                                                 alt="${mainItem.productName}"
-                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                            <img src="/upload/${fn:trim(mainItem.imageL)}" alt="${mainItem.productName}">
                                                         </c:otherwise>
                                                     </c:choose>
 
@@ -487,15 +480,11 @@
                                                         </c:when>
 
                                                         <c:when test="${fn:startsWith(fn:trim(item.imageL), '/upload/')}">
-                                                            <img src="${fn:trim(item.imageL)}"
-                                                                 alt="${item.productName}"
-                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                            <img src="${fn:trim(item.imageL)}" alt="${item.productName}">
                                                         </c:when>
 
                                                         <c:otherwise>
-                                                            <img src="/upload/${fn:trim(item.imageL)}"
-                                                                 alt="${item.productName}"
-                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                            <img src="/upload/${fn:trim(item.imageL)}" alt="${item.productName}">
                                                         </c:otherwise>
                                                     </c:choose>
 
