@@ -7,14 +7,12 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.InquiryDAO;
 import com.kh.suje.dao.NoticeDAO;
 import com.kh.suje.dao.ProductDAO;
-import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReportDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.dao.SellerDAO;
@@ -22,6 +20,7 @@ import com.kh.suje.dao.UserDAO;
 import com.kh.suje.vo.CategoryVO;
 import com.kh.suje.vo.InquiryVO;
 import com.kh.suje.vo.NoticeVO;
+import com.kh.suje.vo.PaginationVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.ReportVO;
 import com.kh.suje.vo.ReviewVO;
@@ -37,35 +36,36 @@ public class AdminController {
     private final SellerDAO sellerDao;
     private final ProductDAO productDao;
     private final ReviewDAO reviewDao;
-    private final QnaDAO qnaDao;
     private final CategoryDAO categoryDao;
     private final InquiryDAO inquiryDao;
     private final ReportDAO reportDao;
     private final NoticeDAO noticeDao;
 
-    @GetMapping(value={"/admin", "/admin/dashboard"})
+    @GetMapping(value = {"/admin", "/admin/dashboard"})
     public String adminDashboard() {
 
         return "/admin/admin_dashboard";
     }
 
     @GetMapping("/admin/members")
-    public String members(Model model, String role, String keyword) {
-
-        List<UserVO> userList;
-        
+    public String members(Model model, String role, String keyword, Integer size, Integer page) {
         if (!"user".equals(role) && !"seller".equals(role)) {
             role = "all";
         }
 
-        userList = userDao.getUserListByKeyword(role, keyword);
-        int totalCount = userList.size();
+        int totalCount = userDao.getUserListCountByKeyword(role, keyword);
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+
+        List<UserVO> userList = userDao.getUserListByKeyword(role, keyword, 
+                                                             pagination.getSize(), 
+                                                             pagination.getOffset());
 
         model.addAttribute("role", role);
         model.addAttribute("keyword", keyword);
         model.addAttribute("userList", userList);
         model.addAttribute("totalCount", totalCount);
-        
+        model.addAttribute("pagination", pagination);
+
         return "/admin/admin_member_list";
     }
 
@@ -75,15 +75,21 @@ public class AdminController {
         Map<String, Object> map = new HashMap<>();
         UserVO user = userDao.selectUser(user_id);
 
-        map.put("user", user);
+        if (user == null) {
+            map.put("success", false);
+            map.put("message", "회원 정보를 찾을 수 없습니다.");
+            return map;
+        }
 
+        map.put("success", true);
+        map.put("user", user);
         return map;
     }
 
     @GetMapping("/admin/sellers")
     public String sellers(Model model, String status, String keyword) {
         List<SellerVO> sellerList;
-        
+
         if (!"pending".equals(status) && !"approved".equals(status) && !"rejected".equals(status)) {
             status = "all";
         }
@@ -95,7 +101,7 @@ public class AdminController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("sellerList", sellerList);
         model.addAttribute("totalCount", totalCount);
-        
+
         return "/admin/admin_seller_approval";
     }
 
@@ -105,16 +111,22 @@ public class AdminController {
         Map<String, Object> map = new HashMap<>();
         SellerVO seller = sellerDao.getSellerById(seller_id);
 
-        map.put("seller", seller);
+        if (seller == null) {
+            map.put("success", false);
+            map.put("message", "판매자 정보를 찾을 수 없습니다.");
+            return map;
+        }
 
+        map.put("success", true);
+        map.put("seller", seller);
         return map;
     }
 
     @GetMapping("/admin/products")
     public String products(Model model, String status, String keyword) {
         List<ProductVO> productList;
-        
-        if (!"pending".equals(status) && !"approved".equals(status) && 
+
+        if (!"pending".equals(status) && !"approved".equals(status) &&
             !"rejected".equals(status) && !"hidden".equals(status)) {
             status = "all";
         }
@@ -126,7 +138,7 @@ public class AdminController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("productList", productList);
         model.addAttribute("totalCount", totalCount);
-        
+
         return "/admin/admin_product_approval";
     }
 
@@ -136,15 +148,21 @@ public class AdminController {
         Map<String, Object> map = new HashMap<>();
         ProductVO product = productDao.product_one(product_id);
 
-        map.put("product", product);
+        if (product == null) {
+            map.put("success", false);
+            map.put("message", "상품 정보를 찾을 수 없습니다.");
+            return map;
+        }
 
+        map.put("success", true);
+        map.put("product", product);
         return map;
     }
 
     @GetMapping("/admin/reviews")
     public String reviews(Model model, String status, String keyword) {
         List<ReviewVO> reviewList;
-        
+
         if (!"public".equals(status) && !"private".equals(status)) {
             status = "all";
         }
@@ -166,15 +184,21 @@ public class AdminController {
         Map<String, Object> map = new HashMap<>();
         ReviewVO review = reviewDao.getReviewById(review_id);
 
-        map.put("review", review);
+        if (review == null) {
+            map.put("success", false);
+            map.put("message", "후기 정보를 찾을 수 없습니다.");
+            return map;
+        }
 
+        map.put("success", true);
+        map.put("review", review);
         return map;
     }
 
     @GetMapping("/admin/inquiries")
     public String inquiries(Model model, String status, String keyword) {
         List<InquiryVO> inquiryList;
-        
+
         if (!"waiting".equals(status) && !"answered".equals(status)) {
             status = "all";
         }
@@ -196,16 +220,22 @@ public class AdminController {
         Map<String, Object> map = new HashMap<>();
         InquiryVO inquiry = inquiryDao.getInquiryById(inquiry_id);
 
-        map.put("inquiry", inquiry);
+        if (inquiry == null) {
+            map.put("success", false);
+            map.put("message", "문의 정보를 찾을 수 없습니다.");
+            return map;
+        }
 
+        map.put("success", true);
+        map.put("inquiry", inquiry);
         return map;
     }
 
     @GetMapping("/admin/reports")
     public String reports(Model model, String status, String keyword) {
         List<ReportVO> reportList;
-        
-        if (!"pending".equals(status) && !"processed".equals(status) && 
+
+        if (!"pending".equals(status) && !"processed".equals(status) &&
             !"rejected".equals(status)) {
             status = "all";
         }
@@ -221,6 +251,23 @@ public class AdminController {
         return "/admin/admin_report_manage";
     }
 
+    @GetMapping("/admin/reports/detail")
+    @ResponseBody
+    public Map<String, Object> reportDetail(int report_id) {
+        Map<String, Object> map = new HashMap<>();
+        ReportVO report = reportDao.getReportById(report_id);
+
+        if (report == null) {
+            map.put("success", false);
+            map.put("message", "신고 정보를 찾을 수 없습니다.");
+            return map;
+        }
+
+        map.put("success", true);
+        map.put("report", report);
+        return map;
+    }
+
     @GetMapping("/admin/categories")
     public String categories(Model model) {
         List<CategoryVO> categoryList = categoryDao.getCategoryHierarchy();
@@ -231,8 +278,8 @@ public class AdminController {
 
     @GetMapping("/admin/notices")
     public String notices(Model model, String keyword) {
-       List<NoticeVO> noticeList;
-        
+        List<NoticeVO> noticeList;
+
         noticeList = noticeDao.getNoticeListByKeyword(keyword);
         int totalCount = noticeList.size();
 
@@ -241,6 +288,23 @@ public class AdminController {
         model.addAttribute("totalCount", totalCount);
 
         return "/admin/admin_notice_manage";
+    }
+
+    @GetMapping("/admin/notices/detail")
+    @ResponseBody
+    public Map<String, Object> noticeDetail(int notice_id) {
+        Map<String, Object> map = new HashMap<>();
+        NoticeVO notice = noticeDao.getNoticeById(notice_id);
+
+        if (notice == null) {
+            map.put("success", false);
+            map.put("message", "공지사항 정보를 찾을 수 없습니다.");
+            return map;
+        }
+
+        map.put("success", true);
+        map.put("notice", notice);
+        return map;
     }
 
     @GetMapping("/admin/statistics")

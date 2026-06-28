@@ -1,5 +1,4 @@
 function openDetailPanel(master, rows, row) {
-    //선택한 행에 클래스 부여(모든 행에서 클래스 지우고 선택된 거에 부여)
     rows.forEach((item) => {
         item.classList.remove("selected");
     });
@@ -19,3 +18,22 @@ function setText(id, value) {
 
     target.textContent = text.trim() ? text : "-";
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const master = document.getElementById("adminMasterDetail");
+    const closeButton = document.querySelector(".admin-detail-close");
+
+    if (!master || !closeButton) {
+        return;
+    }
+
+    closeButton.addEventListener("click", () => {
+        const selectedRow = master.querySelector(".admin-clickable-row.selected");
+
+        master.classList.add("is-collapsed");
+
+        if (selectedRow) {
+            selectedRow.classList.remove("selected");
+        }
+    });
+});

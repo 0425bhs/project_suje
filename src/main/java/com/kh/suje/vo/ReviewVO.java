@@ -1,6 +1,5 @@
 package com.kh.suje.vo;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.type.Alias;
@@ -17,7 +16,7 @@ public class ReviewVO {
     private int review_id, user_id, product_id, order_item_id;
     private Integer rating;
     private String content;
-    private LocalDateTime created_at;
+    private String created_at;
     private String status;
 
     //user_id

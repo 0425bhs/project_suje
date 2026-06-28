@@ -28,4 +28,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
         </where>
     </select>
+
+    <select id="getReportById" resultType="report">
+        SELECT r.*,
+               u.name AS reporter_name
+        FROM reports r
+        JOIN users u ON u.user_id = r.reporter_id
+        WHERE r.report_id = #{report_id}
+    </select>
 </mapper>

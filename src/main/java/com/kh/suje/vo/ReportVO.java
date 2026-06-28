@@ -1,7 +1,5 @@
 package com.kh.suje.vo;
 
-import java.time.LocalDateTime;
-
 import org.apache.ibatis.type.Alias;
 
 import lombok.AllArgsConstructor;
@@ -16,8 +14,7 @@ public class ReportVO {
     private int report_id, reporter_id;
     private String target_type;
     private int target_id;
-    private String reason, status;
-    private LocalDateTime created_at;
+    private String reason, status, created_at;
 
     //reporter_id(user_id)
     private String reporter_name;

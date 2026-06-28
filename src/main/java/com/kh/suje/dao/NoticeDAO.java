@@ -6,8 +6,8 @@ import com.kh.suje.vo.NoticeVO;
 
 public interface NoticeDAO {
     int addNotice(NoticeVO notice);
-    List<NoticeVO> getNoticeList();
     NoticeVO getNoticeById(int notice_id);
+    List<NoticeVO> getNoticeList();
     int updateNotice(NoticeVO notice);
     int deleteNotice(int notice_id);
     List<NoticeVO> getNoticeListByKeyword(String keyword);

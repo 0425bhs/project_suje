@@ -72,14 +72,15 @@
                 <div class="admin-filter-box">
                     <form class="admin-filter-form" action="/admin/members" method="get">
                         <div class="admin-filter-tabs">
-                            <a href="/admin/members?role=all&keyword=${keyword}" class="${role == 'all' ? 'active' : ''}">전체</a>
-                            <a href="/admin/members?role=user&keyword=${keyword}" class="${role == 'user' ? 'active' : ''}">일반회원</a>
-                            <a href="/admin/members?role=seller&keyword=${keyword}" class="${role == 'seller' ? 'active' : ''}">판매자</a>
+                            <a href="/admin/members?role=all&keyword=${keyword}&size=${pagination.size}&page=1" class="${role == 'all' ? 'active' : ''}">전체</a>
+                            <a href="/admin/members?role=user&keyword=${keyword}&size=${pagination.size}&page=1" class="${role == 'user' ? 'active' : ''}">일반회원</a>
+                            <a href="/admin/members?role=seller&keyword=${keyword}&size=${pagination.size}&page=1" class="${role == 'seller' ? 'active' : ''}">판매자</a>
                         </div>
                         <span class="admin-filter-count">전체 ${totalCount}명</span>
                         <input type="hidden" name="role" value="${role}">
                         <input type="text" class="admin-search" name="keyword" 
                                placeholder="아이디, 이름, 이메일 검색" value="${keyword}">
+                        <input type="hidden" name="size" value="${pagination.size}">
                     </form>
                 </div>
 
@@ -171,6 +172,29 @@
                 </div>
             </aside>
         </section>
+
+        <div class="admin-pagination">
+            <c:if test="${pagination.totalPage > 0}">
+                <c:if test="${pagination.hasPrev}">
+                    <a href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
+                        이전
+                    </a>
+                </c:if>
+
+                <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                    <a href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${i}"
+                       class="${pagination.page == i ? 'active' : ''}">
+                        ${i}
+                    </a>
+                </c:forEach>
+
+                <c:if test="${pagination.hasNext}">
+                    <a href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
+                        다음
+                    </a>
+                </c:if>
+            </c:if>
+        </div>
     </main>
 </div>
 </body>
