@@ -9,44 +9,44 @@
     </div>
 
     <div class="sidebar-title">
-        ${empty param.sidebarTitle ? '판매자 센터' : param.sidebarTitle}
+        ${empty param.sidebarTitle ? '판매자 관리' : param.sidebarTitle}
     </div>
 
     <nav class="sidebar-menu">
 
         <a href="/seller_dashboard.do" class="${param.activeMenu eq 'dashboard' ? 'menu-active':''}">
-            <i class="bi bi-speedometer2"></i>
-            판매자 대시보드
+            <i class="bi bi-sliders"></i>
+            <span>판매자 대시보드</span>
         </a>
 
         <a href="/seller_product_list.do" class="${param.activeMenu eq 'productList' ? 'menu-active':''}">
-            <i class="bi bi-bank"></i>
-            내 상품 관리
+            <i class="bi bi-chat-square"></i>
+            <span>내 상품 관리</span>
         </a>
 
         <a href="/seller_product_insert.do" class="${param.activeMenu eq 'productInsert' ? 'menu-active':''}">
-            <i class="bi bi-clipboard-plus"></i>
-            상품 등록
+            <i class="bi bi-box-seam"></i>
+            <span>상품 등록</span>
         </a>
 
         <a href="/seller_order_list.do" class="${param.activeMenu eq 'orderList' ? 'menu-active':''}">
-            <i class="bi bi-list-check"></i>
-            판매자 주문 관리
+            <i class="bi bi-chat-square-heart"></i>
+            <span>판매자 주문 관리</span>
         </a>
 
         <a href="/seller_review_list.do" class="${param.activeMenu eq 'reviewList' ? 'menu-active':''}">
             <i class="bi bi-chat-dots-fill"></i>
-            상품 리뷰 관리
+            <span>상품 리뷰 관리</span>
         </a>
 
         <a href="/seller_qna_list.do" class="${param.activeMenu eq 'qnaList' ? 'menu-active':''}">
             <i class="bi bi-chat-square-text"></i>
-            상품 문의 답변 관리
+            <span>상품 문의 답변 관리</span>
         </a>
 
-        <a href="/seller_statistics.do" class="${param.activeMenu eq 'statisty' ? 'menu-active':''}">
+        <a href="/seller_statistics.do" class="${param.activeMenu eq 'statistics' ? 'menu-active':''}">
             <i class="bi bi-bar-chart-line"></i>
-            판매자 매출 통계
+            <span>판매자 매출 통계</span>
         </a>
 
         <a href="/seller_setting.do" class="${param.activeMenu eq 'setting' ? 'menu-active':''}">
@@ -57,8 +57,14 @@
     </nav>
 
     <div class="sidebar-bottom">
-        <i class="bi bi-bag"></i>
-        <a href="/product/main.do">쇼핑몰로 이동</a>
+        <a href="/product/main.do">
+            <span class="sidebar-bottom-left">
+                <i class="bi bi-bag"></i>
+                <span>쇼핑몰로 이동</span>
+            </span>
+
+            <i class="bi bi-chevron-right sidebar-bottom-arrow"></i>
+        </a>
     </div>
 
 </aside>

@@ -79,17 +79,11 @@
 
                         <c:choose>
                             <c:when test="${not empty imageLPath}">
-                                <img id="detailMainImage"
-                                    src="${imageLPath}"
-                                    alt="${vo.name}"
-                                    onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                <img id="detailMainImage" src="${imageLPath}" alt="${vo.name}">
                             </c:when>
 
                             <c:when test="${not empty vo.imageList}">
-                                <img id="detailMainImage"
-                                    src="/upload/${vo.imageList[0].image_url}"
-                                    alt="${vo.name}"
-                                    onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                <img id="detailMainImage" src="/upload/${vo.imageList[0].image_url}" alt="${vo.name}">
                             </c:when>
 
                             <c:otherwise>
@@ -105,18 +99,14 @@
                     <div class="store-thumb-row">
                         <c:if test="${not empty imageLPath}">
                             <button type="button" class="store-thumb-btn active" data-img="${imageLPath}">
-                                <img src="${imageLPath}"
-                                     alt="${vo.name}"
-                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                <img src="${imageLPath}" alt="${vo.name}">
                             </button>
                         </c:if>
 
                         <c:if test="${not empty vo.imageList}">
                             <c:forEach var="img" items="${vo.imageList}">
                                 <button type="button" class="store-thumb-btn" data-img="/upload/${img.image_url}">
-                                    <img src="/upload/${img.image_url}"
-                                        alt="${vo.name}"
-                                        onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                    <img src="/upload/${img.image_url}" alt="${vo.name}">
                                 </button>
                             </c:forEach>
                         </c:if>
