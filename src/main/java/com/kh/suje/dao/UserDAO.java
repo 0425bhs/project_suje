@@ -3,14 +3,20 @@ package com.kh.suje.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.kh.suje.vo.UserVO;
 
 public interface UserDAO {
     List<UserVO> getUserList(); //전체 회원 정보 가져오기
     // List<UserVO> getUserListByRole(String role); //특정 권한 회원 정보 가져오기
-    List<UserVO> getUserListByKeyword(String role, String keyword, Integer size, int offset); //키워드로 회원 검색
+    List<UserVO> getUserListByKeyword(@Param("role") String role,
+                                      @Param("keyword") String keyword,
+                                      @Param("size") Integer size,
+                                      @Param("offset") int offset); //키워드로 회원 검색
 
-    int getUserListCountByKeyword(String role, String keyword);
+    int getUserListCountByKeyword(@Param("role") String role,
+                                  @Param("keyword") String keyword);
 
     int insertUser(UserVO vo); //회원가입
 

@@ -29,6 +29,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 )
             </if>
         </where>
+        ORDER BY i.inquiry_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getInquryListCountByKeyword" resultType="int">
+        SELECT count(*)
+        FROM inquiries i
+        JOIN users u ON u.user_id = i.user_id
+        <where>
+            <if test="status != null and status != 'all'">
+                i.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                and (
+                    i.title LIKE CONCAT("%", #{keyword}, "%")
+                    OR u.name LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+        </where>
     </select>
 
     <select id="getInquiryById">

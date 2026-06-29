@@ -62,9 +62,9 @@ public class AdminController {
 
         model.addAttribute("role", role);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("userList", userList);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
+        model.addAttribute("userList", userList);
 
         return "/admin/admin_member_list";
     }
@@ -87,20 +87,22 @@ public class AdminController {
     }
 
     @GetMapping("/admin/sellers")
-    public String sellers(Model model, String status, String keyword) {
-        List<SellerVO> sellerList;
-
+    public String sellers(Model model, String status, String keyword, Integer size, Integer page) {
         if (!"pending".equals(status) && !"approved".equals(status) && !"rejected".equals(status)) {
             status = "all";
         }
 
-        sellerList = sellerDao.getSellerListByKeyword(status, keyword);
-        int totalCount = sellerList.size();
+        int totalCount = sellerDao.getSellerListCountByKeyword(status, keyword);
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+        List<SellerVO> sellerList = sellerDao.getSellerListByKeyword(status, keyword,
+                                                                     pagination.getSize(),
+                                                                     pagination.getOffset());
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
         model.addAttribute("sellerList", sellerList);
         model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
 
         return "/admin/admin_seller_approval";
     }
@@ -123,21 +125,23 @@ public class AdminController {
     }
 
     @GetMapping("/admin/products")
-    public String products(Model model, String status, String keyword) {
-        List<ProductVO> productList;
-
+    public String products(Model model, String status, String keyword, Integer size, Integer page) {
         if (!"pending".equals(status) && !"approved".equals(status) &&
             !"rejected".equals(status) && !"hidden".equals(status)) {
             status = "all";
         }
 
-        productList = productDao.getProductListByKeyword(status, keyword);
-        int totalCount = productList.size();
+        int totalCount = productDao.getProductListCountByKeyword(status, keyword);
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+        List<ProductVO> productList = productDao.getProductListByKeyword(status, keyword,
+                                                                         pagination.getSize(),
+                                                                         pagination.getOffset());
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
         model.addAttribute("productList", productList);
         model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
 
         return "/admin/admin_product_approval";
     }
@@ -160,20 +164,22 @@ public class AdminController {
     }
 
     @GetMapping("/admin/reviews")
-    public String reviews(Model model, String status, String keyword) {
-        List<ReviewVO> reviewList;
-
+    public String reviews(Model model, String status, String keyword, Integer size, Integer page) {
         if (!"public".equals(status) && !"private".equals(status)) {
             status = "all";
         }
 
-        reviewList = reviewDao.getReviewListByKeyword(status, keyword);
-        int totalCount = reviewList.size();
+        int totalCount = reviewDao.getReviewListCountByKeyword(status, keyword);
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+        List<ReviewVO> reviewList = reviewDao.getReviewListByKeyword(status, keyword,
+                                                                     pagination.getSize(),
+                                                                     pagination.getOffset());
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
 
         return "/admin/admin_review_manage";
     }
@@ -196,20 +202,22 @@ public class AdminController {
     }
 
     @GetMapping("/admin/inquiries")
-    public String inquiries(Model model, String status, String keyword) {
-        List<InquiryVO> inquiryList;
-
+    public String inquiries(Model model, String status, String keyword, Integer size, Integer page) {
         if (!"waiting".equals(status) && !"answered".equals(status)) {
             status = "all";
         }
 
-        inquiryList = inquiryDao.getInquryListByKeyword(status, keyword);
-        int totalCount = inquiryList.size();
+        int totalCount = inquiryDao.getInquryListCountByKeyword(status, keyword);
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+        List<InquiryVO> inquiryList = inquiryDao.getInquryListByKeyword(status, keyword,
+                                                                       pagination.getSize(),
+                                                                       pagination.getOffset());
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
         model.addAttribute("inquiryList", inquiryList);
         model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
 
         return "/admin/admin_inquiry_manage";
     }
@@ -232,21 +240,23 @@ public class AdminController {
     }
 
     @GetMapping("/admin/reports")
-    public String reports(Model model, String status, String keyword) {
-        List<ReportVO> reportList;
-
+    public String reports(Model model, String status, String keyword, Integer size, Integer page) {
         if (!"pending".equals(status) && !"processed".equals(status) &&
             !"rejected".equals(status)) {
             status = "all";
         }
 
-        reportList = reportDao.getReportListByKeyword(status, keyword);
-        int totalCount = reportList.size();
+        int totalCount = reportDao.getReportListCountByKeyword(status, keyword);
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+        List<ReportVO> reportList = reportDao.getReportListByKeyword(status, keyword,
+                                                                     pagination.getSize(),
+                                                                     pagination.getOffset());
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
         model.addAttribute("reportList", reportList);
         model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
 
         return "/admin/admin_report_manage";
     }
@@ -277,15 +287,17 @@ public class AdminController {
     }
 
     @GetMapping("/admin/notices")
-    public String notices(Model model, String keyword) {
-        List<NoticeVO> noticeList;
-
-        noticeList = noticeDao.getNoticeListByKeyword(keyword);
-        int totalCount = noticeList.size();
+    public String notices(Model model, String keyword, Integer size, Integer page) {
+        int totalCount = noticeDao.getNoticeListCountByKeyword(keyword);
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+        List<NoticeVO> noticeList = noticeDao.getNoticeListByKeyword(keyword,
+                                                                     pagination.getSize(),
+                                                                     pagination.getOffset());
 
         model.addAttribute("keyword", keyword);
         model.addAttribute("noticeList", noticeList);
         model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
 
         return "/admin/admin_notice_manage";
     }

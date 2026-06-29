@@ -72,6 +72,8 @@
                             <button type="button" class="active">전체</button>
                             <button type="button">공지</button>
                         </div>
+                        <input type="hidden" name="size" value="${pagination.size}">
+                        <input type="hidden" name="page" value="1">
                         <input type="text" class="admin-search" name="keyword" placeholder="제목 검색" value="${keyword}">
                     </form>
                 </div>
@@ -142,6 +144,35 @@
                 </div>
             </aside>
         </section>
+
+        <div class="admin-pagination">
+            <c:if test="${pagination.totalPage > 0}">
+                <c:if test="${pagination.hasPrev}">
+                    <a href="/admin/notices?keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
+                        이전
+                    </a>
+                </c:if>
+                <c:if test="${!pagination.hasPrev}">
+                    <span class="disabled">이전</span>
+                </c:if>
+
+                <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                    <a href="/admin/notices?keyword=${keyword}&size=${pagination.size}&page=${i}"
+                        class="${pagination.page == i ? 'active' : ''}">
+                        ${i}
+                    </a>
+                </c:forEach>
+
+                <c:if test="${pagination.hasNext}">
+                    <a href="/admin/notices?keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
+                        다음
+                    </a>
+                </c:if>
+                <c:if test="${!pagination.hasNext}">
+                    <span class="disabled">다음</span>
+                </c:if>
+            </c:if>
+        </div>
     </main>
 </div>
 </body>

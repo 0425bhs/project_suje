@@ -76,19 +76,21 @@
                     <div class="admin-filter-box">
                         <form class="admin-filter-form" action="/admin/products" method="get">
                             <div class="admin-filter-tabs">
-                                <a href="/admin/products?status=all&keyword=${keyword}"
+                                <a href="/admin/products?status=all&keyword=${keyword}&size=${pagination.size}&page=1"
                                     class="${status eq 'all' ? 'active' : ''}">전체</a>
-                                <a href="/admin/products?status=pending&keyword=${keyword}"
+                                <a href="/admin/products?status=pending&keyword=${keyword}&size=${pagination.size}&page=1"
                                     class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
-                                <a href="/admin/products?status=approved&keyword=${keyword}"
+                                <a href="/admin/products?status=approved&keyword=${keyword}&size=${pagination.size}&page=1"
                                     class="${status eq 'approved' ? 'active' : ''}">판매중</a>
-                                <a href="/admin/products?status=rejected&keyword=${keyword}"
+                                <a href="/admin/products?status=rejected&keyword=${keyword}&size=${pagination.size}&page=1"
                                     class="${status eq 'rejected' ? 'active' : ''}">반려</a>
-                                <a href="/admin/products?status=hidden&keyword=${keyword}"
+                                <a href="/admin/products?status=hidden&keyword=${keyword}&size=${pagination.size}&page=1"
                                     class="${status eq 'hidden' ? 'active' : ''}">숨김</a>
                             </div>
                             <span class="admin-filter-count">전체 ${totalCount}건</span>
                             <input type="hidden" name="status" value="${status}" />
+                            <input type="hidden" name="size" value="${pagination.size}" />
+                            <input type="hidden" name="page" value="1" />
                             <input type="text" class="admin-search" name="keyword" placeholder="상품명, 판매자 검색"
                                 value="${keyword}">
                         </form>
@@ -238,6 +240,35 @@
                     </div>
                 </aside>
             </section>
+
+            <div class="admin-pagination">
+                <c:if test="${pagination.totalPage > 0}">
+                    <c:if test="${pagination.hasPrev}">
+                        <a href="/admin/products?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
+                            이전
+                        </a>
+                    </c:if>
+                    <c:if test="${!pagination.hasPrev}">
+                        <span class="disabled">이전</span>
+                    </c:if>
+
+                    <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                        <a href="/admin/products?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${i}"
+                            class="${pagination.page == i ? 'active' : ''}">
+                            ${i}
+                        </a>
+                    </c:forEach>
+
+                    <c:if test="${pagination.hasNext}">
+                        <a href="/admin/products?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
+                            다음
+                        </a>
+                    </c:if>
+                    <c:if test="${!pagination.hasNext}">
+                        <span class="disabled">다음</span>
+                    </c:if>
+                </c:if>
+            </div>
         </main>
     </div>
 </body>

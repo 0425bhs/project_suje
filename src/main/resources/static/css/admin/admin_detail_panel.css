@@ -20,6 +20,10 @@
     transition: grid-template-columns 0.22s ease, gap 0.22s ease;
 }
 
+.admin-master-detail-filtered {
+    height: calc(100vh - 350px);
+}
+
 .admin-master-detail.is-collapsed {
     grid-template-columns: minmax(0, 1fr) 0;
     gap: 0;

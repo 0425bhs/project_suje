@@ -115,6 +115,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 ) 
             </if>
         </where>
+        ORDER BY r.review_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getReviewListCountByKeyword"
+            resultType="int">
+        SELECT count(*)
+        FROM reviews r
+        JOIN products p ON r.product_id = p.product_id
+        JOIN users u ON r.user_id = u.user_id
+        <where>
+            <if test="status != null and status != 'all'">
+                r.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    p.name LIKE CONCAT("%", #{keyword}, "%")
+                    OR u.name LIKE CONCAT("%", #{keyword}, "%")
+                    OR r.content LIKE CONCAT("%", #{keyword}, "%")
+                ) 
+            </if>
+        </where>
     </select>
 
     <update id="updateReview"

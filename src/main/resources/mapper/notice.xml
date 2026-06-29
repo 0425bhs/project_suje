@@ -20,6 +20,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 OR content LIKE CONCAT("%", #{keyword},"%")
             </if>
         </where>
+        ORDER BY notice_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getNoticeListCountByKeyword"
+            resultType="int">
+        SELECT count(*)
+        FROM notices
+        <where>
+            <if test="keyword != null and keyword != ''">
+                title LIKE CONCAT("%", #{keyword},"%")
+                OR content LIKE CONCAT("%", #{keyword},"%")
+            </if>
+        </where>
     </select>
 
     <select id="getNoticeById"

@@ -24,6 +24,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             )
         </if>
         </where>
+        ORDER BY seller_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getSellerListCountByKeyword"
+            resultType="int">
+        SELECT count(*)
+        FROM sellers
+        <where>
+        <if test="status != null and status != 'all'">
+            seller_status = #{status}
+        </if>
+
+        <if test="keyword != null and keyword != ''">
+            AND (
+                company_name LIKE CONCAT("%", #{keyword}, "%")
+                or representative_name LIKE CONCAT("%", #{keyword}, "%")
+            )
+        </if>
+        </where>
     </select>
     <!--가입-->
     <insert id = "insertSeller" 

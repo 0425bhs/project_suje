@@ -27,6 +27,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             )
         </if>
         </where>
+        ORDER BY r.report_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getReportListCountByKeyword" resultType="int">
+        SELECT count(*)
+        FROM reports r
+        JOIN users u ON u.user_id = r.reporter_id
+        LEFT JOIN products p ON p.product_id = r.target_id AND target_type = 'PRODUCT' 
+        LEFT JOIN reviews rv ON rv.review_id = r.target_id AND target_type = 'REVIEW'
+        LEFT JOIN qnas q ON q.qna_id = r.target_id AND target_type = 'QNA'
+        <where>
+        <if test="status != null and status != 'all'">
+            r.status = #{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (
+                r.reason LIKE CONCAT("%", #{keyword} ,"%")
+                OR u.name LIKE CONCAT("%", #{keyword} ,"%")
+            )
+        </if>
+        </where>
     </select>
 
     <select id="getReportById" resultType="report">

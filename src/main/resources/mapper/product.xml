@@ -23,7 +23,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN categories c ON p.category_id = c.category_id
         <where>
             <if test="status != null and status != 'all'">
-                status = #{status}
+                p.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    p.name LIKE CONCAT("%", #{keyword}, "%")
+                    OR s.company_name LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+        </where>
+        ORDER BY p.product_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getProductListCountByKeyword" resultType="int">
+        SELECT count(*)
+        FROM products p
+        JOIN sellers s ON p.seller_id = s.seller_id
+        JOIN categories c ON p.category_id = c.category_id
+        <where>
+            <if test="status != null and status != 'all'">
+                p.status = #{status}
             </if>
 
             <if test="keyword != null and keyword != ''">
