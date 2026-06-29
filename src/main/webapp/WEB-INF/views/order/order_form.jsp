@@ -333,10 +333,13 @@
                         </div>
 
                         <button type="button"
-                                class="btn light"
-                                onclick="selectAddress('${addr.address_id}', '${addr.address_name}', '${addr.address} ${addr.detail_address}')">
-                            선택
-                        </button>
+                            class="btn light"
+                            data-id="${addr.address_id}"
+                            data-name="${fn:escapeXml(addr.address_name)}"
+                            data-address="${fn:escapeXml(addr.address)} ${fn:escapeXml(addr.detail_address)}"
+                            onclick="selectAddressButton(this)">
+                        선택
+                    </button>
                     </div>
                 </c:forEach>
             </div>
