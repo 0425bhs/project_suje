@@ -1,0 +1,642 @@
+/* =========================================================
+   문의 관리 상단 통계
+========================================================= */
+
+.qna-summary-box {
+    width: 100%;
+    margin-top: 18px;
+    margin-bottom: 20px;
+    padding: 24px 28px;
+
+    display: grid;
+    grid-template-columns: 1fr 1.25fr 1.25fr 1.35fr;
+    gap: 18px;
+    align-items: center;
+
+    background: #fff;
+    border: 1px solid #e9edf2;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.qna-summary-item {
+    min-height: 72px;
+    padding: 14px 18px;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    border-radius: 16px;
+}
+
+.qna-summary-item strong {
+    display: block;
+    margin-bottom: 5px;
+
+    color: #222;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.qna-summary-item span {
+    display: block;
+
+    font-size: 31px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+.qna-summary-item i {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    font-size: 21px;
+}
+
+.qna-summary-item.total {
+    background: #fff;
+}
+
+.qna-summary-item.total span {
+    color: #ff4f38;
+}
+
+.qna-summary-item.waiting {
+    background: #fff2ee;
+}
+
+.qna-summary-item.waiting span,
+.qna-summary-item.waiting i {
+    color: #ff4f38;
+}
+
+.qna-summary-item.waiting i {
+    background: #ffe3db;
+}
+
+.qna-summary-item.completed {
+    background: #eefaf3;
+}
+
+.qna-summary-item.completed span,
+.qna-summary-item.completed i {
+    color: #1fb86a;
+}
+
+.qna-summary-item.completed i {
+    background: #dcf5e7;
+}
+
+.qna-filter-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.qna-filter-wrap label {
+    padding-left: 2px;
+
+    color: #555;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.qna-filter-select {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+
+    border: 1px solid #dce1e7;
+    border-radius: 10px;
+    background: #fff;
+
+    color: #333;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+
+    outline: none;
+    cursor: pointer;
+}
+
+.qna-filter-select:focus {
+    border-color: #ff654f;
+    box-shadow: 0 0 0 4px rgba(255, 101, 79, 0.12);
+}
+
+/* =========================================================
+   빈 문의
+========================================================= */
+
+.empty-qna-box {
+    padding: 80px 20px;
+    text-align: center;
+
+    background: #fff;
+    border: 1px solid #e9edf2;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+
+    color: #888;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   문의 전체 박스
+========================================================= */
+
+.seller-qna-wrap {
+    width: 100%;
+    overflow: hidden;
+
+    background: #fff;
+    border: 1px solid #e9edf2;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* =========================================================
+   탭
+========================================================= */
+
+.qna-tab-box {
+    height: 64px;
+    padding: 0 24px;
+
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    border-bottom: 1px solid #e9edf2;
+    background: #fff;
+}
+
+.qna-tab {
+    height: 64px;
+    padding: 0 8px;
+
+    position: relative;
+
+    border: none;
+    background: transparent;
+
+    color: #333;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.qna-tab span {
+    font-weight: 800;
+}
+
+.qna-tab.active {
+    color: #ff4f38;
+}
+
+.qna-tab.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 3px;
+    border-radius: 999px;
+    background: #ff4f38;
+}
+
+/* =========================================================
+   문의 리스트
+========================================================= */
+
+.seller-qna-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.seller-qna-card {
+    width: 100%;
+    box-sizing: border-box;
+
+    background: #fff;
+    border-bottom: 1px solid #e9edf2;
+}
+
+.seller-qna-card:last-child {
+    border-bottom: none;
+}
+
+/* =========================================================
+   카드 상단
+========================================================= */
+
+.qna-card-top {
+    min-height: 120px;
+    padding: 24px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 170px;
+    gap: 24px;
+    align-items: center;
+}
+
+.qna-user-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+}
+
+.qna-user-photo-box {
+    width: 66px;
+    height: 66px;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+    overflow: hidden;
+    background: #e9edf2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qna-user-photo-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.qna-user-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.qna-user-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.qna-user-name {
+    color: #222;
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.qna-write-date {
+    color: #8a8f98;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.qna-product-line {
+    margin-top: 13px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    color: #333;
+    font-size: 14px;
+}
+
+.qna-product-title {
+    max-width: 280px;
+    padding: 7px 12px;
+
+    display: inline-block;
+
+    background: #f5f6f8;
+    border-radius: 7px;
+
+    color: #444;
+    font-weight: 900;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.qna-option-title {
+    color: #8a8f98;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   오른쪽 상태
+========================================================= */
+
+.qna-status-area {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+}
+
+.answer-status {
+    min-width: 104px;
+    height: 36px;
+    padding: 0 13px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.waiting-status {
+    background: #fff4eb;
+    color: #ff6a2f;
+}
+
+.complete-status {
+    display: none;
+    background: #eaf8f0;
+    color: #17a763;
+}
+
+.seller-qna-card[data-answered="true"] .waiting-status {
+    display: none;
+}
+
+.seller-qna-card[data-answered="true"] .complete-status {
+    display: inline-flex;
+}
+
+.qna-more-btn {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+    color: #222;
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   하단 문의 내용 + 답변
+========================================================= */
+
+.qna-bottom-grid {
+    padding: 0 24px 24px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(420px, 1fr);
+    gap: 22px;
+}
+
+.qna-content-box {
+    padding-top: 18px;
+
+    border-top: 1px solid #eef1f4;
+}
+
+.qna-content-title {
+    margin-bottom: 10px;
+
+    color: #333;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.qna-content {
+    color: #444;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: keep-all;
+}
+
+/* =========================================================
+   판매자 답변 박스
+========================================================= */
+
+.seller-answer-box {
+    min-height: 154px;
+    padding: 20px 22px;
+
+    position: relative;
+
+    border: 1px solid #ffd4ca;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fff8f6 0%, #fff 100%);
+}
+
+.answer-waiting-box strong {
+    display: block;
+    margin-bottom: 12px;
+
+    color: #ff4f38;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.answer-waiting-box p {
+    margin: 0;
+
+    color: #555;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.8;
+}
+
+.answer-write-btn {
+    position: absolute;
+    right: 20px;
+    bottom: 18px;
+
+    width: 116px;
+    height: 44px;
+
+    border: none;
+    border-radius: 8px;
+    background: #ff4f38;
+
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.answer-write-btn:hover {
+    background: #e8422d;
+}
+
+.answer-complete-box {
+    display: none;
+}
+
+.seller-qna-card[data-answered="true"] .answer-waiting-box {
+    display: none;
+}
+
+.seller-qna-card[data-answered="true"] .answer-complete-box {
+    display: block;
+}
+
+.answer-complete-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.answer-complete-head strong {
+    color: #ff4f38;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.answer-complete-head span {
+    color: #9aa1aa;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.answer-complete-content {
+    padding-right: 130px;
+
+    color: #444;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.8;
+    word-break: keep-all;
+}
+
+.answer-edit-btn {
+    position: absolute;
+    right: 20px;
+    bottom: 18px;
+
+    width: 104px;
+    height: 40px;
+
+    border: 1px solid #ff654f;
+    border-radius: 8px;
+    background: #fff;
+
+    color: #ff4f38;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.answer-edit-btn:hover {
+    background: #fff0eb;
+}
+
+/* =========================================================
+   반응형
+========================================================= */
+
+@media (max-width: 1280px) {
+    .qna-summary-box {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .qna-filter-wrap {
+        grid-column: 1 / -1;
+    }
+
+    .qna-card-top {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .qna-status-area {
+        justify-content: flex-start;
+    }
+
+    .qna-bottom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .seller-answer-box {
+        min-height: 170px;
+    }
+}
+
+@media (max-width: 768px) {
+    .qna-summary-box {
+        padding: 18px;
+        grid-template-columns: 1fr;
+    }
+
+    .qna-tab-box {
+        height: auto;
+        padding: 0 16px;
+        gap: 16px;
+        overflow-x: auto;
+    }
+
+    .qna-tab {
+        height: 56px;
+        flex-shrink: 0;
+        font-size: 14px;
+    }
+
+    .qna-card-top {
+        padding: 18px;
+    }
+
+    .qna-user-area {
+        align-items: flex-start;
+    }
+
+    .qna-user-photo-box {
+        width: 54px;
+        height: 54px;
+    }
+
+    .qna-bottom-grid {
+        padding: 0 18px 18px;
+    }
+
+    .seller-answer-box {
+        padding: 18px;
+    }
+
+    .answer-write-btn,
+    .answer-edit-btn {
+        position: static;
+        margin-top: 18px;
+        width: 100%;
+    }
+
+    .answer-complete-content {
+        padding-right: 0;
+    }
+}

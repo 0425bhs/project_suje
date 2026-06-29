@@ -41,7 +41,7 @@
                     <div class="seller-logo">
                         <c:choose>
                             <c:when test="${not empty seller.photo_name and seller.photo_name ne 'no_file'}">
-                                <img src="/upload/${seller.photo_name}" alt="${seller.company_name}" onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                <img src="/upload/${seller.photo_name}" alt="${seller.company_name}">
                             </c:when>
 
                             <c:otherwise>
@@ -158,9 +158,7 @@
                         <a class="product-img-box" href="/product_detail.do?product_id=${vo.product_id}">
                             <c:choose>
                                 <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                    <img src="/upload/${vo.image_l}"
-                                        alt="${vo.name}"
-                                        onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                    <img src="/upload/${vo.image_l}" alt="${vo.name}">
                                 </c:when>
 
                                 <c:otherwise>
