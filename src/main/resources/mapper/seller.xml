@@ -47,47 +47,47 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE user_id = #{user_id}
     </update>
 
-    
-    <!-- 구매자용 판매자샵 정보 조회 + 작가 전체 통계 -->
-    <select id="sellerShopInfo"
+    <!-- 판매자 주문 상태 개수 조회 -->
+    <select id="getOrderStatusCountsOld"
             parameterType="int"
-            resultType="map">
+            resultType="java.util.Map">
         SELECT
-            s.seller_id,
-            s.user_id,
-            s.company_name,
-            s.business_number,
-            s.representative_name,
-            s.opening_date,
-            s.business_address,
-            u.photo_name,
+            COUNT(CASE WHEN oi.status = 'PAID' THEN 1 END) AS newOrderCount,
+            COUNT(CASE WHEN oi.status = 'PREPARING' THEN 1 END) AS preparingCount,
+            COUNT(CASE WHEN oi.status = 'SHIPPING' THEN 1 END) AS shippingCount,
+            COUNT(CASE WHEN oi.status = 'DELIVERED' THEN 1 END) AS deliveredCount,
+            COUNT(CASE WHEN oi.status = 'CONFIRMED' THEN 1 END) AS confirmedCount,
+            COUNT(CASE WHEN oi.status = 'CANCELLED' THEN 1 END) AS cancelledCount
+        FROM order_items oi
+    </select>
+
+    <!-- 판매자샵 정보 조회 + 작가 전체 통계 -->
+    <select id="sellerShopInfoOld" parameterType="int" resultType="map">
+        SELECT s.seller_id,s.user_id,s.company_name,u.photo_name,
 
             /* 작가 전체 상품 리뷰 평균 */
-            (
-                SELECT COALESCE(ROUND(AVG(r.rating), 1), 0)
-                FROM products p
-                JOIN reviews r ON p.product_id = r.product_id
-                WHERE p.seller_id = s.seller_id
-                AND p.status = 'APPROVED'
-            ) AS review_avg,
+            (SELECT COALESCE(ROUND(AVG(r.rating), 1), 0)
+            FROM products p
+            JOIN reviews r ON p.product_id = r.product_id
+            WHERE p.seller_id = s.seller_id
+            AND p.status = 'APPROVED') 
+            AS review_avg,
 
             /* 작가 전체 상품 리뷰 수 */
-            (
-                SELECT COUNT(*)
-                FROM products p
-                JOIN reviews r ON p.product_id = r.product_id
-                WHERE p.seller_id = s.seller_id
-                AND p.status = 'APPROVED'
-            ) AS review_count,
+            (SELECT COUNT(*)
+            FROM products p
+            JOIN reviews r ON p.product_id = r.product_id
+            WHERE p.seller_id = s.seller_id
+            AND p.status = 'APPROVED') 
+            AS review_count,
 
             /* 작가 전체 상품 찜 수 */
-            (
-                SELECT COUNT(*)
-                FROM products p
-                JOIN favorites f ON p.product_id = f.product_id
-                WHERE p.seller_id = s.seller_id
-                AND p.status = 'APPROVED'
-            ) AS product_favorite_count
+            (SELECT COUNT(*)
+            FROM products p
+            JOIN favorites f ON p.product_id = f.product_id
+            WHERE p.seller_id = s.seller_id
+            AND p.status = 'APPROVED') 
+            AS product_favorite_count
 
         FROM sellers s
         JOIN users u ON s.user_id = u.user_id
