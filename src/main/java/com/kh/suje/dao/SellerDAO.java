@@ -3,11 +3,21 @@ package com.kh.suje.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
 
 public interface SellerDAO {
+    SellerVO getSellerById(int seller_id);
+    List<SellerVO> getSellerListByKeyword(@Param("status") String status,
+                                          @Param("keyword") String keyword,
+                                          @Param("size") Integer size,
+                                          @Param("offset") int offset);
+    int getSellerListCountByKeyword(@Param("status") String status,
+                                    @Param("keyword") String keyword);
+    
     int insertSeller(SellerVO svo);
     
     Map<String, Object> getOrderStatusCounts(int seller_id);

@@ -25,7 +25,8 @@ public class ProductVO {
     private int price,sale_price,stock,delivery_fee,free_shipping;
 
     private String company_name;
-
+    private String category_name;
+    
     private float review_avg;
     private int review_count;
 

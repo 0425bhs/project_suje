@@ -4,9 +4,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kh.suje.dao.SellerDAO">
+    <select id="getSellerById">
+        SELECT *
+        FROM sellers
+        WHERE seller_id = #{seller_id}
+    </select>
+    <select id="getSellerListByKeyword"
+            resultType="seller">
+        SELECT *, seller_status status
+        FROM sellers
+        <where>
+        <if test="status != null and status != 'all'">
+            seller_status = #{status}
+        </if>
 
-    <!-- 가입 -->
-    <insert id="insertSeller"
+        <if test="keyword != null and keyword != ''">
+            AND (
+                company_name LIKE CONCAT("%", #{keyword}, "%")
+                or representative_name LIKE CONCAT("%", #{keyword}, "%")
+            )
+        </if>
+        </where>
+        ORDER BY seller_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getSellerListCountByKeyword"
+            resultType="int">
+        SELECT count(*)
+        FROM sellers
+        <where>
+        <if test="status != null and status != 'all'">
+            seller_status = #{status}
+        </if>
+
+        <if test="keyword != null and keyword != ''">
+            AND (
+                company_name LIKE CONCAT("%", #{keyword}, "%")
+                or representative_name LIKE CONCAT("%", #{keyword}, "%")
+            )
+        </if>
+        </where>
+    </select>
+    <!--가입-->
+    <insert id = "insertSeller" 
             parameterType="seller">
         INSERT INTO sellers (
             user_id,
