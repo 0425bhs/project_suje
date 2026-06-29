@@ -15,4 +15,6 @@ public interface CategoryDAO {
     String getCategroyNameById(int category_id);
 
     List<CategoryVO> small_category_all_list();
+
+    List<CategoryVO> getCategoryHierarchy();
 }

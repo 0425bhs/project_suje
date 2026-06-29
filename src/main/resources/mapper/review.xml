@@ -20,16 +20,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE r.review_id = #{review_id}
     </select>
 
-    <select id="getMyReviewList"
-            parameterType="int"
-            resultType="review">
-        SELECT r.*, p.name product_name, p.image_l
-        FROM reviews r
-        JOIN products p ON r.product_id = p.product_id
-        WHERE r.user_id = #{id}
-        ORDER BY created_at DESC
-    </select>
-
     <select id="getWrittenReview"
             parameterType="int"
             resultType="review">
@@ -85,6 +75,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         AND r.review_id IS NULL
     </select>
 
+    <select id="getMyReviewList"
+            parameterType="int"
+            resultType="review">
+        SELECT r.*, p.name product_name, p.image_l
+        FROM reviews r
+        JOIN products p ON r.product_id = p.product_id
+        WHERE r.user_id = #{id}
+        ORDER BY created_at DESC
+    </select>
+
     <select id="getLiveReviewList"
             parameterType="int"
             resultType="review">
@@ -94,6 +94,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN products p ON r.product_id = p.product_id
         ORDER BY created_at DESC
         LIMIT 10
+    </select>
+
+    <select id="getReviewListByKeyword"
+            resultType="review">
+        SELECT r.*, p.name product_name, u.name user_name
+        FROM reviews r
+        JOIN products p ON r.product_id = p.product_id
+        JOIN users u ON r.user_id = u.user_id
+        <where>
+            <if test="status != null and status != 'all'">
+                r.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    p.name LIKE CONCAT("%", #{keyword}, "%")
+                    OR u.name LIKE CONCAT("%", #{keyword}, "%")
+                    OR r.content LIKE CONCAT("%", #{keyword}, "%")
+                ) 
+            </if>
+        </where>
+        ORDER BY r.review_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getReviewListCountByKeyword"
+            resultType="int">
+        SELECT count(*)
+        FROM reviews r
+        JOIN products p ON r.product_id = p.product_id
+        JOIN users u ON r.user_id = u.user_id
+        <where>
+            <if test="status != null and status != 'all'">
+                r.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    p.name LIKE CONCAT("%", #{keyword}, "%")
+                    OR u.name LIKE CONCAT("%", #{keyword}, "%")
+                    OR r.content LIKE CONCAT("%", #{keyword}, "%")
+                ) 
+            </if>
+        </where>
     </select>
 
     <update id="updateReview"

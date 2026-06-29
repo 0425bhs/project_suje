@@ -27,4 +27,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where parent_id IS NOT NULL order by parent_id, category_id
     </select>
     
+    <select id="getCategoryHierarchy"
+            resultType="category">
+        SELECT p.category_id parent_id, p.name parent_name, c.category_id child_id, c.name child_name
+        FROM categories p
+        LEFT JOIN categories c ON p.category_id = c.parent_id
+        WHERE p.parent_id IS NULL
+    </select>
 </mapper>

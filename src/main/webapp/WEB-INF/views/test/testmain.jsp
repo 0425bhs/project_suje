@@ -16,6 +16,9 @@
     <input type="button" value="상품 문의 작성(1번 상품)" onclick="location.href='qna_form.do?product_id=1'">
     <input type="button" value="내가 쓴 문의" onclick="location.href='/mypage/qna'">
     <hr>
+    <input type="button" value="고객센터 문의 작성" onclick="location.href='inquiry_form.do'">
+    <input type="button" value="내가 쓴 문의" onclick="location.href='/mypage/inquiry'">
+    <hr>
     <input type="button" value="공지사항 목록" onclick="location.href='notice_list.do'">
     <hr>
     <input type="button" value="상품 신고" onclick="location.href='report_form.do?target_type=PRODUCT&target_id=1'">

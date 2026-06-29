@@ -123,7 +123,7 @@
 
                         <div class="list-group">
                             <div class="list-item clickable" onclick="location.href='/seller_qna_list.do'">
-                                <span class="label">미답변 상품 Q&amp;A</span>
+                                <span class="label">미답변 상품 Q&A</span>
                                 <span class="value zero">${unansweredQnaCount}</span>
                             </div>
 

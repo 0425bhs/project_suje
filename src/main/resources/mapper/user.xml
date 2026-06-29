@@ -3,110 +3,155 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.suje.dao.UserDAO">
+    <select id="getUserList"
+            resultType="user">
+        SELECT *
+        FROM users
+    </select>
 
-<!--닉네임 중복체크-->
-<select id = "userNickCheck" parameterType = "String"
-resultType = "user">
+    <select id="getUserListByKeyword"
+            resultType="user">
+        SELECT *
+        FROM users
+        <where>
+            <if test="role != null and role != 'all'">
+                role = #{role}
+            </if>
 
-select * from users where nick_name=#{nick_name}
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    login_id LIKE CONCAT("%", #{keyword}, "%")
+                    or name LIKE CONCAT("%", #{keyword}, "%")
+                    or email LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+        </where>
+        ORDER BY user_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
 
-</select>
+    <select id="getUserListCountByKeyword"
+            resultType="int">
+        SELECT count(*)
+        FROM users
+        <where>
+            <if test="role != null and role != 'all'">
+                role = #{role}
+            </if>
 
-<!--아이디 중복체크-->
-<select id = "userLoginIdCheck" parameterType = "String"
-resultType = "user">
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    login_id LIKE CONCAT("%", #{keyword}, "%")
+                    or name LIKE CONCAT("%", #{keyword}, "%")
+                    or email LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+        </where>
+    </select>
 
-select * from users where login_id=#{login_id}
+    <!--닉네임 중복체크-->
+    <select id = "userNickCheck" parameterType = "String"
+    resultType = "user">
 
-</select>
+    select * from users where nick_name=#{nick_name}
 
+    </select>
 
-<!--메일 중복체크-->
-<select id = "mailDuplicateCheck" parameterType = "String"
-resultType = "user">
+    <!--아이디 중복체크-->
+    <select id = "userLoginIdCheck" parameterType = "String"
+    resultType = "user">
 
-select * from users where email=#{email}
+    select * from users where login_id=#{login_id}
 
-</select>
-
-
-
-<!--가입-->
-<insert id = "insertUser" parameterType="user"  
-useGeneratedKeys="true" keyProperty="user_id">
-insert into users( email, password, name,
-phone, gender, role, nick_name, photo_name, login_id, kakao_id, naver_id )
-values( #{email}, #{password}, #{name}, #{phone}, #{gender}, 
-#{role}, #{nick_name}, #{photo_name}, #{login_id}, #{kakao_id}, #{naver_id} )
-</insert>
-
-
-<!--로그인-->
-<select id = "loginCheck" parameterType="user"
-resultType="user">
-select * from users where login_id=#{login_id}	
-</select>		
-
-
-<!--user_id로 조회-->
-<select id = "selectUser" parameterType="int"
-resultType="user">
-
-select * from users where user_id=#{user_id}
-</select>
-
-
-<!--아이디찾기, 이름과 이메일로 조회 -->
-<select id = "findLoginId" parameterType="user"
-resultType="user">
-
-select * from users where name=#{name} and email=#{email}
-</select>
-
-
-<!--패스워드찾기, 메일과 폰으로 조회 -->
-<select id = "findPwd" parameterType="user"
-resultType="user">
-
-select * from users where email=#{email} and phone=#{phone}
-</select>
+    </select>
 
 
-<update id = "updatePwd" parameterType = "java.util.Map">
+    <!--메일 중복체크-->
+    <select id = "mailDuplicateCheck" parameterType = "String"
+    resultType = "user">
 
-update users set password=#{newPwd} where user_id = #{user_id}
-</update>
+    select * from users where email=#{email}
 
-
-<!--정보 수정-->
-<update id = "userModify" parameterType = "user">
-
-update users set email=#{email}, password=#{password}, name=#{name}, login_id=#{login_id},
-phone=#{phone}, gender=#{gender}, nick_name=#{nick_name}, photo_name=#{photo_name}
-where user_id=#{user_id}
-
-</update>
-
-
-<!--일반회원=>판매자 업데이트-->
-<update id = "updateSeller"  parameterType = "int">
-
-update users set role = 'SELLER' where user_id = #{user_id}
-
-</update>
+    </select>
 
 
 
-<!--카카오 로그인-->
-<select id = "kakaoLogin" parameterType="String" resultType="user">
+    <!--가입-->
+    <insert id = "insertUser" parameterType="user"  
+    useGeneratedKeys="true" keyProperty="user_id">
+    insert into users( email, password, name,
+    phone, gender, role, nick_name, photo_name, login_id, kakao_id, naver_id )
+    values( #{email}, #{password}, #{name}, #{phone}, #{gender}, 
+    #{role}, #{nick_name}, #{photo_name}, #{login_id}, #{kakao_id}, #{naver_id} )
+    </insert>
 
-select * from users where kakao_id=#{kakao_id}
-</select>
 
-<!--네이버 로그인-->
-<select id = "naverLogin" parameterType="String" resultType="user">
+    <!--로그인-->
+    <select id = "loginCheck" parameterType="user"
+    resultType="user">
+    select * from users where login_id=#{login_id}	
+    </select>		
 
-select * from users where naver_id=#{naver_id}
-</select>
+
+    <!--user_id로 조회-->
+    <select id = "selectUser" parameterType="int"
+    resultType="user">
+
+    select * from users where user_id=#{user_id}
+    </select>
+
+
+    <!--아이디찾기, 이름과 이메일로 조회 -->
+    <select id = "findLoginId" parameterType="user"
+    resultType="user">
+
+    select * from users where name=#{name} and email=#{email}
+    </select>
+
+
+    <!--패스워드찾기, 메일과 폰으로 조회 -->
+    <select id = "findPwd" parameterType="user"
+    resultType="user">
+
+    select * from users where email=#{email} and phone=#{phone}
+    </select>
+
+
+    <update id = "updatePwd" parameterType = "java.util.Map">
+
+    update users set password=#{newPwd} where user_id = #{user_id}
+    </update>
+
+
+    <!--정보 수정-->
+    <update id = "userModify" parameterType = "user">
+
+    update users set email=#{email}, password=#{password}, name=#{name}, login_id=#{login_id},
+    phone=#{phone}, gender=#{gender}, nick_name=#{nick_name}, photo_name=#{photo_name}
+    where user_id=#{user_id}
+
+    </update>
+
+
+    <!--일반회원=>판매자 업데이트-->
+    <update id = "updateSeller"  parameterType = "int">
+
+    update users set role = 'SELLER' where user_id = #{user_id}
+
+    </update>
+
+
+
+    <!--카카오 로그인-->
+    <select id = "kakaoLogin" parameterType="String" resultType="user">
+
+    select * from users where kakao_id=#{kakao_id}
+    </select>
+
+    <!--네이버 로그인-->
+    <select id = "naverLogin" parameterType="String" resultType="user">
+
+    select * from users where naver_id=#{naver_id}
+    </select>
 
 </mapper>

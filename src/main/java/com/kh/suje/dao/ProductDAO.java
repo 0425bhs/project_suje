@@ -3,12 +3,21 @@ package com.kh.suje.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.order.OrderItemVO;
 
 public interface ProductDAO {
 
     List<ProductVO> product_list(Map<String, Object> map);
+
+    List<ProductVO> getProductListByKeyword(@Param("status") String status,
+                                            @Param("keyword") String keyword,
+                                            @Param("size") Integer size,
+                                            @Param("offset") int offset);
+    int getProductListCountByKeyword(@Param("status") String status,
+                                     @Param("keyword") String keyword);
 
     int product_cnt();
     

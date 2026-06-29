@@ -10,6 +10,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TestController {
 
+    @GetMapping("/testmain")
+    public String main() {
+        return "/test/testmain";
+    }
+
     @GetMapping("/editor")
     public String editor() {
         return "test/editor";

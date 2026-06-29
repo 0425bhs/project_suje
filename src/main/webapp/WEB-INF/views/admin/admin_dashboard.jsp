@@ -19,127 +19,110 @@
             <div>
                 <span class="admin-page-label">ADMIN CENTER</span>
                 <h1>관리자 대시보드</h1>
-                <p>승인 대기, 신고, 문의, 매출 흐름을 한눈에 확인합니다.</p>
+                <p>회원, 상품, 후기, 문의처럼 현재 프로젝트에서 조회 화면으로 만들기 쉬운 항목을 모았습니다.</p>
             </div>
             <div class="admin-header-actions">
-                <button type="button" class="admin-btn light">오늘</button>
-                <button type="button" class="admin-btn dark">운영 리포트</button>
+                <a href="/product/main.do" class="admin-btn light">쇼핑몰로 이동</a>
             </div>
         </header>
 
         <section class="admin-grid">
             <article class="admin-card admin-stat-card">
-                <span class="admin-stat-label">신규 가입 회원</span>
+                <span class="admin-stat-label">회원</span>
                 <strong class="admin-stat-value">128<small>명</small></strong>
-                <span class="admin-stat-note">전일 대비 +12%</span>
+                <span class="admin-stat-note">목록 조회, 검색</span>
             </article>
             <article class="admin-card admin-stat-card">
-                <span class="admin-stat-label">판매자 승인 대기</span>
-                <strong class="admin-stat-value">14<small>건</small></strong>
-                <span class="admin-stat-note">서류 검토 필요</span>
+                <span class="admin-stat-label">상품</span>
+                <strong class="admin-stat-value">42<small>개</small></strong>
+                <span class="admin-stat-note">상품 정보 확인</span>
             </article>
             <article class="admin-card admin-stat-card">
-                <span class="admin-stat-label">상품 승인 대기</span>
-                <strong class="admin-stat-value">37<small>건</small></strong>
-                <span class="admin-stat-note">숨김 요청 5건 포함</span>
+                <span class="admin-stat-label">후기</span>
+                <strong class="admin-stat-value">31<small>건</small></strong>
+                <span class="admin-stat-note">후기 내용 확인</span>
             </article>
             <article class="admin-card admin-stat-card">
-                <span class="admin-stat-label">미처리 신고</span>
+                <span class="admin-stat-label">문의</span>
                 <strong class="admin-stat-value">9<small>건</small></strong>
-                <span class="admin-stat-note">긴급 2건</span>
+                <span class="admin-stat-note">답변 상태 확인</span>
             </article>
         </section>
 
         <section class="admin-grid three" style="margin-top:18px;">
             <article class="admin-card">
                 <div class="admin-card-head">
-                    <h3>승인 업무</h3>
-                    <a href="/admin/products" class="admin-btn light">전체보기</a>
+                    <h3>기본 관리</h3>
                 </div>
                 <div class="admin-list">
-                    <div class="admin-list-item"><span>판매자 승인 대기</span><strong>14건</strong></div>
-                    <div class="admin-list-item"><span>상품 승인 대기</span><strong>37건</strong></div>
-                    <div class="admin-list-item"><span>재심사 요청</span><strong>6건</strong></div>
+                    <a href="/admin/members" class="admin-list-item"><span>회원 관리</span><strong>목록</strong></a>
+                    <a href="/admin/products" class="admin-list-item"><span>상품 관리</span><strong>목록</strong></a>
+                    <a href="/admin/categories" class="admin-list-item"><span>카테고리 관리</span><strong>조회</strong></a>
                 </div>
             </article>
 
             <article class="admin-card">
                 <div class="admin-card-head">
-                    <h3>콘텐츠 관리</h3>
-                    <a href="/admin/reviews" class="admin-btn light">전체보기</a>
+                    <h3>고객 활동</h3>
                 </div>
                 <div class="admin-list">
-                    <div class="admin-list-item"><span>신규 후기</span><strong>42건</strong></div>
-                    <div class="admin-list-item"><span>미답변 문의</span><strong>18건</strong></div>
-                    <div class="admin-list-item"><span>숨김 검토 후기</span><strong>5건</strong></div>
+                    <a href="/admin/reviews" class="admin-list-item"><span>후기 관리</span><strong>확인</strong></a>
+                    <a href="/admin/inquiries" class="admin-list-item"><span>고객센터 문의 관리</span><strong>확인</strong></a>
+                    <a href="/admin/reports" class="admin-list-item"><span>신고 관리</span><strong>확인</strong></a>
                 </div>
             </article>
 
             <article class="admin-card">
                 <div class="admin-card-head">
-                    <h3>오늘 매출</h3>
-                    <a href="/admin/statistics" class="admin-btn light">통계보기</a>
+                    <h3>운영 관리</h3>
                 </div>
                 <div class="admin-list">
-                    <div class="admin-list-item"><span>결제금액</span><strong>8,420,000원</strong></div>
-                    <div class="admin-list-item"><span>주문 수</span><strong>126건</strong></div>
-                    <div class="admin-list-item"><span>판매자 정산 예정</span><strong>6,930,000원</strong></div>
+                    <a href="/admin/notices" class="admin-list-item"><span>공지사항 관리</span><strong>가능</strong></a>
+                    <a href="/admin/statistics" class="admin-list-item"><span>기본 통계</span><strong>간단</strong></a>
+                    <a href="/admin/sellers" class="admin-list-item"><span>판매자 관리</span><strong>조회</strong></a>
                 </div>
             </article>
 
-            <article class="admin-card span-2">
+            <article class="admin-card span-3">
                 <div class="admin-card-head">
-                    <h3>최근 처리 필요 항목</h3>
-                    <span class="admin-status warning">확인 필요</span>
+                    <h3>최근 확인 항목</h3>
+                    <span class="admin-status pending">UI 예시</span>
                 </div>
                 <div class="admin-table-wrap">
                     <table class="admin-table">
                         <thead>
                         <tr>
                             <th>구분</th>
-                            <th>대상</th>
+                            <th>내용</th>
                             <th>상태</th>
-                            <th>요청일</th>
-                            <th>처리</th>
+                            <th>등록일</th>
+                            <th>이동</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td>판매자 승인</td>
-                            <td class="left"><strong>오브제 스튜디오</strong></td>
-                            <td><span class="admin-status pending">대기</span></td>
-                            <td>2026-06-16</td>
-                            <td><button type="button" class="admin-btn">검토</button></td>
-                        </tr>
-                        <tr>
-                            <td>상품 승인</td>
+                            <td>상품</td>
                             <td class="left"><strong>핸드메이드 자수 파우치</strong></td>
-                            <td><span class="admin-status pending">대기</span></td>
+                            <td><span class="admin-status active">판매중</span></td>
                             <td>2026-06-16</td>
-                            <td><button type="button" class="admin-btn">검토</button></td>
+                            <td><a href="/admin/products" class="admin-btn light">보기</a></td>
                         </tr>
                         <tr>
-                            <td>신고</td>
-                            <td class="left"><strong>부적절한 후기 신고</strong></td>
-                            <td><span class="admin-status danger">긴급</span></td>
+                            <td>문의</td>
+                            <td class="left"><strong>배송 일정 문의드립니다.</strong></td>
+                            <td><span class="admin-status pending">답변대기</span></td>
+                            <td>2026-06-16</td>
+                            <td><a href="/admin/inquiries" class="admin-btn light">보기</a></td>
+                        </tr>
+                        <tr>
+                            <td>후기</td>
+                            <td class="left"><strong>사진 후기 등록</strong></td>
+                            <td><span class="admin-status done">노출</span></td>
                             <td>2026-06-15</td>
-                            <td><button type="button" class="admin-btn danger">처리</button></td>
+                            <td><a href="/admin/reviews" class="admin-btn light">보기</a></td>
                         </tr>
                         </tbody>
                     </table>
-                </div>
-            </article>
-
-            <article class="admin-card">
-                <div class="admin-card-head">
-                    <h3>운영 메모</h3>
-                </div>
-                <div class="admin-form-row">
-                    <label>오늘 확인할 내용</label>
-                    <textarea placeholder="관리자 메모 영역입니다."></textarea>
-                </div>
-                <div style="margin-top:12px; text-align:right;">
-                    <button type="button" class="admin-btn">저장</button>
                 </div>
             </article>
         </section>
