@@ -31,4 +31,8 @@ public class ReviewVO {
 
     private String photo_name;   // 회원 프로필 사진
     private String option_name;  // 주문 옵션명
+
+    private String reply_content;
+    private String reply_created_at;
+    private String reply_created_at_text;
 }

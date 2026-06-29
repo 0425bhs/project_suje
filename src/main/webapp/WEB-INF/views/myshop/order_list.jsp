@@ -282,7 +282,7 @@
                                     <div class="myshop-order-item-row">
 
                                         <a class="myshop-order-item-thumb"
-                                           href="/product_detail.do?product_id=${item.product_id}">
+                                        href="/product_detail.do?product_id=${item.product_id}">
                                             <c:choose>
                                                 <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
                                                     <img src="/upload/${item.imageL}" alt="${item.productName}">
@@ -319,51 +319,62 @@
                                         <div class="myshop-order-item-actions">
 
                                             <c:if test="${item.status eq 'DELIVERED'}">
-                                                <form action="/order_confirm.do" method="post" class="inline-form">
-                                                    <input type="hidden" name="order_item_id" value="${item.order_item_id}">
-                                            <c:if test="${order.status eq 'DELIVERED'}">
-                                                
-                                                <button type="button" onclick="cartInsert('${item.product_id}', 1, '${item.option_id}')">
+
+                                                <button type="button"
+                                                        class="myshop-order-action-btn cart"
+                                                        onclick="cartInsert('${item.product_id}', 1, '${item.option_id}')">
                                                     장바구니 담기
                                                 </button>
+
                                                 <c:choose>
                                                     <c:when test="${not empty item.option_id}">
-                                                        <button type="button" onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1&option_id=${item.option_id}'">
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn buy"
+                                                                onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1&option_id=${item.option_id}'">
                                                             바로 구매하기
                                                         </button>
                                                     </c:when>
 
                                                     <c:otherwise>
-                                                        <button type="button" onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1'">
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn buy"
+                                                                onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1'">
                                                             바로 구매하기
                                                         </button>
                                                     </c:otherwise>
                                                 </c:choose>
 
-                                                <button type="button" onclick="alert('환불/교환 기능은 준비중입니다.');">
+                                                <button type="button"
+                                                        class="myshop-order-action-btn refund"
+                                                        onclick="alert('환불/교환 기능은 준비중입니다.');">
                                                     환불/교환
                                                 </button>
 
+                                                <form action="/order_confirm.do" method="post" class="inline-form">
+                                                    <input type="hidden" name="order_item_id" value="${item.order_item_id}">
+
                                                     <button type="submit"
+                                                            class="myshop-order-action-btn confirm"
                                                             onclick="return confirm('구매확정 처리하시겠습니까?');">
                                                         구매확정
                                                     </button>
                                                 </form>
+
                                             </c:if>
 
-                                        <c:if test="${item.status eq 'CONFIRMED'}">
-                                            <button type="button"
-                                                    class="myshop-order-action-btn review"
-                                                    onclick="location.href='/review_form.do?order_item_id=${item.order_item_id}'">
-                                                리뷰쓰기
-                                            </button>
-                                        </c:if>
+                                            <c:if test="${item.status eq 'CONFIRMED'}">
+                                                <button type="button"
+                                                        class="myshop-order-action-btn review"
+                                                        onclick="location.href='/review_form.do?order_item_id=${item.order_item_id}'">
+                                                    리뷰쓰기
+                                                </button>
+                                            </c:if>
 
-                                        <button type="button"
-                                                class="myshop-order-action-btn qna"
-                                                onclick="location.href='/qna_form.do?product_id=${item.product_id}'">
-                                            문의하기
-                                        </button>
+                                            <button type="button"
+                                                    class="myshop-order-action-btn qna"
+                                                    onclick="location.href='/qna_form.do?product_id=${item.product_id}'">
+                                                문의하기
+                                            </button>
 
                                         </div>
 

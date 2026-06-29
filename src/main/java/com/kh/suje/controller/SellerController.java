@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.vo.ImageVO;
@@ -276,6 +278,42 @@ public class SellerController {
     @GetMapping("/seller_statistics.do")
     public String seller_statistics(){
         return "/seller/seller_statistics";
+    }
+
+    @PostMapping("/seller_review_reply.do")
+    @ResponseBody
+    public Map<String, Object> sellerReviewReply(
+            @RequestParam("review_id") int review_id,
+            @RequestParam("reply_content") String reply_content) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            result.put("result", "login");
+            return result;
+        }
+
+        if (reply_content == null || reply_content.trim().equals("")) {
+            result.put("result", "empty");
+            return result;
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("seller_id", seller_id);
+        map.put("review_id", review_id);
+        map.put("reply_content", reply_content.trim());
+
+        int updateCount = reviewdao.sellerReviewReply(map);
+
+        if (updateCount > 0) {
+            result.put("result", "success");
+        } else {
+            result.put("result", "fail");
+        }
+
+        return result;
     }
 
 }

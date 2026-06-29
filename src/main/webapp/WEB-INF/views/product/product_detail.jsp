@@ -364,11 +364,6 @@
 
                                 <%--
                                     옵션 선택하면 JS가 여기에 옵션 박스를 여러 개 추가함.
-
-                                    예:
-                                    아이보리 1개
-                                    블랙 2개
-                                    베이지 1개
                                 --%>
                                 <div id="selectedOptionBox"
                                     class="selected-option-list"
@@ -461,18 +456,11 @@
 
                                 <c:otherwise>
 
-                                    <button type="button"
-                                            class="store-cart-btn"
-                                            id="cartBtn"
-                                            onclick="cartInsert()"
-                                            ${hasOption ? 'disabled' : ''}>
+                                    <button type="button" class="store-cart-btn" id="cartBtn" onclick="cartInsert()" ${hasOption ? 'disabled' : ''}>
                                         장바구니
                                     </button>
 
-                                    <button type="submit"
-                                            class="store-order-btn"
-                                            id="orderBtn"
-                                            ${hasOption ? 'disabled' : ''}>
+                                    <button type="submit" class="store-order-btn" id="orderBtn" ${hasOption ? 'disabled' : ''}>
                                         주문하기
                                     </button>
 
@@ -520,25 +508,151 @@
                 </c:if>
 
                 <c:if test="${not empty review_list}">
-                    <c:forEach var="review" items="${review_list}">
-                        <div class="review-item">
-                            <div>
-                                <span class="review-star">★</span>
-                                <strong>${review.rating}</strong>
+                    <div class="detail-review-list">
+
+                        <c:forEach var="review" items="${review_list}">
+
+                            <div class="detail-review-card">
+
+                                <div class="detail-review-top">
+
+                                    <div class="detail-review-user-area">
+
+                                        <div class="detail-review-profile-box">
+
+                                            <c:set var="profileName" value="${empty review.photo_name ? '' : fn:trim(review.photo_name)}" />
+
+                                            <c:choose>
+                                                <c:when test="${not empty profileName and profileName ne 'no_file'}">
+                                                    <c:choose>
+                                                        <c:when test="${fn:startsWith(profileName, '/upload/')}">
+                                                            <img src="${profileName}" alt="프로필">
+                                                        </c:when>
+
+                                                        <c:otherwise>
+                                                            <img src="/upload/${profileName}" alt="프로필">
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:when>
+
+                                                <c:otherwise>
+                                                    <img src="/images/no_profile.png" alt="기본 프로필">
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                        </div>
+
+                                        <div class="detail-review-user-info">
+
+                                            <div class="detail-review-user-line">
+                                                <span class="detail-review-user-name">
+                                                    <c:choose>
+                                                        <c:when test="${not empty review.nick_name}">
+                                                            ${review.nick_name}
+                                                        </c:when>
+
+                                                        <c:when test="${not empty review.user_name and fn:length(review.user_name) >= 2}">
+                                                            ${fn:substring(review.user_name, 0, 1)}*${fn:substring(review.user_name, 2, fn:length(review.user_name))}
+                                                        </c:when>
+
+                                                        <c:otherwise>
+                                                            ${review.user_name}
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </span>
+
+                                                <span class="detail-review-date">
+                                                    <c:choose>
+                                                        <c:when test="${not empty review.created_at_text}">
+                                                            ${review.created_at_text}
+                                                        </c:when>
+
+                                                        <c:otherwise>
+                                                            ${review.created_at}
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </span>
+                                            </div>
+
+                                            <div class="detail-review-star-line">
+                                                <c:forEach begin="1" end="5" var="i">
+                                                    <c:choose>
+                                                        <c:when test="${i <= review.rating}">
+                                                            <span class="detail-star on">★</span>
+                                                        </c:when>
+
+                                                        <c:otherwise>
+                                                            <span class="detail-star">★</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:forEach>
+                                            </div>
+
+                                            <c:if test="${not empty review.option_name}">
+                                                <div class="detail-review-option-line">
+                                                    선택 옵션 : <span>${review.option_name}</span>
+                                                </div>
+                                            </c:if>
+
+                                        </div>
+
+                                    </div>
+
+                                    <c:if test="${not empty review.imageList}">
+                                        <div class="detail-review-photo-list">
+
+                                            <c:forEach var="image" items="${review.imageList}" varStatus="st">
+
+                                                <c:set var="reviewImgUrl" value="${empty image.image_url ? '' : fn:trim(image.image_url)}" />
+
+                                                <c:if test="${st.index < 5 and not empty reviewImgUrl and reviewImgUrl ne 'no_file'}">
+                                                    <div class="detail-review-photo-item">
+                                                        <c:choose>
+                                                            <c:when test="${fn:startsWith(reviewImgUrl, '/upload/')}">
+                                                                <img src="${reviewImgUrl}" alt="리뷰 사진">
+                                                            </c:when>
+
+                                                            <c:otherwise>
+                                                                <img src="/upload/${reviewImgUrl}" alt="리뷰 사진">
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </div>
+                                                </c:if>
+
+                                            </c:forEach>
+
+                                        </div>
+                                    </c:if>
+
+                                </div>
+
+                                <div class="detail-review-content">
+                                    <c:out value="${review.content}" />
+                                </div>
+
+                                <c:if test="${not empty review.reply_content}">
+                                    <div class="detail-seller-reply-box">
+
+                                        <div class="detail-seller-reply-head">
+                                            <strong>판매자 답변</strong>
+
+                                            <c:if test="${not empty review.reply_created_at_text}">
+                                                <span>${review.reply_created_at_text}</span>
+                                            </c:if>
+                                        </div>
+
+                                        <div class="detail-seller-reply-content">
+                                            <c:out value="${review.reply_content}" />
+                                        </div>
+
+                                    </div>
+                                </c:if>
+
                             </div>
 
-                            <p><pre>${review.content}</pre></p>
-                            <small>${review.created_at}</small>
+                        </c:forEach>
 
-                            <c:if test="${not empty review.imageList}">
-                                <div class="review-photo-list">
-                                    <c:forEach var="image" items="${review.imageList}">
-                                        <img class="review-photo-item" src="/upload/${image.image_url}" alt="리뷰 사진" width="100">
-                                    </c:forEach>
-                                </div>
-                            </c:if>
-                        </div>
-                    </c:forEach>
+                    </div>
                 </c:if>
             </section>
 
