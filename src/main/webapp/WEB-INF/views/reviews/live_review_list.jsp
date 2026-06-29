@@ -57,7 +57,7 @@
 
                             <c:choose>
                                 <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                    <img src="${vo.image_l}" alt="${vo.product_name}">
+                                    <img src="/upload/${vo.image_l}" alt="${vo.product_name}">
                                 </c:when>
 
                                 <c:otherwise>
@@ -72,7 +72,6 @@
                             <div class="live-review-user">
                                 <span class="live-review-profile">👤</span>
                                 <span class="live-review-name">${vo.user_name}</span>
-                                <span class="live-review-like">♡</span>
                             </div>
 
                             <div class="live-review-rating">
