@@ -27,9 +27,7 @@
 
         <c:choose>
             <c:when test="${not empty rawImageL}">
-                <img src="/upload/${rawImageL}"
-                     alt="${vo.name}"
-                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+                <img src="/upload/${rawImageL}" alt="${vo.name}">
             </c:when>
 
             <c:otherwise>
