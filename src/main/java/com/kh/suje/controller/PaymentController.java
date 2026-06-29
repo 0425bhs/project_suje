@@ -19,14 +19,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.PaymentDAO;
 import com.kh.suje.dao.ProductDAO;
-
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
 import com.kh.suje.vo.payment.PaymentVO;
+
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -381,9 +380,26 @@ public class PaymentController {
                 if (usedPoint > 0) {
                     Map<String, Object> pointMap = new HashMap<>();
                     pointMap.put("user_id", order.getUser_id());
+                    pointMap.put("order_id", order_id);
                     pointMap.put("point_amount", usedPoint);
 
-                    orderDAO.updateUserPoint(pointMap);
+                    int refundCheck = orderDAO.checkRefundPointHistory(pointMap);
+
+                    if (refundCheck == 0) {
+                        orderDAO.refundUserPoint(pointMap);
+                        orderDAO.insertRefundPointHistory(pointMap);
+                    }
+                }
+
+                // 결제 취소 성공 후 사용 쿠폰 복구
+                int userCouponId = order.getUser_coupon_id();
+
+                if (userCouponId > 0) {
+                    Map<String, Object> couponMap = new HashMap<>();
+                    couponMap.put("user_id", order.getUser_id());
+                    couponMap.put("user_coupon_id", userCouponId);
+
+                    orderDAO.restoreCoupon(couponMap);
                 }
 
                 List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order_id);
