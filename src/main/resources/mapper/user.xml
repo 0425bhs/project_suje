@@ -25,6 +25,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     or email LIKE CONCAT("%", #{keyword}, "%")
                 )
             </if>
+
+            <if test="gender != null and gender !='all'">
+                AND gender = #{gender}
+            </if>
         </where>
         ORDER BY user_id DESC
         LIMIT #{size} OFFSET #{offset}

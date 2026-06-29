@@ -48,20 +48,26 @@ public class AdminController {
     }
 
     @GetMapping("/admin/members")
-    public String members(Model model, String role, String keyword, Integer size, Integer page) {
+    public String members(Model model, String role, String keyword, Integer size, Integer page, String gender) {
         if (!"user".equals(role) && !"seller".equals(role)) {
             role = "all";
         }
 
-        int totalCount = userDao.getUserListCountByKeyword(role, keyword);
+        if (!"male".equals(gender) && !"female".equals(gender)) {
+            gender = "all";
+        }
+
+        int totalCount = userDao.getUserListCountByKeyword(role, keyword, gender);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
 
         List<UserVO> userList = userDao.getUserListByKeyword(role, keyword, 
                                                              pagination.getSize(), 
-                                                             pagination.getOffset());
+                                                             pagination.getOffset(),
+                                                             gender);
 
         model.addAttribute("role", role);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("gender", gender);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
         model.addAttribute("userList", userList);

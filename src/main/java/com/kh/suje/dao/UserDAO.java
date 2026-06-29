@@ -13,10 +13,12 @@ public interface UserDAO {
     List<UserVO> getUserListByKeyword(@Param("role") String role,
                                       @Param("keyword") String keyword,
                                       @Param("size") Integer size,
-                                      @Param("offset") int offset); //키워드로 회원 검색
+                                      @Param("offset") int offset,
+                                      @Param("gender") String gender); //키워드로 회원 검색
 
     int getUserListCountByKeyword(@Param("role") String role,
-                                  @Param("keyword") String keyword);
+                                  @Param("keyword") String keyword,
+                                  @Param("gender") String gender);
 
     int insertUser(UserVO vo); //회원가입
 
