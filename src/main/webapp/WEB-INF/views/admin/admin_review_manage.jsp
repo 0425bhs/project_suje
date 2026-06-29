@@ -38,6 +38,7 @@
                         setText("content", review.content);
                         setText("createdAt", review.created_at);
                         setText("status", review.status);
+                        highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     })
                 })
             })
@@ -60,23 +61,79 @@
             </div>
         </header>
         
-        <section class="admin-master-detail is-collapsed" id="adminMasterDetail">
-            <div class="admin-card admin-list-panel">
-                <div class="admin-filter-box">
-                    <form class="admin-filter-form" action="/admin/reviews" method="get">
-                        <div class="admin-filter-tabs">
-                            <a href="/admin/reviews?status=all&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
-                            <a href="/admin/reviews?status=public&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'public' ? 'active' : ''}">공개</a>
-                            <a href="/admin/reviews?status=private&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'private' ? 'active' : ''}">비공개</a>
-                        </div>
-                        <input type="hidden" name="status" value="${status}"/>
-                        <input type="hidden" name="size" value="${pagination.size}"/>
-                        <input type="hidden" name="page" value="1"/>
-                        <input type="text" class="admin-search" name="keyword" 
+        <div class="admin-filter-box admin-filter-modern">
+            <form class="admin-filter-form" action="/admin/reviews" method="get">
+                <div class="admin-filter-main-row">
+                    <div class="admin-filter-tabs">
+                        <a href="/admin/reviews?status=all&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
+                        <a href="/admin/reviews?status=public&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'public' ? 'active' : ''}">공개</a>
+                        <a href="/admin/reviews?status=private&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'private' ? 'active' : ''}">비공개</a>
+                    </div>
+
+                    <div class="admin-search-wrap">
+                        <input type="text" id="keyword" class="admin-search" name="keyword"
                             placeholder="상품명, 작성자, 내용 검색" value="${keyword}">
-                    </form>
+                        <span class="admin-search-icon" aria-hidden="true"></span>
+                    </div>
+                    <button type="submit" class="admin-btn admin-search-submit">검색</button>
+                    <button type="button" class="admin-btn light admin-filter-toggle">상세 검색</button>
+                    <select class="admin-filter-control admin-sort-control" name="sort">
+                        <option value="latest">최신순</option>
+                        <option value="oldest">오래된순</option>
+                        <option value="rating">평점순</option>
+                    </select>
+                    <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
+                        <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
+                        <option value="30" ${pagination.size == 30 ? 'selected' : ''}>30개씩</option>
+                        <option value="50" ${pagination.size == 50 ? 'selected' : ''}>50개씩</option>
+                    </select>
                 </div>
 
+                <div class="admin-filter-detail-row">
+                    <label class="admin-filter-field">
+                        <span>상태</span>
+                        <select class="admin-filter-control" name="detailStatus">
+                            <option value="all">전체</option>
+                            <option value="public">공개</option>
+                            <option value="private">비공개</option>
+                        </select>
+                    </label>
+                    <label class="admin-filter-field admin-filter-date-range">
+                        <span>작성일 범위</span>
+                        <input type="date" class="admin-filter-control" name="startDate">
+                        <em>~</em>
+                        <input type="date" class="admin-filter-control" name="endDate">
+                    </label>
+                    <button type="submit" class="admin-btn admin-filter-submit">적용</button>
+                </div>
+
+                <c:if test="${status ne 'all' || not empty keyword}">
+                    <div class="admin-filter-applied">
+                        <span class="admin-filter-applied-label">적용된 조건:</span>
+                        <c:if test="${status ne 'all'}">
+                            <a class="admin-filter-chip"
+                                href="/admin/reviews?status=all&keyword=${keyword}&size=${pagination.size}&page=1">
+                                상태: ${status eq 'public' ? '공개' : '비공개'}
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${not empty keyword}">
+                            <a class="admin-filter-chip" href="/admin/reviews?status=${status}&size=${pagination.size}&page=1">
+                                검색어: ${keyword}
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <a class="admin-filter-clear" href="/admin/reviews">전체 해제</a>
+                    </div>
+                </c:if>
+
+                <input type="hidden" name="status" value="${status}">
+                <input type="hidden" name="page" value="1">
+            </form>
+        </div>
+
+        <section class="admin-master-detail admin-master-detail-filtered is-collapsed" id="adminMasterDetail">
+            <div class="admin-card admin-list-panel">
                 <div class="admin-table-wrap">
                     <table class="admin-table">
                         <thead>
@@ -95,10 +152,10 @@
                         <c:forEach var="review" items="${reviewList}">
                         <tr class="admin-clickable-row" data-review-id="${review.review_id}">
                             <td>${review.review_id}</td>
-                            <td class="left"><strong>${review.product_name}</strong></td>
-                            <td>${review.user_name}</td>
+                            <td class="left admin-highlight-target"><strong>${review.product_name}</strong></td>
+                            <td class="admin-highlight-target">${review.user_name}</td>
                             <td>${review.rating}</td>
-                            <td class="left">${review.content}</td>
+                            <td class="left admin-highlight-target">${review.content}</td>
 
                             <c:choose>
 
@@ -157,7 +214,7 @@
                             </div>
                             <div>
                                 <dt>후기내용</dt>
-                                <dd id="content">-</dd>
+                                <dd id="content" class="admin-highlight-target">-</dd>
                             </div>
                             <div>
                                 <dt>작성일</dt>
@@ -174,32 +231,35 @@
         </section>
 
         <div class="admin-pagination">
-            <c:if test="${pagination.totalPage > 0}">
-                <c:if test="${pagination.hasPrev}">
-                    <a href="/admin/reviews?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
-                        이전
-                    </a>
-                </c:if>
-                <c:if test="${!pagination.hasPrev}">
-                    <span class="disabled">이전</span>
-                </c:if>
+            <div class="admin-pagination-pages">
+                <c:if test="${pagination.totalPage > 0}">
+                    <c:if test="${pagination.hasPrev}">
+                        <a href="/admin/reviews?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
+                            이전
+                        </a>
+                    </c:if>
+                    <c:if test="${!pagination.hasPrev}">
+                        <span class="disabled">이전</span>
+                    </c:if>
 
-                <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                    <a href="/admin/reviews?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${i}"
-                        class="${pagination.page == i ? 'active' : ''}">
-                        ${i}
-                    </a>
-                </c:forEach>
+                    <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                        <a href="/admin/reviews?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${i}"
+                            class="${pagination.page == i ? 'active' : ''}">
+                            ${i}
+                        </a>
+                    </c:forEach>
 
-                <c:if test="${pagination.hasNext}">
-                    <a href="/admin/reviews?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
-                        다음
-                    </a>
+                    <c:if test="${pagination.hasNext}">
+                        <a href="/admin/reviews?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
+                            다음
+                        </a>
+                    </c:if>
+                    <c:if test="${!pagination.hasNext}">
+                        <span class="disabled">다음</span>
+                    </c:if>
                 </c:if>
-                <c:if test="${!pagination.hasNext}">
-                    <span class="disabled">다음</span>
-                </c:if>
-            </c:if>
+            </div>
+            <span class="admin-filter-count">전체 ${totalCount}건</span>
         </div>
         
     </main>

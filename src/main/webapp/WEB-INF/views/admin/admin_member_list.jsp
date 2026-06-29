@@ -80,7 +80,6 @@
                                     <a href="/admin/members?role=seller&keyword=${keyword}&size=${pagination.size}&page=1"
                                         class="${role == 'seller' ? 'active' : ''}">판매자</a>
                                 </div>
-                                <span class="admin-filter-count">전체 ${totalCount}명</span>
 
                                 <div class="admin-search-wrap">
                                     <input type="text" class="admin-search" id="keyword" name="keyword"
@@ -257,34 +256,37 @@
                     </section>
 
                     <div class="admin-pagination">
-                        <c:if test="${pagination.totalPage > 0}">
-                            <c:if test="${pagination.hasPrev}">
-                                <a
-                                    href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
-                                    이전
-                                </a>
-                            </c:if>
-                            <c:if test="${!pagination.hasPrev}">
-                                <span class="disabled">이전</span>
-                            </c:if>
+                        <div class="admin-pagination-pages">
+                            <c:if test="${pagination.totalPage > 0}">
+                                <c:if test="${pagination.hasPrev}">
+                                    <a
+                                        href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
+                                        이전
+                                    </a>
+                                </c:if>
+                                <c:if test="${!pagination.hasPrev}">
+                                    <span class="disabled">이전</span>
+                                </c:if>
 
-                            <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                                <a href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${i}"
-                                    class="${pagination.page == i ? 'active' : ''}">
-                                    ${i}
-                                </a>
-                            </c:forEach>
+                                <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                                    <a href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${i}"
+                                        class="${pagination.page == i ? 'active' : ''}">
+                                        ${i}
+                                    </a>
+                                </c:forEach>
 
-                            <c:if test="${pagination.hasNext}">
-                                <a
-                                    href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
-                                    다음
-                                </a>
+                                <c:if test="${pagination.hasNext}">
+                                    <a
+                                        href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
+                                        다음
+                                    </a>
+                                </c:if>
+                                <c:if test="${!pagination.hasNext}">
+                                    <span class="disabled">다음</span>
+                                </c:if>
                             </c:if>
-                            <c:if test="${!pagination.hasNext}">
-                                <span class="disabled">다음</span>
-                            </c:if>
-                        </c:if>
+                        </div>
+                        <span class="admin-filter-count">전체 ${totalCount}명</span>
                     </div>
                 </main>
             </div>

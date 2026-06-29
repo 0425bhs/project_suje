@@ -68,7 +68,7 @@ function clearAdminKeywordHighlight(root) {
     }
 
     root.querySelectorAll("mark.admin-highlight").forEach((mark) => {
-        mark.target.replaceChildren(fragment);(document.createTextNode(mark.textContent));
+        mark.replaceWith(document.createTextNode(mark.textContent));
     });
 }
 

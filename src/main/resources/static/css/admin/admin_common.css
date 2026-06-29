@@ -390,7 +390,7 @@ body {
     max-width: none;
     inline-size: 100%;
     display: grid;
-    grid-template-columns: auto auto minmax(20px, 1fr) 260px 74px 96px 104px 92px;
+    grid-template-columns: minmax(0, auto) minmax(12px, 1fr) minmax(190px, 230px) 68px 86px 86px 78px;
     align-items: center;
     justify-content: stretch;
     justify-items: stretch;
@@ -398,9 +398,9 @@ body {
 
 .admin-filter-modern .admin-filter-tabs a,
 .admin-filter-modern .admin-filter-tabs button {
-    min-width: 74px;
+    min-width: 64px;
     height: 36px;
-    padding: 0 14px;
+    padding: 0 12px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -411,7 +411,7 @@ body {
     position: relative;
     width: 100%;
     min-width: 0;
-    grid-column: 4;
+    grid-column: 3;
     justify-self: end;
 }
 
@@ -448,14 +448,16 @@ body {
 
 .admin-search-submit {
     height: 40px;
-    width: 74px;
+    width: 68px;
     min-width: 0;
+    grid-column: 4;
 }
 
 .admin-filter-toggle {
     height: 40px;
-    width: 96px;
+    width: 86px;
     min-width: 0;
+    grid-column: 5;
 }
 
 .admin-filter-toggle.is-open {
@@ -567,13 +569,17 @@ body {
 }
 
 .admin-sort-control {
-    width: 104px;
+    width: 86px;
     height: 40px;
+    padding: 0 8px;
+    grid-column: 6;
 }
 
 .admin-page-size-control {
-    width: 92px;
+    width: 78px;
     height: 40px;
+    padding: 0 8px;
+    grid-column: 7;
 }
 
 .admin-filter-date-range {
@@ -757,6 +763,14 @@ body {
 
 .admin-pagination {
     margin-top: 18px;
+    display: grid;
+    grid-template-columns: minmax(120px, 1fr) auto minmax(120px, 1fr);
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-pagination-pages {
+    grid-column: 2;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -764,8 +778,13 @@ body {
     gap: 6px;
 }
 
-.admin-pagination a,
-.admin-pagination span {
+.admin-pagination > .admin-filter-count {
+    grid-column: 3;
+    justify-self: end;
+}
+
+.admin-pagination-pages a,
+.admin-pagination-pages span {
     min-width: 34px;
     height: 34px;
     padding: 0 10px;
@@ -781,18 +800,18 @@ body {
     text-decoration: none;
 }
 
-.admin-pagination a:hover {
+.admin-pagination-pages a:hover {
     border-color: #ff654f;
     color: #ff654f;
 }
 
-.admin-pagination a.active {
+.admin-pagination-pages a.active {
     border-color: #ff654f;
     background: #ff654f;
     color: #fff;
 }
 
-.admin-pagination span.disabled {
+.admin-pagination-pages span.disabled {
     background: #f3f5f7;
     color: #b0b7c0;
     cursor: default;
@@ -946,9 +965,18 @@ a.admin-list-item:hover {
         gap: 10px;
     }
 
+    .admin-search-wrap,
+    .admin-search-submit,
+    .admin-filter-toggle,
+    .admin-sort-control,
+    .admin-page-size-control {
+        grid-column: auto;
+        width: 100%;
+    }
+
     .admin-filter-count {
         display: inline-block;
-        margin-top: 14px;
+        margin-top: 0;
     }
 
     .admin-header-actions,
@@ -966,7 +994,16 @@ a.admin-list-item:hover {
     }
 
     .admin-pagination {
-        justify-content: flex-start;
+        grid-template-columns: 1fr;
+    }
+
+    .admin-pagination-pages,
+    .admin-pagination > .admin-filter-count {
+        grid-column: 1;
+    }
+
+    .admin-pagination > .admin-filter-count {
+        justify-self: center;
     }
 
 }
