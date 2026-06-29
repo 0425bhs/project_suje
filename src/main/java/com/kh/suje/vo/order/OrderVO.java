@@ -26,6 +26,8 @@ public class OrderVO {
     // 취소 일시
     private String cancelled_at;
 
+    //유저 포인트
+    private int used_point;
     //판매자 주문 관리
     private String receiver_name;
     private String receiver_phone;

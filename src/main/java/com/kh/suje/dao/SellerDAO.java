@@ -22,8 +22,8 @@ public interface SellerDAO {
     // 판매자 주문별 상품 목록 조회
     List<OrderItemVO> getSellerOrderItemList(Map<String, Object> map);
 
-    // 판매자 주문 상태 변경
-    int updateSellerOrderStatus(Map<String, Object> map);
+    // 판매자 주문상품 상태 변경
+    int updateSellerOrderItemStatus(Map<String, Object> map);
         
     Map<String,Object> sellerShopInfo(int seller_id);
 

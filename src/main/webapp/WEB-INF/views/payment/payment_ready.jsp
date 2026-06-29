@@ -235,4 +235,80 @@
 
                 </body>
 
-                </html>
+        window.addEventListener("load", function () {
+            const paymentButton = document.getElementById("paymentButton");
+
+            if (paymentButton == null) {
+                return;
+            }
+
+            const amount = Number(paymentButton.dataset.amount || 0);
+            const paymentStatus = paymentButton.dataset.paymentStatus;
+
+            // 0원 결제는 Toss 결제창을 열지 않음
+            if (amount <= 0) {
+                paymentButton.innerText = "결제완료 처리 중...";
+                paymentButton.disabled = true;
+
+                location.href = "/order/complete?order_id=${order.order_id}";
+                return;
+            }
+
+            paymentButton.addEventListener("click", requestTossPayment);
+
+            if (paymentStatus === "READY") {
+                setTimeout(function () {
+                    requestTossPayment();
+                }, 600);
+            }
+        });
+
+        function requestTossPayment() {
+            if (paymentRequested) {
+                return;
+            }
+
+            const paymentButton = document.getElementById("paymentButton");
+
+            if (paymentButton == null) {
+                return;
+            }
+
+            const amount = Number(paymentButton.dataset.amount || 0);
+
+            if (amount <= 0) {
+                location.href = "/order/complete?order_id=${order.order_id}";
+                return;
+            }
+
+            paymentRequested = true;
+
+            paymentButton.innerText = "결제창을 여는 중...";
+            paymentButton.disabled = true;
+
+            const clientKey = paymentButton.dataset.clientKey;
+            const orderId = paymentButton.dataset.orderId;
+            const orderName = paymentButton.dataset.orderName;
+
+            const tossPayments = TossPayments(clientKey);
+
+            tossPayments.requestPayment("카드", {
+                amount: amount,
+                orderId: orderId,
+                orderName: orderName,
+                customerName: "회원",
+                successUrl: window.location.origin + "/payment/toss/success",
+                failUrl: window.location.origin + "/payment/toss/fail"
+            }).catch(function (error) {
+                paymentRequested = false;
+
+                paymentButton.innerText = "결제 진행하기";
+                paymentButton.disabled = false;
+
+                alert("결제창을 열지 못했습니다. 다시 시도해주세요.\n" + error.message);
+            });
+        }
+    </script>
+
+    </body>
+</html>

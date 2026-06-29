@@ -82,7 +82,6 @@
                        class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}">
                         취소
                     </a>
-
                 </div>
             </div>
 

@@ -1,0 +1,341 @@
+/* =========================================================
+   포인트 내역 페이지 전용 CSS
+========================================================= */
+
+.point-page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.point-page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    margin-bottom: 6px;
+}
+
+.point-page-title h2 {
+    margin: 0 0 8px;
+
+    color: #111;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.point-page-title p {
+    margin: 0;
+
+    color: #777;
+    font-size: 14px;
+}
+
+.point-page-path {
+    color: #999;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.point-summary-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 30px 42px;
+
+    border: 1px solid #f0d7cc;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fffaf7 0%, #ffffff 100%);
+}
+
+.point-summary-left {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+}
+
+.point-coin-icon {
+    width: 86px;
+    height: 86px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffd84d, #ffb800);
+    color: #fff;
+
+    font-size: 38px;
+    font-weight: 900;
+
+    box-shadow: 0 8px 18px rgba(255, 184, 0, 0.22);
+}
+
+.point-balance-text span {
+    display: block;
+
+    color: #777;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.point-balance-text strong {
+    display: block;
+    margin-top: 8px;
+
+    color: #ff5f45;
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.point-guide-box {
+    min-width: 420px;
+    padding-left: 34px;
+
+    border-left: 1px solid #f0d7cc;
+}
+
+.point-guide-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 12px;
+
+    color: #555;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.point-guide-row:last-child {
+    margin-bottom: 0;
+}
+
+.point-guide-badge {
+    width: 24px;
+    height: 24px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #fff;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.point-guide-badge.earn {
+    background: #10a85a;
+}
+
+.point-guide-badge.use {
+    background: #ff5f57;
+}
+
+.point-guide-badge.refund {
+    background: #4aa3ff;
+}
+
+.point-list-head {
+    display: grid;
+    grid-template-columns: 140px 1fr 170px 190px;
+    align-items: center;
+
+    margin-top: 8px;
+    padding: 14px 26px;
+
+    border-radius: 12px;
+    background: #fafafa;
+
+    color: #333;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.point-list-head span {
+    text-align: center;
+}
+
+.point-list-head span:nth-child(2) {
+    text-align: left;
+}
+
+.point-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.point-history-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 170px 190px;
+    align-items: center;
+
+    padding: 20px 26px;
+
+    border: 1px solid #eee2dc;
+    border-radius: 14px;
+    background: #fff;
+
+    transition: 0.18s ease;
+}
+
+.point-history-row:hover {
+    transform: translateY(-2px);
+    border-color: #f4c9bb;
+    box-shadow: 0 8px 20px rgba(255, 111, 79, 0.08);
+}
+
+.point-type-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.point-type-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #fff;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.point-type-icon.earn {
+    background: #10a85a;
+}
+
+.point-type-icon.use {
+    background: #ff5f57;
+}
+
+.point-type-icon.refund {
+    background: #4aa3ff;
+}
+
+.point-type-text.earn,
+.point-amount.earn,
+.point-amount.refund {
+    color: #0a9f52;
+}
+
+.point-type-text.use,
+.point-amount.use {
+    color: #ff3f35;
+}
+
+.point-type-text.refund {
+    color: #258ee8;
+}
+
+.point-history-info strong {
+    display: block;
+
+    color: #111;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.point-history-info p {
+    margin: 6px 0 0;
+
+    color: #777;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.point-amount {
+    text-align: right;
+
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.point-date {
+    text-align: right;
+
+    color: #555;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.point-empty-box {
+    padding: 56px 20px;
+
+    border: 1px solid #eee2dc;
+    border-radius: 16px;
+    background: #fff;
+
+    color: #888;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* 포인트 페이지 잘림 방지 */
+.point-page {
+    width: 100%;
+    min-height: auto;
+    height: auto;
+    overflow: visible;
+}
+
+.point-history-list {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+}
+
+.point-history-row {
+    min-height: 78px;
+}
+
+.myshop-content,
+.myshop-main,
+.myshop-main-content,
+.myshop-body,
+.myshop-container {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.point-summary-card {
+    padding: 22px 34px;
+}
+
+.point-coin-icon {
+    width: 66px;
+    height: 66px;
+    font-size: 30px;
+}
+
+.point-balance-text strong {
+    font-size: 30px;
+}
+
+.point-history-row {
+    padding: 14px 22px;
+    min-height: 60px;
+}
+
+.point-type-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+}
