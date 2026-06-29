@@ -26,9 +26,14 @@
             document.getElementById("addressModal").classList.remove("open");
         }
 
-        function selectAddress(id, name, address) {
+        function selectAddressButton(button) {
+            const id = button.dataset.id;
+            const name = button.dataset.name;
+            const address = button.dataset.address;
+
             document.getElementById("selectedAddressId").value = id;
             document.getElementById("selectedAddressText").innerText = name + " | " + address;
+
             closeAddressModal();
         }
 
@@ -329,7 +334,7 @@
 
                         <button type="button"
                                 class="btn light"
-                                onclick="selectAddress(${addr.address_id}, '${addr.address_name}', '${addr.address} ${addr.detail_address}')"
+                                onclick="selectAddress('${addr.address_id}', '${addr.address_name}', '${addr.address} ${addr.detail_address}')">
                             선택
                         </button>
                     </div>

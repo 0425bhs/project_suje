@@ -227,7 +227,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             (#{status} = 'DELIVERED' AND status = 'SHIPPING')
         )
     </update>
-   
+
+    <!-- 구매자용 판매자샵 판매자 정보 조회 -->
+    <select id="sellerShopInfo"
+            parameterType="int"
+            resultType="map">
+        SELECT
+            s.seller_id,
+            s.user_id,
+            s.company_name,
+            s.business_number,
+            s.representative_name,
+            s.opening_date,
+            s.business_address,
+            u.photo_name,
+            IFNULL(AVG(r.rating), 0) AS review_avg,
+            COUNT(DISTINCT r.review_id) AS review_count,
+            COUNT(DISTINCT f.product_id) AS product_favorite_count
+        FROM sellers s
+        JOIN users u ON s.user_id = u.user_id
+        LEFT JOIN products p ON p.seller_id = s.seller_id
+        LEFT JOIN reviews r ON r.product_id = p.product_id
+        LEFT JOIN favorites f ON f.product_id = p.product_id
+        WHERE s.seller_id = #{seller_id}
+        GROUP BY
+            s.seller_id,
+            s.user_id,
+            s.company_name,
+            s.business_number,
+            s.representative_name,
+            s.opening_date,
+            s.business_address,
+            u.photo_name
+    </select>
+    
     <select id="selectSellerByUserId" parameterType="int" resultType="seller">
         SELECT *
         FROM sellers
