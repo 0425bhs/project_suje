@@ -368,9 +368,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <!-- 포인트 내역 조회 -->
-    <select id="selectPointHistoryList"
-            parameterType="int"
-            resultType="map">
+    <select id="selectPointHistoryList" parameterType="int" resultType="map">
         SELECT
             point_history_id,
             user_id,
@@ -383,23 +381,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY point_history_id DESC
     </select>
 
-</mapper>   
-        SELECT count(*)
+    <!-- 취소 내역 조회 -->
+    <select id="selectCancelList" parameterType="int" resultType="order">
+        SELECT *
         FROM orders
         WHERE user_id = #{value}
+        AND status = 'CANCELLED'
+        ORDER BY updated_at DESC
     </select>
-
-
-
-    <select id = "selectCancelList" parameterType = "int" resultType = "order">
-
-    select * from orders where user_id = #{user_id} and status = 'CANCELLED'
-    ORDER BY updated_at DESC
-    </select>
-
-
-
-
-
 
 </mapper>
