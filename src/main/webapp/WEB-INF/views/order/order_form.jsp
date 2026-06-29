@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/css/order-payment.css">
 
     <script src="/js/product_main.js" defer></script>
-    <script src="/js/order/order_form.js" defer></script>
+    <script src="/js/order_form.js" defer></script>
     <script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <script>
