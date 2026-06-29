@@ -463,6 +463,7 @@ public class OrderController {
             orderVO.setUser_id(user_id);
             orderVO.setTotal_amount(total_amount);
             orderVO.setUsed_point(use_point);
+            orderVO.setUser_coupon_id(user_coupon_id);
             orderVO.setAddress_id(address_id);
             orderVO.setStatus("PENDING");
 
@@ -507,6 +508,9 @@ public class OrderController {
 
                 if (pointResult > 0) {
                     orderDAO.insertUsePointHistory(pointMap);
+
+                    pointMap.put("order_id", orderVO.getOrder_id());
+                    orderDAO.updateUsePointHistoryOrderId(pointMap);
                 }
             }
 
@@ -638,6 +642,7 @@ public class OrderController {
         orderVO.setUser_id(user_id);
         orderVO.setTotal_amount(total_amount);
         orderVO.setUsed_point(use_point);
+        orderVO.setUser_coupon_id(user_coupon_id);
         orderVO.setAddress_id(address_id);
         orderVO.setStatus("PENDING");
 
@@ -666,6 +671,9 @@ public class OrderController {
 
             if (pointResult > 0) {
                 orderDAO.insertUsePointHistory(pointMap);
+
+                pointMap.put("order_id", orderVO.getOrder_id());
+                orderDAO.updateUsePointHistoryOrderId(pointMap);
             }
         }
 

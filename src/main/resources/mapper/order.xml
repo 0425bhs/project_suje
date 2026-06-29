@@ -44,6 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             user_id,
             total_amount,
             used_point,
+            user_coupon_id,
             address_id,
             status,
             created_at,
@@ -86,6 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             user_id,
             total_amount,
             used_point,
+            user_coupon_id,
             address_id,
             status
         )
@@ -93,6 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{user_id},
             #{total_amount},
             #{used_point},
+            #{user_coupon_id},
             #{address_id},
             #{status}
         )
@@ -391,6 +394,79 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE user_id = #{value}
         AND status = 'CANCELLED'
         ORDER BY updated_at DESC
+    </select>
+
+    <!-- 사용한 쿠폰 복구 -->
+    <update id="restoreCoupon"
+            parameterType="map">
+        UPDATE user_coupons
+        SET used_yn = 'N',
+            used_at = NULL
+        WHERE user_coupon_id = #{user_coupon_id}
+        AND user_id = #{user_id}
+        AND used_yn = 'Y'
+    </update>
+
+        <!-- 주문 포인트 사용 내역 order_id 연결 -->
+    <update id="updateUsePointHistoryOrderId"
+            parameterType="map">
+        UPDATE point_history
+        SET order_id = #{order_id}
+        WHERE user_id = #{user_id}
+        AND type = 'USE'
+        AND order_id IS NULL
+        ORDER BY point_history_id DESC
+        LIMIT 1
+    </update>
+
+    <!-- 주문에 사용한 포인트 조회 -->
+    <select id="getUsedPointByOrderId"
+            parameterType="map"
+            resultType="int">
+        SELECT COALESCE(SUM(point_amount), 0)
+        FROM point_history
+        WHERE user_id = #{user_id}
+        AND order_id = #{order_id}
+        AND type = 'USE'
+    </select>
+
+    <!-- 포인트 사용 복구 -->
+    <update id="refundUserPoint"
+            parameterType="map">
+        UPDATE user_points
+        SET point_balance = point_balance + #{point_amount},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = #{user_id}
+    </update>
+
+    <!-- 포인트 복구 이력 저장 -->
+    <insert id="insertRefundPointHistory"
+            parameterType="map">
+        INSERT INTO point_history (
+            user_id,
+            order_id,
+            order_item_id,
+            point_amount,
+            type
+        )
+        VALUES (
+            #{user_id},
+            #{order_id},
+            0,
+            #{point_amount},
+            'REFUND'
+        )
+    </insert>
+
+    <!-- 포인트 복구 여부 확인 -->
+    <select id="checkRefundPointHistory"
+            parameterType="map"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM point_history
+        WHERE user_id = #{user_id}
+        AND order_id = #{order_id}
+        AND type = 'REFUND'
     </select>
 
 </mapper>
