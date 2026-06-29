@@ -61,27 +61,27 @@ function closeSelectedDetailPanel() {
     return true;
 }
 
+// 검색어 강조 효과(하이라이트) 삭제
 function clearAdminKeywordHighlight(root) {
     if (!root) {
         return;
     }
 
     root.querySelectorAll("mark.admin-highlight").forEach((mark) => {
-        mark.replaceWith(document.createTextNode(mark.textContent));
+        mark.target.replaceChildren(fragment);(document.createTextNode(mark.textContent));
     });
 }
 
+// 검색어 강조 효과(하이라이트) 부여
 function highlightAdminKeyword(root = document) {
     if (!root) {
         return;
     }
 
-    const keywordInput = document.querySelector(".admin-filter-modern .admin-search[name='keyword']");
+    const keywordInput = document.getElementById("keyword");
     const keyword = keywordInput ? keywordInput.value.trim() : "";
-    const targets = [
-        ...(root.matches && root.matches(".admin-highlight-target") ? [root] : []),
-        ...root.querySelectorAll(".admin-highlight-target")
-    ];
+    // targets : 강조할 대상 영역
+    const targets = root.querySelectorAll(".admin-highlight-target");
 
     clearAdminKeywordHighlight(root);
 
@@ -92,52 +92,44 @@ function highlightAdminKeyword(root = document) {
     const keywordLower = keyword.toLowerCase();
 
     targets.forEach((target) => {
-        const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT, {
-            acceptNode(node) {
-                const parent = node.parentElement;
+        const text = target.textContent;
+        const textLower = text.toLowerCase();
 
-                if (!node.nodeValue.trim() || !parent || parent.closest("mark")) {
-                    return NodeFilter.FILTER_REJECT;
-                }
+        // 태그를 만들기 위한 fragment(조립)
+        const fragment = document.createDocumentFragment();
+        let cursor = 0;
+        // 강조 영역의 텍스트에서 검색어 위치 찾기
+        let matchIndex = textLower.indexOf(keywordLower);
 
-                return node.nodeValue.toLowerCase().includes(keywordLower)
-                    ? NodeFilter.FILTER_ACCEPT
-                    : NodeFilter.FILTER_REJECT;
-            }
-        });
-        const matchedNodes = [];
-
-        while (walker.nextNode()) {
-            matchedNodes.push(walker.currentNode);
+        // matchIndex가 -1이면 존재하지 않아서 return;
+        if (matchIndex === -1) {
+            return;
         }
 
-        matchedNodes.forEach((node) => {
-            const text = node.nodeValue;
-            const textLower = text.toLowerCase();
-            const fragment = document.createDocumentFragment();
-            let cursor = 0;
-            let matchIndex = textLower.indexOf(keywordLower, cursor);
+        // matchIndex가 -1이 아니면(강조할 영역에서 강조할 텍스트를 찾으면)
+        // -1일 때까지 반복(여러 번 발견할 수 있으니)
+        while (matchIndex !== -1) {
+            // 강조할 영역의 텍스트에서 cursor(0)부터 강조할 텍스트 위치까지 잘라서
+            // 일반 텍스트로 fragment에 추가
+            fragment.appendChild(document.createTextNode(text.slice(cursor, matchIndex)));
 
-            while (matchIndex !== -1) {
-                if (matchIndex > cursor) {
-                    fragment.appendChild(document.createTextNode(text.slice(cursor, matchIndex)));
-                }
+            // mark라는 태그에 text의 강조할 텍스트를 넣고 fragment에 추가
+            const mark = document.createElement("mark");
+            mark.className = "admin-highlight";
+            mark.textContent = text.slice(matchIndex, matchIndex + keyword.length);
+            fragment.appendChild(mark);
 
-                const mark = document.createElement("mark");
-                mark.className = "admin-highlight";
-                mark.textContent = text.slice(matchIndex, matchIndex + keyword.length);
-                fragment.appendChild(mark);
+            // 강조할 텍스트의 다음 위치로 matchIndex를 변경하고
+            // while문을 통해 다음 강조할 텍스트 찾기
+            cursor = matchIndex + keyword.length;
+            matchIndex = textLower.indexOf(keywordLower, cursor);
+        }
 
-                cursor = matchIndex + keyword.length;
-                matchIndex = textLower.indexOf(keywordLower, cursor);
-            }
+        //강조할 텍스트 이후에 글자를 fragment에 추가
+        fragment.appendChild(document.createTextNode(text.slice(cursor)));
 
-            if (cursor < text.length) {
-                fragment.appendChild(document.createTextNode(text.slice(cursor)));
-            }
-
-            node.parentNode.replaceChild(fragment, node);
-        });
+        //강조할 텍스트 영역에 fragment(문자조립)을 추가
+        target.replaceChildren(fragment);
     });
 }
 
@@ -172,27 +164,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// html 호출 이후에 키워드 하이라이트 강조
 document.addEventListener("DOMContentLoaded", () => {
     highlightAdminKeyword();
 });
 
+// 페이지 수 변경 SELECT가 변경시 page를 1로 변경후 submit
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("[data-auto-submit='true']").forEach((control) => {
-        control.addEventListener("change", () => {
-            const form = control.closest("form");
+    const pageSize = document.getElementById("pageSize");
 
-            if (!form) {
-                return;
-            }
+    if (!pageSize) {
+        return;
+    }
 
-            const pageInput = form.querySelector("input[name='page']");
+    pageSize.addEventListener("change", () => {
 
-            if (pageInput) {
-                pageInput.value = "1";
-            }
+        const form = pageSize.closest("form");
 
-            form.submit();
-        });
+        if (!form) {
+            return;
+        }
+
+        const pageInput = form.querySelector("input[name='page']");
+
+        if (pageInput) {
+            pageInput.value = "1";
+        }
+
+        form.submit();
     });
 });
 

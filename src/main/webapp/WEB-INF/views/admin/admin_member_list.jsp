@@ -44,6 +44,7 @@
                                     setText("gender", user.gender);
                                     setText("createdAt", user.created_at);
                                     setText("updatedAt", user.updated_at);
+
                                     highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                                 })
                         });
@@ -82,7 +83,7 @@
                                 <span class="admin-filter-count">전체 ${totalCount}명</span>
 
                                 <div class="admin-search-wrap">
-                                    <input type="text" class="admin-search" name="keyword"
+                                    <input type="text" class="admin-search" id="keyword" name="keyword"
                                         placeholder="아이디, 이름, 이메일, 닉네임, 전화번호 검색" value="${keyword}">
                                     <span class="admin-search-icon" aria-hidden="true"></span>
                                 </div>
@@ -95,8 +96,7 @@
                                     <option value="oldest">오래된순</option>
                                     <option value="name">이름순</option>
                                 </select>
-                                <select class="admin-filter-control admin-page-size-control" name="size"
-                                    data-auto-submit="true" aria-label="페이지당 출력 개수">
+                                <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
                                     <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
                                     <option value="30" ${pagination.size == 30 ? 'selected' : ''}>30개씩</option>
                                     <option value="50" ${pagination.size == 50 ? 'selected' : ''}>50개씩</option>
