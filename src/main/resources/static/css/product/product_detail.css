@@ -1391,3 +1391,214 @@
 .selected-option-remove:hover {
     color: #d92336;
 }
+
+/* =========================================================
+   상품 상세 - 상품평 카드
+========================================================= */
+
+.detail-review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.detail-review-card {
+    padding: 22px 24px;
+
+    border: 1px solid #e9edf2;
+    border-radius: 16px;
+    background: #fff;
+
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+}
+
+.detail-review-top {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(280px, auto);
+    gap: 18px;
+    align-items: center;
+}
+
+.detail-review-user-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.detail-review-profile-box {
+    width: 54px;
+    height: 54px;
+    flex-shrink: 0;
+
+    overflow: hidden;
+    border-radius: 50%;
+    background: #eef1f4;
+}
+
+.detail-review-profile-box img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.detail-review-user-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.detail-review-user-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.detail-review-user-name {
+    color: #222;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.detail-review-date {
+    color: #777;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.detail-review-star-line {
+    margin-top: 4px;
+
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.detail-star {
+    color: #d5d8dd;
+    font-size: 17px;
+    line-height: 1;
+}
+
+.detail-star.on {
+    color: #ff7a1a;
+}
+
+.detail-review-photo-list {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    min-width: 0;
+}
+
+.detail-review-photo-item {
+    width: 86px;
+    height: 70px;
+    flex-shrink: 0;
+
+    overflow: hidden;
+    border-radius: 10px;
+    background: #f1f3f5;
+}
+
+.detail-review-photo-item img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.detail-review-content {
+    margin-top: 18px;
+
+    color: #333;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.8;
+
+    white-space: pre-line;
+    word-break: keep-all;
+}
+
+.detail-seller-reply-box {
+    margin-top: 18px;
+    padding: 18px 20px;
+
+    border: 1px solid #ffd4ca;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fff8f6 0%, #fff 100%);
+}
+
+.detail-seller-reply-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.detail-seller-reply-head strong {
+    color: #ff4f38;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.detail-seller-reply-head span {
+    color: #999;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.detail-seller-reply-content {
+    color: #444;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.8;
+
+    white-space: pre-line;
+    word-break: keep-all;
+}
+
+@media (max-width: 900px) {
+    .detail-review-top {
+        grid-template-columns: 1fr;
+        align-items: flex-start;
+    }
+
+    .detail-review-photo-list {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+}
+
+@media (max-width: 600px) {
+    .detail-review-card {
+        padding: 18px;
+    }
+
+    .detail-review-profile-box {
+        width: 48px;
+        height: 48px;
+    }
+
+    .detail-review-photo-item {
+        width: 78px;
+        height: 64px;
+    }
+}
+
+.detail-review-option-line {
+    margin-top: 6px;
+
+    color: #666;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.detail-review-option-line span {
+    color: #333;
+    font-weight: 900;
+}

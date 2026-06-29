@@ -114,7 +114,7 @@
 
                     <c:forEach var="review" items="${reviewList}">
 
-                        <div class="seller-review-card" data-product-id="${review.product_id}" data-replied="false" data-has-photo="${not empty review.imageList ? 'true' : 'false'}">
+                        <div class="seller-review-card" data-product-id="${review.product_id}" data-replied="${not empty review.reply_content ? 'true' : 'false'}" data-has-photo="${not empty review.imageList ? 'true' : 'false'}">
 
                             <div class="review-card-top">
 
@@ -221,15 +221,21 @@
                                 </div>
 
                                 <div class="review-status-area">
-                                    <span class="reply-status waiting-status">
-                                        <i class="bi bi-chat-square-text"></i>
-                                        답글 대기
-                                    </span>
+                                    <c:choose>
+                                        <c:when test="${empty review.reply_content}">
+                                            <span class="reply-status waiting-status">
+                                                <i class="bi bi-chat-square-text"></i>
+                                                답글 대기
+                                            </span>
+                                        </c:when>
 
-                                    <span class="reply-status complete-status">
-                                        <i class="bi bi-check-lg"></i>
-                                        답글 완료
-                                    </span>
+                                        <c:otherwise>
+                                            <span class="reply-status complete-status">
+                                                <i class="bi bi-check-lg"></i>
+                                                답글 완료
+                                            </span>
+                                        </c:otherwise>
+                                    </c:choose>
 
                                     <button type="button" class="review-more-btn">
                                         <i class="bi bi-three-dots-vertical"></i>
@@ -241,10 +247,9 @@
                             <div class="review-bottom-grid">
 
                                 <div class="review-content-box">
-                                    <div class="review-content-title">후기 내용</div>
-
+                                    
                                     <div class="review-content">
-                                        ${review.content}
+                                        <c:out value="${review.content}" />
                                     </div>
 
                                     <div class="review-btn-area">
@@ -257,36 +262,57 @@
 
                                 <div class="seller-reply-box">
 
-                                    <div class="reply-waiting-box">
-                                        <strong>고객의 리뷰에 답변해보세요</strong>
+                                    <c:choose>
+                                        <c:when test="${empty review.reply_content}">
+                                            <div class="reply-waiting-box" id="replyView-${review.review_id}">
+                                                <strong>고객의 리뷰에 답변해보세요</strong>
 
-                                        <p>
-                                            답변을 작성하면 고객과의 신뢰가 쌓여요.<br>
-                                            빠른 답변이 좋은 인상을 남깁니다.
-                                        </p>
+                                                <p>
+                                                    리뷰에 대한 답변을 작성하여 고객과의 유대를 쌓아보세요.<br>
+                                                    답변은 작가님의 팬에게 좋은 인상을 남깁니다.
+                                                </p>
 
-                                        <button type="button" class="reply-write-btn" data-review-id="${review.review_id}">
-                                            답글 작성
-                                        </button>
-                                    </div>
+                                                <button type="button" class="reply-write-btn" data-review-id="${review.review_id}">
+                                                    답글 작성
+                                                </button>
+                                            </div>
+                                        </c:when>
 
-                                    <div class="reply-complete-box">
-                                        <div class="reply-complete-head">
-                                            <strong>판매자 답변</strong>
-                                            <span>답변 완료</span>
+                                        <c:otherwise>
+                                            <div class="reply-complete-box" id="replyView-${review.review_id}">
+                                                <div class="reply-complete-head">
+                                                    <strong>판매자 답변</strong>
+                                                    <span>${review.reply_created_at_text}</span>
+                                                </div>
+
+                                                <div class="reply-complete-content">
+                                                    <c:out value="${review.reply_content}" />
+                                                </div>
+
+                                                <button type="button" class="reply-write-btn" data-review-id="${review.review_id}">
+                                                    답글 수정
+                                                </button>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                    <div class="reply-write-form" id="replyForm-${review.review_id}" style="display:none;">
+                                        <textarea class="reply-textarea" id="replyContent-${review.review_id}">
+                                            ${review.reply_content}
+                                        </textarea>
+
+                                        <div class="reply-form-btn-area">
+                                            <button type="button" class="reply-submit-btn" data-review-id="${review.review_id}">
+                                                등록
+                                            </button>
+
+                                            <button type="button" class="reply-cancel-btn" data-review-id="${review.review_id}">
+                                                취소
+                                            </button>
                                         </div>
-
-                                        <div class="reply-complete-content">
-                                            등록된 판매자 답변입니다.
-                                        </div>
-
-                                        <button type="button" class="reply-edit-btn" data-review-id="${review.review_id}">
-                                            답글 수정
-                                        </button>
                                     </div>
 
                                 </div>
-
                             </div>
 
                         </div>
