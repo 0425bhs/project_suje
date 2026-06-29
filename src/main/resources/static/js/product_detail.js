@@ -147,49 +147,286 @@ function productDetailImageSlider(){
 }
 
 function productDetailQuantity(){
+
+    const optionSelect = document.getElementById("option_id");
+    const selectedOptionBox = document.getElementById("selectedOptionBox");
+
     const qtyInput = document.getElementById("detailQuantity");
-    const minusBtn = document.getElementById("qtyMinus");
-    const plusBtn = document.getElementById("qtyPlus");
+    const qtyMinus = document.getElementById("qtyMinus");
+    const qtyPlus = document.getElementById("qtyPlus");
+
     const totalCount = document.getElementById("detailTotalCount");
     const totalPrice = document.getElementById("detailTotalPrice");
 
-    if( qtyInput==null || minusBtn==null || plusBtn==null || totalCount==null || totalPrice==null ){
+    const cartBtn = document.getElementById("cartBtn");
+    const orderBtn = document.getElementById("orderBtn");
+
+    if(totalCount == null || totalPrice == null){
         return;
     }
 
-    const unitPrice = Number(qtyInput.dataset.unitPrice || 0);
-    const maxQty = Number(qtyInput.getAttribute("max") || 1);
+    /*
+        옵션 없는 상품은 기존 방식 사용
+    */
+    if(optionSelect == null){
 
-    function updateTotal(){
-        let qty = Number(qtyInput.value || 1);
-
-        if(qty < 1){
-            qty = 1;
+        if(qtyInput == null || qtyMinus == null || qtyPlus == null){
+            return;
         }
 
-        if(maxQty > 0 && qty > maxQty){
-            qty = maxQty;
+        const basePrice = Number(qtyInput.dataset.unitPrice || 0);
+
+        function formatPrice(price){
+            return Number(price).toLocaleString("ko-KR") + "원";
         }
 
-        qtyInput.value = qty;
+        function updateNoOptionTotal(){
 
-        totalCount.innerText=qty;
-        totalPrice.innerText=(unitPrice * qty).toLocaleString() + "원";
+            let quantity = Number(qtyInput.value || 1);
+            const max = Number(qtyInput.max || 1);
+
+            if(quantity < 1){
+                quantity = 1;
+            }
+
+            if(max > 0 && quantity > max){
+                quantity = max;
+            }
+
+            qtyInput.value = quantity;
+
+            totalCount.innerText = quantity;
+            totalPrice.innerText = formatPrice(basePrice * quantity);
+
+            qtyMinus.disabled = quantity <= 1 || qtyInput.disabled;
+            qtyPlus.disabled = quantity >= max || qtyInput.disabled;
+        }
+
+        qtyMinus.addEventListener("click", function(){
+            let quantity = Number(qtyInput.value || 1);
+
+            if(quantity > 1){
+                qtyInput.value = quantity - 1;
+            }
+
+            updateNoOptionTotal();
+        });
+
+        qtyPlus.addEventListener("click", function(){
+            let quantity = Number(qtyInput.value || 1);
+            const max = Number(qtyInput.max || 1);
+
+            if(quantity >= max){
+                alert("재고보다 많이 선택할 수 없습니다.");
+                return;
+            }
+
+            qtyInput.value = quantity + 1;
+            updateNoOptionTotal();
+        });
+
+        qtyInput.addEventListener("input", updateNoOptionTotal);
+
+        updateNoOptionTotal();
+        return;
     }
 
-    minusBtn.addEventListener("click",function(){
-        qtyInput.value = Number(qtyInput.value || 1) - 1;
+    const optionBasePriceInput = document.getElementById("optionBasePrice");
+
+    let realBasePrice = 0;
+
+    if(optionBasePriceInput != null){
+        realBasePrice = Number(optionBasePriceInput.value || 0);
+    } else {
+        realBasePrice = Number(optionSelect.dataset.unitPrice || 0);
+    }
+
+    const selectedOptions = [];
+
+    function formatPrice(price){
+        return Number(price).toLocaleString("ko-KR") + "원";
+    }
+
+    function updateTotal(){
+
+        let countSum = 0;
+        let priceSum = 0;
+
+        selectedOptions.forEach(function(item){
+            countSum += item.quantity;
+            priceSum += (realBasePrice + item.optionPrice) * item.quantity;
+        });
+
+        totalCount.innerText = countSum;
+        totalPrice.innerText = formatPrice(priceSum);
+
+        if(selectedOptions.length === 0){
+            selectedOptionBox.style.display = "none";
+
+            if(cartBtn != null){
+                cartBtn.disabled = true;
+            }
+
+            if(orderBtn != null){
+                orderBtn.disabled = true;
+            }
+
+            totalCount.innerText = 0;
+            totalPrice.innerText = "0원";
+        } else {
+            selectedOptionBox.style.display = "block";
+
+            if(cartBtn != null){
+                cartBtn.disabled = false;
+            }
+
+            if(orderBtn != null){
+                orderBtn.disabled = false;
+            }
+        }
+    }
+
+    function renderSelectedOptions(){
+
+        selectedOptionBox.innerHTML = "";
+
+        selectedOptions.forEach(function(item){
+
+            const row = document.createElement("div");
+            row.className = "store-option-box selected-option-item";
+            row.dataset.optionId = item.optionId;
+
+            row.innerHTML =
+                '<div class="selected-option-top">' +
+                    '<p class="store-option-name">' + item.optionName + '</p>' +
+                    '<button type="button" class="selected-option-remove" data-option-id="' + item.optionId + '">×</button>' +
+                '</div>' +
+
+                '<div class="store-option-bottom">' +
+
+                    '<div class="store-quantity-box">' +
+                        '<button type="button" class="selected-qty-minus" data-option-id="' + item.optionId + '">−</button>' +
+                        '<input type="number" value="' + item.quantity + '" readonly>' +
+                        '<button type="button" class="selected-qty-plus" data-option-id="' + item.optionId + '">+</button>' +
+                    '</div>' +
+
+                    '<div class="store-option-price">' +
+                        formatPrice((realBasePrice + item.optionPrice) * item.quantity) +
+                    '</div>' +
+
+                '</div>' +
+
+                '<input type="hidden" name="option_id" value="' + item.optionId + '">' +
+                '<input type="hidden" name="quantity" value="' + item.quantity + '">';
+
+            selectedOptionBox.appendChild(row);
+        });
+
         updateTotal();
+    }
+
+    optionSelect.addEventListener("change", function(){
+
+        if(optionSelect.value === ""){
+            return;
+        }
+
+        const selected = optionSelect.options[optionSelect.selectedIndex];
+
+        const optionId = optionSelect.value;
+        const optionName = selected.dataset.optionName || selected.textContent.trim();
+        const optionPrice = Number(selected.dataset.price || 0);
+        const optionStock = Number(selected.dataset.stock || 0);
+
+        if(optionStock <= 0){
+            alert("품절된 옵션입니다.");
+            optionSelect.value = "";
+            return;
+        }
+
+        const alreadySelected = selectedOptions.some(function(item){
+            return item.optionId === optionId;
+        });
+
+        if(alreadySelected){
+            alert("이미 선택한 옵션입니다.");
+            optionSelect.value = "";
+            return;
+        }
+
+        selectedOptions.push({
+            optionId: optionId,
+            optionName: optionName,
+            optionPrice: optionPrice,
+            stock: optionStock,
+            quantity: 1
+        });
+
+        optionSelect.value = "";
+
+        renderSelectedOptions();
     });
 
-    plusBtn.addEventListener("click",function(){
-        qtyInput.value = Number(qtyInput.value || 1) + 1;
-        updateTotal();
+    selectedOptionBox.addEventListener("click", function(event){
+
+        const target = event.target;
+        const optionId = target.dataset.optionId;
+
+        if(optionId == null){
+            return;
+        }
+
+        const index = selectedOptions.findIndex(function(item){
+            return item.optionId === optionId;
+        });
+
+        if(index === -1){
+            return;
+        }
+
+        const item = selectedOptions[index];
+
+        if(target.classList.contains("selected-option-remove")){
+            selectedOptions.splice(index, 1);
+            renderSelectedOptions();
+            return;
+        }
+
+        if(target.classList.contains("selected-qty-plus")){
+
+            if(item.quantity >= item.stock){
+                alert("재고보다 많이 선택할 수 없습니다.");
+                return;
+            }
+
+            item.quantity++;
+            renderSelectedOptions();
+            return;
+        }
+
+        if(target.classList.contains("selected-qty-minus")){
+
+            if(item.quantity <= 1){
+                return;
+            }
+
+            item.quantity--;
+            renderSelectedOptions();
+        }
     });
 
-    qtyInput.addEventListener("input",updateTotal);
+    selectedOptionBox.style.display = "none";
 
-    updateTotal();
+    if(cartBtn != null){
+        cartBtn.disabled = true;
+    }
+
+    if(orderBtn != null){
+        orderBtn.disabled = true;
+    }
+
+    totalCount.innerText = 0;
+    totalPrice.innerText = "0원";
 }
 
 function productDetailTabs(){
@@ -425,3 +662,4 @@ function sellerWishButton() {
         });
     });
 }
+

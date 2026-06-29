@@ -11,6 +11,8 @@
     
     <link rel="stylesheet" href="/css/seller/seller_form_common.css">
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <script src="/js/seller_product_toggle.js"></script>
 </head>
 
@@ -77,50 +79,41 @@
 
                 <div class="filter-buttons">
 
-                    <a href="/seller_product_list.do?sort=${sort}"
-                    class="${empty status ? 'active' : ''}">
+                    <a href="/seller_product_list.do?sort=${sort}" class="${empty status ? 'active' : ''}">
                         전체
                     </a>
 
-                    <a href="/seller_product_list.do?status=APPROVED&sort=${sort}"
-                    class="${status eq 'APPROVED' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=APPROVED&sort=${sort}" class="${status eq 'APPROVED' ? 'active' : ''}">
                         판매중
                     </a>
 
-                    <a href="/seller_product_list.do?status=HIDDEN&sort=${sort}"
-                    class="${status eq 'HIDDEN' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=HIDDEN&sort=${sort}" class="${status eq 'HIDDEN' ? 'active' : ''}">
                         판매중지
                     </a>
 
-                    <a href="/seller_product_list.do?status=PENDING&sort=${sort}"
-                    class="${status eq 'PENDING' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=PENDING&sort=${sort}" class="${status eq 'PENDING' ? 'active' : ''}">
                         승인대기
                     </a>
 
-                    <a href="/seller_product_list.do?status=REJECTED&sort=${sort}"
-                    class="${status eq 'REJECTED' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=REJECTED&sort=${sort}" class="${status eq 'REJECTED' ? 'active' : ''}">
                         승인거절
                     </a>
 
                     <span class="filter-divider"></span>
 
-                    <a href="/seller_product_list.do?status=${status}&sort=new"
-                    class="${sort eq 'new' or empty sort ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=${status}&sort=new" class="${sort eq 'new' or empty sort ? 'active' : ''}">
                         최신순
                     </a>
                     
-                    <a href="/seller_product_list.do?status=${status}&sort=lowPrice"
-                    class="${sort eq 'lowPrice' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=${status}&sort=lowPrice" class="${sort eq 'lowPrice' ? 'active' : ''}">
                         낮은가격순
                     </a>
 
-                    <a href="/seller_product_list.do?status=${status}&sort=highPrice"
-                    class="${sort eq 'highPrice' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=${status}&sort=highPrice" class="${sort eq 'highPrice' ? 'active' : ''}">
                         높은가격순
                     </a>
 
-                    <a href="/seller_product_list.do?status=${status}&sort=lowStock"
-                    class="${sort eq 'lowStock' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=${status}&sort=lowStock" class="${sort eq 'lowStock' ? 'active' : ''}">
                         재고적은순
                     </a>
 
@@ -177,11 +170,7 @@
                             <c:forEach var="vo" items="${list}">
                                 <tr>
                                     <td>
-                                        <input type="checkbox"
-                                            name="product_id"
-                                            class="product-check table-check"
-                                            value="${vo.product_id}"
-                                            onclick="checkOne()">
+                                        <input type="checkbox" name="product_id" class="product-check table-check" value="${vo.product_id}" onclick="checkOne()">
                                     </td>
 
                                     <td class="product-id">#${vo.product_id}</td>
@@ -249,17 +238,13 @@
 
                                     <td>
                                         <c:if test="${vo.status eq 'APPROVED'}">
-                                            <button type="button"
-                                                    class="status-badge status-approved status-toggle"
-                                                    onclick="productToggle('${vo.product_id}', 'HIDDEN')">
+                                            <button type="button" class="status-badge status-approved status-toggle" onclick="productToggle('${vo.product_id}', 'HIDDEN')">
                                                 판매중
                                             </button>
                                         </c:if>
 
                                         <c:if test="${vo.status eq 'HIDDEN'}">
-                                            <button type="button"
-                                                    class="status-badge status-hidden status-toggle"
-                                                    onclick="productToggle('${vo.product_id}', 'APPROVED')">
+                                            <button type="button" class="status-badge status-hidden status-toggle" onclick="productToggle('${vo.product_id}', 'APPROVED')">
                                                 판매중지
                                             </button>
                                         </c:if>
@@ -313,11 +298,7 @@
                             <div class="seller-product-card">
 
                                 <div class="card-check-area">
-                                    <input type="checkbox"
-                                        name="product_id"
-                                        class="product-check card-check"
-                                        value="${vo.product_id}"
-                                        onclick="checkOne()">
+                                    <input type="checkbox" name="product_id" class="product-check card-check" value="${vo.product_id}" onclick="checkOne()">
                                 </div>
 
                                 <div class="card-image-box">
@@ -337,17 +318,13 @@
                                         <span class="card-product-id">#${vo.product_id}</span>
 
                                         <c:if test="${vo.status eq 'APPROVED'}">
-                                            <button type="button"
-                                                    class="status-badge status-approved status-toggle"
-                                                    onclick="productToggle('${vo.product_id}', 'HIDDEN')">
+                                            <button type="button" class="status-badge status-approved status-toggle" onclick="productToggle('${vo.product_id}', 'HIDDEN')">
                                                 판매중
                                             </button>
                                         </c:if>
 
                                         <c:if test="${vo.status eq 'HIDDEN'}">
-                                            <button type="button"
-                                                    class="status-badge status-hidden status-toggle"
-                                                    onclick="productToggle('${vo.product_id}', 'APPROVED')">
+                                            <button type="button" class="status-badge status-hidden status-toggle" onclick="productToggle('${vo.product_id}', 'APPROVED')">
                                                 판매중지
                                             </button>
                                         </c:if>
@@ -459,8 +436,7 @@
                                     </div>
 
                                     <div class="card-action-area">
-                                        <a href="/seller_product_modify.do?product_id=${vo.product_id}"
-                                        class="card-modify-btn">
+                                        <a href="/seller_product_modify.do?product_id=${vo.product_id}" class="card-modify-btn">
                                             수정하기
                                         </a>
                                     </div>

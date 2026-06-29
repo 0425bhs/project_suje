@@ -157,6 +157,41 @@ window.onload = function(){
     }
 };
 
+function hasProductOptionValue() {
+    const optionArea =
+        document.getElementById("optionArea") ||
+        document.getElementById("optionListBox");
+
+    if (optionArea == null) {
+        return false;
+    }
+
+    const optionInputs = optionArea.querySelectorAll(
+        "input[name='option_name'], input[name='option_price'], input[name='option_stock']"
+    );
+
+    for (let input of optionInputs) {
+        if (input.value.trim() !== "") {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function validateStockOptionRule(f) {
+    const stock = Number(f.stock.value || 0);
+    const optionWritten = hasProductOptionValue();
+
+    if (optionWritten && stock > 0) {
+        alert("옵션을 사용하는 상품은 상품 재고를 0으로 입력하거나 비워주세요.");
+        f.stock.focus();
+        return false;
+    }
+
+    return true;
+}
+
 function send(f){
 
     const name = f.name;
@@ -184,6 +219,10 @@ function send(f){
     if(stockValue < 0){
         alert("올바른 재고 수량을 입력해주세요.");
         f.stock.focus();
+        return;
+    }
+
+    if (!validateStockOptionRule(f)) {
         return;
     }
 
@@ -565,6 +604,14 @@ document.addEventListener("DOMContentLoaded", function () {
     if (optionListBox && addOptionBtn) {
 
         addOptionBtn.addEventListener("click", function () {
+            const stockInput = document.getElementById("stock");
+
+            if (stockInput != null && Number(stockInput.value || 0) > 0) {
+                alert("상품 재고를 입력한 경우 옵션을 추가할 수 없습니다.");
+                stockInput.focus();
+                return;
+            }
+
             const row = document.createElement("div");
             row.className = "option-row";
 
@@ -599,4 +646,102 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.querySelector("form");
+    const stockInput = document.getElementById("stock");
+
+    const optionArea =
+        document.getElementById("optionArea") ||
+        document.getElementById("optionListBox");
+
+    const addOptionBtn = document.getElementById("addOptionBtn");
+
+    if (form == null || stockInput == null || optionArea == null) {
+        return;
+    }
+
+    function getOptionInputs() {
+        return optionArea.querySelectorAll(
+            "input[name='option_name'], input[name='option_price'], input[name='option_stock']"
+        );
+    }
+
+    function hasOptionValue() {
+        const optionInputs = getOptionInputs();
+
+        for (let input of optionInputs) {
+            if (input.value.trim() !== "") {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function setOptionDisabled(disabled) {
+        const optionInputs = getOptionInputs();
+
+        optionInputs.forEach(function (input) {
+            input.disabled = disabled;
+
+            if (disabled) {
+                input.value = "";
+            }
+        });
+
+        if (addOptionBtn != null) {
+            addOptionBtn.disabled = disabled;
+        }
+
+        if (disabled) {
+            optionArea.classList.add("option-disabled");
+        } else {
+            optionArea.classList.remove("option-disabled");
+        }
+    }
+
+    function checkStockAndOptionState() {
+        const stock = Number(stockInput.value || 0);
+
+        if (stock > 0) {
+            setOptionDisabled(true);
+        } else {
+            setOptionDisabled(false);
+        }
+    }
+
+    stockInput.addEventListener("input", function () {
+        checkStockAndOptionState();
+    });
+
+    optionArea.addEventListener("input", function () {
+        if (hasOptionValue()) {
+            stockInput.value = 0;
+        }
+
+        checkStockAndOptionState();
+    });
+
+    form.addEventListener("submit", function (event) {
+        const stock = Number(stockInput.value || 0);
+        const optionWritten = hasOptionValue();
+
+        if (optionWritten && stock > 0) {
+            alert("옵션을 사용하는 상품은 상품 재고를 0으로 입력하거나 비워주세요.");
+            stockInput.focus();
+            event.preventDefault();
+            return;
+        }
+
+        if (stock > 0 && optionWritten) {
+            alert("상품 재고를 입력한 경우 옵션을 사용할 수 없습니다.");
+            event.preventDefault();
+            return;
+        }
+    });
+
+    checkStockAndOptionState();
 });

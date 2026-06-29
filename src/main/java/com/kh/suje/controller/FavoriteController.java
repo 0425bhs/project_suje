@@ -32,6 +32,7 @@ public class FavoriteController {
 
         UserVO user = (UserVO) session.getAttribute("user");
 
+        // 로그인 체크
         if(user == null){
             resMap.put("result","login");
             return resMap;
@@ -43,14 +44,39 @@ public class FavoriteController {
         map.put("user_id", user_id);
         map.put("seller_id", seller_id);
 
+        // 현재 찜 여부 확인
         int check = favoritedao.checkFavoriteSeller(map);
 
+        // 이미 찜한 상태 → 찜 취소
         if(check > 0){
+
             favoritedao.delFavoriteSeller(map);
+
             resMap.put("result", "delete");
             resMap.put("liked", false);
+
         } else {
+
+            // 작가 찜 추가
             favoritedao.addFavoriteSeller(map);
+
+            // 작가샵 첫 찜 쿠폰 발급 여부 확인
+            int couponCheck = favoritedao.checkSellerFavoriteCoupon(map);
+
+            // 처음 찜한 경우만 쿠폰 지급
+            if(couponCheck == 0){
+
+                favoritedao.insertSellerFavoriteCoupon(map);
+
+                // JS에서 쿠폰 발급 안내창 띄우기용
+                resMap.put("couponIssued", true);
+
+            } else {
+
+                resMap.put("couponIssued", false);
+
+            }
+
             resMap.put("result", "insert");
             resMap.put("liked", true);
         }

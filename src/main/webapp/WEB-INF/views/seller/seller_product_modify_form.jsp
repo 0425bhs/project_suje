@@ -132,20 +132,11 @@
 
                                     <c:otherwise>
                                         <div class="option-row">
-                                            <input type="text"
-                                                name="option_name"
-                                                class="option-name-input"
-                                                placeholder="옵션명">
+                                            <input type="text" name="option_name" class="option-name-input" placeholder="옵션명">
 
-                                            <input type="text"
-                                                name="option_price"
-                                                class="option-price-input"
-                                                placeholder="추가금액">
+                                            <input type="text" name="option_price" class="option-price-input" placeholder="추가금액">
 
-                                            <input type="text"
-                                                name="option_stock"
-                                                class="option-stock-input"
-                                                placeholder="옵션재고">
+                                            <input type="text" name="option_stock" class="option-stock-input" placeholder="옵션재고">
 
                                             <button type="button" class="option-remove-btn">
                                                 삭제
@@ -306,15 +297,9 @@
                     </div>
 
                     <div class="form-actions">
-                        <input type="button"
-                            value="수정"
-                            class="btn btn-primary"
-                            onclick="send(this.form)">
+                        <input type="button" value="수정" class="btn btn-primary" onclick="send(this.form)">
 
-                        <input type="button"
-                            value="취소"
-                            class="btn btn-white"
-                            onclick="location.href='/seller_product_list.do'">
+                        <input type="button" value="취소" class="btn btn-white" onclick="location.href='/seller_product_list.do'">
                     </div>
 
                 </form>

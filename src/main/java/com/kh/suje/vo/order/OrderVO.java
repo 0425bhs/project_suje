@@ -15,6 +15,10 @@ public class OrderVO {
     private int order_id; // 주문 번호
     private int user_id; // 주문한 회원 번호
     private int total_amount; // 주문 전체 금액
+
+    // 주문에 사용한 쿠폰
+    private int user_coupon_id;
+
     private int address_id; // 배송지 번호
     private String status; // 주문 상태
     private String created_at; // 주문 생성일
@@ -25,6 +29,9 @@ public class OrderVO {
 
     // 취소 일시
     private String cancelled_at;
+
+    //유저 포인트
+    private int used_point;
 
     //판매자 주문 관리
     private String receiver_name;

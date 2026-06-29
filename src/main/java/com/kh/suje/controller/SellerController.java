@@ -1,5 +1,7 @@
 package com.kh.suje.controller;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kh.suje.dao.ImageDAO;
+import com.kh.suje.vo.ImageVO;
+import com.kh.suje.dao.ReviewDAO;
+import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.dao.ProductDAO;
@@ -32,6 +40,8 @@ public class SellerController {
     private final CategoryDAO categorydao;
     private final SellerDAO sellerdao;
     private final FavoriteDAO favoritedao;
+    private final ReviewDAO reviewdao;
+    private final ImageDAO imagedao;
 
     // 로그인한 회원 기준으로 seller_id 찾기
     private Integer getLoginSellerId() {
@@ -88,23 +98,20 @@ public class SellerController {
             return "redirect:/login.do";
         }
 
-        // 판매자 주문 목록 조회 조건
         Map<String, Object> map = new HashMap<>();
         map.put("seller_id", seller_id);
         map.put("status", status);
 
-        // 상태값이 있으면 해당 상태 주문만, 없으면 전체 주문 조회
         List<OrderVO> orderList = sellerdao.getSellerOrderList(map);
 
-        // 주문별 상품 목록을 담을 Map
         Map<Integer, List<OrderItemVO>> orderItemMap = new HashMap<>();
 
         for (OrderVO order : orderList) {
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("seller_id", seller_id);
             itemMap.put("order_id", order.getOrder_id());
+            itemMap.put("status", status);
 
-            // 해당 주문에 포함된 판매자 상품 조회
             List<OrderItemVO> itemList = sellerdao.getSellerOrderItemList(itemMap);
             orderItemMap.put(order.getOrder_id(), itemList);
         }
@@ -117,7 +124,7 @@ public class SellerController {
     }
     
     @PostMapping("/seller_order_status_update.do")
-    public String sellerOrderStatusUpdate(int order_id, String status, String selectedStatus) {
+    public String sellerOrderStatusUpdate(int order_item_id, String status, String selectedStatus) {
 
         Integer seller_id = getLoginSellerId();
 
@@ -125,15 +132,13 @@ public class SellerController {
             return "redirect:/login.do";
         }
 
-        // 주문 상태 변경 조건
         Map<String, Object> map = new HashMap<>();
         map.put("seller_id", seller_id);
-        map.put("order_id", order_id);
+        map.put("order_item_id", order_item_id);
         map.put("status", status);
 
-        sellerdao.updateSellerOrderStatus(map);
+        sellerdao.updateSellerOrderItemStatus(map);
 
-        // 기존에 보고 있던 상태 목록으로 다시 이동
         if (selectedStatus != null && !selectedStatus.trim().equals("")) {
             return "redirect:/seller_order_list.do?status=" + selectedStatus;
         }
@@ -142,13 +147,54 @@ public class SellerController {
     }
 
     @GetMapping("/seller_review_list.do")
-    public String sellerReviewList(){
+    public String sellerReviewList(Model model) {
+
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
+
+        List<ReviewVO> reviewList = reviewdao.sellerReviewList(seller_id);
+        List<ReviewVO> productList = reviewdao.sellerReviewProductList(seller_id);
+
+        if (reviewList != null && !reviewList.isEmpty()) {
+            List<Integer> reviewIds = reviewList.stream()
+                    .map(ReviewVO::getReview_id)
+                    .collect(Collectors.toList());
+
+            List<ImageVO> images = imagedao.getImagesByReviewIds(reviewIds);
+
+            if (images != null && !images.isEmpty()) {
+                Map<Integer, List<ImageVO>> imageMap = images.stream()
+                        .collect(Collectors.groupingBy(ImageVO::getTarget_id));
+
+                for (ReviewVO review : reviewList) {
+                    review.setImageList(
+                            imageMap.getOrDefault(review.getReview_id(), new ArrayList<>())
+                    );
+                }
+            }
+        }
+
+        model.addAttribute("reviewList", reviewList);
+        model.addAttribute("productList", productList);
+
         return "/seller/seller_review_list";
     }
 
     @GetMapping("/seller_qna_list.do")
-    public String sellerQnaList(){
-        return "/seller/seller_qna_list";
+    public String sellerQnaList(HttpSession session, Model model) {
+
+        UserVO user = (UserVO) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login_form.do";
+        }
+
+        model.addAttribute("activeMenu", "qna");
+
+        return "seller/seller_qna_list";
     }
 
     // 구매자용 판매자샵
@@ -232,6 +278,42 @@ public class SellerController {
     @GetMapping("/seller_statistics.do")
     public String seller_statistics(){
         return "/seller/seller_statistics";
+    }
+
+    @PostMapping("/seller_review_reply.do")
+    @ResponseBody
+    public Map<String, Object> sellerReviewReply(
+            @RequestParam("review_id") int review_id,
+            @RequestParam("reply_content") String reply_content) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            result.put("result", "login");
+            return result;
+        }
+
+        if (reply_content == null || reply_content.trim().equals("")) {
+            result.put("result", "empty");
+            return result;
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("seller_id", seller_id);
+        map.put("review_id", review_id);
+        map.put("reply_content", reply_content.trim());
+
+        int updateCount = reviewdao.sellerReviewReply(map);
+
+        if (updateCount > 0) {
+            result.put("result", "success");
+        } else {
+            result.put("result", "fail");
+        }
+
+        return result;
     }
 
 }

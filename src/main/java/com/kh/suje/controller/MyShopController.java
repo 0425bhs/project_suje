@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.kh.suje.dao.AddressDAO;
 import com.kh.suje.dao.FavoriteDAO;
@@ -48,6 +49,14 @@ public class MyShopController {
         }
 
         int user_id = loginUser.getUser_id();
+
+        // 보유 포인트 조회
+        int pointBalance = orderDAO.getUserPoint(user_id);
+        model.addAttribute("pointBalance", pointBalance);
+
+        // 사용 가능한 쿠폰 개수 조회
+        int couponCount = orderDAO.getAvailableCouponCount(user_id);
+        model.addAttribute("couponCount", couponCount);
 
         Map<String, Object> statusCounts = orderDAO.selectOrderStatusCounts(user_id);
         model.addAllAttributes(statusCounts);
@@ -108,13 +117,42 @@ public class MyShopController {
         model.addAttribute("activeMenu", "myshop");
         model.addAttribute("contentPage", "/myshop/address_form");
 
-        return "/myshop/address_list";
+        return "myshop/myshop_main";
+    }
+
+
+    //배송지 추가
+    @PostMapping("/insertAddress.do")
+    private String insertAddress(AddressVO vo) {    
+
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+        //안전장치
+        if(sessionUser == null) {
+        return "redirect:/login.do";
+    }
+
+        int user_id = sessionUser.getUser_id();
+        vo.setUser_id(user_id);
+
+        if (vo.getIs_default() == null) {
+        vo.setIs_default("false");
+    }
+
+    if ("true".equals(vo.getIs_default())) {             
+        // 기존에 설정되어 있는 기본 배송지 삭제
+          addressDao.deleteDefault(user_id); 
+        }
+        
+       int res = addressDao.insertAddress(vo);
+   
+        return "redirect:/addressList.do";
     }
 
 
     //배송지 조회
     @GetMapping("/addressList.do")
-    private String addressLis(Model model) {
+    private String addressList(Model model) {
 
         UserVO sessionUser = (UserVO) session.getAttribute("user");
 
@@ -123,10 +161,65 @@ public class MyShopController {
         model.addAttribute("user", sessionUser); 
         model.addAttribute("list", list); 
         model.addAttribute("activeMenu", "myshop");
-        model.addAttribute("contentPage", "/myshop/dashboard");
+        model.addAttribute("contentPage", "/myshop/address_list");
 
-        return "/myshop/address_list";
+        return "myshop/myshop_main";
     }
+
+
+    //배송지 삭제
+    @PostMapping("/deleteAddress.do")
+    private String deleteAddress(int address_id) {
+        
+
+        int res = addressDao.deleteAddress(address_id);
+
+        return "redirect:/addressList.do";
+    }
+
+
+     //배송지 수정폼으로
+    @GetMapping("/modifyAddress.do")
+    private String  modifyAddress(Model model, int address_id) {
+
+    AddressVO vo = addressDao.selectOne(address_id);
+   
+        model.addAttribute("vo", vo); 
+        model.addAttribute("activeMenu", "myshop");
+        model.addAttribute("contentPage", "/myshop/address_modiForm");
+
+        return "myshop/myshop_main";
+    }
+         
+
+
+    //배송지 수정
+    @PostMapping("/modifyAddress.do")
+    private String modifyAddress(AddressVO vo) {
+
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
+    if (sessionUser == null) {
+        return "redirect:/login.do";
+    }
+
+    int user_id = sessionUser.getUser_id();
+    vo.setUser_id(user_id);
+
+        if (vo.getIs_default() == null) {
+        vo.setIs_default("false");
+    }
+
+if ("true".equals(vo.getIs_default())) {
+             
+        // 기존에 설정되어 있는 기본 배송지 삭제
+        addressDao.deleteDefault(user_id); 
+    }
+
+        int result = addressDao.modifyAddress(vo);
+
+        return "redirect:/addressList.do";
+    } 
+
 
     //최근 본 상품 상세
     @GetMapping("/myshop/recent")
@@ -136,6 +229,7 @@ public class MyShopController {
             return "redirect:/login.do";
         }
         int user_id = loginUser.getUser_id();
+        
         List<ProductVO> recentList = productDAO.product_recent(user_id);
 
         model.addAttribute("recentList", recentList);
@@ -143,5 +237,59 @@ public class MyShopController {
         model.addAttribute("contentPage", "/myshop/recent");
 
         return "/myshop/myshop_main";
+    }
+
+    // 포인트 내역
+    @GetMapping("/myshop/points")
+    public String pointHistory(HttpSession session, Model model) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+        int user_id = loginUser.getUser_id();
+
+        int pointBalance = orderDAO.getUserPoint(user_id);
+        List<Map<String, Object>> pointHistoryList = orderDAO.selectPointHistoryList(user_id);
+
+        model.addAttribute("pointBalance", pointBalance);
+        model.addAttribute("pointHistoryList", pointHistoryList);
+
+        model.addAttribute("activeMenu", "point");
+        model.addAttribute("contentPage", "/myshop/point_history");
+
+        return "myshop/myshop_main";
+    }
+
+
+    // 취소내역 화면
+    @GetMapping("/order/cancel")
+    public String cancelDetail(Model model, HttpSession session) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+        int user_id = loginUser.getUser_id();
+
+        List<OrderVO> cancelList = orderDAO.selectCancelList(user_id);
+
+        Map<Integer, List<OrderItemVO>> cancelItemMap = new HashMap<>();
+
+        for (OrderVO order : cancelList) {
+            List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order.getOrder_id());
+            cancelItemMap.put(order.getOrder_id(), itemList);
+        }
+
+        model.addAttribute("loginUser", loginUser);
+        model.addAttribute("cancelList", cancelList);
+        model.addAttribute("cancelItemMap", cancelItemMap);
+
+        model.addAttribute("activeMenu", "order/cancel");
+        model.addAttribute("contentPage", "/order/cancel_list");
+
+        return "myshop/myshop_main";
     }
 }

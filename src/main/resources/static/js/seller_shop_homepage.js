@@ -34,6 +34,17 @@ function initSellerWishButton(){
     sellerWishBtn.addEventListener("click", function(){
         const seller_id = sellerWishBtn.dataset.sellerId;
 
+        // 찜이 안 된 상태에서만 쿠폰 안내
+        const isFavorite = sellerWishBtn.classList.contains("active");
+
+        if(!isFavorite){
+            const confirmCoupon = confirm("작가샵을 처음 찜하면 500원 쿠폰이 지급됩니다.\n찜하시겠습니까?");
+
+            if(!confirmCoupon){
+                return;
+            }
+        }
+
         fetch("/favorite_shop.do", {
             method: "POST",
             headers: {
@@ -80,6 +91,12 @@ function initSellerWishButton(){
                     countBox.dataset.rawCount = rawCount;
                     countBox.innerText = compactCount(rawCount);
                 }
+
+                // 첫 찜 쿠폰 발급 안내
+                if(data.couponIssued === true){
+                    alert("작가샵 첫 찜 500원 쿠폰이 지급되었습니다.");
+                }
+
             } else {
                 sellerWishBtn.classList.remove("active");
 

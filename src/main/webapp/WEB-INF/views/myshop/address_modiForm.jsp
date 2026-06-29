@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>배송지 등록</title>
+    <title>배송지 수정</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/myshop/address_form.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
 
@@ -58,7 +58,7 @@ function send(f){
 
     
 
-    f.action = "/insertAddress.do";
+    f.action = "modifyAddress.do";
     f.method = "POST";
     f.submit();
 
@@ -73,44 +73,46 @@ function send(f){
 <div class="join-container">
     <form method="post" >
 
-         <div class="form-title">배송지 추가</div>
+        <input type="hidden" name="address_id" value="${vo.address_id}" />
+
+        <div class="form-title">배송지 정보 수정</div>
 
         <table id = "address_input">      
             
            <tr>
                 <th>수령인</th>
-                <td><input name="recipient_name" /></td>
+                <td><input name="recipient_name" value = "${vo.recipient_name}"/></td>
             </tr>
             <tr>
     <th>우편번호</th>
     <td style="display: flex; gap: 8px;">
-        <input name="zipcode" style="flex: 1;"/>
+        <input name="zipcode" style="flex: 1;"value="${vo.zipcode}"/>
         <input type="button" value="검색" class="btn-main" onclick="search(this.form)"/>
     </td>
 </tr>
-            </tr>
             <tr>
                 <th>주소</th>
-                <td><input name="address" /></td>
+                <td><input name="address" value = "${vo.address}"/></td>
                 
             </tr>
             <tr>
                 <th>상세주소</th>
-                <td><input name="detail_address" /></td>
+                <td><input name="detail_address" value = "${vo.detail_address}"/></td>
             </tr>
             <tr>
                 <th>휴대폰</th>
-                <td><input name="phone" placeholder="-없이 입력"/></td>
+                <td><input name="phone" placeholder="-없이 입력" value = "${vo.phone}"/></td>
             </tr>
 
               <tr>
                 <th>배송지명</th>
-                <td><input name="address_name" /></td>
+                <td><input name="address_name" value = "${vo.address_name}" /></td>
             </tr>
 
           <tr>
     <td colspan="2">
-        <input type="checkbox" name="is_default" value="true" id="is_default" />
+        <input type="checkbox" name="is_default" value="true" 
+        id="is_default" ${vo.is_default eq 'true' ? 'checked' : ''}/>
         <label for="is_default">기본 배송지로 설정</label>
     </td>
 </tr>
@@ -118,7 +120,7 @@ function send(f){
      
 
 <div class="btn-area">
-    <input type="button" value="등록" class="btn-main" onclick="send(this.form)"/>
+    <input type="button" value="수정" class="btn-main" onclick="send(this.form)"/>
     <input type="button" value="취소" class="btn-cancel" onclick="history.back()"/>
 </div>
 
