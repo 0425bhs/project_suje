@@ -296,7 +296,6 @@
     display: block;
 }
 
-/* 예전 빈 프로필 아이콘 방식이 남아있을 경우 대비 */
 .review-user-photo-box.empty::before,
 .review-user-photo-empty::before {
     content: "\F4D7";
@@ -322,7 +321,6 @@
     flex: 1;
 }
 
-/* 1번째 줄: 닉네임 + 날짜 */
 .review-user-line {
     display: flex;
     align-items: center;
@@ -344,7 +342,6 @@
     line-height: 1.1;
 }
 
-/* 2번째 줄: 별점 */
 .review-star-line {
     margin-top: 3px;
 
@@ -368,7 +365,6 @@
     color: #ff7a1a;
 }
 
-/* 3번째 줄: 상품명, 옵션명 */
 .review-product-line {
     margin-top: 5px;
 
@@ -508,20 +504,12 @@
     display: grid;
     grid-template-columns: minmax(0, 1.45fr) minmax(420px, 1fr);
     gap: 22px;
+    align-items: flex-start;
 }
 
 .review-content-box {
     padding-top: 16px;
 
-    border-top: 1px solid #eef1f4;
-}
-
-.review-content-title {
-    margin-bottom: 10px;
-
-    color: #333;
-    font-size: 14px;
-    font-weight: 900;
 }
 
 .review-content {
@@ -529,7 +517,7 @@
     font-size: 14px;
     font-weight: 700;
     line-height: 1.8;
-    white-space: pre-wrap;
+    white-space: pre-line;
     word-break: keep-all;
 }
 
@@ -570,10 +558,11 @@
 
 .seller-reply-box {
     min-height: 154px;
-    padding: 20px 22px;
+    padding: 20px 22px 76px;
 
     position: relative;
 
+    box-sizing: border-box;
     border: 1px solid #ffd4ca;
     border-radius: 12px;
     background: linear-gradient(135deg, #fff8f6 0%, #fff 100%);
@@ -621,6 +610,85 @@
     background: #e8422d;
 }
 
+/* 답글 작성 폼 */
+.reply-write-form {
+    width: 100%;
+}
+
+.reply-textarea {
+    width: 100%;
+    min-height: 88px;
+    padding: 13px 14px;
+
+    box-sizing: border-box;
+    resize: vertical;
+
+    border: 1px solid #ffd4ca;
+    border-radius: 10px;
+    outline: none;
+
+    background: #fff;
+    color: #333;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.7;
+}
+
+.reply-textarea:focus {
+    border-color: #ff4f38;
+    box-shadow: 0 0 0 4px rgba(255, 79, 56, 0.12);
+}
+
+/* 등록/취소 버튼이 답글 작성 버튼 자리로 들어감 */
+.reply-form-btn-area {
+    position: absolute;
+    right: 20px;
+    bottom: 18px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reply-submit-btn,
+.reply-cancel-btn {
+    height: 44px;
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.reply-submit-btn {
+    border: none;
+    background: #ff4f38;
+    color: #fff;
+}
+
+.reply-submit-btn:hover {
+    background: #e8422d;
+}
+
+.reply-cancel-btn {
+    border: 1px solid #dce1e7;
+    background: #fff;
+    color: #333;
+}
+
+.reply-cancel-btn:hover {
+    border-color: #ff654f;
+    color: #ff4f38;
+    background: #fff7f3;
+}
+
+/* 답글 완료 상태 */
 .reply-complete-box {
     display: none;
 }
@@ -659,6 +727,7 @@
     font-size: 14px;
     font-weight: 700;
     line-height: 1.8;
+    white-space: pre-line;
     word-break: keep-all;
 }
 
@@ -774,6 +843,12 @@
         position: static;
         margin-top: 18px;
         width: 100%;
+    }
+
+    .reply-form-btn-area {
+        position: static;
+        margin-top: 14px;
+        justify-content: flex-end;
     }
 
     .reply-complete-content {

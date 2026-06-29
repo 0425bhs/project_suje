@@ -112,26 +112,75 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getProductReviewList" resultType="review">
         SELECT
-            review_id,
-            user_id,
-            product_id,
-            order_item_id,
-            rating,
-            content,
-            created_at
-        FROM reviews WHERE product_id=#{value} ORDER BY created_at DESC
+            r.review_id,
+            r.user_id,
+            r.product_id,
+            r.order_item_id,
+            r.rating,
+            r.content,
+            r.created_at,
+
+            DATE_FORMAT(r.created_at, '%Y.%m.%d') AS created_at_text,
+
+            r.reply_content,
+            r.reply_created_at,
+            DATE_FORMAT(r.reply_created_at, '%Y.%m.%d') AS reply_created_at_text,
+
+            u.name AS user_name,
+            u.nick_name,
+            u.photo_name,
+
+            oi.option_name AS option_name
+
+        FROM reviews r
+
+        JOIN users u
+            ON r.user_id = u.user_id
+
+        LEFT JOIN order_items oi
+            ON r.order_item_id = oi.order_item_id
+
+        WHERE r.product_id = #{value}
+
+        ORDER BY r.created_at DESC
     </select>
 
     <select id="productReviewList" resultType="review">
-        SELECT *
-        FROM reviews
-        WHERE product_id = #{value}
-        ORDER BY review_id DESC
+        SELECT
+            r.review_id,
+            r.user_id,
+            r.product_id,
+            r.order_item_id,
+            r.rating,
+            r.content,
+            r.created_at,
+
+            DATE_FORMAT(r.created_at, '%Y.%m.%d') AS created_at_text,
+
+            r.reply_content,
+            r.reply_created_at,
+            DATE_FORMAT(r.reply_created_at, '%Y.%m.%d') AS reply_created_at_text,
+
+            u.name AS user_name,
+            u.nick_name,
+            u.photo_name,
+
+            oi.option_name AS option_name
+
+        FROM reviews r
+
+        JOIN users u
+            ON r.user_id = u.user_id
+
+        LEFT JOIN order_items oi
+            ON r.order_item_id = oi.order_item_id
+
+        WHERE r.product_id = #{value}
+
+        ORDER BY r.review_id DESC
     </select>
 
-    <select id="getReviewCount"
-            parameterType="int"
-            resultType="int">
+    <select id="getReviewCount" parameterType="int" resultType="int">
         SELECT count(*)
         FROM reviews
         WHERE user_id = #{user_id}
@@ -189,6 +238,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             DATE_FORMAT(r.created_at, '%Y.%m.%d') AS created_at_text,
 
+            r.reply_content,
+            r.reply_created_at,
+            DATE_FORMAT(r.reply_created_at, '%Y.%m.%d') AS reply_created_at_text,
+
             p.name AS product_name,
             p.image_l,
 
@@ -222,5 +275,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE p.seller_id = #{seller_id}
         ORDER BY p.name ASC
     </select>
+
+    <update id="sellerReviewReply" parameterType="map">
+        UPDATE reviews r
+        JOIN products p
+            ON r.product_id = p.product_id
+        SET
+            r.reply_content = #{reply_content},
+            r.reply_created_at = NOW()
+        WHERE r.review_id = #{review_id}
+        AND p.seller_id = #{seller_id}
+    </update>
 
 </mapper>
