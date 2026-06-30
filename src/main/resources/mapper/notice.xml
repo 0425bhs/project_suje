@@ -16,11 +16,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM notices
         <where>
             <if test="keyword != null and keyword != ''">
-                title LIKE CONCAT("%", #{keyword},"%")
-                OR content LIKE CONCAT("%", #{keyword},"%")
+                (
+                    title LIKE CONCAT("%", #{keyword},"%")
+                    OR content LIKE CONCAT("%", #{keyword},"%")
+                )
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
             </if>
         </where>
-        ORDER BY notice_id DESC
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY created_at ASC, notice_id ASC
+            </when>
+            <when test="sort == 'title'">
+                ORDER BY title ASC, notice_id DESC
+            </when>
+            <otherwise>
+                ORDER BY created_at DESC, notice_id DESC
+            </otherwise>
+        </choose>
         LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -30,8 +50,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM notices
         <where>
             <if test="keyword != null and keyword != ''">
-                title LIKE CONCAT("%", #{keyword},"%")
-                OR content LIKE CONCAT("%", #{keyword},"%")
+                (
+                    title LIKE CONCAT("%", #{keyword},"%")
+                    OR content LIKE CONCAT("%", #{keyword},"%")
+                )
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
             </if>
         </where>
     </select>

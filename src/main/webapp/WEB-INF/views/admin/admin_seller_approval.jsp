@@ -71,13 +71,13 @@
                 <form class="admin-filter-form" action="/admin/sellers" method="get">
                     <div class="admin-filter-main-row">
                         <div class="admin-filter-tabs">
-                            <a href="/admin/sellers?status=all&keyword=${keyword}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'all' ? 'active' : ''}">전체</a>
-                            <a href="/admin/sellers?status=pending&keyword=${keyword}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=pending&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
-                            <a href="/admin/sellers?status=approved&keyword=${keyword}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=approved&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'approved' ? 'active' : ''}">승인완료</a>
-                            <a href="/admin/sellers?status=rejected&keyword=${keyword}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=rejected&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'rejected' ? 'active' : ''}">반려</a>
                         </div>
 
@@ -88,10 +88,10 @@
                         </div>
                         <button type="submit" class="admin-btn admin-search-submit">검색</button>
                         <button type="button" class="admin-btn light admin-filter-toggle">상세 검색</button>
-                        <select class="admin-filter-control admin-sort-control" name="sort">
-                            <option value="latest">최신순</option>
-                            <option value="oldest">오래된순</option>
-                            <option value="name">이름순</option>
+                        <select class="admin-filter-control admin-sort-control" id="sort" name="sort">
+                            <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
+                            <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
+                            <option value="name" ${sort eq 'name' ? 'selected' : ''}>이름순</option>
                         </select>
                         <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
                             <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
@@ -103,36 +103,42 @@
                     <div class="admin-filter-detail-row">
                         <label class="admin-filter-field">
                             <span>상태</span>
-                            <select class="admin-filter-control" name="detailStatus">
-                                <option value="all">전체</option>
-                                <option value="pending">승인대기</option>
-                                <option value="approved">승인완료</option>
-                                <option value="rejected">반려</option>
+                            <select class="admin-filter-control" name="status">
+                                <option value="all" ${status eq 'all' ? 'selected' : ''}>전체</option>
+                                <option value="pending" ${status eq 'pending' ? 'selected' : ''}>승인대기</option>
+                                <option value="approved" ${status eq 'approved' ? 'selected' : ''}>승인완료</option>
+                                <option value="rejected" ${status eq 'rejected' ? 'selected' : ''}>반려</option>
                             </select>
                         </label>
                         <label class="admin-filter-field admin-filter-date-range">
                             <span>신청일 범위</span>
-                            <input type="date" class="admin-filter-control" name="startDate">
+                            <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
                             <em>~</em>
-                            <input type="date" class="admin-filter-control" name="endDate">
+                            <input type="date" class="admin-filter-control" name="endDate" value="${endDate}">
                         </label>
                         <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                     </div>
 
-                    <c:if test="${status ne 'all' || not empty keyword}">
+                    <c:if test="${status ne 'all' || not empty keyword || not empty startDate || not empty endDate}">
                         <div class="admin-filter-applied">
                             <span class="admin-filter-applied-label">적용된 조건:</span>
                             <c:if test="${status ne 'all'}">
                                 <a class="admin-filter-chip"
-                                    href="/admin/sellers?status=all&keyword=${keyword}&size=${pagination.size}&page=1">
+                                    href="/admin/sellers?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     상태:
                                     ${status eq 'pending' ? '승인대기' : status eq 'approved' ? '승인완료' : '반려'}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
                             <c:if test="${not empty keyword}">
-                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     검색어: ${keyword}
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
+                            <c:if test="${not empty startDate || not empty endDate}">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                                    신청일: ${startDate} ~ ${endDate}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
@@ -140,7 +146,6 @@
                         </div>
                     </c:if>
 
-                    <input type="hidden" name="status" value="${status}">
                     <input type="hidden" name="page" value="1">
                 </form>
             </div>
@@ -262,7 +267,7 @@
                 <div class="admin-pagination-pages">
                     <c:if test="${pagination.totalPage > 0}">
                         <c:if test="${pagination.hasPrev}">
-                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                                 이전
                             </a>
                         </c:if>
@@ -271,14 +276,14 @@
                         </c:if>
 
                         <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${i}"
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                                 class="${pagination.page == i ? 'active' : ''}">
                                 ${i}
                             </a>
                         </c:forEach>
 
                         <c:if test="${pagination.hasNext}">
-                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                                 다음
                             </a>
                         </c:if>

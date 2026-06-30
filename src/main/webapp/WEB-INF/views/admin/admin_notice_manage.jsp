@@ -77,10 +77,10 @@
                     </div>
                     <button type="submit" class="admin-btn admin-search-submit">검색</button>
                     <button type="button" class="admin-btn light admin-filter-toggle">상세 검색</button>
-                    <select class="admin-filter-control admin-sort-control" name="sort">
-                        <option value="latest">최신순</option>
-                        <option value="oldest">오래된순</option>
-                        <option value="title">제목순</option>
+                    <select class="admin-filter-control admin-sort-control" id="sort" name="sort">
+                        <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
+                        <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
+                        <option value="title" ${sort eq 'title' ? 'selected' : ''}>제목순</option>
                     </select>
                     <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
                         <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
@@ -92,20 +92,28 @@
                 <div class="admin-filter-detail-row">
                     <label class="admin-filter-field admin-filter-date-range">
                         <span>등록일 범위</span>
-                        <input type="date" class="admin-filter-control" name="startDate">
+                        <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
                         <em>~</em>
-                        <input type="date" class="admin-filter-control" name="endDate">
+                        <input type="date" class="admin-filter-control" name="endDate" value="${endDate}">
                     </label>
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
-                <c:if test="${not empty keyword}">
+                <c:if test="${not empty keyword || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
                         <span class="admin-filter-applied-label">적용된 조건:</span>
-                        <a class="admin-filter-chip" href="/admin/notices?size=${pagination.size}&page=1">
-                            검색어: ${keyword}
-                            <span aria-hidden="true">&times;</span>
-                        </a>
+                        <c:if test="${not empty keyword}">
+                            <a class="admin-filter-chip" href="/admin/notices?startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                검색어: ${keyword}
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${not empty startDate || not empty endDate}">
+                            <a class="admin-filter-chip" href="/admin/notices?keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                                등록일: ${startDate} ~ ${endDate}
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
                         <a class="admin-filter-clear" href="/admin/notices">전체 해제</a>
                     </div>
                 </c:if>
@@ -191,7 +199,7 @@
             <div class="admin-pagination-pages">
                 <c:if test="${pagination.totalPage > 0}">
                     <c:if test="${pagination.hasPrev}">
-                        <a href="/admin/notices?keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
+                        <a href="/admin/notices?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                             이전
                         </a>
                     </c:if>
@@ -200,14 +208,14 @@
                     </c:if>
 
                     <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                        <a href="/admin/notices?keyword=${keyword}&size=${pagination.size}&page=${i}"
+                        <a href="/admin/notices?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                             class="${pagination.page == i ? 'active' : ''}">
                             ${i}
                         </a>
                     </c:forEach>
 
                     <c:if test="${pagination.hasNext}">
-                        <a href="/admin/notices?keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
+                        <a href="/admin/notices?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                             다음
                         </a>
                     </c:if>

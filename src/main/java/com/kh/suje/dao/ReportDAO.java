@@ -12,7 +12,12 @@ public interface ReportDAO {
     List<ReportVO> getReportListByKeyword(@Param("status") String status,
                                           @Param("keyword") String keyword,
                                           @Param("size") Integer size,
-                                          @Param("offset") int offset);
+                                          @Param("offset") int offset,
+                                          @Param("startDate") String startDate,
+                                          @Param("endDate") String endDate,
+                                          @Param("sort") String sort);
     int getReportListCountByKeyword(@Param("status") String status,
-                                    @Param("keyword") String keyword);
+                                    @Param("keyword") String keyword,
+                                    @Param("startDate") String startDate,
+                                    @Param("endDate") String endDate);
 }

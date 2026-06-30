@@ -114,19 +114,30 @@ public class AdminController {
     }
 
     @GetMapping("/admin/sellers")
-    public String sellers(Model model, String status, String keyword, Integer size, Integer page) {
+    public String sellers(Model model, String status, String keyword,
+                          String startDate, String endDate,
+                          String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"approved".equals(status) && !"rejected".equals(status)) {
             status = "all";
         }
 
-        int totalCount = sellerDao.getSellerListCountByKeyword(status, keyword);
+        if (!"oldest".equals(sort) && !"name".equals(sort)) {
+            sort = "latest";
+        }
+
+        int totalCount = sellerDao.getSellerListCountByKeyword(status, keyword, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<SellerVO> sellerList = sellerDao.getSellerListByKeyword(status, keyword,
                                                                      pagination.getSize(),
-                                                                     pagination.getOffset());
+                                                                     pagination.getOffset(),
+                                                                     startDate, endDate,
+                                                                     sort);
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         model.addAttribute("sellerList", sellerList);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
@@ -152,20 +163,31 @@ public class AdminController {
     }
 
     @GetMapping("/admin/products")
-    public String products(Model model, String status, String keyword, Integer size, Integer page) {
+    public String products(Model model, String status, String keyword,
+                           String startDate, String endDate,
+                           String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"approved".equals(status) &&
             !"rejected".equals(status) && !"hidden".equals(status)) {
             status = "all";
         }
 
-        int totalCount = productDao.getProductListCountByKeyword(status, keyword);
+        if (!"oldest".equals(sort) && !"name".equals(sort)) {
+            sort = "latest";
+        }
+
+        int totalCount = productDao.getProductListCountByKeyword(status, keyword, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ProductVO> productList = productDao.getProductListByKeyword(status, keyword,
                                                                          pagination.getSize(),
-                                                                         pagination.getOffset());
+                                                                         pagination.getOffset(),
+                                                                         startDate, endDate,
+                                                                         sort);
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         model.addAttribute("productList", productList);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
@@ -191,19 +213,30 @@ public class AdminController {
     }
 
     @GetMapping("/admin/reviews")
-    public String reviews(Model model, String status, String keyword, Integer size, Integer page) {
+    public String reviews(Model model, String status, String keyword,
+                          String startDate, String endDate,
+                          String sort, Integer size, Integer page) {
         if (!"public".equals(status) && !"private".equals(status)) {
             status = "all";
         }
 
-        int totalCount = reviewDao.getReviewListCountByKeyword(status, keyword);
+        if (!"oldest".equals(sort) && !"rating".equals(sort)) {
+            sort = "latest";
+        }
+
+        int totalCount = reviewDao.getReviewListCountByKeyword(status, keyword, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ReviewVO> reviewList = reviewDao.getReviewListByKeyword(status, keyword,
                                                                      pagination.getSize(),
-                                                                     pagination.getOffset());
+                                                                     pagination.getOffset(),
+                                                                     startDate, endDate,
+                                                                     sort);
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
@@ -229,19 +262,30 @@ public class AdminController {
     }
 
     @GetMapping("/admin/inquiries")
-    public String inquiries(Model model, String status, String keyword, Integer size, Integer page) {
+    public String inquiries(Model model, String status, String keyword,
+                            String startDate, String endDate,
+                            String sort, Integer size, Integer page) {
         if (!"waiting".equals(status) && !"answered".equals(status)) {
             status = "all";
         }
 
-        int totalCount = inquiryDao.getInquryListCountByKeyword(status, keyword);
+        if (!"oldest".equals(sort) && !"title".equals(sort)) {
+            sort = "latest";
+        }
+
+        int totalCount = inquiryDao.getInquryListCountByKeyword(status, keyword, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<InquiryVO> inquiryList = inquiryDao.getInquryListByKeyword(status, keyword,
                                                                        pagination.getSize(),
-                                                                       pagination.getOffset());
+                                                                       pagination.getOffset(),
+                                                                       startDate, endDate,
+                                                                       sort);
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         model.addAttribute("inquiryList", inquiryList);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
@@ -267,20 +311,31 @@ public class AdminController {
     }
 
     @GetMapping("/admin/reports")
-    public String reports(Model model, String status, String keyword, Integer size, Integer page) {
+    public String reports(Model model, String status, String keyword,
+                          String startDate, String endDate,
+                          String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"processed".equals(status) &&
             !"rejected".equals(status)) {
             status = "all";
         }
 
-        int totalCount = reportDao.getReportListCountByKeyword(status, keyword);
+        if (!"oldest".equals(sort) && !"target".equals(sort)) {
+            sort = "latest";
+        }
+
+        int totalCount = reportDao.getReportListCountByKeyword(status, keyword, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ReportVO> reportList = reportDao.getReportListByKeyword(status, keyword,
                                                                      pagination.getSize(),
-                                                                     pagination.getOffset());
+                                                                     pagination.getOffset(),
+                                                                     startDate, endDate,
+                                                                     sort);
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         model.addAttribute("reportList", reportList);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
@@ -314,14 +369,25 @@ public class AdminController {
     }
 
     @GetMapping("/admin/notices")
-    public String notices(Model model, String keyword, Integer size, Integer page) {
-        int totalCount = noticeDao.getNoticeListCountByKeyword(keyword);
+    public String notices(Model model, String keyword,
+                          String startDate, String endDate,
+                          String sort, Integer size, Integer page) {
+        if (!"oldest".equals(sort) && !"title".equals(sort)) {
+            sort = "latest";
+        }
+
+        int totalCount = noticeDao.getNoticeListCountByKeyword(keyword, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<NoticeVO> noticeList = noticeDao.getNoticeListByKeyword(keyword,
                                                                      pagination.getSize(),
-                                                                     pagination.getOffset());
+                                                                     pagination.getOffset(),
+                                                                     startDate, endDate,
+                                                                     sort);
 
         model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         model.addAttribute("noticeList", noticeList);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
