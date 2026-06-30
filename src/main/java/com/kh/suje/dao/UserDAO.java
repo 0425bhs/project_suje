@@ -14,11 +14,18 @@ public interface UserDAO {
                                       @Param("keyword") String keyword,
                                       @Param("size") Integer size,
                                       @Param("offset") int offset,
-                                      @Param("gender") String gender); //키워드로 회원 검색
+                                      @Param("gender") String gender,
+                                      @Param("status") String status,
+                                      @Param("startDate") String startDate,
+                                      @Param("endDate") String endDate,
+                                      @Param("sort") String sort); //키워드로 회원 검색
 
     int getUserListCountByKeyword(@Param("role") String role,
                                   @Param("keyword") String keyword,
-                                  @Param("gender") String gender);
+                                  @Param("gender") String gender,
+                                  @Param("status") String status,
+                                  @Param("startDate") String startDate,
+                                  @Param("endDate") String endDate);
 
     int insertUser(UserVO vo); //회원가입
 

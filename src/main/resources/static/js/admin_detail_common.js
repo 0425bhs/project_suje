@@ -195,6 +195,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// 조회 수 변경 SELECT가 변경시 page를 1로 변경후 submit
+document.addEventListener("DOMContentLoaded", () => {
+    const sort = document.getElementById("sort");
+
+    if (!sort) {
+        return;
+    }
+
+    sort.addEventListener("change", () => {
+
+        const form = sort.closest("form");
+
+        if (!form) {
+            return;
+        }
+
+        const pageInput = form.querySelector("input[name='page']");
+
+        if (pageInput) {
+            pageInput.value = "1";
+        }
+
+        form.submit();
+    });
+});
+
 // ESC를 눌렀을 때 상세패널 -> 상세 검색 순으로 닫기
 document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || event.isComposing) {

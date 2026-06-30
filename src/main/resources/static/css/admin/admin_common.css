@@ -390,7 +390,7 @@ body {
     max-width: none;
     inline-size: 100%;
     display: grid;
-    grid-template-columns: minmax(0, auto) minmax(12px, 1fr) minmax(190px, 230px) 68px 86px 86px 78px;
+    grid-template-columns: max-content minmax(0, 1fr) minmax(260px, 320px) 68px 86px 86px 78px;
     align-items: center;
     justify-content: stretch;
     justify-items: stretch;
@@ -412,7 +412,6 @@ body {
     width: 100%;
     min-width: 0;
     grid-column: 3;
-    justify-self: end;
 }
 
 .admin-search-wrap .admin-search {
@@ -735,6 +734,16 @@ body {
 .admin-status.warning {
     background: #fff0e8;
     color: #d85b35;
+}
+
+.admin-status.suspended {
+    background: #fff0e8;
+    color: #d85b35;
+}
+
+.admin-status.withdrawn {
+    background: #eef1f5;
+    color: #667085;
 }
 
 .admin-status.waiting {

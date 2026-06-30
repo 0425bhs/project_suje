@@ -48,7 +48,11 @@ public class AdminController {
     }
 
     @GetMapping("/admin/members")
-    public String members(Model model, String role, String keyword, Integer size, Integer page, String gender) {
+    public String members(Model model, 
+                          String role, String keyword, 
+                          String gender, String status,
+                          String startDate, String endDate,
+                          String sort, Integer size, Integer page) {
         if (!"user".equals(role) && !"seller".equals(role)) {
             role = "all";
         }
@@ -57,17 +61,34 @@ public class AdminController {
             gender = "all";
         }
 
-        int totalCount = userDao.getUserListCountByKeyword(role, keyword, gender);
+        if (!"active".equalsIgnoreCase(status) && !"suspended".equalsIgnoreCase(status)
+            && !"withdrawn".equalsIgnoreCase(status)) {
+            status = "all";
+        }
+
+        if (!"oldest".equals(sort)) {
+            sort = "latest";
+        }
+
+        int totalCount = userDao.getUserListCountByKeyword(role, keyword,
+                                                           gender, status,
+                                                           startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
 
         List<UserVO> userList = userDao.getUserListByKeyword(role, keyword, 
                                                              pagination.getSize(), 
                                                              pagination.getOffset(),
-                                                             gender);
+                                                             gender, status,
+                                                             startDate, endDate,
+                                                             sort);
 
         model.addAttribute("role", role);
         model.addAttribute("keyword", keyword);
         model.addAttribute("gender", gender);
+        model.addAttribute("status", status);
+        model.addAttribute("sort", sort);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
         model.addAttribute("userList", userList);
