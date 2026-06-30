@@ -102,7 +102,7 @@
 
                     <c:forEach var="qna" items="${qnaList}">
 
-                        <div class="seller-qna-card" data-product-id="${qna.product_id}" data-answered="false">//false고치기
+                        <div class="seller-qna-card" data-product-id="${qna.product_id}" data-answered="${not empty qna.answer}">
 
                             <div class="qna-card-top">
 
@@ -217,7 +217,7 @@
                                         </div>
 
                                         <div class="answer-complete-content">
-                                            등록된 판매자 답변입니다.
+                                             ${qna.answer}
                                         </div>
 
                                         <button type="button" class="answer-edit-btn" data-qna-id="${qna.qna_id}">

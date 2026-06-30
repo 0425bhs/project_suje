@@ -53,7 +53,9 @@ public class ReviewController {
 
     @PostMapping("/review_form.do")
     @Transactional(rollbackFor = Exception.class)
-    public String reviewFormFin(HttpSession session, ReviewVO review, List<MultipartFile> images) throws IllegalStateException, IOException {
+    public String reviewFormFin(HttpSession session, ReviewVO review,
+        @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IllegalStateException, IOException {
+
         UserVO user = (UserVO)session.getAttribute("user");
         if (user == null) {
             return "redirect:/login.do";
@@ -72,8 +74,9 @@ public class ReviewController {
         List<ImageVO> imageList = new ArrayList<>();
         int sort_order = 1;
 
+        if (images != null) {
         for (MultipartFile file : images) {
-            if (file.isEmpty()) {
+            if (file == null || file.isEmpty()) {
                 continue;
             }
 

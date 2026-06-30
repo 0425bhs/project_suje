@@ -22,4 +22,7 @@ public interface QnaDAO {
     int getAnsweredQnaCount(int user_id);
 
     List<QnaVO> productQnaList(int product_id);
+
+    List<QnaVO> sellerQnaList(int seller_id);
+    
 }

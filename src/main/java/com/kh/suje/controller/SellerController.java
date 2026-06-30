@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kh.suje.dao.QnaDAO;
+import com.kh.suje.vo.QnaVO;
 import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.vo.ImageVO;
 import com.kh.suje.dao.ReviewDAO;
@@ -42,6 +44,7 @@ public class SellerController {
     private final FavoriteDAO favoritedao;
     private final ReviewDAO reviewdao;
     private final ImageDAO imagedao;
+    private final QnaDAO qnadao;
 
     // 로그인한 회원 기준으로 seller_id 찾기
     private Integer getLoginSellerId() {
@@ -184,17 +187,21 @@ public class SellerController {
     }
 
     @GetMapping("/seller_qna_list.do")
-    public String sellerQnaList(HttpSession session, Model model) {
+    public String sellerQnaList(Model model) {
 
-        UserVO user = (UserVO) session.getAttribute("user");
+        Integer seller_id = getLoginSellerId();
 
-        if (user == null) {
-            return "redirect:/login_form.do";
+        if (seller_id == null) {
+            return "redirect:/login.do";
         }
 
-        model.addAttribute("activeMenu", "qna");
+        List<QnaVO> qnaList = qnadao.sellerQnaList(seller_id);
+        model.addAttribute("qnaList", qnaList);
 
-        return "seller/seller_qna_list";
+        List<ProductVO> productList = reviewdao.sellerReviewProductList(seller_id);
+        model.addAttribute("productList", productList);
+
+        return "/seller/seller_qna";
     }
 
     // 구매자용 판매자샵

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.suje.dao.QnaDAO;
+import com.kh.suje.vo.QnaVO;
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.dao.OptionDAO;
@@ -46,6 +48,7 @@ public class ProductController {
     private final ImageDAO imagedao;
     private final FavoriteDAO favoritedao;
     private final OptionDAO optiondao;
+    private final QnaDAO qnadao;
 
     // 할인 설정값 정리
     private void applySaleSetting(ProductVO vo){
@@ -364,6 +367,9 @@ public class ProductController {
         }
 
         vo.setOptionTotalStock(optionTotalStock);
+
+        List<QnaVO> qna_list = qnadao.productQnaList(product_id);
+        model.addAttribute("qna_list", qna_list);
 
         List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
         vo.setImageList(productImageList);
