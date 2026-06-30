@@ -36,6 +36,7 @@
 
                                     setText("userId", user.user_id);
                                     setText("role", user.role);
+                                    setText("status", user.status);
                                     setText("name", user.name);
                                     setText("nickName", user.nick_name);
                                     setText("loginId", user.login_id);
@@ -44,6 +45,7 @@
                                     setText("gender", user.gender);
                                     setText("createdAt", user.created_at);
                                     setText("updatedAt", user.updated_at);
+
                                     highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                                 })
                         });
@@ -72,17 +74,16 @@
                         <form class="admin-filter-form" action="/admin/members" method="get">
                             <div class="admin-filter-main-row">
                                 <div class="admin-filter-tabs">
-                                    <a href="/admin/members?role=all&keyword=${keyword}&size=${pagination.size}&page=1"
+                                    <a href="/admin/members?role=all&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                         class="${role == 'all' ? 'active' : ''}">전체</a>
-                                    <a href="/admin/members?role=user&keyword=${keyword}&size=${pagination.size}&page=1"
+                                    <a href="/admin/members?role=user&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                         class="${role == 'user' ? 'active' : ''}">일반회원</a>
-                                    <a href="/admin/members?role=seller&keyword=${keyword}&size=${pagination.size}&page=1"
+                                    <a href="/admin/members?role=seller&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                         class="${role == 'seller' ? 'active' : ''}">판매자</a>
                                 </div>
-                                <span class="admin-filter-count">전체 ${totalCount}명</span>
 
                                 <div class="admin-search-wrap">
-                                    <input type="text" class="admin-search" name="keyword"
+                                    <input type="text" class="admin-search" id="keyword" name="keyword"
                                         placeholder="아이디, 이름, 이메일, 닉네임, 전화번호 검색" value="${keyword}">
                                     <span class="admin-search-icon" aria-hidden="true"></span>
                                 </div>
@@ -90,13 +91,11 @@
                                 <button type="button" class="admin-btn light admin-filter-toggle">
                                     상세 검색
                                 </button>
-                                <select class="admin-filter-control admin-sort-control" name="sort">
-                                    <option value="latest">최신순</option>
-                                    <option value="oldest">오래된순</option>
-                                    <option value="name">이름순</option>
+                                <select class="admin-filter-control admin-sort-control" id="sort" name="sort">
+                                    <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
+                                    <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
                                 </select>
-                                <select class="admin-filter-control admin-page-size-control" name="size"
-                                    data-auto-submit="true" aria-label="페이지당 출력 개수">
+                                <select class="admin-filter-control admin-page-size-control" id="pageSize" name="size">
                                     <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
                                     <option value="30" ${pagination.size == 30 ? 'selected' : ''}>30개씩</option>
                                     <option value="50" ${pagination.size == 50 ? 'selected' : ''}>50개씩</option>
@@ -107,39 +106,43 @@
                                 <label class="admin-filter-field">
                                     <span>성별</span>
                                     <select class="admin-filter-control" name="gender">
-                                        <option value="all">전체</option>
-                                        <option value="male">남성</option>
-                                        <option value="female">여성</option>
+                                        <option value="all" ${gender eq 'all' ? 'selected' : ''}>전체</option>
+                                        <option value="male" ${gender eq 'male' ? 'selected' : ''}>남성</option>
+                                        <option value="female" ${gender eq 'female' ? 'selected' : ''}>여성</option>
                                     </select>
                                 </label>
 
                                 <label class="admin-filter-field">
                                     <span>상태</span>
-                                    <select class="admin-filter-control" name="memberStatus">
-                                        <option value="all">전체</option>
-                                        <option value="active">활성</option>
-                                        <option value="suspended">정지</option>
-                                        <option value="withdrawn">탈퇴</option>
+                                    <select class="admin-filter-control" name="status">
+                                        <option value="all" ${status eq 'all' ? 'selected' : ''}>전체</option>
+                                        <option value="active" ${status eq 'active' ? 'selected' : ''}>활성</option>
+                                        <option value="suspended" ${status eq 'suspended' ? 'selected' : ''}>정지</option>
+                                        <option value="withdrawn" ${status eq 'withdrawn' ? 'selected' : ''}>탈퇴</option>
                                     </select>
                                 </label>
 
                                 <label class="admin-filter-field admin-filter-date-range">
                                     <span>가입일 범위</span>
-                                    <input type="date" class="admin-filter-control" name="startDate">
+                                    <input type="date" class="admin-filter-control" name="startDate"
+                                           value="${startDate}">
                                     <em>~</em>
-                                    <input type="date" class="admin-filter-control" name="endDate">
+                                    <input type="date" class="admin-filter-control" name="endDate"
+                                           value="${endDate}">
                                 </label>
 
                                 <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                             </div>
 
-                            <c:if test="${role ne 'all' || not empty keyword}">
+                            <c:if test="${role ne 'all' || not empty keyword
+                                          || gender ne 'all' || status ne 'all'
+                                          || not empty startDate || not empty endDate}">
                                 <div class="admin-filter-applied">
                                     <span class="admin-filter-applied-label">적용된 조건:</span>
 
                                     <c:if test="${role ne 'all'}">
                                         <a class="admin-filter-chip"
-                                            href="/admin/members?role=all&keyword=${keyword}&size=${pagination.size}&page=1">
+                                            href="/admin/members?role=all&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                             유형:
                                             ${role eq 'user' ? '일반회원' : '판매자'}
                                             <span>&times;</span>
@@ -148,12 +151,54 @@
 
                                     <c:if test="${not empty keyword}">
                                         <a class="admin-filter-chip"
-                                            href="/admin/members?role=${role}&size=${pagination.size}&page=1">
+                                            href="/admin/members?role=${role}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                             검색어: ${keyword}
                                             <span>&times;</span>
                                         </a>
                                     </c:if>
 
+                                    <c:if test="${gender ne 'all'}">
+                                        <a class="admin-filter-chip"
+                                            href="/admin/members?role=${role}&keyword=${keyword}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                            성별:
+                                            <c:choose>
+                                                <c:when test="${gender eq 'male'}">
+                                                    남성
+                                                </c:when>
+                                                <c:when test="${gender eq 'female'}">
+                                                    여성
+                                                </c:when>
+                                            </c:choose>
+                                            <span>&times;</span>
+                                        </a>
+                                    </c:if>
+                                    
+                                    <c:if test="${status ne 'all'}">
+                                        <a class="admin-filter-chip"
+                                            href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                            상태:
+                                            <c:choose>
+                                                <c:when test="${status eq 'active'}">
+                                                    활성
+                                                </c:when>
+                                                <c:when test="${status eq 'suspended'}">
+                                                    정지
+                                                </c:when>
+                                                <c:when test="${status eq 'withdrawn'}">
+                                                    탈퇴
+                                                </c:when>
+                                            </c:choose>
+                                            <span>&times;</span>
+                                        </a>
+                                    </c:if>
+
+                                    <c:if test="${not empty startDate or not empty endDate}">
+                                        <a class="admin-filter-chip"
+                                            href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&status=${status}&sort=${sort}&size=${pagination.size}&page=1">
+                                            가입일: ${startDate} ~ ${endDate}
+                                            <span>&times;</span>
+                                        </a>
+                                    </c:if>
                                     <a class="admin-filter-clear" href="/admin/members">전체 해제</a>
                                 </div>
                             </c:if>
@@ -185,7 +230,27 @@
                                                 <td class="admin-highlight-target"><strong>${user.name}</strong></td>
                                                 <td class="left admin-highlight-target">${user.email}</td>
                                                 <td>${user.role eq 'SELLER' ? "판매자" : "일반회원"}</td>
-                                                <td><span class="admin-status active">정상(미구현)</span></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${user.status eq 'active'}">
+                                                            <span class="admin-status active">
+                                                                활성
+                                                            </span>
+                                                        </c:when>
+                                                        
+                                                        <c:when test="${user.status eq 'suspended'}">
+                                                            <span class="admin-status suspended">
+                                                                정지
+                                                            </span>
+                                                        </c:when>
+
+                                                        <c:when test="${user.status eq 'withdrawn'}">
+                                                            <span class="admin-status withdrawn">
+                                                                탈퇴
+                                                            </span>
+                                                        </c:when>
+                                                    </c:choose>
+                                                </td>
                                                 <td>${user.created_at}</td>
                                                 <td class="admin-table-actions">
                                                     <button type="button"
@@ -217,6 +282,10 @@
                                         <div>
                                             <dt>회원 유형</dt>
                                             <dd id="role">-</dd>
+                                        </div>
+                                        <div>
+                                            <dt>회원 상태</dt>
+                                            <dd id="status">-</dd>
                                         </div>
                                         <div>
                                             <dt>회원명</dt>
@@ -257,34 +326,36 @@
                     </section>
 
                     <div class="admin-pagination">
-                        <c:if test="${pagination.totalPage > 0}">
-                            <c:if test="${pagination.hasPrev}">
-                                <a
-                                    href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
-                                    이전
-                                </a>
-                            </c:if>
-                            <c:if test="${!pagination.hasPrev}">
-                                <span class="disabled">이전</span>
-                            </c:if>
+                        <div class="admin-pagination-pages">
+                            <c:if test="${pagination.totalPage > 0}">
+                                <c:if test="${pagination.hasPrev}">
+                                    <a href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                                        
+                                        이전
+                                    </a>
+                                </c:if>
+                                <c:if test="${!pagination.hasPrev}">
+                                    <span class="disabled">이전</span>
+                                </c:if>
 
-                            <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                                <a href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${i}"
-                                    class="${pagination.page == i ? 'active' : ''}">
-                                    ${i}
-                                </a>
-                            </c:forEach>
+                                <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                                    <a href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                                        class="${pagination.page == i ? 'active' : ''}">
+                                        ${i}
+                                    </a>
+                                </c:forEach>
 
-                            <c:if test="${pagination.hasNext}">
-                                <a
-                                    href="/admin/members?role=${role}&keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
-                                    다음
-                                </a>
+                                <c:if test="${pagination.hasNext}">
+                                    <a href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                                        다음
+                                    </a>
+                                </c:if>
+                                <c:if test="${!pagination.hasNext}">
+                                    <span class="disabled">다음</span>
+                                </c:if>
                             </c:if>
-                            <c:if test="${!pagination.hasNext}">
-                                <span class="disabled">다음</span>
-                            </c:if>
-                        </c:if>
+                        </div>
+                        <span class="admin-filter-count">전체 ${totalCount}명</span>
                     </div>
                 </main>
             </div>

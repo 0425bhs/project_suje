@@ -11,8 +11,13 @@ public interface InquiryDAO {
     List<InquiryVO> getInquryListByKeyword(@Param("status") String status,
                                            @Param("keyword") String keyword,
                                            @Param("size") Integer size,
-                                           @Param("offset") int offset);
+                                           @Param("offset") int offset,
+                                           @Param("startDate") String startDate,
+                                           @Param("endDate") String endDate,
+                                           @Param("sort") String sort);
     int getInquryListCountByKeyword(@Param("status") String status,
-                                    @Param("keyword") String keyword);
+                                    @Param("keyword") String keyword,
+                                    @Param("startDate") String startDate,
+                                    @Param("endDate") String endDate);
     InquiryVO getInquiryById(int inquiry_id);
 }

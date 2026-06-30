@@ -114,8 +114,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     OR r.content LIKE CONCAT("%", #{keyword}, "%")
                 ) 
             </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND r.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND r.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            </if>
         </where>
-        ORDER BY r.review_id DESC
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY r.created_at ASC, r.review_id ASC
+            </when>
+            <when test="sort == 'rating'">
+                ORDER BY r.rating DESC, r.review_id DESC
+            </when>
+            <otherwise>
+                ORDER BY r.created_at DESC, r.review_id DESC
+            </otherwise>
+        </choose>
         LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -136,6 +154,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     OR u.name LIKE CONCAT("%", #{keyword}, "%")
                     OR r.content LIKE CONCAT("%", #{keyword}, "%")
                 ) 
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND r.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND r.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
             </if>
         </where>
     </select>
