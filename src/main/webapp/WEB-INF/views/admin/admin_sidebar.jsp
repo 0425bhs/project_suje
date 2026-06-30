@@ -24,6 +24,9 @@
         <a href="/admin/products" class="${param.activeMenu eq 'products' ? 'menu-active' : ''}">
             상품 관리(진행중)
         </a>
+        <a href="/admin/orders" class="${param.activeMenu eq 'orders' ? 'menu-active' : ''}">
+            주문 관리(진행중)
+        </a>
         <a href="/admin/reviews" class="${param.activeMenu eq 'reviews' ? 'menu-active' : ''}">
             후기 관리(진행중)
         </a>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.InquiryDAO;
 import com.kh.suje.dao.NoticeDAO;
+import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.ReportDAO;
 import com.kh.suje.dao.ReviewDAO;
@@ -40,6 +41,7 @@ public class AdminController {
     private final InquiryDAO inquiryDao;
     private final ReportDAO reportDao;
     private final NoticeDAO noticeDao;
+    private final OrderDAO orderDao;
 
     @GetMapping(value = {"/admin", "/admin/dashboard"})
     public String adminDashboard() {
@@ -258,6 +260,61 @@ public class AdminController {
 
         map.put("success", true);
         map.put("review", review);
+        return map;
+    }
+
+    @GetMapping("/admin/orders")
+    public String orders(Model model, String status, String keyword,
+                         Integer user_id,
+                         String startDate, String endDate,
+                         String sort, Integer size, Integer page) {
+        if (!"pending".equals(status) && !"paid".equals(status) &&
+            !"preparing".equals(status) && !"shipping".equals(status) &&
+            !"delivered".equals(status) && !"cancelled".equals(status)) {
+            status = "all";
+        }
+
+        if (!"oldest".equals(sort) && !"amount".equals(sort)) {
+            sort = "latest";
+        }
+
+        int totalCount = orderDao.getAdminOrderListCountByKeyword(status, keyword, user_id, startDate, endDate);
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+        List<Map<String, Object>> orderList = orderDao.getAdminOrderListByKeyword(status, keyword,
+                                                                                  user_id,
+                                                                                  pagination.getSize(),
+                                                                                  pagination.getOffset(),
+                                                                                  startDate, endDate,
+                                                                                  sort);
+
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("user_id", user_id);
+        model.addAttribute("sort", sort);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("orderList", orderList);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
+
+        return "/admin/admin_order_manage";
+    }
+
+    @GetMapping("/admin/orders/detail")
+    @ResponseBody
+    public Map<String, Object> orderDetail(int order_id) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> order = orderDao.getAdminOrderById(order_id);
+
+        if (order == null) {
+            map.put("success", false);
+            map.put("message", "주문 정보를 찾을 수 없습니다.");
+            return map;
+        }
+
+        map.put("success", true);
+        map.put("order", order);
+        map.put("orderItemList", orderDao.getAdminOrderItemList(order_id));
         return map;
     }
 
