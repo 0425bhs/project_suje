@@ -23,9 +23,14 @@ public interface ReviewDAO {
     List<ReviewVO> getReviewListByKeyword(@Param("status") String status,
                                           @Param("keyword") String keyword,
                                           @Param("size") Integer size,
-                                          @Param("offset") int offset);
+                                          @Param("offset") int offset,
+                                          @Param("startDate") String startDate,
+                                          @Param("endDate") String endDate,
+                                          @Param("sort") String sort);
     int getReviewListCountByKeyword(@Param("status") String status,
-                                    @Param("keyword") String keyword);
+                                    @Param("keyword") String keyword,
+                                    @Param("startDate") String startDate,
+                                    @Param("endDate") String endDate);
 
     // 상품 상세페이지 리뷰 목록
     List<ReviewVO> getProductReviewList(int product_id);

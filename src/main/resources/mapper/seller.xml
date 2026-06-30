@@ -24,8 +24,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 or representative_name LIKE CONCAT("%", #{keyword}, "%")
             )
         </if>
+
+        <if test="startDate != null and startDate != ''">
+            AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+        </if>
+
+        <if test="endDate != null and endDate != ''">
+            AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+        </if>
         </where>
-        ORDER BY seller_id DESC
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY created_at ASC, seller_id ASC
+            </when>
+            <when test="sort == 'name'">
+                ORDER BY company_name ASC, seller_id DESC
+            </when>
+            <otherwise>
+                ORDER BY created_at DESC, seller_id DESC
+            </otherwise>
+        </choose>
         LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -43,6 +61,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 company_name LIKE CONCAT("%", #{keyword}, "%")
                 or representative_name LIKE CONCAT("%", #{keyword}, "%")
             )
+        </if>
+
+        <if test="startDate != null and startDate != ''">
+            AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+        </if>
+
+        <if test="endDate != null and endDate != ''">
+            AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
         </if>
         </where>
     </select>

@@ -28,8 +28,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     OR u.name LIKE CONCAT("%", #{keyword}, "%")
                 )
             </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND i.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND i.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            </if>
         </where>
-        ORDER BY i.inquiry_id DESC
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY i.created_at ASC, i.inquiry_id ASC
+            </when>
+            <when test="sort == 'title'">
+                ORDER BY i.title ASC, i.inquiry_id DESC
+            </when>
+            <otherwise>
+                ORDER BY i.created_at DESC, i.inquiry_id DESC
+            </otherwise>
+        </choose>
         LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -47,6 +65,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     i.title LIKE CONCAT("%", #{keyword}, "%")
                     OR u.name LIKE CONCAT("%", #{keyword}, "%")
                 )
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND i.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND i.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
             </if>
         </where>
     </select>

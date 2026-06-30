@@ -199,7 +199,7 @@
                                                           method="post"
                                                           class="order-status-form">
 
-                                                        <input type="hidden" name="order_id" value="${order.order_id}">
+                                                        <input type="hidden" name="order_item_id" value="${mainItem.order_item_id}">
                                                         <input type="hidden" name="selectedStatus" value="${selectedStatus}">
 
                                                         <select name="status"
@@ -325,7 +325,7 @@
                                                       method="post"
                                                       class="order-status-form">
 
-                                                    <input type="hidden" name="order_id" value="${order.order_id}">
+                                                    <input type="hidden" name="order_item_id" value="${mainItem.order_item_id}">
                                                     <input type="hidden" name="selectedStatus" value="${selectedStatus}">
 
                                                     <select name="status"

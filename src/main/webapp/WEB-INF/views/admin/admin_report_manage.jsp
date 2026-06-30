@@ -38,6 +38,7 @@
                         setText("reporterName", report.reporter_name);
                         setText("status", report.status);
                         setText("createdAt", report.created_at);
+                        highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     });
                 });
             });
@@ -60,24 +61,87 @@
             </div>
         </header>
 
-        <section class="admin-master-detail is-collapsed" id="adminMasterDetail">
-            <div class="admin-card admin-list-panel">
-                <div class="admin-filter-box">
-                    <form class="admin-filter-form" action="/admin/reports" method="get">
-                        <div class="admin-filter-tabs">
-                            <a href="/admin/reports?status=all&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
-                            <a href="/admin/reports?status=pending&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'pending' ? 'active' : ''}">처리대기</a>
-                            <a href="/admin/reports?status=processed&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'processed' ? 'active' : ''}">처리완료</a>
-                            <a href="/admin/reports?status=rejected&keyword=${keyword}&size=${pagination.size}&page=1" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
-                        </div>
-                        <input type="hidden" name="status" value="${status}"/>
-                        <input type="hidden" name="size" value="${pagination.size}"/>
-                        <input type="hidden" name="page" value="1"/>
-                        <input type="text" class="admin-search" name="keyword" 
-                               placeholder="신고 대상, 신고자 검색" value="${keyword}">
-                    </form>
+        <div class="admin-filter-box admin-filter-modern">
+            <form class="admin-filter-form" action="/admin/reports" method="get">
+                <div class="admin-filter-main-row">
+                    <div class="admin-filter-tabs">
+                        <a href="/admin/reports?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
+                        <a href="/admin/reports?status=pending&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'pending' ? 'active' : ''}">처리대기</a>
+                        <a href="/admin/reports?status=processed&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'processed' ? 'active' : ''}">처리완료</a>
+                        <a href="/admin/reports?status=rejected&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
+                    </div>
+
+                    <div class="admin-search-wrap">
+                        <input type="text" id="keyword" class="admin-search" name="keyword"
+                            placeholder="신고 대상, 신고자 검색" value="${keyword}">
+                        <span class="admin-search-icon" aria-hidden="true"></span>
+                    </div>
+                    <button type="submit" class="admin-btn admin-search-submit">검색</button>
+                    <button type="button" class="admin-btn light admin-filter-toggle">상세 검색</button>
+                    <select class="admin-filter-control admin-sort-control" id="sort" name="sort">
+                        <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
+                        <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
+                        <option value="target" ${sort eq 'target' ? 'selected' : ''}>대상순</option>
+                    </select>
+                    <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
+                        <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
+                        <option value="30" ${pagination.size == 30 ? 'selected' : ''}>30개씩</option>
+                        <option value="50" ${pagination.size == 50 ? 'selected' : ''}>50개씩</option>
+                    </select>
                 </div>
 
+                <div class="admin-filter-detail-row">
+                    <label class="admin-filter-field">
+                        <span>상태</span>
+                        <select class="admin-filter-control" name="status">
+                            <option value="all" ${status eq 'all' ? 'selected' : ''}>전체</option>
+                            <option value="pending" ${status eq 'pending' ? 'selected' : ''}>처리대기</option>
+                            <option value="processed" ${status eq 'processed' ? 'selected' : ''}>처리완료</option>
+                            <option value="rejected" ${status eq 'rejected' ? 'selected' : ''}>반려</option>
+                        </select>
+                    </label>
+                    <label class="admin-filter-field admin-filter-date-range">
+                        <span>접수일 범위</span>
+                        <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
+                        <em>~</em>
+                        <input type="date" class="admin-filter-control" name="endDate" value="${endDate}">
+                    </label>
+                    <button type="submit" class="admin-btn admin-filter-submit">적용</button>
+                </div>
+
+                <c:if test="${status ne 'all' || not empty keyword || not empty startDate || not empty endDate}">
+                    <div class="admin-filter-applied">
+                        <span class="admin-filter-applied-label">적용된 조건:</span>
+                        <c:if test="${status ne 'all'}">
+                            <a class="admin-filter-chip"
+                                href="/admin/reports?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                상태:
+                                ${status eq 'pending' ? '처리대기' : status eq 'processed' ? '처리완료' : '반려'}
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${not empty keyword}">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                검색어: ${keyword}
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${not empty startDate || not empty endDate}">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                                접수일: ${startDate} ~ ${endDate}
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <a class="admin-filter-clear" href="/admin/reports">전체 해제</a>
+                    </div>
+                </c:if>
+
+                <input type="hidden" name="page" value="1">
+            </form>
+        </div>
+
+        <section class="admin-master-detail admin-master-detail-filtered is-collapsed" id="adminMasterDetail">
+            <div class="admin-card admin-list-panel">
                 <div class="admin-table-wrap">
                     <table class="admin-table">
                         <thead>
@@ -106,8 +170,8 @@
                                     </strong>
                             </td>
                             <td><strong>${report.target_id}</strong></td>
-                            <td>${report.reason}</td>
-                            <td>${report.reporter_name}</td>
+                            <td class="admin-highlight-target">${report.reason}</td>
+                            <td class="admin-highlight-target">${report.reporter_name}</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${report.status eq 'PENDING'}">
@@ -158,7 +222,7 @@
                             </div>
                             <div>
                                 <dt>사유</dt>
-                                <dd id="reason">-</dd>
+                                <dd id="reason" class="admin-highlight-target">-</dd>
                             </div>
                             <div>
                                 <dt>신고자 번호</dt>
@@ -166,7 +230,7 @@
                             </div>
                             <div>
                                 <dt>신고자</dt>
-                                <dd id="reporterName">-</dd>
+                                <dd id="reporterName" class="admin-highlight-target">-</dd>
                             </div>
                             <div>
                                 <dt>상태</dt>
@@ -183,32 +247,35 @@
         </section>
 
         <div class="admin-pagination">
-            <c:if test="${pagination.totalPage > 0}">
-                <c:if test="${pagination.hasPrev}">
-                    <a href="/admin/reports?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.prevPage}">
-                        이전
-                    </a>
-                </c:if>
-                <c:if test="${!pagination.hasPrev}">
-                    <span class="disabled">이전</span>
-                </c:if>
+            <div class="admin-pagination-pages">
+                <c:if test="${pagination.totalPage > 0}">
+                    <c:if test="${pagination.hasPrev}">
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                            이전
+                        </a>
+                    </c:if>
+                    <c:if test="${!pagination.hasPrev}">
+                        <span class="disabled">이전</span>
+                    </c:if>
 
-                <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                    <a href="/admin/reports?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${i}"
-                        class="${pagination.page == i ? 'active' : ''}">
-                        ${i}
-                    </a>
-                </c:forEach>
+                    <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                            class="${pagination.page == i ? 'active' : ''}">
+                            ${i}
+                        </a>
+                    </c:forEach>
 
-                <c:if test="${pagination.hasNext}">
-                    <a href="/admin/reports?status=${status}&keyword=${keyword}&size=${pagination.size}&page=${pagination.nextPage}">
-                        다음
-                    </a>
+                    <c:if test="${pagination.hasNext}">
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                            다음
+                        </a>
+                    </c:if>
+                    <c:if test="${!pagination.hasNext}">
+                        <span class="disabled">다음</span>
+                    </c:if>
                 </c:if>
-                <c:if test="${!pagination.hasNext}">
-                    <span class="disabled">다음</span>
-                </c:if>
-            </c:if>
+            </div>
+            <span class="admin-filter-count">전체 ${totalCount}건</span>
         </div>
     </main>
 </div>
