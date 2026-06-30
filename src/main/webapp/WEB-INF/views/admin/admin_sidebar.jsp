@@ -40,7 +40,7 @@
             공지사항 관리(진행중)
         </a>
         <a href="/admin/statistics" class="${param.activeMenu eq 'statistics' ? 'menu-active' : ''}">
-            기본 통계
+            기본 통계(미구현)
         </a>
     </nav>
 
