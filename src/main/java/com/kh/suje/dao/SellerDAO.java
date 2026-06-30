@@ -33,7 +33,7 @@ public interface SellerDAO {
     List<OrderItemVO> getSellerOrderItemList(Map<String, Object> map);
 
     // 판매자 주문상품 상태 변경
-    int updateSellerOrderItemStatus(Map<String, Object> map);
+    int sellerOrderStatus(Map<String, Object> map);
         
     Map<String,Object> sellerShopInfo(int seller_id);
 
@@ -41,6 +41,6 @@ public interface SellerDAO {
 
     int sellerModify(SellerVO vo);
 
-    
     SellerVO selectSellerByUserId(int user_id);
+
 }

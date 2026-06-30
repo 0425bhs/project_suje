@@ -127,7 +127,10 @@ public class SellerController {
     }
     
     @PostMapping("/seller_order_status_update.do")
-    public String sellerOrderStatusUpdate(int order_item_id, String status, String selectedStatus) {
+    public String sellerOrderStatusUpdate(
+            @RequestParam("order_id") int order_id,
+            @RequestParam("status") String status,
+            @RequestParam(value = "selectedStatus", required = false) String selectedStatus) {
 
         Integer seller_id = getLoginSellerId();
 
@@ -137,10 +140,15 @@ public class SellerController {
 
         Map<String, Object> map = new HashMap<>();
         map.put("seller_id", seller_id);
-        map.put("order_item_id", order_item_id);
+        map.put("order_id", order_id);
         map.put("status", status);
 
-        sellerdao.updateSellerOrderItemStatus(map);
+        int result = sellerdao.sellerOrderStatus(map);
+
+        System.out.println("상태변경 결과 = " + result);
+        System.out.println("order_id = " + order_id);
+        System.out.println("status = " + status);
+        System.out.println("seller_id = " + seller_id);
 
         if (selectedStatus != null && !selectedStatus.trim().equals("")) {
             return "redirect:/seller_order_list.do?status=" + selectedStatus;
@@ -159,7 +167,6 @@ public class SellerController {
         }
 
         List<ReviewVO> reviewList = reviewdao.sellerReviewList(seller_id);
-        List<ReviewVO> productList = reviewdao.sellerReviewProductList(seller_id);
 
         if (reviewList != null && !reviewList.isEmpty()) {
             List<Integer> reviewIds = reviewList.stream()
@@ -181,7 +188,6 @@ public class SellerController {
         }
 
         model.addAttribute("reviewList", reviewList);
-        model.addAttribute("productList", productList);
 
         return "/seller/seller_review_list";
     }
@@ -198,10 +204,7 @@ public class SellerController {
         List<QnaVO> qnaList = qnadao.sellerQnaList(seller_id);
         model.addAttribute("qnaList", qnaList);
 
-        List<ProductVO> productList = reviewdao.sellerReviewProductList(seller_id);
-        model.addAttribute("productList", productList);
-
-        return "/seller/seller_qna";
+        return "/seller/seller_qna_list";
     }
 
     // 구매자용 판매자샵
@@ -313,6 +316,42 @@ public class SellerController {
         map.put("reply_content", reply_content.trim());
 
         int updateCount = reviewdao.sellerReviewReply(map);
+
+        if (updateCount > 0) {
+            result.put("result", "success");
+        } else {
+            result.put("result", "fail");
+        }
+
+        return result;
+    }
+
+    @PostMapping("/seller_qna_answer.do")
+    @ResponseBody
+    public Map<String, Object> sellerQnaAnswer(
+            @RequestParam("qna_id") int qna_id,
+            @RequestParam("answer") String answer) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            result.put("result", "login");
+            return result;
+        }
+
+        if (answer == null || answer.trim().equals("")) {
+            result.put("result", "empty");
+            return result;
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("seller_id", seller_id);
+        map.put("qna_id", qna_id);
+        map.put("answer", answer.trim());
+
+        int updateCount = qnadao.sellerQnaAnswer(map);
 
         if (updateCount > 0) {
             result.put("result", "success");

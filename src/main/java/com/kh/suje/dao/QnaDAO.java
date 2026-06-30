@@ -1,6 +1,7 @@
 package com.kh.suje.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.kh.suje.vo.QnaVO;
 
@@ -25,4 +26,5 @@ public interface QnaDAO {
 
     List<QnaVO> sellerQnaList(int seller_id);
     
+    int sellerQnaAnswer(Map<String, Object> map);
 }

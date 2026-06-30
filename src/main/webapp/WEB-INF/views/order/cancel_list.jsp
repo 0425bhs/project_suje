@@ -46,8 +46,8 @@
 
                                 <div class="item-info">
                                     <strong>${item.productName}</strong>
-                                    <c:if test="${not empty item.optionName}">
-                                        <p>옵션: ${item.optionName}</p>
+                                    <c:if test="${not empty item.option_name}">
+                                        <p>옵션: ${item.option_name}</p>
                                     </c:if>
                                     <p>수량: ${item.quantity}개</p>
                                     <p>단가: <fmt:formatNumber value="${item.price}" pattern="#,###" />원</p>

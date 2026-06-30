@@ -179,7 +179,7 @@
                                         <c:choose>
                                             <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
                                                 <div style="width: 70px;">
-                                                    <img src="${vo.image_l}" class="product-thumb" alt="${vo.name}">
+                                                    <img src="/upload/${vo.image_l}" class="product-thumb" alt="${vo.name}">
                                                 </div>
                                             </c:when>
 
@@ -304,7 +304,7 @@
                                 <div class="card-image-box">
                                     <c:choose>
                                         <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
-                                            <img src="${vo.image_l}" class="card-product-image" alt="${vo.name}">
+                                            <img src="/upload/${vo.image_l}" class="card-product-image" alt="${vo.name}">
                                         </c:when>
 
                                         <c:otherwise>
