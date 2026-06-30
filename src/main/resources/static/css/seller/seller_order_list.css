@@ -131,8 +131,13 @@ body {
     box-shadow: 9px 0 #555, 0 9px #555, 9px 9px #555;
 }
 
+/* active 아이콘 색상 - 심플 / 카드 분리 */
 .view-icon-btn.active .view-icon.simple::before,
-.view-icon-btn.active .view-icon.simple::after,
+.view-icon-btn.active .view-icon.simple::after {
+    background: #fff;
+    box-shadow: none;
+}
+
 .view-icon-btn.active .view-icon.card::before {
     background: #fff;
     box-shadow: 9px 0 #fff, 0 9px #fff, 9px 9px #fff;

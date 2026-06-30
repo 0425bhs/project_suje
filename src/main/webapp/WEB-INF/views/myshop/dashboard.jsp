@@ -61,7 +61,7 @@
     <section class="dashboard-section dashboard-recent-orders">
         
             <div class="dashboard-section-head">
-                <h3>최근 주문 내역 <span>최근 3건</span></h3>
+                <h3>최근 주문 내역 <span>최근 5건</span></h3>
                 <a href="/myshop/orders" class="view-all-btn">전체보기 &gt;</a>
             </div>
 
@@ -74,7 +74,7 @@
 
                 <c:otherwise>
                     <div class="myshop-order dashboard-list-compact">
-                        <%-- 최근 3건만 출력 --%>
+                        <%-- 최근 5건만 출력 --%>
                         <c:forEach var="order" items="${orderList}" varStatus="status">
                             <c:if test="${status.index < 5}"> 
 
@@ -265,7 +265,7 @@
                                 onclick="location.href='/review_form.do?order_item_id=${review.order_item_id}'">
                             리뷰쓰기
                         </button>
-                        <a href="/mypage/review/write" class="action">리뷰 쓰고 500원 받기</a>
+                        <a href="/mypage/review/write" class="action">리뷰 쓰고 100원 받기</a>
                     </div>
                 </li>
                 </c:forEach>

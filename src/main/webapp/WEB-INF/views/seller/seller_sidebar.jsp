@@ -49,11 +49,6 @@
             <span>판매자 매출 통계</span>
         </a>
 
-        <a href="/seller_setting.do" class="${param.activeMenu eq 'setting' ? 'menu-active':''}">
-            <i class="bi bi-gear"></i>
-            <span>설정</span>
-        </a>
-
     </nav>
 
     <div class="sidebar-bottom">

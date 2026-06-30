@@ -316,16 +316,20 @@
     font-size: 14px;
 }
 
+/* 수정됨: 상품명 회색 배경 제거 */
 .qna-product-title {
     max-width: 280px;
-    padding: 7px 12px;
+    padding: 0;
 
     display: inline-block;
 
-    background: #f5f6f8;
-    border-radius: 7px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 
     color: #444;
+    font-size: 14px;
     font-weight: 900;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -333,6 +337,12 @@
 }
 
 .qna-option-title {
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+
     color: #8a8f98;
     font-size: 13px;
     font-weight: 800;
@@ -410,12 +420,17 @@
     display: grid;
     grid-template-columns: minmax(0, 1.45fr) minmax(420px, 1fr);
     gap: 22px;
+
+    background: transparent;
 }
 
+/* 수정됨: 문의 내용 위 회색 구분선/바 제거 */
 .qna-content-box {
-    padding-top: 18px;
+    padding-top: 0;
 
-    border-top: 1px solid #eef1f4;
+    border-top: none;
+    background: transparent;
+    box-shadow: none;
 }
 
 .qna-content-title {
@@ -639,4 +654,105 @@
     .answer-complete-content {
         padding-right: 0;
     }
+}
+
+/* =========================================================
+   JS로 생성되는 문의 답변 입력 폼
+========================================================= */
+
+.qna-answer-form {
+    width: 100%;
+}
+
+.qna-answer-textarea {
+    width: 100%;
+    min-height: 96px;
+    padding: 14px 16px;
+
+    box-sizing: border-box;
+    resize: vertical;
+
+    border: 1px solid #ffd4ca;
+    border-radius: 10px;
+    background: #fff;
+
+    color: #333;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.7;
+
+    outline: none;
+}
+
+.qna-answer-textarea:focus {
+    border-color: #ff654f;
+    box-shadow: 0 0 0 4px rgba(255, 101, 79, 0.12);
+}
+
+.qna-answer-form-buttons {
+    margin-top: 12px;
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.qna-answer-submit-btn,
+.qna-answer-cancel-btn {
+    height: 38px;
+    padding: 0 16px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.qna-answer-submit-btn {
+    border: none;
+    background: #ff4f38;
+    color: #fff;
+}
+
+.qna-answer-submit-btn:hover {
+    background: #e8422d;
+}
+
+.qna-answer-cancel-btn {
+    border: 1px solid #dce1e7;
+    background: #fff;
+    color: #555;
+}
+
+.qna-answer-cancel-btn:hover {
+    background: #f7f8fa;
+}
+
+/* 문의 내용 길 때 접기 */
+.qna-content.is-collapsed {
+    max-height: 150px;
+    overflow: hidden;
+}
+
+.qna-toggle-btn {
+    margin-top: 10px;
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    border: none;
+    background: transparent;
+
+    color: #ff4f38;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 900;
+
+    cursor: pointer;
 }

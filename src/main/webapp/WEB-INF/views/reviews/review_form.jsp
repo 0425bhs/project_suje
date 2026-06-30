@@ -179,8 +179,6 @@
                 return;
             }
 
-            f.action = "review_form.do";
-            f.method = "post";
             f.submit();
         }
 
@@ -265,8 +263,7 @@
             </div>
         </div>
 
-        <form class="community-card"
-              enctype="multipart/form-data">
+        <form class="community-card" action="/review_form.do" method="post" enctype="multipart/form-data">
             <input type="hidden" name="product_id" value="${product.product_id}">
             <input type="hidden" name="order_item_id" value="${order_item_id}">
             <div class="form-layout">
