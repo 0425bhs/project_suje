@@ -1,0 +1,145 @@
+.coupon-page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.coupon-page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.coupon-page-head h2 {
+    margin: 0 0 8px;
+    color: #111;
+    font-size: 26px;
+    font-weight: 900;
+}
+
+.coupon-page-head p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.coupon-page-path {
+    color: #999;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.coupon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.coupon-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 26px 30px;
+
+    border: 1px solid #f0d7cc;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fffaf7 0%, #ffffff 100%);
+}
+
+.coupon-card.used {
+    opacity: 0.55;
+    background: #fafafa;
+}
+
+.coupon-badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 5px 10px;
+
+    border-radius: 20px;
+    background: #ff6b4a;
+    color: #fff;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.coupon-left h3 {
+    margin: 0 0 8px;
+
+    color: #111;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.coupon-left p {
+    margin: 0 0 10px;
+
+    color: #555;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.coupon-date {
+    color: #999;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.coupon-right {
+    min-width: 150px;
+    text-align: right;
+}
+
+.coupon-right strong {
+    display: block;
+
+    color: #ff5f45;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.coupon-right span {
+    display: block;
+    margin-top: 2px;
+
+    color: #777;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.coupon-status {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 900;
+}
+
+.coupon-status.available {
+    background: #fff1ec;
+    color: #ff5f45;
+}
+
+.coupon-status.used {
+    background: #eee;
+    color: #777;
+}
+
+.coupon-empty-box {
+    padding: 56px 20px;
+
+    border: 1px solid #eee2dc;
+    border-radius: 16px;
+    background: #fff;
+
+    color: #888;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+}

@@ -53,12 +53,6 @@ public interface OrderDAO {
     // 주문상품 구매확정 처리
     int confirmOrderItem(Map<String, Object> map);
 
-    // 사용 가능한 쿠폰 목록 조회
-    List<Map<String, Object>> selectAvailableCouponList(int user_id);
-
-    // 쿠폰 사용 처리
-    int useCoupon(Map<String, Object> map);
-
     // 구매확정 포인트 적립 여부 확인
     int checkPointHistory(Map<String, Object> map);
 
@@ -106,5 +100,17 @@ public interface OrderDAO {
 
     // 사용한 쿠폰 복구
     int restoreCoupon(Map<String, Object> map);
+
+    // 사용 가능한 쿠폰 목록 조회
+    List<Map<String, Object>> selectAvailableCouponList(int user_id);
+
+    // 쿠폰 사용 처리
+    int useCoupon(Map<String, Object> map);
+
+    //쿠폰 목록 조회
+    List<Map<String, Object>> selectMyCouponList(int user_id);
+
+    // 사용 가능한 쿠폰 목록 조회 - 판매자 기준
+    List<Map<String, Object>> selectAvailableCouponListBySeller(Map<String, Object> map);
 
 }

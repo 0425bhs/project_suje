@@ -52,6 +52,10 @@
         <script src="/js/cart.js" defer></script>
         <script src="/js/order-payment.js" defer></script>
     </c:if>
+
+    <c:if test="${contentPage eq '/myshop/coupon_history'}">
+        <link rel="stylesheet" href="/css/myshop/coupon_history.css?v=1">
+    </c:if>
 </head>
 
 <body>
