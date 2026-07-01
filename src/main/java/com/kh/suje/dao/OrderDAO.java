@@ -134,4 +134,5 @@ public interface OrderDAO {
     // 관리자 주문 상품 목록 조회
     List<Map<String, Object>> getAdminOrderItemList(int order_id);
 
+    int getOrderCountByUserId(int user_id);
 }

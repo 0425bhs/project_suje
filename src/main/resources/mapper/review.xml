@@ -349,4 +349,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         AND p.seller_id = #{seller_id}
     </update>
 
+    <select id="getReviewCountByUserId" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM reviews
+        WHERE user_id = #{user_id}
+    </select>
+
 </mapper>

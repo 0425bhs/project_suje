@@ -55,4 +55,6 @@ public interface UserDAO {
 
     UserVO naverLogin(String naver_id); //네이버로그인
     
+    int updateUserStatus(@Param("user_id") int user_id, 
+                         @Param("status") String status);
 }

@@ -198,4 +198,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     select * from users where naver_id=#{naver_id}
     </select>
 
+    <update id="updateUserStatus">
+        UPDATE users
+        SET status = #{status}
+        WHERE user_id = #{user_id}
+    </update>
 </mapper>

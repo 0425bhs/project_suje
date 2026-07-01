@@ -20,4 +20,6 @@ public interface InquiryDAO {
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
     InquiryVO getInquiryById(int inquiry_id);
+
+    int getInquiryCountByUserId(int user_id);
 }

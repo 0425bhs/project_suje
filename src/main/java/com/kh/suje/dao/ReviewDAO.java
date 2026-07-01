@@ -45,4 +45,5 @@ public interface ReviewDAO {
 
     int sellerReviewReply(Map<String, Object> map);
 
+    int getReviewCountByUserId(int user_id);
 }

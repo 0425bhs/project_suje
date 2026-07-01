@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.suje.dao.CategoryDAO;
@@ -55,6 +56,7 @@ public class AdminController {
                           String gender, String status,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
+
         if (!"user".equals(role) && !"seller".equals(role)) {
             role = "all";
         }
@@ -102,16 +104,46 @@ public class AdminController {
     @ResponseBody
     public Map<String, Object> memberDetail(int user_id) {
         Map<String, Object> map = new HashMap<>();
-        UserVO user = userDao.selectUser(user_id);
 
+        UserVO user = userDao.selectUser(user_id);
         if (user == null) {
             map.put("success", false);
             map.put("message", "회원 정보를 찾을 수 없습니다.");
             return map;
         }
 
+        int orderCount = orderDao.getOrderCountByUserId(user_id);
+        int reviewCount = reviewDao.getReviewCountByUserId(user_id);
+        int inquiryCount = inquiryDao.getInquiryCountByUserId(user_id);
+        int reportCount = reportDao.getReportCountByReporterId(user_id);
+
         map.put("success", true);
         map.put("user", user);
+
+        map.put("orderCount", orderCount);
+        map.put("reviewCount", reviewCount);
+        map.put("inquiryCount", inquiryCount);
+        map.put("reportCount", reportCount);
+        
+        return map;
+    }
+
+    @PostMapping("/admin/members/status")
+    @ResponseBody
+    public Map<String, Object> updateMemberStatus(int user_id, String status) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (!"active".equals(status) && !"suspended".equals(status) && !"withdrawn".equals(status)) {
+            map.put("success", false);
+            map.put("message", "잘못된 상태입니다.");
+            return map;
+        }
+
+        userDao.updateUserStatus(user_id, status);
+
+        map.put("success", true);
+        map.put("status", status);
+
         return map;
     }
 

@@ -82,4 +82,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM inquiries
         WHERE inquiry_id = #{inquiry_id}
     </select>
+
+    <select id="getInquiryCountByUserId" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM inquiries
+        WHERE user_id = #{user_id}
+    </select>
 </mapper>

@@ -12,6 +12,12 @@
             <script src="/js/admin_detail_common.js"></script>
             <script>
                 document.addEventListener("DOMContentLoaded", () => {
+                    let selectedMemberId = "";
+                    let selectedMemberStatus = "";
+
+                    const statusControl = document.getElementById("memberStatusControl");
+                    const statusChangeButton = document.getElementById("memberStatusChangeButton");
+
                     const master = document.getElementById("adminMasterDetail");
                     const rows = document.querySelectorAll(".admin-clickable-row");
 
@@ -32,6 +38,11 @@
                             fetch("/admin/members/detail?user_id=" + encodeURIComponent(userId))
                                 .then(res => res.json())
                                 .then(data => {
+                                    if (!data.success) {
+                                        alert(data.message);
+                                        return;
+                                    }
+
                                     const user = data.user;
 
                                     setText("userId", user.user_id);
@@ -45,49 +56,71 @@
                                     setText("gender", user.gender);
                                     setText("createdAt", user.created_at);
                                     setText("updatedAt", user.updated_at);
+                                    
+                                    setText("memberOrderCount", data.orderCount);
+                                    setText("memberReviewCount", data.reviewCount);
+                                    setText("memberInquiryCount", data.inquiryCount);
+                                    setText("memberReportCount", data.reportCount);
+
+                                    const roleLabel = user.role === "SELLER" ? "판매자" : "일반회원";
+                                    const memberMeta = (user.login_id || "-") + " · " + roleLabel;
+                                    const memberStatus = user.status || "";
+
+                                    setText("memberDetailTitle", user.name);
+                                    setText("memberDetailMeta", memberMeta);
 
                                     const statusLabel = {
                                         active: "활성",
                                         suspended: "정지",
                                         withdrawn: "탈퇴"
                                     };
-                                    const roleLabel = user.role === "SELLER" ? "판매자" : "일반회원";
-                                    const memberTitle = user.name || "회원 상세";
-                                    const memberMeta = (user.login_id || "-") + " · " + roleLabel;
-                                    const memberStatus = user.status || "";
+
                                     const statusBadge = document.getElementById("memberDetailStatusBadge");
-
-                                    setText("memberDetailTitle", memberTitle);
-                                    setText("memberDetailMeta", memberMeta);
-
                                     if (statusBadge) {
                                         statusBadge.className = "admin-detail-status-badge " + memberStatus;
-                                        statusBadge.textContent = statusLabel[memberStatus] || memberStatus || "-";
+                                        statusBadge.textContent = statusLabel[memberStatus] || "-";
                                     }
 
-                                    const statusControl = document.getElementById("memberStatusControl");
-                                    if (statusControl && user.status) {
-                                        statusControl.value = user.status;
-                                    }
+                                    const userId = encodeURIComponent(user.login_id);
 
-                                    const memberKeyword = encodeURIComponent(user.login_id || "");
-                                    const activityLinks = {
-                                        memberOrderLink: "/admin/orders?status=all&keyword=" + memberKeyword + "&page=1",
-                                        memberReviewLink: "/admin/reviews?status=all&keyword=" + memberKeyword + "&page=1",
-                                        memberInquiryLink: "/admin/inquiries?status=all&keyword=" + memberKeyword + "&page=1",
-                                        memberReportLink: "/admin/reports?status=all&keyword=" + memberKeyword + "&page=1"
-                                    };
+                                    const orderLink = document.getElementById("memberOrderLink");
+                                    const reviewLink = document.getElementById("memberReviewLink");
+                                    const inquiryLink = document.getElementById("memberInquiryLink");
+                                    const reportLink = document.getElementById("memberReportLink");
 
-                                    Object.entries(activityLinks).forEach(([id, href]) => {
-                                        const link = document.getElementById(id);
-
-                                        if (link) {
-                                            link.href = href;
-                                        }
-                                    });
+                                    orderLink.href = "/admin/orders?status=all&user_id=" + userId + "&page=1";
+                                    reviewLink.href = "/admin/reviews?user_id=" + userId + "&page=1";
+                                    inquiryLink.href = "/admin/inquiries?status=all&user_id=" + userId + "&page=1";
+                                    reportLink.href = "/admin/reports?status=all&user_id=" + userId + "&page=1";
 
                                     highlightAdminKeyword(document.getElementById("adminDetailPanel"));
+
+                                    selectedMemberId = user.user_id;
+                                    selectedMemberStatus = user.status;
+                                    if (statusControl) {
+                                        statusControl.value = selectedMemberStatus;
+                                    }
                                 })
+                        });
+                    });
+
+                    statusChangeButton.addEventListener("click", () => {
+                        fetch("/admin/members/status", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            body: "user_id=" + encodeURIComponent(selectedMemberId)
+                                + "&status=" + encodeURIComponent(statusControl.value)
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.success) {
+                                alert(data.message);
+                                return;
+                            }
+
+                            setText("status", data.status);
                         });
                     });
 
@@ -105,6 +138,10 @@
                         });
                     });
                 });
+
+                function memberDetailPanelInit() {
+
+                }
             </script>
         </head>
 

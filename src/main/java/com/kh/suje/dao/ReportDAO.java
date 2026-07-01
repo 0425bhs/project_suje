@@ -20,4 +20,6 @@ public interface ReportDAO {
                                     @Param("keyword") String keyword,
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
+
+    int getReportCountByReporterId(int user_id);
 }
