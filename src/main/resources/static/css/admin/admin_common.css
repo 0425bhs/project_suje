@@ -107,6 +107,43 @@ body {
     padding: 24px 45px;
 }
 
+.admin-main-fixed {
+    height: 100vh;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.admin-main-fixed .admin-main-header {
+    flex: 0 0 auto;
+    margin-bottom: 14px;
+}
+
+.admin-fixed-list-layout {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-fixed-list-layout > .admin-filter-modern {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+}
+
+.admin-fixed-list-layout > .admin-master-detail {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+}
+
+.admin-fixed-list-layout > .admin-pagination {
+    flex: 0 0 auto;
+    margin-top: 0;
+}
+
 .admin-main-header {
     margin-bottom: 24px;
     display: flex;
@@ -390,7 +427,7 @@ body {
     max-width: none;
     inline-size: 100%;
     display: grid;
-    grid-template-columns: max-content minmax(0, 1fr) minmax(260px, 320px) 68px 86px 86px 78px;
+    grid-template-columns: max-content minmax(0, 1fr) minmax(260px, 320px) 68px 98px 86px 78px;
     align-items: center;
     justify-content: stretch;
     justify-items: stretch;
@@ -454,9 +491,10 @@ body {
 
 .admin-filter-toggle {
     height: 40px;
-    width: 86px;
+    width: 98px;
     min-width: 0;
     grid-column: 5;
+    white-space: nowrap;
 }
 
 .admin-filter-toggle.is-open {
@@ -936,6 +974,25 @@ a.admin-list-item:hover {
         width: 100%;
         margin-left: 0;
         padding: 24px;
+    }
+
+    .admin-main-fixed {
+        height: auto;
+        min-height: 100vh;
+        display: block;
+        overflow: visible;
+    }
+
+    .admin-fixed-list-layout {
+        display: block;
+    }
+
+    .admin-fixed-list-layout > .admin-master-detail {
+        height: auto;
+    }
+
+    .admin-fixed-list-layout > .admin-pagination {
+        margin-top: 18px;
     }
 
     .admin-grid,

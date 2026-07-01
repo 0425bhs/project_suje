@@ -227,12 +227,13 @@ document.addEventListener("keydown", (event) => {
         return;
     }
 
-    if (closeSelectedDetailPanel()) {
+    if (closeAdminAdvancedFilters()) {
         event.preventDefault();
         return;
     }
 
-    if (closeAdminAdvancedFilters()) {
+    if (closeSelectedDetailPanel()) {
         event.preventDefault();
     }
+
 });

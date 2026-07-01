@@ -51,8 +51,9 @@
                                         suspended: "정지",
                                         withdrawn: "탈퇴"
                                     };
-                                    const memberTitle = user.name ? user.name + " 회원" : "회원 상세";
-                                    const memberMeta = "#" + user.user_id + " · " + (user.login_id || "-");
+                                    const roleLabel = user.role === "SELLER" ? "판매자" : "일반회원";
+                                    const memberTitle = user.name || "회원 상세";
+                                    const memberMeta = (user.login_id || "-") + " · " + roleLabel;
                                     const memberStatus = user.status || "";
                                     const statusBadge = document.getElementById("memberDetailStatusBadge");
 
@@ -68,6 +69,22 @@
                                     if (statusControl && user.status) {
                                         statusControl.value = user.status;
                                     }
+
+                                    const memberKeyword = encodeURIComponent(user.login_id || "");
+                                    const activityLinks = {
+                                        memberOrderLink: "/admin/orders?status=all&keyword=" + memberKeyword + "&page=1",
+                                        memberReviewLink: "/admin/reviews?status=all&keyword=" + memberKeyword + "&page=1",
+                                        memberInquiryLink: "/admin/inquiries?status=all&keyword=" + memberKeyword + "&page=1",
+                                        memberReportLink: "/admin/reports?status=all&keyword=" + memberKeyword + "&page=1"
+                                    };
+
+                                    Object.entries(activityLinks).forEach(([id, href]) => {
+                                        const link = document.getElementById(id);
+
+                                        if (link) {
+                                            link.href = href;
+                                        }
+                                    });
 
                                     highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                                 })
@@ -98,16 +115,16 @@
                     <jsp:param name="sidebarTitle" value="회원 관리" />
                 </jsp:include>
 
-                <main class="admin-main">
+                <main class="admin-main admin-main-fixed">
                     <header class="admin-main-header">
                         <div>
                             <span class="admin-page-label">MEMBER MANAGEMENT</span>
                             <h1>회원 관리</h1>
-                            <p>가입 회원을 조회하고 기본 정보를 확인합니다.</p>
                         </div>
                     </header>
 
-                    <div class="admin-filter-box admin-filter-modern">
+                    <div class="admin-fixed-list-layout">
+                        <div class="admin-filter-box admin-filter-modern">
                         <form class="admin-filter-form" action="/admin/members" method="get">
                             <div class="admin-filter-main-row">
                                 <div class="admin-filter-tabs">
@@ -306,12 +323,14 @@
                                     <div class="admin-detail-head">
                                         <div class="admin-detail-head-main">
                                             <div class="admin-detail-title-block">
-                                                <h2 id="memberDetailTitle">회원 상세</h2>
-                                                <p id="memberDetailMeta">행을 선택하면 상세 정보가 표시됩니다.</p>
+                                                <div class="admin-detail-title-line">
+                                                    <h2 id="memberDetailTitle">회원 상세</h2>
+                                                    <span class="admin-detail-status-badge"
+                                                        id="memberDetailStatusBadge">-</span>
+                                                </div>
+                                                <p id="memberDetailMeta">목록에서 회원을 선택하세요.</p>
                                             </div>
                                             <div class="admin-detail-toolbar">
-                                                <span class="admin-detail-status-badge"
-                                                    id="memberDetailStatusBadge">-</span>
                                                 <button type="button" class="admin-detail-close"
                                                     aria-label="닫기">&times;</button>
                                             </div>
@@ -328,76 +347,103 @@
 
                                     <div class="admin-detail-tab-body">
                                         <div class="admin-detail-tab-panel active" data-detail-panel="info">
-                                            <dl class="admin-detail-grid">
-                                                <div>
-                                                    <dt>회원번호</dt>
-                                                    <dd id="userId">-</dd>
+                                            <div class="admin-detail-info-scroll">
+                                                <div class="admin-detail-activity">
+                                                    <a href="#" id="memberOrderLink">
+                                                        <strong id="memberOrderCount">-</strong>
+                                                        <span>주문</span>
+                                                    </a>
+                                                    <a href="#" id="memberReviewLink">
+                                                        <strong id="memberReviewCount">-</strong>
+                                                        <span>후기</span>
+                                                    </a>
+                                                    <a href="#" id="memberInquiryLink">
+                                                        <strong id="memberInquiryCount">-</strong>
+                                                        <span>문의</span>
+                                                    </a>
+                                                    <a href="#" id="memberReportLink">
+                                                        <strong id="memberReportCount">-</strong>
+                                                        <span>신고</span>
+                                                    </a>
                                                 </div>
-                                                <div>
-                                                    <dt>회원 유형</dt>
-                                                    <dd id="role">-</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>회원 상태</dt>
-                                                    <dd id="status">-</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>회원명</dt>
-                                                    <dd id="name" class="admin-highlight-target">-</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>닉네임</dt>
-                                                    <dd id="nickName" class="admin-highlight-target">-</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>아이디</dt>
-                                                    <dd id="loginId" class="admin-highlight-target">-</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>이메일</dt>
-                                                    <dd id="email" class="admin-highlight-target">-</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>연락처</dt>
-                                                    <dd id="phone" class="admin-highlight-target">-</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>성별</dt>
-                                                    <dd id="gender">-</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>가입일</dt>
-                                                    <dd id="createdAt">-</dd>
-                                                </div>
-                                                <div>
-                                                    <dt>수정일</dt>
-                                                    <dd id="updatedAt">-</dd>
-                                                </div>
-                                            </dl>
+                                                <dl class="admin-detail-grid">
+                                                    <div>
+                                                        <dt>회원번호</dt>
+                                                        <dd id="userId">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>회원 유형</dt>
+                                                        <dd id="role">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>회원 상태</dt>
+                                                        <dd id="status">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>회원명</dt>
+                                                        <dd id="name" class="admin-highlight-target">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>닉네임</dt>
+                                                        <dd id="nickName" class="admin-highlight-target">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>아이디</dt>
+                                                        <dd id="loginId" class="admin-highlight-target">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>이메일</dt>
+                                                        <dd id="email" class="admin-highlight-target">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>연락처</dt>
+                                                        <dd id="phone" class="admin-highlight-target">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>성별</dt>
+                                                        <dd id="gender">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>가입일</dt>
+                                                        <dd id="createdAt">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>수정일</dt>
+                                                        <dd id="updatedAt">-</dd>
+                                                    </div>
+                                                </dl>
+                                            </div>
                                         </div>
 
                                         <div class="admin-detail-tab-panel" data-detail-panel="manage">
                                             <div class="admin-detail-manage">
                                                 <div class="admin-detail-manage-section">
-                                                    <h3>상태 관리</h3>
-                                                    <label class="admin-detail-control">
-                                                        <span>회원 상태</span>
-                                                        <select class="admin-filter-control" id="memberStatusControl">
-                                                            <option value="active">활성</option>
-                                                            <option value="suspended">정지</option>
-                                                            <option value="withdrawn">탈퇴</option>
-                                                        </select>
-                                                    </label>
-                                                    <div class="admin-detail-actions">
-                                                        <button type="button" class="admin-btn">상태 변경</button>
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>상태 관리</h3>
+                                                    </div>
+                                                    <div class="admin-detail-setting-row">
+                                                        <label class="admin-detail-control">
+                                                            <span>회원 상태</span>
+                                                            <select class="admin-filter-control" id="memberStatusControl">
+                                                                <option value="active">활성</option>
+                                                                <option value="suspended">정지</option>
+                                                                <option value="withdrawn">탈퇴</option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
+                                                    <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">변경 취소</button>
+                                                        <button type="button" class="admin-btn">상태 변경</button>
                                                     </div>
                                                 </div>
 
                                                 <div class="admin-detail-manage-section">
-                                                    <h3>관리 메모</h3>
-                                                    <textarea class="admin-detail-memo" rows="5"></textarea>
-                                                    <div class="admin-detail-actions">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>관리 메모</h3>
+                                                    </div>
+                                                    <textarea class="admin-detail-memo" rows="5"
+                                                        placeholder="회원 관리에 필요한 메모를 입력하세요."></textarea>
+                                                    <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">메모 저장</button>
                                                     </div>
                                                 </div>
@@ -440,6 +486,7 @@
                             </c:if>
                         </div>
                         <span class="admin-filter-count">전체 ${totalCount}명</span>
+                        </div>
                     </div>
                 </main>
             </div>
