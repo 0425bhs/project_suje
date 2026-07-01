@@ -26,7 +26,6 @@
             <a href="/myshop/reviews" class="${activeMenu eq 'writtenReview' ? 'active' : ''}">내가 작성한 리뷰</a>
             
             <a href="/myshop/reviews?tab=writable" class="${activeMenu eq 'writableReview' ? 'active' : ''}">작성 가능한 리뷰</a>
-            </button>
             
         </div>
 
