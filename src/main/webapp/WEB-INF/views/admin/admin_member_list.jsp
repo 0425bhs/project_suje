@@ -15,12 +15,75 @@
                     let selectedMemberId = "";
                     let selectedMemberStatus = "";
 
-                    const statusControl = document.getElementById("memberStatusControl");
-                    const statusChangeButton = document.getElementById("memberStatusChangeButton");
+                    const statusLabel = {
+                        active: "활성",
+                        suspended: "정지",
+                        withdrawn: "탈퇴"
+                    };
+
+                    const statusControl = document.getElementById("statusControl");
+                    const statusChangeButton = document.getElementById("statusChangeButton");
 
                     const master = document.getElementById("adminMasterDetail");
                     const rows = document.querySelectorAll(".admin-clickable-row");
 
+                    function memberDetailHeadInit(data) {
+                        const user = data.user;
+                        const memberMeta = (user.login_id || "-") + " · " + (user.role === "SELLER" ? "판매자" : "일반회원");
+                        setText("memberDetailTitle", user.name);
+                        setText("memberDetailMeta", memberMeta);
+
+                        memberDetailHeadBadgeInit(data);
+                    }
+                    function memberDetailHeadBadgeInit(data) {
+                        const user = data.user;
+
+                        const statusBadge = document.getElementById("memberDetailStatusBadge");
+                        if (statusBadge) {
+                            statusBadge.className = "admin-detail-status-badge " + user.status;
+                            statusBadge.textContent = statusLabel[user.status] || "-";
+                        }
+                    }
+                    function memberDetailPanelInit(data) {
+                        const user = data.user;
+
+                        const orderLink = document.getElementById("memberOrderLink");
+                        const reviewLink = document.getElementById("memberReviewLink");
+                        const inquiryLink = document.getElementById("memberInquiryLink");
+                        const reportLink = document.getElementById("memberReportLink");
+
+                        orderLink.href = "/admin/orders?status=all&user_id=" + encodeURIComponent(user.login_id) + "&page=1";
+                        reviewLink.href = "/admin/reviews?user_id=" + encodeURIComponent(user.login_id) + "&page=1";
+                        inquiryLink.href = "/admin/inquiries?status=all&user_id=" + encodeURIComponent(user.login_id) + "&page=1";
+                        reportLink.href = "/admin/reports?status=all&user_id=" + encodeURIComponent(user.login_id) + "&page=1";
+                        
+                        setText("memberOrderCount", data.orderCount);
+                        setText("memberReviewCount", data.reviewCount);
+                        setText("memberInquiryCount", data.inquiryCount);
+                        setText("memberReportCount", data.reportCount);
+
+                        setText("userId", user.user_id);
+                        setText("role", user.role === "SELLER" ? "판매자" : "일반회원");
+                        setText("status", statusLabel[user.status]);
+                        setText("name", user.name);
+                        setText("nickName", user.nick_name);
+                        setText("loginId", user.login_id);
+                        setText("email", user.email);
+                        setText("phone", user.phone);
+                        setText("gender", user.gender);
+                        setText("createdAt", user.created_at);
+                        setText("updatedAt", user.updated_at);
+                    }
+                    function memberManagePanelInit(data) {
+                        const user = data.user;
+
+                        selectedMemberId = user.user_id;
+                        selectedMemberStatus = user.status;
+                        if (statusControl) {
+                            statusControl.value = selectedMemberStatus;
+                        }
+                    }
+                    
                     rows.forEach((row) => {
                         //모든 행에 클릭 이벤트 부여
                         row.addEventListener("click", () => {
@@ -41,65 +104,13 @@
                                     if (!data.success) {
                                         alert(data.message);
                                         return;
-                                    }
+                                    }        
 
-                                    const user = data.user;
-
-                                    setText("userId", user.user_id);
-                                    setText("role", user.role);
-                                    setText("status", user.status);
-                                    setText("name", user.name);
-                                    setText("nickName", user.nick_name);
-                                    setText("loginId", user.login_id);
-                                    setText("email", user.email);
-                                    setText("phone", user.phone);
-                                    setText("gender", user.gender);
-                                    setText("createdAt", user.created_at);
-                                    setText("updatedAt", user.updated_at);
-                                    
-                                    setText("memberOrderCount", data.orderCount);
-                                    setText("memberReviewCount", data.reviewCount);
-                                    setText("memberInquiryCount", data.inquiryCount);
-                                    setText("memberReportCount", data.reportCount);
-
-                                    const roleLabel = user.role === "SELLER" ? "판매자" : "일반회원";
-                                    const memberMeta = (user.login_id || "-") + " · " + roleLabel;
-                                    const memberStatus = user.status || "";
-
-                                    setText("memberDetailTitle", user.name);
-                                    setText("memberDetailMeta", memberMeta);
-
-                                    const statusLabel = {
-                                        active: "활성",
-                                        suspended: "정지",
-                                        withdrawn: "탈퇴"
-                                    };
-
-                                    const statusBadge = document.getElementById("memberDetailStatusBadge");
-                                    if (statusBadge) {
-                                        statusBadge.className = "admin-detail-status-badge " + memberStatus;
-                                        statusBadge.textContent = statusLabel[memberStatus] || "-";
-                                    }
-
-                                    const userId = encodeURIComponent(user.login_id);
-
-                                    const orderLink = document.getElementById("memberOrderLink");
-                                    const reviewLink = document.getElementById("memberReviewLink");
-                                    const inquiryLink = document.getElementById("memberInquiryLink");
-                                    const reportLink = document.getElementById("memberReportLink");
-
-                                    orderLink.href = "/admin/orders?status=all&user_id=" + userId + "&page=1";
-                                    reviewLink.href = "/admin/reviews?user_id=" + userId + "&page=1";
-                                    inquiryLink.href = "/admin/inquiries?status=all&user_id=" + userId + "&page=1";
-                                    reportLink.href = "/admin/reports?status=all&user_id=" + userId + "&page=1";
+                                    memberDetailHeadInit(data);
+                                    memberDetailPanelInit(data);
+                                    memberManagePanelInit(data);
 
                                     highlightAdminKeyword(document.getElementById("adminDetailPanel"));
-
-                                    selectedMemberId = user.user_id;
-                                    selectedMemberStatus = user.status;
-                                    if (statusControl) {
-                                        statusControl.value = selectedMemberStatus;
-                                    }
                                 })
                         });
                     });
@@ -120,7 +131,8 @@
                                 return;
                             }
 
-                            setText("status", data.status);
+                            setText("status", statusLabel[data.status]);
+                            memberDetailHeadBadgeInit(data);
                         });
                     });
 
@@ -139,9 +151,6 @@
                     });
                 });
 
-                function memberDetailPanelInit() {
-
-                }
             </script>
         </head>
 
@@ -461,7 +470,7 @@
                                                     <div class="admin-detail-setting-row">
                                                         <label class="admin-detail-control">
                                                             <span>회원 상태</span>
-                                                            <select class="admin-filter-control" id="memberStatusControl">
+                                                            <select class="admin-filter-control" id="statusControl">
                                                                 <option value="active">활성</option>
                                                                 <option value="suspended">정지</option>
                                                                 <option value="withdrawn">탈퇴</option>
@@ -470,7 +479,7 @@
                                                     </div>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">변경 취소</button>
-                                                        <button type="button" class="admin-btn">상태 변경</button>
+                                                        <button type="button" class="admin-btn" id="statusChangeButton">상태 변경</button>
                                                     </div>
                                                 </div>
 
@@ -523,7 +532,6 @@
                             </c:if>
                         </div>
                         <span class="admin-filter-count">전체 ${totalCount}명</span>
-                        </div>
                     </div>
                 </main>
             </div>
