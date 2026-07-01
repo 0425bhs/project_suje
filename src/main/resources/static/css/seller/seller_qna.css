@@ -661,6 +661,124 @@
     display: none !important;
 }
 
+/* 신고 모달 */
+.qna-report-modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.qna-report-modal-bg.open {
+    display: flex;
+}
+
+.qna-report-modal {
+    width: 460px;
+    max-width: 100%;
+    padding: 24px;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+}
+
+.qna-report-modal-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.qna-report-modal-head strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #211b17;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.qna-report-modal-head p {
+    margin: 0;
+    color: #8c7c72;
+    font-size: 13px;
+}
+
+.qna-report-close-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: #f6f1ed;
+    color: #6d5d52;
+    cursor: pointer;
+}
+
+.qna-report-field {
+    margin-bottom: 16px;
+}
+
+.qna-report-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4e4038;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.qna-report-field select,
+.qna-report-field textarea {
+    width: 100%;
+    border: 1px solid #ead9cd;
+    border-radius: 14px;
+    outline: none;
+    background: #fffdfa;
+    color: #2c241f;
+    font-size: 14px;
+}
+
+.qna-report-field select {
+    height: 46px;
+    padding: 0 12px;
+}
+
+.qna-report-field textarea {
+    min-height: 130px;
+    padding: 13px;
+    resize: vertical;
+}
+
+.qna-report-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.qna-report-cancel-btn,
+.qna-report-submit-btn {
+    min-width: 96px;
+    height: 44px;
+    border-radius: 13px;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.qna-report-cancel-btn {
+    border: 1px solid #dfd2c8;
+    background: #fff;
+    color: #64574f;
+}
+
+.qna-report-submit-btn {
+    border: 1px solid #ff6045;
+    background: #ff6045;
+    color: #fff;
+}
+
 @media (max-width: 1500px) {
     .qna-split-layout {
         grid-template-columns: 400px minmax(0, 1fr);

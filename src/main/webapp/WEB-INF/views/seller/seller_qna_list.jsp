@@ -12,10 +12,8 @@
     <link rel="stylesheet" href="/css/seller/seller_form_common.css">
     <link rel="stylesheet" href="/css/seller/seller_product_list.css">
     <link rel="stylesheet" href="/css/seller/seller_qna.css">
-    <link rel="stylesheet" href="/css/report_modal.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <script src="/js/report_modal.js" defer></script>
     <script src="/js/seller_qna.js" defer></script>
 </head>
 
@@ -316,10 +314,10 @@
                                         <i class="bi bi-chevron-right"></i>
                                     </a>
 
-                                    <button type="button" class="qna-report-btn detail-report-btn" id="detailReportBtn" data-target-id="">
-                                    <i class="bi bi-flag"></i>
-                                    신고
-                                </button>
+                                    <button type="button" class="qna-report-btn detail-report-btn" id="detailReportBtn">
+                                        <i class="bi bi-flag"></i>
+                                        신고
+                                    </button>
                                 </div>
                             </div>
 
@@ -370,7 +368,10 @@
                                 <form action="/seller_qna_answer.do" method="post" id="answerForm" class="qna-answer-form-area">
                                     <input type="hidden" name="qna_id" id="answerQnaId">
 
-                                    <textarea name="answer" id="answerTextarea" maxlength="1000" placeholder="고객 문의에 대한 답변을 입력하세요."></textarea>
+                                    <textarea name="answer"
+                                            id="answerTextarea"
+                                            maxlength="1000"
+                                            placeholder="고객 문의에 대한 답변을 입력하세요."></textarea>
 
                                     <div class="answer-bottom-row">
                                         <div class="answer-guide">
@@ -402,19 +403,45 @@
             </div>
         </div>
 
-        <jsp:include page="/WEB-INF/views/common/report_modal.jsp">
-            <jsp:param name="modalId" value="qnaReportModal" />
-            <jsp:param name="targetInputId" value="reportTargetId" />
-            <jsp:param name="targetTypeInputId" value="reportTargetType" />
-            <jsp:param name="targetType" value="QNA" />
+        <div id="qnaReportModal" class="qna-report-modal-bg">
+            <div class="qna-report-modal">
+                <input type="hidden" id="reportQnaId">
 
-            <jsp:param name="reportTypeId" value="reportType" />
-            <jsp:param name="reasonId" value="reportReason" />
+                <div class="qna-report-modal-head">
+                    <div>
+                        <strong>문의 신고</strong>
+                        <p>부적절한 문의라고 판단되는 경우 신고할 수 있습니다.</p>
+                    </div>
 
-            <jsp:param name="title" value="문의 신고" />
-            <jsp:param name="description" value="부적절한 문의라고 판단되는 경우 신고할 수 있습니다." />
-            <jsp:param name="reasonPlaceholder" value="문의 신고 내용을 입력해주세요." />
-        </jsp:include>
+                    <button type="button" class="qna-report-close-btn">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <div class="qna-report-field">
+                    <label for="reportType">신고 사유</label>
+                    <select id="reportType">
+                        <option value="">신고 사유를 선택해주세요.</option>
+                        <option value="ABUSE">욕설/비방</option>
+                        <option value="SPAM">도배/스팸</option>
+                        <option value="AD">광고/홍보성 내용</option>
+                        <option value="PERSONAL_INFO">개인정보 노출</option>
+                        <option value="IRRELEVANT">상품과 관련 없는 내용</option>
+                        <option value="ETC">기타</option>
+                    </select>
+                </div>
+
+                <div class="qna-report-field">
+                    <label for="reportReason">신고 내용</label>
+                    <textarea id="reportReason" placeholder="문의 신고 내용을 입력해주세요."></textarea>
+                </div>
+
+                <div class="qna-report-modal-actions">
+                    <button type="button" class="qna-report-cancel-btn">취소</button>
+                    <button type="button" class="qna-report-submit-btn">신고하기</button>
+                </div>
+            </div>
+        </div>
 
     </body>
 </html>

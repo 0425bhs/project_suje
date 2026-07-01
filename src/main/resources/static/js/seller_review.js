@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", function(){
     const tabs = document.querySelectorAll(".review-tab");
     const reviewCards = document.querySelectorAll(".seller-review-card");
 
+    const reportModal = document.getElementById("reviewReportModal");
+    const reportReviewId = document.getElementById("reportReviewId");
+    const reportType = document.getElementById("reviewReportType");
+    const reportReason = document.getElementById("reviewReportReason");
+
     let currentTab = "all";
 
     updateReviewCounts();
@@ -12,16 +17,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     initReviewContentToggle();
     initReviewImageModal();
-
-    initReportModal({
-            modalId: "reviewReportModal",
-            openButtonSelector: ".review-report-btn",
-            targetInputId: "reportTargetId",
-            targetTypeInputId: "reportTargetType",
-            reportTypeId: "reportType",
-            reasonId: "reportReason",
-            targetType: "REVIEW"
-        });
+    bindReviewReportModal();
 
     if(productFilter != null){
         productFilter.addEventListener("change", function(){
@@ -355,6 +351,138 @@ document.addEventListener("DOMContentLoaded", function(){
             prevBtn.disabled = currentIndex === 0;
             nextBtn.disabled = currentIndex === currentImages.length - 1;
         }
+    }
+
+    function bindReviewReportModal(){
+        document.querySelectorAll(".review-report-btn").forEach(function(btn){
+            btn.addEventListener("click", function(event){
+                event.preventDefault();
+                event.stopPropagation();
+
+                const reviewId = this.dataset.targetId || this.dataset.reviewId || "";
+
+                if(reportReviewId != null){
+                    reportReviewId.value = reviewId;
+                }
+
+                if(reportType != null){
+                    reportType.value = "";
+                }
+
+                if(reportReason != null){
+                    reportReason.value = "";
+                }
+
+                openReviewReportModal();
+            });
+        });
+
+        document.querySelectorAll(".review-report-close-btn, .review-report-cancel-btn").forEach(function(btn){
+            btn.addEventListener("click", function(){
+                closeReviewReportModal();
+            });
+        });
+
+        const submitBtn = document.querySelector(".review-report-submit-btn");
+
+        if(submitBtn != null){
+            submitBtn.addEventListener("click", function(){
+                submitReviewReport();
+            });
+        }
+
+        if(reportModal != null){
+            reportModal.addEventListener("click", function(event){
+                if(event.target === reportModal){
+                    closeReviewReportModal();
+                }
+            });
+        }
+
+        window.addEventListener("keydown", function(event){
+            if(event.key === "Escape"){
+                closeReviewReportModal();
+            }
+        });
+    }
+
+    function openReviewReportModal(){
+        if(reportModal != null){
+            reportModal.classList.add("active");
+            reportModal.classList.add("open");
+        }
+    }
+
+    function closeReviewReportModal(){
+        if(reportModal != null){
+            reportModal.classList.remove("active");
+            reportModal.classList.remove("open");
+        }
+    }
+
+    function submitReviewReport(){
+        if(reportReviewId == null || reportType == null || reportReason == null){
+            alert("신고 정보를 찾을 수 없습니다.");
+            return;
+        }
+
+        const reviewId = reportReviewId.value.trim();
+        const type = reportType.value.trim();
+        const reason = reportReason.value.trim();
+
+        if(reviewId === ""){
+            alert("리뷰 정보를 찾을 수 없습니다.");
+            return;
+        }
+
+        if(type === ""){
+            alert("신고 사유를 선택해주세요.");
+            reportType.focus();
+            return;
+        }
+
+        if(reason === ""){
+            alert("신고 내용을 입력해주세요.");
+            reportReason.focus();
+            return;
+        }
+
+        fetch("/seller_qna_report.do", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            body: new URLSearchParams({
+                target_type: "REVIEW",
+                target_id: reviewId,
+                report_type: type,
+                reason: reason
+            })
+        })
+        .then(function(response){
+            if(!response.ok){
+                throw new Error("서버 응답 오류");
+            }
+
+            return response.json();
+        })
+        .then(function(data){
+            if(data.result === "success"){
+                alert("신고가 접수되었습니다.");
+                closeReviewReportModal();
+            } else if(data.result === "login"){
+                alert("로그인이 필요합니다.");
+                location.href = "/login.do";
+            } else if(data.result === "empty"){
+                alert("신고 사유와 내용을 입력해주세요.");
+            } else {
+                alert("신고 접수에 실패했습니다.");
+            }
+        })
+        .catch(function(error){
+            console.error(error);
+            alert("신고 접수 중 오류가 발생했습니다.");
+        });
     }
 
 });

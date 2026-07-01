@@ -11,6 +11,11 @@ document.addEventListener("DOMContentLoaded", function(){
     const qnaCards = document.querySelectorAll(".qna-list-item, .seller-qna-card");
     const qnaNoResult = document.getElementById("qnaNoResult");
 
+    const reportModal = document.getElementById("qnaReportModal");
+    const reportQnaId = document.getElementById("reportQnaId");
+    const reportType = document.getElementById("reportType");
+    const reportReason = document.getElementById("reportReason");
+
     const answerForm = document.getElementById("answerForm");
     const answerQnaId = document.getElementById("answerQnaId");
     const answerTextarea = document.getElementById("answerTextarea");
@@ -29,16 +34,8 @@ document.addEventListener("DOMContentLoaded", function(){
     bindSortTabs();
     bindAnswerClear();
     bindAnswerCount();
+    bindReportModal();
     applyFilter();
-    initReportModal({
-        modalId: "qnaReportModal",
-        openButtonSelector: ".qna-report-btn",
-        targetInputId: "reportTargetId",
-        targetTypeInputId: "reportTargetType",
-        reportTypeId: "reportType",
-        reasonId: "reportReason",
-        targetType: "QNA"
-    });
 
     /*
         탭
@@ -422,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function(){
         }
 
         if(detailReportBtn != null){
-            detailReportBtn.dataset.targetId = qnaId;
+            detailReportBtn.dataset.qnaId = qnaId;
         }
 
         const answerWaitingView = document.getElementById("answerWaitingView");
@@ -466,36 +463,36 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     function bindDetailAnswerForm(){
-    const writeBtn = document.getElementById("detailAnswerWriteBtn");
-    const editBtn = document.getElementById("detailAnswerEditBtn");
+        const writeBtn = document.getElementById("detailAnswerWriteBtn");
+        const editBtn = document.getElementById("detailAnswerEditBtn");
 
-    if(writeBtn != null){
-        writeBtn.addEventListener("click", function(){
-            openDetailAnswerForm(false);
-        });
-    }
+        if(writeBtn != null){
+            writeBtn.addEventListener("click", function(){
+                openDetailAnswerForm(false);
+            });
+        }
 
-    if(editBtn != null){
-        editBtn.addEventListener("click", function(){
-            openDetailAnswerForm(true);
-        });
-    }
+        if(editBtn != null){
+            editBtn.addEventListener("click", function(){
+                openDetailAnswerForm(true);
+            });
+        }
 
-    if(answerForm == null){
-        return;
-    }
-
-    answerForm.addEventListener("submit", function(event){
-        event.preventDefault();
-
-        if(answerQnaId == null || answerTextarea == null){
-            alert("답변 정보를 찾을 수 없습니다.");
+        if(answerForm == null){
             return;
         }
 
-        submitAnswer(answerQnaId.value, answerTextarea);
-    });
-}
+        answerForm.addEventListener("submit", function(event){
+            event.preventDefault();
+
+            if(answerQnaId == null || answerTextarea == null){
+                alert("답변 정보를 찾을 수 없습니다.");
+                return;
+            }
+
+            submitAnswer(answerQnaId.value, answerTextarea);
+        });
+    }
 
     function submitAnswer(qnaId, textarea){
         if(textarea == null){
@@ -575,7 +572,6 @@ document.addEventListener("DOMContentLoaded", function(){
         answerCount.textContent = answerTextarea.value.length;
     }
 
-    
     function bindAnswerClear(){
         if(answerClearBtn == null){
             return;
@@ -624,7 +620,141 @@ document.addEventListener("DOMContentLoaded", function(){
             updateDetailPanel(activeCard);
         }
     }
-    
+
+    function bindReportModal(){
+        document.querySelectorAll(".qna-report-btn").forEach(function(btn){
+            btn.addEventListener("click", function(event){
+                event.stopPropagation();
+
+                const qnaId = this.dataset.qnaId;
+
+                if(reportQnaId != null){
+                    reportQnaId.value = qnaId;
+                }
+
+                if(reportType != null){
+                    reportType.value = "";
+                }
+
+                if(reportReason != null){
+                    reportReason.value = "";
+                }
+
+                openReportModal();
+            });
+        });
+
+        document.querySelectorAll(".qna-report-close-btn, .qna-report-cancel-btn").forEach(function(btn){
+            btn.addEventListener("click", function(){
+                closeReportModal();
+            });
+        });
+
+        const submitBtn = document.querySelector(".qna-report-submit-btn");
+
+        if(submitBtn != null){
+            submitBtn.addEventListener("click", function(){
+                submitReport();
+            });
+        }
+
+        if(reportModal != null){
+            reportModal.addEventListener("click", function(event){
+                if(event.target === reportModal){
+                    closeReportModal();
+                }
+            });
+        }
+
+        window.addEventListener("keydown", function(event){
+            if(event.key === "Escape"){
+                closeReportModal();
+            }
+        });
+    }
+
+    function openReportModal(){
+        if(reportModal != null){
+            reportModal.classList.add("active");
+            reportModal.classList.add("open");
+        }
+    }
+
+    function closeReportModal(){
+        if(reportModal != null){
+            reportModal.classList.remove("active");
+            reportModal.classList.remove("open");
+        }
+    }
+
+    function submitReport(){
+        if(reportQnaId == null || reportType == null || reportReason == null){
+            alert("신고 정보를 찾을 수 없습니다.");
+            return;
+        }
+
+        const qnaId = reportQnaId.value.trim();
+        const type = reportType.value.trim();
+        const reason = reportReason.value.trim();
+
+        if(qnaId === ""){
+            alert("문의 정보를 찾을 수 없습니다.");
+            return;
+        }
+
+        if(type === ""){
+            alert("신고 사유를 선택해주세요.");
+            reportType.focus();
+            return;
+        }
+
+        if(reason === ""){
+            alert("신고 내용을 입력해주세요.");
+            reportReason.focus();
+            return;
+        }
+
+        fetch("/seller_qna_report.do", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            body: new URLSearchParams({
+                target_type: "QNA",
+                target_id: qnaId,
+                report_type: type,
+                reason: reason
+            })
+        })
+        .then(function(response){
+            if(!response.ok){
+                throw new Error("서버 응답 오류");
+            }
+
+            return response.json();
+        })
+        .then(function(data){
+            if(data.result === "success"){
+                alert("신고가 접수되었습니다.");
+                closeReportModal();
+            } else if(data.result === "login"){
+                alert("로그인이 필요합니다.");
+                location.href = "/login.do";
+            } else if(data.result === "empty"){
+                alert("신고 사유와 내용을 입력해주세요.");
+            } else {
+                alert("신고 접수에 실패했습니다.");
+            }
+        })
+        .catch(function(error){
+            console.error(error);
+            alert("신고 접수 중 오류가 발생했습니다.");
+        });
+    }
+
+    /*
+        기존 구조가 남아있을 때 대비용 값 추출 함수들
+    */
     function getCardTitle(card){
         const title = card.querySelector(".qna-title, .qna-list-info h3");
 

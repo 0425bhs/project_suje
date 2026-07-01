@@ -1,10 +1,12 @@
-window.addEventListener("load",function (){
+window.addEventListener("load",function(){
     productDetailImageSlider();
     productDetailQuantity();
     productDetailTabs();
     productWishButton();
     sellerWishButton();
     reviewButton();
+    initReviewScoreBars();
+    initProductDetailReviewFilter();
 });
 
 function productDetailImageSlider(){
@@ -14,24 +16,24 @@ function productDetailImageSlider(){
     const prevBtn = document.getElementById("detailImgPrev");
     const nextBtn = document.getElementById("detailImgNext");
 
-    if (imageBox == null || mainImage == null){
+    if(imageBox == null || mainImage == null){
         return;
     }
 
     const imageList = [];
 
-    thumbButtons.forEach(function (btn){
+    thumbButtons.forEach(function(btn){
         const imgSrc = btn.dataset.img;
 
-        if (imgSrc != null && imgSrc !== "" && !imageList.includes(imgSrc)){
+        if(imgSrc != null && imgSrc !== "" && !imageList.includes(imgSrc)){
             imageList.push(imgSrc);
         }
     });
 
-    if (imageList.length === 0){
+    if(imageList.length === 0){
         const currentSrc = mainImage.getAttribute("src");
 
-        if (currentSrc != null && currentSrc !== ""){
+        if(currentSrc != null && currentSrc !== ""){
             imageList.push(currentSrc);
         }
     }
@@ -42,7 +44,7 @@ function productDetailImageSlider(){
     const slideTrack = document.createElement("div");
     slideTrack.className = "store-slide-track";
 
-    imageList.forEach(function (src){
+    imageList.forEach(function(src){
         const slideItem = document.createElement("div");
         slideItem.className = "store-slide-item";
 
@@ -56,52 +58,52 @@ function productDetailImageSlider(){
 
     mainImage.remove();
 
-    if (nextBtn != null){
+    if(nextBtn != null){
         imageBox.insertBefore(slideTrack, nextBtn);
     } else {
         imageBox.appendChild(slideTrack);
     }
 
     function updateThumbActive(){
-        thumbButtons.forEach(function (btn){
+        thumbButtons.forEach(function(btn){
             btn.classList.remove("active");
 
-            if (btn.dataset.img === imageList[currentIndex]){
+            if(btn.dataset.img === imageList[currentIndex]){
                 btn.classList.add("active");
             }
         });
     }
 
     function updateArrowState(){
-        if (prevBtn != null){
+        if(prevBtn != null){
             prevBtn.classList.toggle("disabled", imageList.length <= 1);
         }
 
-        if (nextBtn != null){
+        if(nextBtn != null){
             nextBtn.classList.toggle("disabled", imageList.length <= 1);
         }
     }
 
     function moveSlide(index){
-        slideTrack.style.transform = "translateX(-" + (index * 100) + "%)";
+        slideTrack.style.transform = "translateX(-" +(index * 100) + "%)";
     }
 
     function slideTo(newIndex){
-        if (imageList.length <= 1 || isSliding){
+        if(imageList.length <= 1 || isSliding){
             return;
         }
 
         let targetIndex = newIndex;
 
-        if (targetIndex < 0){
+        if(targetIndex < 0){
             targetIndex = imageList.length - 1;
         }
 
-        if (targetIndex >= imageList.length){
+        if(targetIndex >= imageList.length){
             targetIndex = 0;
         }
 
-        if (targetIndex === currentIndex){
+        if(targetIndex === currentIndex){
             return;
         }
 
@@ -111,29 +113,29 @@ function productDetailImageSlider(){
         moveSlide(currentIndex);
         updateThumbActive();
 
-        setTimeout(function (){
+        setTimeout(function(){
             isSliding = false;
         }, 650);
     }
 
-    if (prevBtn != null){
-        prevBtn.addEventListener("click", function (){
+    if(prevBtn != null){
+        prevBtn.addEventListener("click", function(){
             slideTo(currentIndex - 1);
         });
     }
 
-    if (nextBtn != null){
-        nextBtn.addEventListener("click", function (){
+    if(nextBtn != null){
+        nextBtn.addEventListener("click", function(){
             slideTo(currentIndex + 1);
         });
     }
 
-    thumbButtons.forEach(function (btn){
-        btn.addEventListener("click", function (){
+    thumbButtons.forEach(function(btn){
+        btn.addEventListener("click", function(){
             const imgSrc = btn.dataset.img;
             const newIndex = imageList.indexOf(imgSrc);
 
-            if (newIndex === -1){
+            if(newIndex === -1){
                 return;
             }
 
@@ -254,7 +256,7 @@ function productDetailQuantity(){
 
         selectedOptions.forEach(function(item){
             countSum += item.quantity;
-            priceSum += (realBasePrice + item.optionPrice) * item.quantity;
+            priceSum +=(realBasePrice + item.optionPrice) * item.quantity;
         });
 
         totalCount.innerText = countSum;
@@ -599,21 +601,21 @@ function productWishButton(){
     });
 }
 
-function sellerWishButton() {
+function sellerWishButton(){
     const wishBtn = document.getElementById("sellerWishBtn");
 
-    if (wishBtn == null) {
+    if(wishBtn == null){
         return;
     }
 
     const sellerId = wishBtn.dataset.sellerId;
 
-    if (sellerId == null || sellerId === "") {
+    if(sellerId == null || sellerId === ""){
         alert("판매자 정보를 찾을 수 없습니다.");
         return;
     }
 
-    wishBtn.addEventListener("click", function () {
+    wishBtn.addEventListener("click", function(){
         fetch("/favorite_shop.do", {
             method: "POST",
             headers: {
@@ -621,11 +623,11 @@ function sellerWishButton() {
             },
             body: "seller_id=" + encodeURIComponent(sellerId)
         })
-        .then(function (response) {
+        .then(function(response){
             return response.json();
         })
-        .then(function (data) {
-            if (data.result === "login") {
+        .then(function(data){
+            if(data.result === "login"){
                 alert("로그인 후 이용 가능합니다.");
                 location.href = "/login.do";
                 return;
@@ -634,32 +636,259 @@ function sellerWishButton() {
             const heart = wishBtn.querySelector(".wish-shop-heart");
             const text = wishBtn.querySelector(".wish-shop-text");
 
-            if (data.liked === true) {
+            if(data.liked === true){
                 wishBtn.classList.add("active");
 
-                if (heart != null) {
+                if(heart != null){
                     heart.textContent = "♥";
                 }
 
-                if (text != null) {
+                if(text != null){
                     text.textContent = "찜 취소";
                 }
             } else {
                 wishBtn.classList.remove("active");
 
-                if (heart != null) {
+                if(heart != null){
                     heart.textContent = "♡";
                 }
 
-                if (text != null) {
+                if(text != null){
                     text.textContent = "작가샵 찜하기";
                 }
             }
         })
-        .catch(function (error) {
+        .catch(function(error){
             console.log(error);
             alert("찜 처리 중 오류가 발생했습니다.");
         });
     });
+}
+
+function initReviewScoreBars(){
+    const bars = document.querySelectorAll(".review-score-fill");
+
+    bars.forEach(function(bar){
+        let percent = bar.dataset.percent;
+
+        if(percent == null || percent === ""){
+            percent = "0";
+        }
+
+        percent = Number(percent);
+
+        if(isNaN(percent)){
+            percent = 0;
+        }
+
+        if(percent < 0){
+            percent = 0;
+        }
+
+        if(percent > 100){
+            percent = 100;
+        }
+
+        bar.style.width = percent + "%";
+    });
+}
+
+function initProductDetailReviewFilter(){
+    const reviewList = document.getElementById("detailReviewList");
+
+    if(reviewList == null){
+        return;
+    }
+
+    const reviewCards = Array.from(reviewList.querySelectorAll(".review-card-item"));
+    const tabButtons = document.querySelectorAll(".review-filter-tab");
+    const searchInput = document.getElementById("reviewSearchInput");
+    const ratingBtn = document.getElementById("reviewRatingBtn");
+    const ratingText = document.getElementById("reviewRatingText");
+    const ratingMenu = document.getElementById("reviewRatingMenu");
+    const ratingOptions = document.querySelectorAll(".review-rating-option");
+    const emptyMessage = document.getElementById("reviewFilterEmpty");
+    const resetBtn = document.getElementById("reviewResetBtn");
+
+    function makeSelectedRatingStars(rating){
+        let html = '<span class="selected-rating-stars">';
+
+        for(let i = 1; i <= 5; i++){
+            if(i <= rating){
+                html += '<span class="on">★</span>';
+            } else {
+                html += '<span>★</span>';
+            }
+        }
+
+        html += '</span>';
+
+        return html;
+    }
+
+    let currentTab = "all";
+    let currentRating = "all";
+    let currentKeyword = "";
+
+    if(ratingBtn != null && ratingMenu != null){
+        ratingBtn.addEventListener("click", function(event){
+            event.stopPropagation();
+            ratingMenu.classList.toggle("open");
+        });
+    }
+
+    document.addEventListener("click", function(){
+        if(ratingMenu != null){
+            ratingMenu.classList.remove("open");
+        }
+    });
+
+    if(ratingMenu != null){
+        ratingMenu.addEventListener("click", function(event){
+            event.stopPropagation();
+        });
+    }
+
+    tabButtons.forEach(function(button){
+        button.addEventListener("click", function(){
+            tabButtons.forEach(function(item){
+                item.classList.remove("active");
+            });
+
+            button.classList.add("active");
+            currentTab = button.dataset.reviewTab;
+
+            applyReviewFilter();
+        });
+    });
+
+    if(searchInput != null){
+        searchInput.addEventListener("input", function(){
+            currentKeyword = searchInput.value.trim().toLowerCase();
+            applyReviewFilter();
+        });
+    }
+
+    ratingOptions.forEach(function(option){
+        option.addEventListener("click", function(){
+            ratingOptions.forEach(function(item){
+                item.classList.remove("active");
+            });
+
+            option.classList.add("active");
+            currentRating = option.dataset.ratingFilter;
+
+            if(ratingText != null){
+                if(currentRating === "all"){
+                    ratingText.textContent = "모든 별점";
+                } else {
+                    ratingText.innerHTML = makeSelectedRatingStars(Number(currentRating));
+                }
+            }
+
+            if(ratingMenu != null){
+                ratingMenu.classList.remove("open");
+            }
+
+            applyReviewFilter();
+        });
+    });
+
+    if(resetBtn != null){
+        resetBtn.addEventListener("click", function(){
+            currentTab = "all";
+            currentRating = "all";
+            currentKeyword = "";
+
+            if(searchInput != null){
+                searchInput.value = "";
+            }
+
+            tabButtons.forEach(function(button){
+                button.classList.remove("active");
+
+                if(button.dataset.reviewTab === "all"){
+                    button.classList.add("active");
+                }
+            });
+
+            ratingOptions.forEach(function(option){
+                option.classList.remove("active");
+
+                if(option.dataset.ratingFilter === "all"){
+                    option.classList.add("active");
+                }
+            });
+
+            if(ratingText != null){
+                ratingText.textContent = "모든 별점";
+            }
+
+            if(ratingMenu != null){
+                ratingMenu.classList.remove("open");
+            }
+
+            applyReviewFilter();
+        });
+    }
+
+    function applyReviewFilter(){
+        let filteredCards = reviewCards.slice();
+
+        if(currentTab === "photo"){
+            filteredCards = filteredCards.filter(function(card){
+                return card.dataset.photo === "Y";
+            });
+        }
+
+        if(currentRating !== "all"){
+            filteredCards = filteredCards.filter(function(card){
+                return card.dataset.rating === currentRating;
+            });
+        }
+
+        if(currentKeyword !== ""){
+            filteredCards = filteredCards.filter(function(card){
+                return card.innerText.toLowerCase().includes(currentKeyword);
+            });
+        }
+
+        if(currentTab === "best"){
+            filteredCards.sort(function(a, b){
+                const ratingA = Number(a.dataset.rating || 0);
+                const ratingB = Number(b.dataset.rating || 0);
+
+                if(ratingB !== ratingA){
+                    return ratingB - ratingA;
+                }
+
+                const photoA = a.dataset.photo === "Y" ? 1 : 0;
+                const photoB = b.dataset.photo === "Y" ? 1 : 0;
+
+                if(photoB !== photoA){
+                    return photoB - photoA;
+                }
+
+                return Number(a.dataset.reviewIndex) - Number(b.dataset.reviewIndex);
+            });
+        } else {
+            filteredCards.sort(function(a, b){
+                return Number(a.dataset.reviewIndex) - Number(b.dataset.reviewIndex);
+            });
+        }
+
+        reviewCards.forEach(function(card){
+            card.style.display = "none";
+        });
+
+        filteredCards.forEach(function(card){
+            card.style.display = "";
+            reviewList.appendChild(card);
+        });
+
+        if(emptyMessage != null){
+            emptyMessage.style.display = filteredCards.length === 0 ? "block" : "none";
+        }
+    }
 }
 
