@@ -61,12 +61,6 @@
                                 <span class="count">${deliveredCount}<small>건</small></span>
                             </div>
 
-                            <div class="funnel-arrow">〉</div>
-
-                            <div class="funnel-step">
-                                <span class="label">구매확정</span>
-                                <span class="count">0<small>건(미구현)</small></span>
-                            </div>
                         </div>
                     </div>
 

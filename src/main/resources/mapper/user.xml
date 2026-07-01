@@ -21,12 +21,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="keyword != null and keyword != ''">
                 AND (
                     login_id LIKE CONCAT("%", #{keyword}, "%")
-                    or name LIKE CONCAT("%", #{keyword}, "%")
-                    or email LIKE CONCAT("%", #{keyword}, "%")
+                    OR name LIKE CONCAT("%", #{keyword}, "%")
+                    OR email LIKE CONCAT("%", #{keyword}, "%")
+                    OR nick_name LIKE CONCAT("%", #{keyword}, "%")
+                    OR phone LIKE CONCAT("%", #{keyword}, "%")
                 )
             </if>
+
+            <if test="gender != null and gender != 'all'">
+                AND gender = #{gender}
+            </if>
+
+            <if test="status != null and status != 'all'">
+                AND status = #{status}
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            </if>
         </where>
-        ORDER BY user_id DESC
+        
+        <if test="sort == 'latest'">
+            ORDER BY created_at DESC
+        </if>
+        
+        <if test="sort == 'oldest'">
+            ORDER BY created_at
+        </if>
+
         LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -42,9 +68,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="keyword != null and keyword != ''">
                 AND (
                     login_id LIKE CONCAT("%", #{keyword}, "%")
-                    or name LIKE CONCAT("%", #{keyword}, "%")
-                    or email LIKE CONCAT("%", #{keyword}, "%")
+                    OR name LIKE CONCAT("%", #{keyword}, "%")
+                    OR email LIKE CONCAT("%", #{keyword}, "%")
+                    OR nick_name LIKE CONCAT("%", #{keyword}, "%")
+                    OR phone LIKE CONCAT("%", #{keyword}, "%")
                 )
+            </if>
+
+            <if test="gender != null and gender !='all'">
+                AND gender = #{gender}
+            </if>
+
+            <if test="status != null and status !='all'">
+                AND status = #{status}
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
             </if>
         </where>
     </select>

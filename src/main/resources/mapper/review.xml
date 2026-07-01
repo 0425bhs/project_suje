@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getWrittenReview"
             parameterType="int"
             resultType="review">
-        SELECT r.*, p.name product_name, p.image_l
+        SELECT r.*,p.name AS product_name,p.image_l,oi.option_name
         FROM order_items oi
         JOIN orders o ON oi.order_id = o.order_id
         JOIN reviews r ON oi.order_item_id = r.order_item_id
@@ -40,7 +40,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             oi.order_item_id,
             oi.product_id,
             p.name product_name,
-            p.image_l
+            p.image_l,
+            oi.option_name
         FROM order_items oi
         JOIN orders o ON oi.order_id = o.order_id
         LEFT JOIN reviews r ON oi.order_item_id = r.order_item_id
@@ -49,7 +50,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         AND o.status = 'DELIVERED'
         AND r.review_id IS NULL
         ORDER BY o.created_at DESC
-        LIMIT 3
     </select>
 
     <select id="getWrittenReviewCount"
@@ -114,8 +114,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     OR r.content LIKE CONCAT("%", #{keyword}, "%")
                 ) 
             </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND r.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND r.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            </if>
         </where>
-        ORDER BY r.review_id DESC
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY r.created_at ASC, r.review_id ASC
+            </when>
+            <when test="sort == 'rating'">
+                ORDER BY r.rating DESC, r.review_id DESC
+            </when>
+            <otherwise>
+                ORDER BY r.created_at DESC, r.review_id DESC
+            </otherwise>
+        </choose>
         LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -136,6 +154,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     OR u.name LIKE CONCAT("%", #{keyword}, "%")
                     OR r.content LIKE CONCAT("%", #{keyword}, "%")
                 ) 
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND r.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND r.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
             </if>
         </where>
     </select>

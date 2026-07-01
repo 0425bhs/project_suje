@@ -102,31 +102,11 @@
 
                     <c:forEach var="qna" items="${qnaList}">
 
-                        <div class="seller-qna-card" data-product-id="${qna.product_id}" data-answered="false">//false고치기
+                        <div class="seller-qna-card" data-product-id="${qna.product_id}" data-answered="${not empty qna.answer}">
 
                             <div class="qna-card-top">
 
                                 <div class="qna-user-area">
-
-                                    <div class="qna-user-photo-box">
-                                        <c:choose>
-                                            <c:when test="${not empty qna.photo_name}">
-                                                <c:choose>
-                                                    <c:when test="${fn:startsWith(qna.photo_name, '/upload/')}">
-                                                        <img src="${qna.photo_name}">
-                                                    </c:when>
-
-                                                    <c:otherwise>
-                                                        <img src="/upload/${qna.photo_name}">
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:when>
-
-                                            <c:otherwise>
-                                                <img src="/images/no_profile.png">
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </div>
 
                                     <div class="qna-user-info">
 
@@ -190,9 +170,7 @@
                                         문의 내용
                                     </div>
 
-                                    <div class="qna-content">
-                                        ${qna.content}
-                                    </div>
+                                    <div class="qna-content">${qna.content}\</div>
                                 </div>
 
                                 <div class="seller-answer-box">
@@ -217,7 +195,7 @@
                                         </div>
 
                                         <div class="answer-complete-content">
-                                            등록된 판매자 답변입니다.
+                                             ${qna.answer}
                                         </div>
 
                                         <button type="button" class="answer-edit-btn" data-qna-id="${qna.qna_id}">

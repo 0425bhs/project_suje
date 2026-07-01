@@ -17,24 +17,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             updated_at
         FROM orders
         WHERE user_id = #{value}
+        AND status != "cancelled"
         ORDER BY order_id DESC
     </select>
 
     <!-- 내 주문 내역 상태별 조회 -->
     <select id="selectOrderListByUserIdAndStatus" resultType="order">
-        SELECT DISTINCT
-            o.order_id,
-            o.user_id,
-            o.total_amount,
-            o.address_id,
-            o.status,
-            o.created_at,
-            o.updated_at
-        FROM orders o
-        JOIN order_items oi ON oi.order_id = o.order_id
-        WHERE o.user_id = #{user_id}
-        AND oi.status = #{status}
-        ORDER BY o.order_id DESC
+        SELECT
+            order_id,
+            user_id,
+            total_amount,
+            address_id,
+            status,
+            created_at,
+            updated_at
+        FROM orders
+        WHERE user_id = #{user_id}
+        AND status = #{status}
+        ORDER BY order_id DESC
     </select>
 
     <!-- 주문 1건 조회 -->
@@ -63,17 +63,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             oi.order_item_id,
             oi.order_id,
             oi.product_id,
+            oi.option_id,
             oi.price,
             oi.quantity,
             oi.status,
             oi.confirmed_at,
             oi.updated_at,
+
             p.name AS productName,
             p.image_l AS imageL,
+
+            COALESCE(oi.option_name, po.option_name) AS option_name,
+            IFNULL(oi.option_price, IFNULL(po.option_price, 0)) AS option_price,
+
             (oi.price * oi.quantity) AS subtotalAmount
+
         FROM order_items oi
-        JOIN orders o ON o.order_id = oi.order_id
-        JOIN products p ON p.product_id = oi.product_id
+
+        JOIN orders o
+            ON o.order_id = oi.order_id
+
+        JOIN products p
+            ON p.product_id = oi.product_id
+
+        LEFT JOIN product_options po
+            ON oi.option_id = po.option_id
+
         WHERE oi.order_item_id = #{order_item_id}
         AND o.user_id = #{user_id}
     </select>
@@ -109,7 +124,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             option_id,
             price,
             quantity,
-            status
+            status,
+            option_name,
+            option_price
         )
         VALUES (
             #{order_id},
@@ -117,7 +134,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{option_id},
             #{price},
             #{quantity},
-            'PENDING'
+            'PENDING',
+            CASE
+                WHEN #{option_id} IS NULL THEN NULL
+                ELSE (
+                    SELECT option_name
+                    FROM product_options
+                    WHERE option_id = #{option_id}
+                )
+            END,
+            CASE
+                WHEN #{option_id} IS NULL THEN 0
+                ELSE (
+                    SELECT IFNULL(option_price, 0)
+                    FROM product_options
+                    WHERE option_id = #{option_id}
+                )
+            END
         )
     </insert>
 
@@ -136,8 +169,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.name AS productName,
             p.image_l AS imageL,
 
-            po.option_name AS optionName,
-            IFNULL(po.option_price, 0) AS optionPrice,
+            COALESCE(oi.option_name, po.option_name) AS option_name,
+            IFNULL(oi.option_price, IFNULL(po.option_price, 0)) AS option_price,
 
             (oi.price * oi.quantity) AS subtotalAmount
         FROM order_items oi
@@ -183,16 +216,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 마이쇼핑 상태별 개수 조회 -->
     <select id="selectOrderStatusCounts" resultType="java.util.Map" parameterType="int">
         SELECT 
-            COUNT(CASE WHEN oi.status != 'CANCELLED' THEN 1 END) AS totalCount,
-            COUNT(CASE WHEN oi.status = 'PENDING' THEN 1 END) AS pendingCount,
-            COUNT(CASE WHEN oi.status = 'PAID' THEN 1 END) AS paidCount,
-            COUNT(CASE WHEN oi.status = 'PREPARING' THEN 1 END) AS preparingCount,
-            COUNT(CASE WHEN oi.status = 'SHIPPING' THEN 1 END) AS shippingCount,
-            COUNT(CASE WHEN oi.status = 'DELIVERED' THEN 1 END) AS deliveredCount,
-            COUNT(CASE WHEN oi.status = 'CONFIRMED' THEN 1 END) AS confirmedCount,
-            COUNT(CASE WHEN oi.status = 'CANCELLED' THEN 1 END) AS cancelCount
+            COUNT(CASE WHEN o.status != 'CANCELLED' THEN 1 END) AS totalCount,
+            COUNT(CASE WHEN o.status = 'PENDING' THEN 1 END) AS pendingCount,
+            COUNT(CASE WHEN o.status = 'PAID' THEN 1 END) AS paidCount,
+            COUNT(CASE WHEN o.status = 'PREPARING' THEN 1 END) AS preparingCount,
+            COUNT(CASE WHEN o.status = 'SHIPPING' THEN 1 END) AS shippingCount,
+            COUNT(CASE WHEN o.status = 'DELIVERED' THEN 1 END) AS deliveredCount,
+            COUNT(CASE WHEN o.status = 'CONFIRMED' THEN 1 END) AS confirmedCount,
+            COUNT(CASE WHEN o.status = 'CANCELLED' THEN 1 END) AS cancelCount
         FROM orders o
-        JOIN order_items oi ON oi.order_id = o.order_id
         WHERE o.user_id = #{value}
     </select>
 
@@ -210,8 +242,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.name AS productName,
             p.image_l AS imageL,
 
-            po.option_name AS optionName,
-            IFNULL(po.option_price, 0) AS optionPrice,
+            COALESCE(oi.option_name, po.option_name) AS option_name,
+            IFNULL(oi.option_price, IFNULL(po.option_price, 0)) AS option_price,
 
             oi.quantity,
             oi.price,

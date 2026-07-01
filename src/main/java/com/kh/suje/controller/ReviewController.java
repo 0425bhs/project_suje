@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.suje.dao.ImageDAO;
@@ -53,13 +54,21 @@ public class ReviewController {
 
     @PostMapping("/review_form.do")
     @Transactional(rollbackFor = Exception.class)
-    public String reviewFormFin(HttpSession session, ReviewVO review, List<MultipartFile> images) throws IllegalStateException, IOException {
+    public String reviewFormFin(HttpSession session, ReviewVO review,
+        @RequestParam("order_item_id") int order_item_id,
+        @RequestParam(value = "images", required = false) List<MultipartFile> images) throws IllegalStateException, IOException {
+
         UserVO user = (UserVO)session.getAttribute("user");
         if (user == null) {
             return "redirect:/login.do";
         }
+
         int user_id = user.getUser_id();
+        Integer product_id = orderDAO.getProductId(order_item_id);
+
         review.setUser_id(user_id);
+        review.setOrder_item_id(order_item_id);
+        review.setProduct_id(product_id);
 
         reviewDAO.addReview(review);
 
@@ -72,29 +81,31 @@ public class ReviewController {
         List<ImageVO> imageList = new ArrayList<>();
         int sort_order = 1;
 
-        for (MultipartFile file : images) {
-            if (file.isEmpty()) {
-                continue;
+        if (images != null) {
+            for (MultipartFile file : images) {
+                if (file == null || file.isEmpty()) {
+                    continue;
+                }
+
+                String saveName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                File saveFile = new File(savePath, saveName);
+                file.transferTo(saveFile);
+
+                ImageVO image = new ImageVO();
+                image.setTarget_type("REVIEW");
+                image.setTarget_id(review.getReview_id());
+                image.setImage_url(saveName);
+                image.setOriginal_name(file.getOriginalFilename());
+                image.setSort_order(sort_order++);
+
+                imageList.add(image);
             }
 
-            String saveName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            File saveFile = new File(savePath, saveName);
-            file.transferTo(saveFile);
-
-            ImageVO image = new ImageVO();
-            image.setTarget_type("REVIEW");
-            image.setTarget_id(review.getReview_id());
-            image.setImage_url(saveName);
-            image.setOriginal_name(file.getOriginalFilename());
-            image.setSort_order(sort_order++);
-
-            imageList.add(image);
+            if (!imageList.isEmpty()) {
+                imageDAO.insertImageList(imageList); 
+            }
         }
-
-        if (!imageList.isEmpty()) {
-            imageDAO.insertImageList(imageList); 
-        }
-
+        
         return "redirect:/myshop/reviews";
     }
 

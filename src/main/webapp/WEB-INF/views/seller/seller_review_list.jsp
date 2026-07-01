@@ -114,7 +114,10 @@
 
                     <c:forEach var="review" items="${reviewList}">
 
-                        <div class="seller-review-card" data-product-id="${review.product_id}" data-replied="${not empty review.reply_content ? 'true' : 'false'}" data-has-photo="${not empty review.imageList ? 'true' : 'false'}">
+                        <div class="seller-review-card"
+                             data-product-id="${review.product_id}"
+                             data-replied="${not empty review.reply_content ? 'true' : 'false'}"
+                             data-has-photo="${not empty review.imageList ? 'true' : 'false'}">
 
                             <div class="review-card-top">
 
@@ -124,23 +127,21 @@
                                         <c:set var="profileName" value="${fn:trim(review.photo_name)}" />
 
                                         <c:choose>
-
                                             <c:when test="${not empty profileName and profileName ne 'no_file'}">
                                                 <c:choose>
                                                     <c:when test="${fn:startsWith(profileName, '/upload/')}">
-                                                        <img src="${profileName}">
+                                                        <img src="${profileName}" alt="프로필 이미지">
                                                     </c:when>
 
                                                     <c:otherwise>
-                                                        <img src="/upload/${profileName}">
+                                                        <img src="/upload/${profileName}" alt="프로필 이미지">
                                                     </c:otherwise>
                                                 </c:choose>
                                             </c:when>
 
                                             <c:otherwise>
-                                                <img src="/images/no_profile.png">
+                                                <img src="/images/no_profile.png" alt="기본 프로필 이미지">
                                             </c:otherwise>
-
                                         </c:choose>
                                     </div>
 
@@ -194,31 +195,53 @@
 
                                 </div>
 
-                                <div class="review-photo-list">
-                                    <c:if test="${not empty review.imageList}">
+                                <c:if test="${not empty review.imageList}">
+                                    <div class="review-photo-list" data-review-id="${review.review_id}">
+
+                                        <c:set var="photoTotal" value="${fn:length(review.imageList)}" />
+
                                         <c:forEach var="img" items="${review.imageList}" varStatus="st">
 
                                             <c:set var="reviewImgUrl" value="${fn:trim(img.image_url)}" />
 
-                                            <c:if test="${st.index < 5 and not empty reviewImgUrl and reviewImgUrl ne 'no_file'}">
-                                                <div class="review-photo-item">
-                                                    <c:choose>
+                                            <c:if test="${not empty reviewImgUrl and reviewImgUrl ne 'no_file'}">
 
-                                                        <c:when test="${fn:startsWith(reviewImgUrl, '/upload/')}">
-                                                            <img src="${reviewImgUrl}">
-                                                        </c:when>
+                                                <c:choose>
+                                                    <c:when test="${fn:startsWith(reviewImgUrl, '/upload/')}">
+                                                        <c:set var="finalReviewImgUrl" value="${reviewImgUrl}" />
+                                                    </c:when>
 
-                                                        <c:otherwise>
-                                                            <img src="/upload/${reviewImgUrl}">
-                                                        </c:otherwise>
+                                                    <c:otherwise>
+                                                        <c:set var="finalReviewImgUrl" value="/upload/${reviewImgUrl}" />
+                                                    </c:otherwise>
+                                                </c:choose>
 
-                                                    </c:choose>
-                                                </div>
+                                                <span class="review-modal-data"
+                                                      data-review-id="${review.review_id}"
+                                                      data-img-url="${finalReviewImgUrl}"
+                                                      data-img-index="${st.index}">
+                                                </span>
+
+                                                <c:if test="${st.index < 3}">
+                                                    <button type="button"
+                                                            class="review-photo-item"
+                                                            data-review-id="${review.review_id}"
+                                                            data-img-index="${st.index}">
+                                                        <img src="${finalReviewImgUrl}" alt="리뷰 이미지">
+
+                                                        <c:if test="${st.index == 2 and photoTotal > 3}">
+                                                            <span class="review-photo-more">
+                                                                +${photoTotal - 3}
+                                                            </span>
+                                                        </c:if>
+                                                    </button>
+                                                </c:if>
+
                                             </c:if>
 
                                         </c:forEach>
-                                    </c:if>
-                                </div>
+                                    </div>
+                                </c:if>
 
                                 <div class="review-status-area">
                                     <c:choose>
@@ -247,17 +270,24 @@
                             <div class="review-bottom-grid">
 
                                 <div class="review-content-box">
-                                    
-                                    <div class="review-content">
+
+                                    <div class="review-content js-review-content">
                                         <c:out value="${review.content}" />
                                     </div>
 
+                                    <button type="button" class="review-toggle-btn" style="display:none;">
+                                        펼쳐보기
+                                        <i class="bi bi-chevron-down"></i>
+                                    </button>
+
                                     <div class="review-btn-area">
-                                        <button type="button" class="review-report-btn" data-review-id="${review.review_id}">
+                                        <button type="button" class="review-report-btn" data-review-id="${review.review_id}"
+                                                onclick="location.href='report_form.do?target_type=REVIEW&target_id=${review.review_id}'">
                                             <i class="bi bi-exclamation-triangle"></i>
                                             신고
                                         </button>
                                     </div>
+
                                 </div>
 
                                 <div class="seller-reply-box">
@@ -297,9 +327,7 @@
                                     </c:choose>
 
                                     <div class="reply-write-form" id="replyForm-${review.review_id}" style="display:none;">
-                                        <textarea class="reply-textarea" id="replyContent-${review.review_id}">
-                                            ${review.reply_content}
-                                        </textarea>
+                                        <textarea class="reply-textarea" id="replyContent-${review.review_id}"><c:out value="${review.reply_content}" /></textarea>
 
                                         <div class="reply-form-btn-area">
                                             <button type="button" class="reply-submit-btn" data-review-id="${review.review_id}">
@@ -313,6 +341,7 @@
                                     </div>
 
                                 </div>
+
                             </div>
 
                         </div>
@@ -327,5 +356,38 @@
     </div>
 
 </div>
+
+<div class="review-image-modal" id="reviewImageModal">
+    <div class="review-image-modal-dim"></div>
+
+    <div class="review-image-modal-box">
+
+        <div class="review-image-modal-head">
+            <span id="reviewImageCounter">1 / 1</span>
+
+            <button type="button" class="review-image-modal-close" id="reviewImageModalClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div class="review-image-modal-body">
+            <button type="button" class="review-image-nav-btn prev" id="reviewImagePrev">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <img src="" alt="리뷰 이미지" id="reviewImageModalImg">
+
+            <button type="button" class="review-image-nav-btn next" id="reviewImageNext">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="review-image-modal-foot">
+            리뷰 이미지는 실제 구매자가 등록한 이미지입니다.
+        </div>
+
+    </div>
+</div>
+
 </body>
 </html>

@@ -16,4 +16,9 @@ public class QnaVO {
 
     //product_id
     private String product_name, image_l;
+
+    private String user_name;
+    private String nick_name;
+    private String created_at_text;
+    private String option_name;
 }

@@ -47,10 +47,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             resultType="qna">
         SELECT q.*, p.name product_name, p.image_l
         FROM qnas q
-        JOIN products p
-        ON q.product_id = p.product_id
+        JOIN products p ON q.product_id = p.product_id
         WHERE q.user_id = #{user_id}
-          AND q.status = "waiting"
+        AND (q.answer IS NULL OR q.answer = '')
+        ORDER BY q.qna_id DESC
     </select>
 
     <select id="getAnsweredQnaList"
@@ -58,10 +58,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             resultType="qna">
         SELECT q.*, p.name product_name, p.image_l
         FROM qnas q
-        JOIN products p
-        ON q.product_id = p.product_id
+        JOIN products p ON q.product_id = p.product_id
         WHERE q.user_id = #{user_id}
-          AND q.status = "answered"
+        AND q.answer IS NOT NULL
+        AND q.answer != ''
+        ORDER BY q.qna_id DESC
     </select>
 
     <select id="getQnaListByKeyword"
@@ -95,7 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT count(*)
         FROM qnas
         WHERE user_id = #{user_id}
-          AND status = "waiting"
+        AND (answer IS NULL OR answer = '')
     </select>
 
     <select id="getAnsweredQnaCount"
@@ -104,13 +105,48 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT count(*)
         FROM qnas
         WHERE user_id = #{user_id}
-          AND status = "answered"
+        AND answer IS NOT NULL
+        AND answer != ''
     </select>
 
-    <select id="productQnaList" resultType="qna">
-        SELECT *
-        FROM qnas
-        WHERE product_id = #{value}
-        ORDER BY qna_id DESC
+    <select id="productQnaList"
+            parameterType="int"
+            resultType="qna">
+        SELECT q.*, u.name AS user_name
+        FROM qnas q
+        JOIN users u ON q.user_id = u.user_id
+        WHERE q.product_id = #{product_id}
+        ORDER BY q.qna_id DESC
     </select>
+
+    <select id="sellerQnaList" parameterType="int" resultType="qna">
+        SELECT 
+            q.*,
+            p.name AS product_name,
+            p.image_l AS image_l,
+            u.name AS user_name,
+            u.nick_name AS nick_name,
+            DATE_FORMAT(q.created_at, '%Y-%m-%d') AS created_at_text,
+            NULL AS option_name
+        FROM qnas q
+        JOIN products p 
+            ON q.product_id = p.product_id
+        JOIN users u 
+            ON q.user_id = u.user_id
+        WHERE p.seller_id = #{seller_id}
+        ORDER BY q.qna_id DESC
+    </select>
+
+    <update id="sellerQnaAnswer" parameterType="map">
+        UPDATE qnas
+        SET answer = #{answer},
+            answered_at = NOW()
+        WHERE qna_id = #{qna_id}
+        AND product_id IN (
+            SELECT product_id
+            FROM products
+            WHERE seller_id = #{seller_id}
+        )
+    </update>
+
 </mapper>

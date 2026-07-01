@@ -24,8 +24,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 or representative_name LIKE CONCAT("%", #{keyword}, "%")
             )
         </if>
+
+        <if test="startDate != null and startDate != ''">
+            AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+        </if>
+
+        <if test="endDate != null and endDate != ''">
+            AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+        </if>
         </where>
-        ORDER BY seller_id DESC
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY created_at ASC, seller_id ASC
+            </when>
+            <when test="sort == 'name'">
+                ORDER BY company_name ASC, seller_id DESC
+            </when>
+            <otherwise>
+                ORDER BY created_at DESC, seller_id DESC
+            </otherwise>
+        </choose>
         LIMIT #{size} OFFSET #{offset}
     </select>
 
@@ -43,6 +61,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 company_name LIKE CONCAT("%", #{keyword}, "%")
                 or representative_name LIKE CONCAT("%", #{keyword}, "%")
             )
+        </if>
+
+        <if test="startDate != null and startDate != ''">
+            AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+        </if>
+
+        <if test="endDate != null and endDate != ''">
+            AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
         </if>
         </where>
     </select>
@@ -214,7 +240,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE p.seller_id = #{seller_id}
 
         <if test="status != null and status != ''">
-            AND oi.status = #{status}
+            AND o.status = #{status}
         </if>
 
         ORDER BY o.order_id DESC
@@ -228,46 +254,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             oi.order_item_id,
             oi.order_id,
             oi.product_id,
+            oi.option_id,
             oi.price,
             oi.quantity,
             oi.status,
             oi.confirmed_at,
             oi.updated_at,
+
             p.name AS productName,
             p.image_l AS imageL,
+
+            po.option_name AS option_name,
+            IFNULL(po.option_price, 0) AS option_price,
+
             (oi.price * oi.quantity) AS subtotalAmount
+
         FROM order_items oi
-        JOIN products p ON p.product_id = oi.product_id
+
+        JOIN products p
+            ON p.product_id = oi.product_id
+
+        LEFT JOIN product_options po
+            ON po.option_id = oi.option_id
+
         WHERE oi.order_id = #{order_id}
         AND p.seller_id = #{seller_id}
-
-        <if test="status != null and status != ''">
-            AND oi.status = #{status}
-        </if>
 
         ORDER BY oi.order_item_id ASC
     </select>
 
     <!-- 판매자 주문상품 상태 변경 -->
-    <update id="updateSellerOrderItemStatus"
-            parameterType="map">
-        UPDATE order_items
-        SET status = #{status},
-            updated_at = CURRENT_TIMESTAMP
-        WHERE order_item_id = #{order_item_id}
-        AND product_id IN (
-            SELECT product_id
-            FROM products
-            WHERE seller_id = #{seller_id}
-        )
-        AND (
-            (#{status} = 'PREPARING' AND status = 'PAID')
-            OR
-            (#{status} = 'SHIPPING' AND status = 'PREPARING')
-            OR
-            (#{status} = 'DELIVERED' AND status = 'SHIPPING')
+    <update id="sellerOrderStatus" parameterType="map">
+        UPDATE orders o
+        SET o.status = #{status},
+            o.updated_at = CURRENT_TIMESTAMP
+        WHERE o.order_id = #{order_id}
+        AND EXISTS (
+            SELECT 1
+            FROM order_items oi
+            JOIN products p ON p.product_id = oi.product_id
+            WHERE oi.order_id = o.order_id
+            AND p.seller_id = #{seller_id}
         )
     </update>
+    
 
     <!-- 구매자용 판매자샵 판매자 정보 조회 -->
     <select id="sellerShopInfo"

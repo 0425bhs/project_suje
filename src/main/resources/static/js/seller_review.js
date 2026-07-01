@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", function(){
     applyFilter();
     bindReplyButtons();
 
+    initReviewContentToggle();
+    initReviewImageModal();
+
     if(productFilter != null){
         productFilter.addEventListener("change", function(){
             applyFilter();
@@ -200,6 +203,148 @@ document.addEventListener("DOMContentLoaded", function(){
                 });
             });
         });
+    }
+
+    function initReviewContentToggle(){
+        const reviewContents = document.querySelectorAll(".js-review-content");
+
+        reviewContents.forEach(function(content){
+            const toggleBtn = content.nextElementSibling;
+
+            if(toggleBtn == null || !toggleBtn.classList.contains("review-toggle-btn")){
+                return;
+            }
+
+            const limitHeight = 150;
+
+            if(content.scrollHeight > limitHeight){
+                content.classList.add("is-collapsed");
+                toggleBtn.style.display = "inline-flex";
+            }
+
+            toggleBtn.addEventListener("click", function(){
+                const isCollapsed = content.classList.contains("is-collapsed");
+
+                if(isCollapsed){
+                    content.classList.remove("is-collapsed");
+                    toggleBtn.innerHTML = '접어보기 <i class="bi bi-chevron-up"></i>';
+                } else {
+                    content.classList.add("is-collapsed");
+                    toggleBtn.innerHTML = '펼쳐보기 <i class="bi bi-chevron-down"></i>';
+                }
+            });
+        });
+    }
+
+    function initReviewImageModal(){
+        const modal = document.getElementById("reviewImageModal");
+        const modalImg = document.getElementById("reviewImageModalImg");
+        const counter = document.getElementById("reviewImageCounter");
+        const closeBtn = document.getElementById("reviewImageModalClose");
+        const prevBtn = document.getElementById("reviewImagePrev");
+        const nextBtn = document.getElementById("reviewImageNext");
+
+        if(modal == null || modalImg == null || counter == null || closeBtn == null || prevBtn == null || nextBtn == null){
+            return;
+        }
+
+        let currentImages = [];
+        let currentIndex = 0;
+
+        document.querySelectorAll(".review-photo-item").forEach(function(button){
+            button.addEventListener("click", function(){
+                const reviewId = this.dataset.reviewId;
+                const startIndex = Number(this.dataset.imgIndex);
+
+                currentImages = getReviewImages(reviewId);
+                currentIndex = startIndex;
+
+                openReviewImageModal();
+            });
+        });
+
+        closeBtn.addEventListener("click", closeReviewImageModal);
+
+        const dim = modal.querySelector(".review-image-modal-dim");
+
+        if(dim != null){
+            dim.addEventListener("click", closeReviewImageModal);
+        }
+
+        prevBtn.addEventListener("click", function(){
+            if(currentIndex <= 0){
+                return;
+            }
+
+            currentIndex--;
+            renderReviewImage();
+        });
+
+        nextBtn.addEventListener("click", function(){
+            if(currentIndex >= currentImages.length - 1){
+                return;
+            }
+
+            currentIndex++;
+            renderReviewImage();
+        });
+
+        document.addEventListener("keydown", function(event){
+            if(!modal.classList.contains("active")){
+                return;
+            }
+
+            if(event.key === "Escape"){
+                closeReviewImageModal();
+            }
+
+            if(event.key === "ArrowLeft"){
+                prevBtn.click();
+            }
+
+            if(event.key === "ArrowRight"){
+                nextBtn.click();
+            }
+        });
+
+        function getReviewImages(reviewId){
+            const dataList = document.querySelectorAll(
+                '.review-modal-data[data-review-id="' + reviewId + '"]'
+            );
+
+            return Array.from(dataList)
+                .sort(function(a, b){
+                    return Number(a.dataset.imgIndex) - Number(b.dataset.imgIndex);
+                })
+                .map(function(item){
+                    return item.dataset.imgUrl;
+                });
+        }
+
+        function openReviewImageModal(){
+            if(currentImages.length === 0){
+                return;
+            }
+
+            modal.classList.add("active");
+            document.body.style.overflow = "hidden";
+
+            renderReviewImage();
+        }
+
+        function closeReviewImageModal(){
+            modal.classList.remove("active");
+            document.body.style.overflow = "";
+            modalImg.src = "";
+        }
+
+        function renderReviewImage(){
+            modalImg.src = currentImages[currentIndex];
+            counter.textContent = (currentIndex + 1) + " / " + currentImages.length;
+
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === currentImages.length - 1;
+        }
     }
 
 });

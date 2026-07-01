@@ -14,6 +14,11 @@ public interface NoticeDAO {
     int deleteNotice(int notice_id);
     List<NoticeVO> getNoticeListByKeyword(@Param("keyword") String keyword,
                                           @Param("size") Integer size,
-                                          @Param("offset") int offset);
-    int getNoticeListCountByKeyword(@Param("keyword") String keyword);
+                                          @Param("offset") int offset,
+                                          @Param("startDate") String startDate,
+                                          @Param("endDate") String endDate,
+                                          @Param("sort") String sort);
+    int getNoticeListCountByKeyword(@Param("keyword") String keyword,
+                                    @Param("startDate") String startDate,
+                                    @Param("endDate") String endDate);
 }
