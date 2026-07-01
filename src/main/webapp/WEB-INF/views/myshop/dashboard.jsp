@@ -215,9 +215,14 @@
                         <small>P</small>
                     </strong>
                 </div>  
-                <div class="dashboard-benefit-item coupon">
+                <div class="dashboard-benefit-item coupon"
+                    onclick="location.href='/myshop/coupons'"
+                    style="cursor:pointer;">
                     <span>쿠폰</span>
-                    <strong>${empty couponCount ? 0 : couponCount}<small>장</small></strong>
+                    <strong>
+                        ${empty couponCount ? 0 : couponCount}
+                        <small>장</small>
+                    </strong>
                 </div>
             </div>
         </section>
