@@ -21,4 +21,6 @@ public class QnaVO {
     private String nick_name;
     private String created_at_text;
     private String option_name;
+    private String qna_type;
+    private int is_private;
 }

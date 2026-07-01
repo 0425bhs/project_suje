@@ -1,9 +1,13 @@
 package com.kh.suje.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
@@ -24,46 +28,30 @@ public class ReportController {
     // private final HttpSession session;
 
     private final ReportDAO reportDao;
-    private final ProductDAO productDao;
-    private final ReviewDAO reviewDao;
-    private final QnaDAO qnaDao;
 
-    @GetMapping("/report_form.do")
-    public String reportForm(HttpSession session, Model model, String target_type, int target_id) {
+    @PostMapping("/seller_qna_report.do")
+    @ResponseBody
+    public Map<String, String> reportFormFin(HttpSession session, Model model, ReportVO report) {
+        Map<String, String> map = new HashMap<>();
+        String result = "empty";
+
         UserVO loginUser = (UserVO)session.getAttribute("user");
-
         if (loginUser == null) {
-            return "redirect:/login.do";
-        }
+            result = "login";
 
-        if ("PRODUCT".equals(target_type)) {
-            ProductVO product = productDao.product_one(target_id);
-            model.addAttribute("product", product);
-        } else if ("REVIEW".equals(target_type)) {
-            ReviewVO review = reviewDao.getReviewById(target_id);
-            model.addAttribute("review", review);
-        } else if ("QNA".equals(target_type)) {
-            QnaVO qna = qnaDao.getQnaById(target_id);
-            model.addAttribute("qna", qna);
-        }
-
-        model.addAttribute("target_type", target_type);
-        
-        return "/report/report_form";
-    }
-
-    @PostMapping("/report_form.do")
-    public String reportFormFin(HttpSession session, Model model, ReportVO report) {
-        UserVO loginUser = (UserVO)session.getAttribute("user");
-
-        if (loginUser == null) {
-            return "redirect:/login.do";
+            return map;
         }
         
         int user_id = loginUser.getUser_id();
         report.setReporter_id(user_id);
-        reportDao.addReport(report);
 
-        return "/report/report_form";
+        int res = reportDao.addReport(report);
+        if (res > 0) {
+            result = "success";
+        }
+
+        map.put("result", result);
+
+        return map;
     }
 }
