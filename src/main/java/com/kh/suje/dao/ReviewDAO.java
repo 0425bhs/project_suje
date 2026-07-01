@@ -20,15 +20,13 @@ public interface ReviewDAO {
     List<ReviewVO> getMyReviewList(int user_id);
     List<ReviewVO> getLiveReviewList();
 
-    List<ReviewVO> getReviewListByKeyword(@Param("status") String status,
-                                          @Param("keyword") String keyword,
+    List<ReviewVO> getReviewListByKeyword(@Param("keyword") String keyword,
                                           @Param("size") Integer size,
                                           @Param("offset") int offset,
                                           @Param("startDate") String startDate,
                                           @Param("endDate") String endDate,
                                           @Param("sort") String sort);
-    int getReviewListCountByKeyword(@Param("status") String status,
-                                    @Param("keyword") String keyword,
+    int getReviewListCountByKeyword(@Param("keyword") String keyword,
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
 

@@ -149,6 +149,40 @@
     color: #22854f;
 }
 
+.admin-detail-status-badge.approved,
+.admin-detail-status-badge.processed,
+.admin-detail-status-badge.answered,
+.admin-detail-status-badge.paid,
+.admin-detail-status-badge.delivered,
+.admin-detail-status-badge.public {
+    background: #dff5e7;
+    color: #22854f;
+}
+
+.admin-detail-status-badge.pending,
+.admin-detail-status-badge.waiting,
+.admin-detail-status-badge.preparing {
+    background: #fff3d8;
+    color: #b36a00;
+}
+
+.admin-detail-status-badge.shipping {
+    background: #e4f0ff;
+    color: #2467b2;
+}
+
+.admin-detail-status-badge.rejected,
+.admin-detail-status-badge.cancelled {
+    background: #ffe7df;
+    color: #d6452f;
+}
+
+.admin-detail-status-badge.hidden,
+.admin-detail-status-badge.private {
+    background: #eceff3;
+    color: #68707a;
+}
+
 .admin-detail-status-badge.suspended {
     background: #ffe7df;
     color: #d6452f;

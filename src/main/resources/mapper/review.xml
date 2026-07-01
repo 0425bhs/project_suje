@@ -103,10 +103,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN products p ON r.product_id = p.product_id
         JOIN users u ON r.user_id = u.user_id
         <where>
-            <if test="status != null and status != 'all'">
-                r.status = #{status}
-            </if>
-
             <if test="keyword != null and keyword != ''">
                 AND (
                     p.name LIKE CONCAT("%", #{keyword}, "%")
@@ -144,10 +140,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN products p ON r.product_id = p.product_id
         JOIN users u ON r.user_id = u.user_id
         <where>
-            <if test="status != null and status != 'all'">
-                r.status = #{status}
-            </if>
-
             <if test="keyword != null and keyword != ''">
                 AND (
                     p.name LIKE CONCAT("%", #{keyword}, "%")

@@ -29,14 +29,35 @@
                     .then(res => res.json())
                     .then(data => {
                         const report = data.report;
+                        const statusLabels = {
+                            PENDING: "처리대기",
+                            PROCESSED: "처리완료",
+                            REJECTED: "반려"
+                        };
+                        const targetLabels = {
+                            PRODUCT: "상품",
+                            REVIEW: "후기",
+                            QNA: "문의"
+                        };
+                        const statusKey = String(report.status || "").toUpperCase();
+                        const targetKey = String(report.target_type || "").toUpperCase();
+                        const statusLabel = statusLabels[statusKey] || report.status;
+                        const targetLabel = targetLabels[targetKey] || report.target_type;
 
+                        setDetailTitleBlock(
+                            "reportDetailTitle",
+                            "reportDetailMeta",
+                            "신고 #" + (report.report_id || "-"),
+                            (targetLabel || "-") + " #" + (report.target_id || "-") + " · " + (report.reporter_name || "-")
+                        );
+                        setDetailStatusBadge("reportDetailStatusBadge", report.status, statusLabel);
                         setText("reportId", report.report_id);
-                        setText("targetType", report.target_type);
+                        setText("targetType", targetLabel);
                         setText("targetId", report.target_id);
                         setText("reason", report.reason);
                         setText("reporterId", report.reporter_id);
                         setText("reporterName", report.reporter_name);
-                        setText("status", report.status);
+                        setText("status", statusLabel);
                         setText("createdAt", report.created_at);
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     });
@@ -52,16 +73,16 @@
         <jsp:param name="sidebarTitle" value="신고 관리" />
     </jsp:include>
 
-    <main class="admin-main">
+    <main class="admin-main admin-main-fixed">
         <header class="admin-main-header">
             <div>
                 <span class="admin-page-label">REPORT MANAGEMENT</span>
                 <h1>신고 관리</h1>
-                <p>접수된 신고 내용을 확인하고 처리 상태를 관리하기 위한 기본 화면입니다.</p>
             </div>
         </header>
 
-        <div class="admin-filter-box admin-filter-modern">
+        <div class="admin-fixed-list-layout">
+            <div class="admin-filter-box admin-filter-modern">
             <form class="admin-filter-form" action="/admin/reports" method="get">
                 <div class="admin-filter-main-row">
                     <div class="admin-filter-tabs">
@@ -201,13 +222,32 @@
                 <div class="admin-detail-panel-inner">
                     <div class="admin-detail-content">
                         <div class="admin-detail-head">
-                            <div>
-                                <span class="admin-page-label">REPORT DETAIL</span>
-                                <h2 id="reportDetailTitle">신고 상세</h2>
-                            </div>
-                            <button type="button" class="admin-detail-close" aria-label="닫기">&times;</button>
-                        </div>
-                        <dl class="admin-detail-grid">
+                                        <div class="admin-detail-head-main">
+                                            <div class="admin-detail-title-block">
+                                                <div class="admin-detail-title-line">
+                                                    <h2 id="reportDetailTitle">신고 상세</h2>
+                                                    <span class="admin-detail-status-badge" id="reportDetailStatusBadge">-</span>
+                                                </div>
+                                                <p id="reportDetailMeta">목록에서 신고를 선택하세요.</p>
+                                            </div>
+                                            <div class="admin-detail-toolbar">
+                                                <button type="button" class="admin-detail-close"
+                                                    aria-label="닫기">&times;</button>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tabs">
+                                            <button type="button" class="admin-detail-tab active" data-detail-tab="info">
+                                                정보
+                                            </button>
+                                            <button type="button" class="admin-detail-tab" data-detail-tab="manage">
+                                                관리
+                                            </button>
+                                        </div>
+                                    </div>
+                        <div class="admin-detail-tab-body">
+                                        <div class="admin-detail-tab-panel active" data-detail-panel="info">
+                                            <div class="admin-detail-info-scroll">
+                                                <dl class="admin-detail-grid">
                             <div>
                                 <dt>신고번호</dt>
                                 <dd id="reportId">-</dd>
@@ -241,6 +281,44 @@
                                 <dd id="createdAt">-</dd>
                             </div>
                         </dl>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tab-panel" data-detail-panel="manage">
+                                            <div class="admin-detail-manage">
+                                                <div class="admin-detail-manage-section admin-detail-status-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>상태 관리</h3>
+                                                    </div>
+                                                    <div class="admin-detail-setting-row">
+                                                        <label class="admin-detail-control">
+                                                            <span>신고 상태</span>
+                                                            <select class="admin-filter-control admin-detail-status-control">
+                                                            <option value="PENDING">처리대기</option>
+                                                            <option value="PROCESSED">처리완료</option>
+                                                            <option value="REJECTED">반려</option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">변경 취소</button>
+                                                        <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>관리 메모</h3>
+                                                    </div>
+                                                    <textarea class="admin-detail-memo" rows="5"
+                                                        placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">메모 저장</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                     </div>
                 </div>
             </aside>
@@ -277,6 +355,7 @@
             </div>
             <span class="admin-filter-count">전체 ${totalCount}건</span>
         </div>
+            </div>
     </main>
 </div>
 </body>

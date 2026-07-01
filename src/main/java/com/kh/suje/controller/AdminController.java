@@ -215,26 +215,21 @@ public class AdminController {
     }
 
     @GetMapping("/admin/reviews")
-    public String reviews(Model model, String status, String keyword,
+    public String reviews(Model model, String keyword,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
-        if (!"public".equals(status) && !"private".equals(status)) {
-            status = "all";
-        }
-
         if (!"oldest".equals(sort) && !"rating".equals(sort)) {
             sort = "latest";
         }
 
-        int totalCount = reviewDao.getReviewListCountByKeyword(status, keyword, startDate, endDate);
+        int totalCount = reviewDao.getReviewListCountByKeyword(keyword, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
-        List<ReviewVO> reviewList = reviewDao.getReviewListByKeyword(status, keyword,
+        List<ReviewVO> reviewList = reviewDao.getReviewListByKeyword(keyword,
                                                                      pagination.getSize(),
                                                                      pagination.getOffset(),
                                                                      startDate, endDate,
                                                                      sort);
 
-        model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);

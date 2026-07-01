@@ -33,7 +33,21 @@
                     .then(res => res.json())
                     .then(data => {
                         const seller = data.seller;
+                        const statusLabels = {
+                            PENDING: "승인대기",
+                            APPROVED: "승인완료",
+                            REJECTED: "반려"
+                        };
+                        const statusKey = String(seller.status || "").toUpperCase();
+                        const statusLabel = statusLabels[statusKey] || seller.status;
 
+                        setDetailTitleBlock(
+                            "sellerDetailTitle",
+                            "sellerDetailMeta",
+                            seller.company_name || "판매자 상세",
+                            (seller.representative_name || "-") + " · 신청번호 #" + (seller.seller_id || "-")
+                        );
+                        setDetailStatusBadge("sellerDetailStatusBadge", seller.status, statusLabel);
                         setText("sellerId", seller.seller_id);
                         setText("userId", seller.user_id);
                         setText("companyName", seller.company_name);
@@ -41,7 +55,7 @@
                         setText("businessNumber", seller.business_number);
                         setText("openingDate", seller.opening_date);
                         setText("businessAddress", seller.business_address);
-                        setText("status", seller.status);
+                        setText("status", statusLabel);
                         setText("createdAt", seller.created_at);
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     })
@@ -58,15 +72,15 @@
             <jsp:param name="sidebarTitle" value="판매자 관리" />
         </jsp:include>
 
-        <main class="admin-main">
+        <main class="admin-main admin-main-fixed">
             <header class="admin-main-header">
                 <div>
                     <span class="admin-page-label">SELLER MANAGEMENT</span>
                     <h1>판매자 관리</h1>
-                    <p>판매자 신청 정보와 현재 상태를 확인합니다.</p>
                 </div>
             </header>
 
+            <div class="admin-fixed-list-layout">
             <div class="admin-filter-box admin-filter-modern">
                 <form class="admin-filter-form" action="/admin/sellers" method="get">
                     <div class="admin-filter-main-row">
@@ -213,14 +227,32 @@
                     <div class="admin-detail-panel-inner">
                         <div class="admin-detail-content">
                             <div class="admin-detail-head">
-                                <div>
-                                    <span class="admin-page-label">SELLER DETAIL</span>
-                                    <h2 id="sellerDetailTitle">판매자 상세</h2>
-                                </div>
-                                <button type="button" class="admin-detail-close"
-                                    aria-label="닫기">&times;</button>
-                            </div>
-                            <dl class="admin-detail-grid">
+                                        <div class="admin-detail-head-main">
+                                            <div class="admin-detail-title-block">
+                                                <div class="admin-detail-title-line">
+                                                    <h2 id="sellerDetailTitle">판매자 상세</h2>
+                                                    <span class="admin-detail-status-badge" id="sellerDetailStatusBadge">-</span>
+                                                </div>
+                                                <p id="sellerDetailMeta">목록에서 판매자를 선택하세요.</p>
+                                            </div>
+                                            <div class="admin-detail-toolbar">
+                                                <button type="button" class="admin-detail-close"
+                                                    aria-label="닫기">&times;</button>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tabs">
+                                            <button type="button" class="admin-detail-tab active" data-detail-tab="info">
+                                                정보
+                                            </button>
+                                            <button type="button" class="admin-detail-tab" data-detail-tab="manage">
+                                                관리
+                                            </button>
+                                        </div>
+                                    </div>
+                            <div class="admin-detail-tab-body">
+                                        <div class="admin-detail-tab-panel active" data-detail-panel="info">
+                                            <div class="admin-detail-info-scroll">
+                                                <dl class="admin-detail-grid">
                                 <div>
                                     <dt>신청번호</dt>
                                     <dd id="sellerId">-</dd>
@@ -258,6 +290,44 @@
                                     <dd id="createdAt">-</dd>
                                 </div>
                             </dl>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tab-panel" data-detail-panel="manage">
+                                            <div class="admin-detail-manage">
+                                                <div class="admin-detail-manage-section admin-detail-status-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>상태 관리</h3>
+                                                    </div>
+                                                    <div class="admin-detail-setting-row">
+                                                        <label class="admin-detail-control">
+                                                            <span>판매자 상태</span>
+                                                            <select class="admin-filter-control admin-detail-status-control">
+                                                            <option value="PENDING">승인대기</option>
+                                                            <option value="APPROVED">승인완료</option>
+                                                            <option value="REJECTED">반려</option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">변경 취소</button>
+                                                        <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>관리 메모</h3>
+                                                    </div>
+                                                    <textarea class="admin-detail-memo" rows="5"
+                                                        placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">메모 저장</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                         </div>
                     </div>
                 </aside>
@@ -293,6 +363,7 @@
                     </c:if>
                 </div>
                 <span class="admin-filter-count">전체 ${totalCount}건</span>
+            </div>
             </div>
         </main>
     </div>

@@ -26,6 +26,32 @@ function setText(id, value) {
     target.textContent = text.trim() ? text : "-";
 }
 
+// 상세 패널 제목 영역에 제목과 보조 정보를 출력
+function setDetailTitleBlock(titleId, metaId, title, meta) {
+    setText(titleId, title);
+    setText(metaId, meta);
+}
+
+// 상세 패널 제목 옆 상태 배지 출력
+function setDetailStatusBadge(id, status, label) {
+    const badge = document.getElementById(id);
+
+    if (!badge) {
+        return;
+    }
+
+    const statusText = status == null ? "" : String(status);
+    const statusClass = statusText.toLowerCase();
+
+    badge.className = "admin-detail-status-badge";
+
+    if (statusClass) {
+        badge.classList.add(statusClass);
+    }
+
+    setText(id, label || statusText);
+}
+
 // 상세 검색 조건 창이 열려있고 상세 검색 버튼이 활성화되어 있으면
 // 상세 검색 조건 창을 닫고 상세 검색 버튼을 비활성화
 function closeAdminAdvancedFilters() {
@@ -161,6 +187,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const isOpen = filter.classList.toggle("is-open");
 
         toggle.classList.toggle("is-open", isOpen);
+    });
+});
+
+// 상세 패널 정보/관리 탭 전환 이벤트 부여(확인필요)
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".admin-detail-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+            const detailPanel = tab.closest(".admin-detail-panel");
+            const tabName = tab.dataset.detailTab;
+
+            if (!detailPanel || !tabName) {
+                return;
+            }
+
+            detailPanel.querySelectorAll(".admin-detail-tab").forEach((item) => {
+                item.classList.toggle("active", item === tab);
+            });
+
+            detailPanel.querySelectorAll(".admin-detail-tab-panel").forEach((panel) => {
+                panel.classList.toggle("active", panel.dataset.detailPanel === tabName);
+            });
+        });
     });
 });
 

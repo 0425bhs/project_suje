@@ -30,6 +30,12 @@
                     .then(data => {
                         const review = data.review;
 
+                        setDetailTitleBlock(
+                            "reviewDetailTitle",
+                            "reviewDetailMeta",
+                            "후기 #" + (review.review_id || "-"),
+                            "평점 " + (review.rating || "-") + "점 · 작성자 #" + (review.user_id || "-")
+                        );
                         setText("reviewId", review.review_id);
                         setText("userId", review.user_id);
                         setText("productId", review.product_id);
@@ -37,7 +43,6 @@
                         setText("rating", review.rating);
                         setText("content", review.content);
                         setText("createdAt", review.created_at);
-                        setText("status", review.status);
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     })
                 })
@@ -52,24 +57,18 @@
         <jsp:param name="sidebarTitle" value="후기 관리" />
     </jsp:include>
 
-    <main class="admin-main">
+    <main class="admin-main admin-main-fixed">
         <header class="admin-main-header">
             <div>
                 <span class="admin-page-label">REVIEW MANAGEMENT</span>
                 <h1>후기 관리</h1>
-                <p>상품 후기를 조회하고 상세 내용을 확인합니다.</p>
             </div>
         </header>
         
-        <div class="admin-filter-box admin-filter-modern">
+        <div class="admin-fixed-list-layout">
+            <div class="admin-filter-box admin-filter-modern">
             <form class="admin-filter-form" action="/admin/reviews" method="get">
                 <div class="admin-filter-main-row">
-                    <div class="admin-filter-tabs">
-                        <a href="/admin/reviews?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
-                        <a href="/admin/reviews?status=public&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'public' ? 'active' : ''}">공개</a>
-                        <a href="/admin/reviews?status=private&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'private' ? 'active' : ''}">비공개</a>
-                    </div>
-
                     <div class="admin-search-wrap">
                         <input type="text" id="keyword" class="admin-search" name="keyword"
                             placeholder="상품명, 작성자, 내용 검색" value="${keyword}">
@@ -90,14 +89,6 @@
                 </div>
 
                 <div class="admin-filter-detail-row">
-                    <label class="admin-filter-field">
-                        <span>상태</span>
-                        <select class="admin-filter-control" name="status">
-                            <option value="all" ${status eq 'all' ? 'selected' : ''}>전체</option>
-                            <option value="public" ${status eq 'public' ? 'selected' : ''}>공개</option>
-                            <option value="private" ${status eq 'private' ? 'selected' : ''}>비공개</option>
-                        </select>
-                    </label>
                     <label class="admin-filter-field admin-filter-date-range">
                         <span>작성일 범위</span>
                         <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
@@ -107,24 +98,17 @@
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
-                <c:if test="${status ne 'all' || not empty keyword || not empty startDate || not empty endDate}">
+                <c:if test="${not empty keyword || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
                         <span class="admin-filter-applied-label">적용된 조건:</span>
-                        <c:if test="${status ne 'all'}">
-                            <a class="admin-filter-chip"
-                                href="/admin/reviews?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
-                                상태: ${status eq 'public' ? '공개' : '비공개'}
-                                <span aria-hidden="true">&times;</span>
-                            </a>
-                        </c:if>
                         <c:if test="${not empty keyword}">
-                            <a class="admin-filter-chip" href="/admin/reviews?status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reviews?startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 검색어: ${keyword}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
                         <c:if test="${not empty startDate || not empty endDate}">
-                            <a class="admin-filter-chip" href="/admin/reviews?status=${status}&keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
                                 작성일: ${startDate} ~ ${endDate}
                                 <span aria-hidden="true">&times;</span>
                             </a>
@@ -140,7 +124,16 @@
         <section class="admin-master-detail admin-master-detail-filtered is-collapsed" id="adminMasterDetail">
             <div class="admin-card admin-list-panel">
                 <div class="admin-table-wrap">
-                    <table class="admin-table">
+                    <table class="admin-table admin-review-table">
+                        <colgroup>
+                            <col class="review-id-col">
+                            <col class="review-product-col">
+                            <col class="review-user-col">
+                            <col class="review-rating-col">
+                            <col class="review-content-col">
+                            <col class="review-date-col">
+                            <col class="review-action-col">
+                        </colgroup>
                         <thead>
                         <tr>
                             <th>후기번호</th>
@@ -148,7 +141,6 @@
                             <th>작성자</th>
                             <th>평점</th>
                             <th>내용</th>
-                            <th>상태</th>
                             <th>작성일</th>
                             <th>관리</th>
                         </tr>
@@ -160,20 +152,7 @@
                             <td class="left admin-highlight-target"><strong>${review.product_name}</strong></td>
                             <td class="admin-highlight-target">${review.user_name}</td>
                             <td>${review.rating}</td>
-                            <td class="left admin-highlight-target">${review.content}</td>
-
-                            <c:choose>
-
-                            <c:when test="${review.status eq 'public'}">
-                            <td><span class="admin-status active">공개</span></td>
-                            </c:when>
-
-                            <c:when test="${review.status eq 'private'}">
-                            <td><span class="admin-status active">비공개</span></td>
-                            </c:when>
-
-                            </c:choose>
-
+                            <td class="left admin-highlight-target review-content-cell">${review.content}</td>
                             <td>${review.created_at}</td>
                             <td class="admin-table-actions">
                                 <button type="button" class="admin-btn light">상세</button>
@@ -190,13 +169,31 @@
                 <div class="admin-detail-panel-inner">
                     <div class="admin-detail-content">
                         <div class="admin-detail-head">
-                            <div>
-                                <span class="admin-page-label">REVIEW DETAIL</span>
-                                <h2 id="reviewDetailTitle">후기 상세</h2>
-                            </div>
-                            <button type="button" class="admin-detail-close" aria-label="닫기">&times;</button>
-                        </div>
-                        <dl class="admin-detail-grid">
+                                        <div class="admin-detail-head-main">
+                                            <div class="admin-detail-title-block">
+                                                <div class="admin-detail-title-line">
+                                                    <h2 id="reviewDetailTitle">후기 상세</h2>
+                                                </div>
+                                                <p id="reviewDetailMeta">목록에서 후기를 선택하세요.</p>
+                                            </div>
+                                            <div class="admin-detail-toolbar">
+                                                <button type="button" class="admin-detail-close"
+                                                    aria-label="닫기">&times;</button>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tabs">
+                                            <button type="button" class="admin-detail-tab active" data-detail-tab="info">
+                                                정보
+                                            </button>
+                                            <button type="button" class="admin-detail-tab" data-detail-tab="manage">
+                                                관리
+                                            </button>
+                                        </div>
+                                    </div>
+                        <div class="admin-detail-tab-body">
+                                        <div class="admin-detail-tab-panel active" data-detail-panel="info">
+                                            <div class="admin-detail-info-scroll">
+                                                <dl class="admin-detail-grid">
                             <div>
                                 <dt>후기번호</dt>
                                 <dd id="reviewId">-</dd>
@@ -225,11 +222,25 @@
                                 <dt>작성일</dt>
                                 <dd id="createdAt">-</dd>
                             </div>
-                            <div>
-                                <dt>상태</dt>
-                                <dd id="status">-</dd>
-                            </div>
                         </dl>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tab-panel" data-detail-panel="manage">
+                                            <div class="admin-detail-manage">
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>관리 메모</h3>
+                                                    </div>
+                                                    <textarea class="admin-detail-memo" rows="5"
+                                                        placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">메모 저장</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                     </div>
                 </div>
             </aside>
@@ -239,7 +250,7 @@
             <div class="admin-pagination-pages">
                 <c:if test="${pagination.totalPage > 0}">
                     <c:if test="${pagination.hasPrev}">
-                        <a href="/admin/reviews?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                        <a href="/admin/reviews?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                             이전
                         </a>
                     </c:if>
@@ -248,14 +259,14 @@
                     </c:if>
 
                     <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                        <a href="/admin/reviews?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                        <a href="/admin/reviews?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                             class="${pagination.page == i ? 'active' : ''}">
                             ${i}
                         </a>
                     </c:forEach>
 
                     <c:if test="${pagination.hasNext}">
-                        <a href="/admin/reviews?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                        <a href="/admin/reviews?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                             다음
                         </a>
                     </c:if>
@@ -266,6 +277,7 @@
             </div>
             <span class="admin-filter-count">전체 ${totalCount}건</span>
         </div>
+            </div>
         
     </main>
 </div>

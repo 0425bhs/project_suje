@@ -33,14 +33,37 @@
                                 .then(res => res.json())
                                 .then(data => {
                                     const inquiry = data.inquiry;
+                                    const statusLabels = {
+                                        WAITING: "미답변",
+                                        ANSWERED: "답변완료"
+                                    };
+                                    const typeLabels = {
+                                        SERVICE: "서비스 이용",
+                                        ACCOUNT: "회원/계정",
+                                        PAYMENT: "결제 오류",
+                                        SELLER: "판매자 센터",
+                                        POLICY: "운영 정책",
+                                        ETC: "기타"
+                                    };
+                                    const statusKey = String(inquiry.status || "").toUpperCase();
+                                    const typeKey = String(inquiry.inquiry_type || "").toUpperCase();
+                                    const statusLabel = statusLabels[statusKey] || inquiry.status;
+                                    const typeLabel = typeLabels[typeKey] || inquiry.inquiry_type;
 
+                                    setDetailTitleBlock(
+                                        "inquiryDetailTitle",
+                                        "inquiryDetailMeta",
+                                        inquiry.title || "문의 상세",
+                                        (inquiry.user_name || "-") + " · " + (typeLabel || "-")
+                                    );
+                                    setDetailStatusBadge("inquiryDetailStatusBadge", inquiry.status, statusLabel);
                                     setText("inquiryId", inquiry.inquiry_id);
                                     setText("userId", inquiry.user_id);
                                     setText("userName", inquiry.user_name);
-                                    setText("inquiryType", inquiry.inquiry_type);
+                                    setText("inquiryType", typeLabel);
                                     setText("title", inquiry.title);
                                     setText("content", inquiry.content);
-                                    setText("status", inquiry.status);
+                                    setText("status", statusLabel);
                                     setText("createdAt", inquiry.created_at);
                                     highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                                 })
@@ -57,16 +80,16 @@
                     <jsp:param name="sidebarTitle" value="고객센터 문의 관리" />
                 </jsp:include>
 
-                <main class="admin-main">
+                <main class="admin-main admin-main-fixed">
                     <header class="admin-main-header">
                         <div>
                             <span class="admin-page-label">INQUIRY MANAGEMENT</span>
                             <h1>고객센터 문의 관리</h1>
-                            <p>회원, 주문, 결제, 판매자 관련 문의를 확인하고 답변합니다.</p>
                         </div>
                     </header>
 
-                    <div class="admin-filter-box admin-filter-modern">
+                    <div class="admin-fixed-list-layout">
+            <div class="admin-filter-box admin-filter-modern">
                         <form class="admin-filter-form" action="/admin/inquiries" method="get">
                             <div class="admin-filter-main-row">
                                 <div class="admin-filter-tabs">
@@ -209,14 +232,32 @@
                             <div class="admin-detail-panel-inner">
                                 <div class="admin-detail-content">
                                     <div class="admin-detail-head">
-                                        <div>
-                                            <span class="admin-page-label">INQUIRY DETAIL</span>
-                                            <h2 id="inquiryDetailTitle">문의 상세</h2>
+                                        <div class="admin-detail-head-main">
+                                            <div class="admin-detail-title-block">
+                                                <div class="admin-detail-title-line">
+                                                    <h2 id="inquiryDetailTitle">문의 상세</h2>
+                                                    <span class="admin-detail-status-badge" id="inquiryDetailStatusBadge">-</span>
+                                                </div>
+                                                <p id="inquiryDetailMeta">목록에서 문의를 선택하세요.</p>
+                                            </div>
+                                            <div class="admin-detail-toolbar">
+                                                <button type="button" class="admin-detail-close"
+                                                    aria-label="닫기">&times;</button>
+                                            </div>
                                         </div>
-                                        <button type="button" class="admin-detail-close"
-                                            aria-label="닫기">&times;</button>
+                                        <div class="admin-detail-tabs">
+                                            <button type="button" class="admin-detail-tab active" data-detail-tab="info">
+                                                정보
+                                            </button>
+                                            <button type="button" class="admin-detail-tab" data-detail-tab="manage">
+                                                관리
+                                            </button>
+                                        </div>
                                     </div>
-                                    <dl class="admin-detail-grid">
+                                    <div class="admin-detail-tab-body">
+                                        <div class="admin-detail-tab-panel active" data-detail-panel="info">
+                                            <div class="admin-detail-info-scroll">
+                                                <dl class="admin-detail-grid">
                                         <div>
                                             <dt>문의 번호</dt>
                                             <dd id="inquiryId">-</dd>
@@ -250,6 +291,43 @@
                                             <dd id="createdAt">-</dd>
                                         </div>
                                     </dl>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tab-panel" data-detail-panel="manage">
+                                            <div class="admin-detail-manage">
+                                                <div class="admin-detail-manage-section admin-detail-status-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>상태 관리</h3>
+                                                    </div>
+                                                    <div class="admin-detail-setting-row">
+                                                        <label class="admin-detail-control">
+                                                            <span>문의 상태</span>
+                                                            <select class="admin-filter-control admin-detail-status-control">
+                                                            <option value="WAITING">미답변</option>
+                                                            <option value="ANSWERED">답변완료</option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">변경 취소</button>
+                                                        <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>관리 메모</h3>
+                                                    </div>
+                                                    <textarea class="admin-detail-memo" rows="5"
+                                                        placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">메모 저장</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </aside>
@@ -288,6 +366,7 @@
                         </div>
                         <span class="admin-filter-count">전체 ${totalCount}건</span>
                     </div>
+            </div>
                 </main>
             </div>
         </body>

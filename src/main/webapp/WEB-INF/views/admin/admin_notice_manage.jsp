@@ -30,6 +30,12 @@
                     .then(data => {
                         const notice = data.notice;
 
+                        setDetailTitleBlock(
+                            "noticeDetailTitle",
+                            "noticeDetailMeta",
+                            notice.title || "공지사항 상세",
+                            "공지번호 #" + (notice.notice_id || "-")
+                        );
                         setText("noticeId", notice.notice_id);
                         setText("title", notice.title);
                         setText("content", notice.content);
@@ -49,12 +55,11 @@
         <jsp:param name="sidebarTitle" value="공지사항 관리" />
     </jsp:include>
 
-    <main class="admin-main">
+    <main class="admin-main admin-main-fixed">
         <header class="admin-main-header">
             <div>
                 <span class="admin-page-label">NOTICE MANAGEMENT</span>
                 <h1>공지사항 관리</h1>
-                <p>쇼핑몰 공지사항을 확인하고 관리합니다.</p>
             </div>
             <div class="admin-header-actions">
                 <a href="/notice_form.do" class="admin-btn">공지 등록</a>
@@ -62,7 +67,8 @@
             </div>
         </header>
 
-        <div class="admin-filter-box admin-filter-modern">
+        <div class="admin-fixed-list-layout">
+            <div class="admin-filter-box admin-filter-modern">
             <form class="admin-filter-form" action="/admin/notices" method="get">
                 <div class="admin-filter-main-row">
                     <div class="admin-filter-tabs">
@@ -162,13 +168,31 @@
                 <div class="admin-detail-panel-inner">
                     <div class="admin-detail-content">
                         <div class="admin-detail-head">
-                            <div>
-                                <span class="admin-page-label">NOTICE DETAIL</span>
-                                <h2 id="noticeDetailTitle">공지사항 상세</h2>
-                            </div>
-                            <button type="button" class="admin-detail-close" aria-label="닫기">&times;</button>
-                        </div>
-                        <dl class="admin-detail-grid">
+                                        <div class="admin-detail-head-main">
+                                            <div class="admin-detail-title-block">
+                                                <div class="admin-detail-title-line">
+                                                    <h2 id="noticeDetailTitle">공지사항 상세</h2>
+                                                </div>
+                                                <p id="noticeDetailMeta">목록에서 공지사항을 선택하세요.</p>
+                                            </div>
+                                            <div class="admin-detail-toolbar">
+                                                <button type="button" class="admin-detail-close"
+                                                    aria-label="닫기">&times;</button>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tabs">
+                                            <button type="button" class="admin-detail-tab active" data-detail-tab="info">
+                                                정보
+                                            </button>
+                                            <button type="button" class="admin-detail-tab" data-detail-tab="manage">
+                                                관리
+                                            </button>
+                                        </div>
+                                    </div>
+                        <div class="admin-detail-tab-body">
+                                        <div class="admin-detail-tab-panel active" data-detail-panel="info">
+                                            <div class="admin-detail-info-scroll">
+                                                <dl class="admin-detail-grid">
                             <div>
                                 <dt>공지번호</dt>
                                 <dd id="noticeId">-</dd>
@@ -190,6 +214,43 @@
                                 <dd id="updatedAt">-</dd>
                             </div>
                         </dl>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tab-panel" data-detail-panel="manage">
+                                            <div class="admin-detail-manage">
+                                                <div class="admin-detail-manage-section admin-detail-status-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>상태 관리</h3>
+                                                    </div>
+                                                    <div class="admin-detail-setting-row">
+                                                        <label class="admin-detail-control">
+                                                            <span>공지 상태</span>
+                                                            <select class="admin-filter-control admin-detail-status-control">
+                                                            <option value="ACTIVE">게시중</option>
+                                                            <option value="HIDDEN">숨김</option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">변경 취소</button>
+                                                        <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>관리 메모</h3>
+                                                    </div>
+                                                    <textarea class="admin-detail-memo" rows="5"
+                                                        placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">메모 저장</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                     </div>
                 </div>
             </aside>
@@ -226,6 +287,7 @@
             </div>
             <span class="admin-filter-count">전체 ${totalCount}건</span>
         </div>
+            </div>
     </main>
 </div>
 </body>
