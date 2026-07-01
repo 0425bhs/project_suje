@@ -90,14 +90,18 @@ public class OrderController {
         return price;
     }
 
-    private int getCouponPrice(int user_id, int user_coupon_id) {
+    private int getCouponPrice(int user_id, int user_coupon_id, Integer seller_id) {
         int couponPrice = 0;
 
-        if (user_coupon_id <= 0) {
+        if (user_coupon_id <= 0 || seller_id == null || seller_id <= 0) {
             return couponPrice;
         }
 
-        List<Map<String, Object>> couponList = orderDAO.selectAvailableCouponList(user_id);
+        Map<String, Object> couponMap = new HashMap<>();
+        couponMap.put("user_id", user_id);
+        couponMap.put("seller_id", seller_id);
+
+        List<Map<String, Object>> couponList = orderDAO.selectAvailableCouponListBySeller(couponMap);
 
         for (Map<String, Object> coupon : couponList) {
             int dbUserCouponId = ((Number) coupon.get("user_coupon_id")).intValue();
@@ -323,7 +327,12 @@ public class OrderController {
 
         int user_id = loginUser.getUser_id();
 
-        List<Map<String, Object>> couponList = orderDAO.selectAvailableCouponList(user_id);
+        Map<String, Object> couponMap = new HashMap<>();
+        couponMap.put("user_id", user_id);
+        couponMap.put("seller_id", product.getSeller_id());
+
+        List<Map<String, Object>> couponList = orderDAO.selectAvailableCouponListBySeller(couponMap);
+
         int pointBalance = orderDAO.getUserPoint(user_id);
 
         List<AddressVO> list = addressDao.selectList(user_id);
@@ -375,7 +384,7 @@ public class OrderController {
             address_id = defaultAddr.getAddress_id();
         }
 
-        int couponPrice = getCouponPrice(user_id, user_coupon_id);
+        int couponPrice = 0;
 
         int pointBalance = orderDAO.getUserPoint(user_id);
 
@@ -396,6 +405,27 @@ public class OrderController {
 
             if (orderCartList == null || orderCartList.isEmpty()) {
                 return "redirect:/cart_list.do";
+            }
+
+            Integer couponSellerId = null;
+            boolean singleSeller = true;
+
+            for (Map<String, Object> item : orderCartList) {
+                int seller_id = ((Number) item.get("seller_id")).intValue();
+
+                if (couponSellerId == null) {
+                    couponSellerId = seller_id;
+                } else if (!couponSellerId.equals(seller_id)) {
+                    singleSeller = false;
+                    break;
+                }
+            }
+
+            if (singleSeller && couponSellerId != null) {
+                couponPrice = getCouponPrice(user_id, user_coupon_id, couponSellerId);
+            } else {
+                couponPrice = 0;
+                user_coupon_id = 0;
             }
 
             int totalItemPrice = 0;
@@ -540,6 +570,8 @@ public class OrderController {
         if (product == null) {
             return "redirect:/product/list.do";
         }
+
+        couponPrice = getCouponPrice(user_id, user_coupon_id, product.getSeller_id());
 
         int basePrice = getActiveProductPrice(product);
 
@@ -875,7 +907,35 @@ public class OrderController {
             }
         }
 
-        List<Map<String, Object>> couponList = orderDAO.selectAvailableCouponList(user_id);
+        Integer couponSellerId = null;
+        boolean singleSeller = true;
+
+        for (Map<String, Object> item : orderCartList) {
+            int seller_id = ((Number) item.get("seller_id")).intValue();
+
+            if (couponSellerId == null) {
+                couponSellerId = seller_id;
+            } else if (!couponSellerId.equals(seller_id)) {
+                singleSeller = false;
+                break;
+            }
+        }
+
+        List<Map<String, Object>> couponList;
+
+        if (singleSeller && couponSellerId != null) {
+
+            Map<String, Object> couponMap = new HashMap<>();
+            couponMap.put("user_id", user_id);
+            couponMap.put("seller_id", couponSellerId);
+
+            couponList = orderDAO.selectAvailableCouponListBySeller(couponMap);
+
+        } else {
+
+            couponList = new java.util.ArrayList<>();
+
+        }
 
         int couponPrice = 0;
         int paymentPrice = totalItemPrice + totalDeliveryFee - couponPrice;

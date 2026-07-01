@@ -292,4 +292,25 @@ if ("true".equals(vo.getIs_default())) {
 
         return "myshop/myshop_main";
     }
+
+    // 쿠폰 내역
+    @GetMapping("/myshop/coupons")
+    public String couponHistory(HttpSession session, Model model) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+        int user_id = loginUser.getUser_id();
+
+        List<Map<String, Object>> couponList = orderDAO.selectMyCouponList(user_id);
+
+        model.addAttribute("couponList", couponList);
+
+        model.addAttribute("activeMenu", "coupon");
+        model.addAttribute("contentPage", "/myshop/coupon_history");
+
+        return "myshop/myshop_main";
+    }
 }
