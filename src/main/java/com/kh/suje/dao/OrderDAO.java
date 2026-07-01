@@ -129,7 +129,7 @@ public interface OrderDAO {
     List<Map<String, Object>> getAdminOrderItemList(int order_id);
 
     int getOrderCountByUserId(int user_id);
-}
+
     // 사용 가능한 쿠폰 목록 조회
     List<Map<String, Object>> selectAvailableCouponList(int user_id);
 
