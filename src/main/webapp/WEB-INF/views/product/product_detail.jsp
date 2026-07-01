@@ -672,21 +672,112 @@
 
                 <c:if test="${not empty qna_list}">
                     <c:forEach var="qna" items="${qna_list}">
-                        <div class="qna-item">
+
+                        <c:set var="isPrivateQna" value="${qna.is_private == 1}" />
+                        <c:set var="isQnaOwner" value="${not empty sessionScope.user and sessionScope.user.user_id == qna.user_id}" />
+                        <c:set var="hidePrivateQna" value="${isPrivateQna and not isQnaOwner}" />
+
+                        <div class="qna-item ${isPrivateQna ? 'private-qna-item' : ''}">
 
                             <div class="qna-title-row">
-                                <strong>${qna.title}</strong>
+
+                                <div class="qna-title-left">
+
+                                    <c:choose>
+                                        <c:when test="${qna.qna_type eq 'DELIVERY'}">
+                                            <span class="product-qna-type-badge delivery">배송 문의</span>
+                                        </c:when>
+
+                                        <c:when test="${qna.qna_type eq 'ORDER'}">
+                                            <span class="product-qna-type-badge order">주문 문의</span>
+                                        </c:when>
+
+                                        <c:when test="${qna.qna_type eq 'CANCEL'}">
+                                            <span class="product-qna-type-badge cancel">취소/환불 문의</span>
+                                        </c:when>
+
+                                        <c:when test="${qna.qna_type eq 'ETC'}">
+                                            <span class="product-qna-type-badge etc">기타 문의</span>
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <span class="product-qna-type-badge product">상품 문의</span>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                    <c:choose>
+                                        <c:when test="${isPrivateQna}">
+                                            <span class="product-qna-open-badge private">🔒 비공개</span>
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <span class="product-qna-open-badge public">공개</span>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                    <c:choose>
+                                        <c:when test="${hidePrivateQna}">
+                                            <strong class="private-title">비공개 문의입니다.</strong>
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <strong>
+                                                <c:choose>
+                                                    <c:when test="${not empty qna.title}">
+                                                        <c:out value="${qna.title}" />
+                                                    </c:when>
+
+                                                    <c:otherwise>
+                                                        문의 내용
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </strong>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                </div>
+
                                 <span>${qna.created_at}</span>
                             </div>
 
-                            <p>${qna.content}</p>
+                            <c:choose>
+                                <c:when test="${hidePrivateQna}">
+                                    <div class="product-qna-private-box">
+                                        🔒 작성자만 확인할 수 있는 비공개 문의입니다.
+                                    </div>
+                                </c:when>
 
-                            <c:if test="${not empty qna.answer}">
-                                <div class="qna-answer">
-                                    <strong>답변</strong>
-                                    <p>${qna.answer}</p>
-                                </div>
-                            </c:if>
+                                <c:otherwise>
+                                    <p class="product-qna-content">
+                                        <c:out value="${qna.content}" />
+                                    </p>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <c:choose>
+                                <c:when test="${hidePrivateQna}">
+                                    <div class="qna-answer private-answer">
+                                        판매자 답변도 비공개 처리됩니다.
+                                    </div>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <c:choose>
+                                        <c:when test="${not empty qna.answer}">
+                                            <div class="qna-answer">
+                                                <strong>답변</strong>
+                                                <p><c:out value="${qna.answer}" /></p>
+                                            </div>
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <div class="qna-answer waiting-answer">
+                                                아직 답변이 등록되지 않았습니다.
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:otherwise>
+                            </c:choose>
 
                         </div>
                     </c:forEach>

@@ -1602,3 +1602,94 @@
     color: #333;
     font-weight: 900;
 }
+
+/* =========================================================
+   상품 상세 - 상품문의 공개/비공개
+========================================================= */
+
+.qna-title-left {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.product-qna-type-badge,
+.product-qna-open-badge {
+    height: 26px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.product-qna-type-badge.product {
+    background: #fff1e9;
+    color: #d85b35;
+}
+
+.product-qna-type-badge.delivery {
+    background: #eef4ff;
+    color: #2563eb;
+}
+
+.product-qna-type-badge.order {
+    background: #edf8ef;
+    color: #2f914f;
+}
+
+.product-qna-type-badge.cancel {
+    background: #fff0f0;
+    color: #d14343;
+}
+
+.product-qna-type-badge.etc {
+    background: #f2f2f2;
+    color: #666;
+}
+
+.product-qna-open-badge.public {
+    background: #edf8ef;
+    color: #2f914f;
+}
+
+.product-qna-open-badge.private {
+    background: #f2f2f2;
+    color: #666;
+}
+
+.private-qna-item {
+    background: #fffdfb;
+}
+
+.private-title {
+    color: #777 !important;
+}
+
+.product-qna-private-box {
+    margin-top: 14px;
+    padding: 18px 20px;
+    background: #f8f8f8;
+    border: 1px solid #e5e5e5;
+    color: #777;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.product-qna-content {
+    white-space: pre-wrap;
+    word-break: keep-all;
+}
+
+.qna-answer.waiting-answer,
+.qna-answer.private-answer {
+    background: #f8f8f8;
+    border-color: #e5e5e5;
+    color: #888;
+    font-weight: 800;
+}

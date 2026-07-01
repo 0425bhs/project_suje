@@ -13,6 +13,16 @@ document.addEventListener("DOMContentLoaded", function(){
     initReviewContentToggle();
     initReviewImageModal();
 
+    initReportModal({
+            modalId: "reviewReportModal",
+            openButtonSelector: ".review-report-btn",
+            targetInputId: "reportTargetId",
+            targetTypeInputId: "reportTargetType",
+            reportTypeId: "reportType",
+            reasonId: "reportReason",
+            targetType: "REVIEW"
+        });
+
     if(productFilter != null){
         productFilter.addEventListener("change", function(){
             applyFilter();
