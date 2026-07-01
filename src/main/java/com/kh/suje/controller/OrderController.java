@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.suje.dao.OptionDAO;
@@ -715,21 +717,29 @@ public class OrderController {
         return "redirect:/myshop/orders";
     }
 
-    @PostMapping("/order_cart_form.do")
-    public String orderCartForm(
-            @RequestParam(value = "cart_id", required = false) int[] cart_id,
-            Model model,
-            HttpSession session
-    ) {
-        UserVO loginUser = getLoginUser(session);
+    @RequestMapping(value = "/order_cart_form.do", method = {RequestMethod.GET, RequestMethod.POST})
+public String orderCartForm(
+        @RequestParam(value = "cart_id", required = false) int[] cart_id,
+        Model model,
+        HttpSession session
+) {
+    UserVO loginUser = getLoginUser(session);
+    if (loginUser == null) {
+        return "redirect:/login.do";
+    }
 
-        if (loginUser == null) {
-            return "redirect:/login.do";
-        }
+    // [핵심] 만약 GET 요청이라서 cart_id가 안 넘어왔다면 세션에서 꺼내기
+    if (cart_id == null || cart_id.length == 0) {
+        cart_id = (int[]) session.getAttribute("orderCartIds");
+    } else {
+        // POST로 새로 들어온 거라면 세션에 최신 장바구니 ID 배열을 저장
+        session.setAttribute("orderCartIds", cart_id);
+    }
 
-        if (cart_id == null || cart_id.length == 0) {
-            return "redirect:/cart_list.do";
-        }
+    //세션에서도 못 꺼냈고 파라미터도 없다면 장바구니로 튕겨내기
+    if (cart_id == null || cart_id.length == 0) {
+        return "redirect:/cart_list.do";
+    }
 
         int user_id = getLoginUserId(session);
 
@@ -819,6 +829,8 @@ public class OrderController {
 
         return "order/order_form";
     }
+
+
 
     
 }

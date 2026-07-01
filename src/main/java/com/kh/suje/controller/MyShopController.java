@@ -101,13 +101,15 @@ public class MyShopController {
 
         //배송지 추가폼으로
     @GetMapping("/insertAddress.do")
-    private String insertAddress(Model model) {
+    private String insertAddress(Model model, String returnUrl) {
 
         UserVO sessionUser = (UserVO) session.getAttribute("user");
    
         model.addAttribute("user", sessionUser); 
+        model.addAttribute("returnUrl", returnUrl);
         model.addAttribute("activeMenu", "myshop");
         model.addAttribute("contentPage", "/myshop/address_form");
+        
 
         return "myshop/myshop_main";
     }
@@ -115,7 +117,7 @@ public class MyShopController {
 
     //배송지 추가
     @PostMapping("/insertAddress.do")
-    private String insertAddress(AddressVO vo) {    
+    private String insertAddress(AddressVO vo, String returnUrl) {    
 
         UserVO sessionUser = (UserVO) session.getAttribute("user");
 
@@ -137,6 +139,10 @@ public class MyShopController {
         }
         
        int res = addressDao.insertAddress(vo);
+
+       if (returnUrl != null && !returnUrl.isEmpty()) {   // 원래있던곳으로 리턴
+        return "redirect:" + returnUrl;
+    }
    
         return "redirect:/addressList.do";
     }

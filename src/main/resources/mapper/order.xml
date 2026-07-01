@@ -180,6 +180,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
 
+  <select id="withdrawCheck" parameterType="int" resultType="order">
+    select * from orders
+    where user_id = #{user_id}
+    and status in ('PENDING', 'PAID', 'PREPARING', 'SHIPPING')
+</select>
 
 
 

@@ -9,9 +9,10 @@
 
         <div class="myshop-side-group">
             <strong>내 정보</strong>
-            <a href="/user_modify.do" class="${param.activeMenu eq 'user_modify.do' ? 'active' : ''}">내 정보 보기/수정</a>
+            <a href="/user_modify.do" class="${param.activeMenu eq 'user_modify.do' ? 'active' : ''}">회원 정보 수정</a>
             <a href="/addressList.do" class="${param.activeMenu eq 'addressList.do' ? 'active' : ''}">배송지 관리</a>
             <a href="/update_seller.do" class="${param.activeMenu eq 'update_seller.do' ? 'active' : ''}">판매자 신청하기</a>
+            <a href="/withdraw.do" class="${param.activeMenu eq 'withdraw.do' ? 'active' : ''}">회원 탈퇴하기</a>
         </div>
         
         <div class="myshop-side-group">
@@ -22,15 +23,17 @@
 
         <div class="myshop-side-group">
             <strong>리뷰 관리</strong>
-            <button type="button" onclick="alert('작성 가능한 리뷰는 준비중입니다.');">
-                작성 가능한 리뷰
+
+            <a href="/myshop/reviews" class="${activeMenu eq 'writtenReview' ? 'active' : ''}">내가 작성한 리뷰</a>
+            
+            <a href="/myshop/reviews?tab=writable" class="${activeMenu eq 'writableReview' ? 'active' : ''}">작성 가능한 리뷰</a>
             </button>
-            <a href="/myshop/reviews" class="${param.activeMenu eq 'review' ? 'active' : ''}">내가 작성한 리뷰</a>
+            
         </div>
 
         <div class="myshop-side-group">
             <strong>문의 관리</strong>
-            <a href="/myshop/qnas" class="${param.activeMenu eq 'qna' ? 'active' : ''}">내 문의</a>
+            <a href="/myshop/qnas" class="${activeMenu eq 'qna' ? 'active' : ''}">내 문의</a>
             <!-- <button type="button" onclick="alert('상품 Q&A는 준비중입니다.');">
                 상품 Q&amp;A
             </button> -->
@@ -41,9 +44,9 @@
             <a href="/myshop/my_favorite_list.do" class="${param.activeMenu eq 'favorite' ? 'active' : ''}">
                 찜한 상품
             </a>
-            <button type="button" onclick="">
+            <a href="/myshop/recent" class="${activeMenu eq 'recent' ? 'active' : ''}">
                 최근 본 상품
-            </button>
+            </a>
         </div>
     </div>
 </aside>

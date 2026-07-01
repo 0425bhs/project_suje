@@ -232,8 +232,23 @@
                                     onclick="closeAddressModal()">×</button>
                             </div>
                             <div class="cancel-modal-body">
+                                <c:choose>
+                                    <c:when test="${not empty param.product_id}">
+                                        <c:set var="currentUrl"
+                                            value="${pageContext.request.requestURL}${not empty pageContext.request.queryString ? '?'.concat(pageContext.request.queryString) : ''}" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="currentUrl"
+                                            value="${pageContext.request.contextPath}/order_cart_form.do" />
+                                    </c:otherwise>
+                                </c:choose>
+
+                                <c:url value="/insertAddress.do" var="addAddressUrl">
+                                    <c:param name="returnUrl" value="${currentUrl}" />
+                                </c:url>
+
                                 <div style="margin-bottom: 16px; display: flex; justify-content: flex-end;">
-                                    <a href="/insertAddress.do" class="btn light">+ 새 배송지 추가</a>
+                                    <a href="${addAddressUrl}" class="btn light">+ 새 배송지 추가</a>
                                 </div>
 
                                 <div>
@@ -242,7 +257,7 @@
                                             style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #eee;">
                                             <div>
                                                 <c:if test="${addr.is_default == 'true'}">
-                                                     <span class="default-badge">기본배송지</span>
+                                                    <span class="default-badge">기본배송지</span>
                                                 </c:if>
                                                 <strong>${addr.address_name}</strong>
                                                 <p style="margin:4px 0; color:#666; font-size:14px;">

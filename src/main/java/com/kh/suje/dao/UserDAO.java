@@ -28,6 +28,8 @@ public interface UserDAO {
 
     int updateSeller(int user_id); // 일반=>판매자 신청
 
+    int withdraw(int user_id); //회원 탈퇴하기
+
 
 
     UserVO kakaoLogin(String kakao_id); //카톡로그인
