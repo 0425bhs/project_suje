@@ -167,6 +167,7 @@ public class SellerController {
         }
 
         List<ReviewVO> reviewList = reviewdao.sellerReviewList(seller_id);
+        List<ReviewVO> productList = reviewdao.sellerReviewProductList(seller_id);
 
         if (reviewList != null && !reviewList.isEmpty()) {
             List<Integer> reviewIds = reviewList.stream()
@@ -188,6 +189,7 @@ public class SellerController {
         }
 
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("productList", productList);
 
         return "/seller/seller_review_list";
     }
@@ -202,7 +204,10 @@ public class SellerController {
         }
 
         List<QnaVO> qnaList = qnadao.sellerQnaList(seller_id);
+        List<QnaVO> productList = qnadao.sellerQnaProductList(seller_id);
+
         model.addAttribute("qnaList", qnaList);
+        model.addAttribute("productList", productList);
 
         return "/seller/seller_qna_list";
     }

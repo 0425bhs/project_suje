@@ -1,0 +1,688 @@
+.community-page {
+    min-height: calc(100vh - 153px);
+    background: #fffaf7;
+}
+
+/* =========================================================
+   문의 작성 상단 타이틀
+========================================================= */
+
+.qna-hero {
+    margin-bottom: 28px;
+    padding: 34px 4px 30px;
+    border-bottom: 1px solid #f0e5dc;
+}
+
+.qna-breadcrumb {
+    margin-bottom: 24px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+
+    color: #9b7b68;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.qna-breadcrumb a {
+    color: #9b7b68;
+    text-decoration: none;
+}
+
+.qna-breadcrumb a:hover {
+    color: #ff6f4f;
+}
+
+.qna-breadcrumb span {
+    color: #c5aa9a;
+}
+
+.qna-breadcrumb strong {
+    color: #5b4538;
+    font-weight: 900;
+}
+
+.qna-hero-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.qna-hero-title span {
+    color: #2b211c;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 46px;
+    font-weight: 500;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.qna-hero-title em {
+    width: 1px;
+    height: 38px;
+    background: #d8c1b1;
+}
+
+.qna-hero-title h2 {
+    margin: 0;
+    color: #2b211c;
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 1;
+}
+
+.qna-hero p {
+    margin: 18px 0 0;
+    color: #7a6255;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   전체 카드 레이아웃
+========================================================= */
+
+.community-card {
+    background: #fff;
+    border: 1px solid #f0e5dc;
+    border-radius: 20px;
+    padding: 34px;
+    box-shadow: 0 12px 34px rgba(80, 45, 25, 0.055);
+}
+
+.form-layout {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+}
+
+/* =========================================================
+   왼쪽 상품 카드
+========================================================= */
+
+.product-panel {
+    display: block;
+    padding: 22px;
+    background: #fff;
+    border: 1px solid #f0e5dc;
+    border-radius: 18px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 10px 26px rgba(80, 45, 25, 0.055);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.product-panel:hover,
+.product-panel:focus {
+    transform: translateY(-3px);
+    border-color: #ffb99f;
+    box-shadow: 0 16px 36px rgba(80, 45, 25, 0.12);
+}
+
+.product-panel-title {
+    display: block;
+    margin-bottom: 14px;
+    color: #3d2f28;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.product-panel img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: block;
+    object-fit: cover;
+    background: #f6f6f6;
+    border: 1px solid #f0e5dc;
+    border-radius: 12px;
+}
+
+.product-panel strong {
+    display: block;
+    margin-top: 18px;
+    color: #2b2b2b;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.45;
+    text-align: center;
+}
+
+.product-price {
+    display: block;
+    margin-top: 8px;
+    color: #ff6f4f;
+    font-size: 21px;
+    font-weight: 900;
+    text-align: center;
+}
+
+.product-help-box {
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px dashed #e7d4c8;
+}
+
+.product-help-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #5b4538;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.product-help-title::before {
+    content: "i";
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e6c99f;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.product-help-box ul {
+    margin: 12px 0 0;
+    padding-left: 18px;
+    color: #6f5a4e;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.75;
+}
+
+.product-detail-link {
+    margin-top: 22px;
+    padding-top: 17px;
+    border-top: 1px solid #f0e5dc;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+
+    color: #5b4538;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.product-detail-link::after {
+    content: "›";
+    color: #ff6f4f;
+    font-size: 22px;
+    line-height: 1;
+}
+
+/* =========================================================
+   오른쪽 폼
+========================================================= */
+
+.form-stack {
+    display: grid;
+    gap: 28px;
+}
+
+.form-section {
+    padding-bottom: 26px;
+    border-bottom: 1px solid #f0e5dc;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.form-field label,
+.form-section-title {
+    display: block;
+    margin-bottom: 14px;
+    color: #3d2f28;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.required {
+    color: #ff6f4f;
+    margin-left: 3px;
+}
+
+.type-help {
+    margin-top: 10px;
+    color: #9b7b68;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   문의 유형 칩 버튼
+========================================================= */
+
+.qna-type-chip-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.qna-type-chip {
+    cursor: pointer;
+}
+
+.qna-type-chip input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.qna-type-chip span {
+    min-width: 104px;
+    height: 42px;
+    padding: 0 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #ead8cc;
+    border-radius: 999px;
+    background: #fff;
+
+    color: #5b4538;
+    font-size: 14px;
+    font-weight: 900;
+
+    transition: all 0.14s ease;
+}
+
+.qna-type-chip:hover span {
+    border-color: #ffb99f;
+    background: #fff7f2;
+    color: #e76442;
+}
+
+.qna-type-chip input:checked + span {
+    border-color: #e76442;
+    background: #e76442;
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(231, 100, 66, 0.22);
+}
+
+/* =========================================================
+   공개 / 비공개 카드
+========================================================= */
+
+.qna-open-radio-box {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(360px, 1fr));
+    gap: 14px;
+}
+
+.qna-open-radio {
+    width: 100%;
+    min-width: 0;
+    cursor: pointer;
+}
+
+.qna-open-radio input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.qna-open-radio-card {
+    width: 100%;
+    min-height: 104px;
+    padding: 20px 48px 20px 24px;
+
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+
+    border: 1px solid #ead8cc;
+    border-radius: 14px;
+    background: #fff;
+    box-sizing: border-box;
+
+    transition: all 0.14s ease;
+}
+
+.qna-open-radio:hover .qna-open-radio-card {
+    border-color: #ffb99f;
+    background: #fffdfb;
+}
+
+.qna-open-icon {
+    width: 46px;
+    height: 46px;
+
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #9b7b68;
+}
+
+/* 공개 아이콘 */
+.qna-open-icon.public-icon::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    top: 8px;
+
+    width: 14px;
+    height: 14px;
+
+    border: 2px solid currentColor;
+    border-radius: 50%;
+}
+
+.qna-open-icon.public-icon::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 26px;
+
+    width: 26px;
+    height: 14px;
+
+    border: 2px solid currentColor;
+    border-bottom: none;
+    border-radius: 18px 18px 0 0;
+}
+
+.qna-open-icon.public-icon span::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 16px;
+
+    width: 10px;
+    height: 10px;
+
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.65;
+}
+
+.qna-open-icon.public-icon span::after {
+    content: "";
+    position: absolute;
+    right: 3px;
+    top: 16px;
+
+    width: 10px;
+    height: 10px;
+
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.65;
+}
+
+/* 비공개 아이콘 */
+.qna-open-icon.private-icon::before {
+    content: "";
+    position: absolute;
+    left: 13px;
+    top: 7px;
+
+    width: 20px;
+    height: 20px;
+
+    border: 2px solid currentColor;
+    border-bottom: none;
+    border-radius: 13px 13px 0 0;
+}
+
+.qna-open-icon.private-icon::after {
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 23px;
+
+    width: 28px;
+    height: 23px;
+
+    border: 2px solid currentColor;
+    border-radius: 5px;
+}
+
+.qna-open-icon.private-icon span::before {
+    content: "";
+    position: absolute;
+    left: 21px;
+    top: 32px;
+
+    width: 4px;
+    height: 8px;
+
+    background: currentColor;
+    border-radius: 999px;
+}
+
+.qna-open-text {
+    min-width: 0;
+}
+
+.qna-open-text strong {
+    display: block;
+    color: #3d2f28;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.qna-open-text em {
+    display: block;
+    margin-top: 7px;
+
+    color: #9b7b68;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1.5;
+
+    white-space: nowrap;
+}
+
+.qna-open-check {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+
+    width: 18px;
+    height: 18px;
+
+    border: 2px solid #d8c7bc;
+    border-radius: 50%;
+
+    transform: translateY(-50%);
+}
+
+.qna-open-radio input:checked + .qna-open-radio-card {
+    border-color: #ff6f4f;
+    background: #fff7f2;
+    box-shadow: 0 0 0 3px rgba(255, 111, 79, 0.08);
+}
+
+.qna-open-radio input:checked + .qna-open-radio-card .qna-open-icon,
+.qna-open-radio input:checked + .qna-open-radio-card .qna-open-text strong {
+    color: #e76442;
+}
+
+.qna-open-radio input:checked + .qna-open-radio-card .qna-open-check {
+    border-color: #ff6f4f;
+    background: radial-gradient(circle at center, #ff6f4f 0 42%, transparent 46%);
+}
+
+/* =========================================================
+   제목 / 내용 입력
+========================================================= */
+
+.form-field {
+    position: relative;
+}
+
+.form-field input,
+.form-field textarea {
+    width: 100%;
+    border: 1px solid #ead8cc;
+    border-radius: 12px;
+    background: #fff;
+    color: #2b2b2b;
+    font-size: 15px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+    border-color: #ff6f4f;
+    box-shadow: 0 0 0 3px rgba(255, 111, 79, 0.12);
+}
+
+.form-field input {
+    height: 50px;
+    padding: 0 80px 0 15px;
+}
+
+.form-field textarea {
+    min-height: 150px;
+    padding: 16px 16px 34px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+    color: #b9a295;
+}
+
+.text-count {
+    position: absolute;
+    right: 15px;
+    bottom: 14px;
+    color: #9b7b68;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.textarea-count {
+    bottom: 12px;
+}
+
+/* =========================================================
+   안내 박스
+========================================================= */
+
+.qna-notice-box {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #fff4e9 0%, #fffaf6 100%);
+    color: #6b5142;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.7;
+}
+
+.qna-notice-box strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #ff6f4f;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+/* =========================================================
+   버튼
+========================================================= */
+
+.btn-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 4px;
+}
+
+.btn-row .btn {
+    min-width: 180px;
+    height: 50px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.btn-row .btn.primary {
+    border: none;
+    background: #ff6f4f;
+    color: #fff;
+}
+
+.btn-row .btn.primary:hover {
+    background: #e95f42;
+}
+
+.btn-row .btn.light {
+    border: 1px solid #ead8cc;
+    background: #fff;
+    color: #7b5d4c;
+}
+
+.btn-row .btn.light:hover {
+    background: #fff7f2;
+    border-color: #ffb99f;
+    color: #ff6f4f;
+}
+
+/* =========================================================
+   반응형
+========================================================= */
+
+@media (max-width: 860px) {
+    .qna-open-text em {
+        white-space: normal;
+    }
+
+    .qna-hero {
+        padding: 28px 0 24px;
+    }
+
+    .qna-hero-title span {
+        font-size: 34px;
+    }
+
+    .qna-hero-title h2 {
+        font-size: 30px;
+    }
+
+    .form-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .community-card {
+        padding: 22px;
+    }
+
+    .qna-open-radio-box {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-row {
+        flex-direction: column;
+    }
+
+    .btn-row .btn {
+        width: 100%;
+    }
+}
