@@ -6,11 +6,13 @@
     min-width: 0;
 }
 
+/* 리뷰 목록 공통 - 기본 2개씩 */
 .myshop-review-section .myshop-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: 22px;
     gap: 18px;
+    align-items: start;
 }
 
 .myshop-review-section .myshop-list-card {
@@ -18,6 +20,7 @@
     padding: 0;
     border: 1px solid #ead8cf;
     border-radius: 18px;
+    background: #fff;
     box-shadow: 0 8px 22px rgba(80, 45, 25, 0.055);
     transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
 }
@@ -32,10 +35,17 @@
     border-top: 1px solid #ead8cf;
 }
 
+/* 카드 상단 */
 .myshop-review-section .myshop-list-top {
     min-height: 52px;
     padding: 14px 18px;
     background: linear-gradient(90deg, #fff7f3 0%, #ffffff 75%);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-sizing: border-box;
 }
 
 .myshop-review-section .myshop-list-top > div {
@@ -56,8 +66,14 @@
     font-size: 12px;
     font-weight: 900;
     text-decoration: none;
+    white-space: nowrap;
 }
 
+.myshop-review-section .myshop-list-top > a:hover {
+    color: #ff6f4f;
+}
+
+/* 작성 상태 뱃지 */
 .myshop-review-state {
     height: 26px;
     padding: 0 11px;
@@ -80,8 +96,10 @@
     color: #ff6f4f;
 }
 
+/* 카드 본문 */
 .myshop-review-section .myshop-list-body {
     padding: 18px;
+    box-sizing: border-box;
 }
 
 .myshop-review-section .myshop-review-card-body {
@@ -91,6 +109,7 @@
     align-items: start;
 }
 
+/* 상품 이미지 */
 .myshop-review-product-image {
     width: 78px;
     aspect-ratio: 1 / 1;
@@ -113,6 +132,7 @@
     min-width: 0;
 }
 
+/* 상품명 */
 .myshop-review-product-name {
     display: block;
     margin: 0 0 7px;
@@ -130,6 +150,7 @@
     color: #ff6f4f;
 }
 
+/* 별점 */
 .myshop-review-score-row {
     display: flex;
     align-items: center;
@@ -175,6 +196,7 @@
     font-weight: 900;
 }
 
+/* 작성한 리뷰 내용 / 안내 박스 */
 .myshop-review-content,
 .myshop-review-guide {
     width: 100%;
@@ -200,16 +222,16 @@
     -webkit-box-orient: vertical;
 }
 
+.myshop-review-guide {
+    padding: 12px 14px;
+}
+
 .myshop-review-guide span {
     display: block;
     margin-bottom: 6px;
     color: #ff6f4f;
     font-size: 12px;
     font-weight: 950;
-}
-
-.myshop-review-guide {
-    padding: 12px 14px;
 }
 
 .myshop-review-guide strong {
@@ -226,6 +248,7 @@
     line-height: 1.5;
 }
 
+/* 리뷰 사진 */
 .myshop-review-photo-list {
     margin-top: 12px;
     display: grid;
@@ -242,6 +265,7 @@
     background: #f6f6f6;
 }
 
+/* 수정/삭제 버튼 */
 .myshop-review-section .myshop-list-actions {
     grid-column: 1 / -1;
     display: grid;
@@ -266,9 +290,21 @@
     margin-top: 2px;
 }
 
-.myshop-review-writable-section .myshop-review-writable-list {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+/* =========================================================
+   작성 가능한 리뷰 전용
+   핵심: auto-fit 제거하고 무조건 2개씩
+========================================================= */
+
+.myshop-review-section.myshop-review-writable-section .myshop-list.myshop-review-writable-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 22px;
     gap: 20px;
+    align-items: start;
+}
+
+.myshop-review-writable-card {
+    width: 100%;
 }
 
 .myshop-review-writable-card .myshop-list-top {
@@ -276,6 +312,7 @@
 }
 
 .myshop-review-writable-card .myshop-review-card-body {
+    display: grid;
     grid-template-columns: 92px minmax(0, 1fr);
     gap: 18px;
     align-items: center;
@@ -292,6 +329,7 @@
     -webkit-box-orient: vertical;
 }
 
+/* 포인트 박스 */
 .myshop-review-reward {
     margin-top: 14px;
     border-color: #ffe1d6;
@@ -307,6 +345,7 @@
     color: #ff5f3f;
 }
 
+/* 작성 가능한 리뷰 버튼 */
 .myshop-review-writable-card .myshop-review-actions {
     grid-column: 1 / -1;
     justify-self: stretch;
@@ -322,6 +361,11 @@
     color: #fff;
     font-size: 14px;
     font-weight: 950;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
 .myshop-review-writable-card .myshop-review-actions .primary:hover {
@@ -329,14 +373,17 @@
     color: #fff;
 }
 
+/* 반응형 */
 @media (max-width: 1100px) {
-    .myshop-review-section .myshop-list {
+    .myshop-review-section .myshop-list,
+    .myshop-review-section.myshop-review-writable-section .myshop-list.myshop-review-writable-list {
         grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 720px) {
-    .myshop-review-section .myshop-list {
+    .myshop-review-section .myshop-list,
+    .myshop-review-section.myshop-review-writable-section .myshop-list.myshop-review-writable-list {
         padding: 18px;
     }
 
@@ -344,12 +391,14 @@
         padding: 16px;
     }
 
-    .myshop-review-section .myshop-review-card-body {
+    .myshop-review-section .myshop-review-card-body,
+    .myshop-review-writable-card .myshop-review-card-body {
         grid-template-columns: 76px minmax(0, 1fr);
         gap: 14px;
     }
 
-    .myshop-review-product-image {
+    .myshop-review-product-image,
+    .myshop-review-writable-card .myshop-review-product-image {
         width: 76px;
     }
 

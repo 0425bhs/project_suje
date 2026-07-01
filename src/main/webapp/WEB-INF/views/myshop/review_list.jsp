@@ -92,9 +92,8 @@
                             </a>
 
                             <div class="myshop-review-summary">
-                                <a class="myshop-review-product-name"
-                                   href="/product_detail.do?product_id=${review.product_id}">
-                                    ${review.product_name}
+                                <a class="myshop-review-product-name" href="/product_detail.do?product_id=${review.product_id}">
+                                    ${review.product_name}<c:if test="${not empty review.option_name}">, ${review.option_name}</c:if>
                                 </a>
 
                                 <c:choose>

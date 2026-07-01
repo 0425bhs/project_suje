@@ -3,6 +3,8 @@ package com.kh.suje.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.kh.suje.vo.ReviewVO;
 
 public interface ReviewDAO {
@@ -18,6 +20,18 @@ public interface ReviewDAO {
     List<ReviewVO> getMyReviewList(int user_id);
     List<ReviewVO> getLiveReviewList();
 
+    List<ReviewVO> getReviewListByKeyword(@Param("status") String status,
+                                          @Param("keyword") String keyword,
+                                          @Param("size") Integer size,
+                                          @Param("offset") int offset,
+                                          @Param("startDate") String startDate,
+                                          @Param("endDate") String endDate,
+                                          @Param("sort") String sort);
+    int getReviewListCountByKeyword(@Param("status") String status,
+                                    @Param("keyword") String keyword,
+                                    @Param("startDate") String startDate,
+                                    @Param("endDate") String endDate);
+
     // 상품 상세페이지 리뷰 목록
     List<ReviewVO> getProductReviewList(int product_id);
     
@@ -27,4 +41,10 @@ public interface ReviewDAO {
     List<ReviewVO> productReviewList(int product_id);
 
     List<Map<String, Object>> bestReview(int product_id);
+    
+    List<ReviewVO> sellerReviewList(@Param ("seller_id") int seller_id);
+    
+
+    int sellerReviewReply(Map<String, Object> map);
+
 }

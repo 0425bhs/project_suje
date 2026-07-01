@@ -51,7 +51,7 @@
 
                                             <c:choose>
                                                 <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
-                                                    <img src="${item.imageL}" alt="${item.productName}">
+                                                    <img src="/upload/${item.imageL}" alt="${item.productName}">
                                                 </c:when>
 
                                                 <c:otherwise>
@@ -64,6 +64,16 @@
 
                                                 <strong>${item.productName}</strong>
 
+                                                <c:if test="${not empty item.option_name}">
+                                                    <p class="order-option-text">
+                                                        옵션 : ${item.option_name}
+
+                                                        <c:if test="${item.option_price gt 0}">
+                                                            (+<fmt:formatNumber value="${item.option_price}" pattern="#,###" />원)
+                                                        </c:if>
+                                                    </p>
+                                                </c:if>
+
                                                 <p>
                                                     가격
                                                     <fmt:formatNumber value="${item.price}" pattern="#,###" />원
@@ -73,20 +83,18 @@
                                             </div>
 
                                             <div class="item-price">
-                                                <fmt:formatNumber value="${item.price * item.quantity}"
-                                                    pattern="#,###" />원
+                                                <fmt:formatNumber value="${item.price * item.quantity}" pattern="#,###" />원
                                             </div>
 
                                         </div>
                                     </c:forEach>
 
-                                </section>
-
-
                                     <div class="artist-note">
                                         <strong>결제 안내</strong>
                                         <p>결제창이 자동으로 열리지 않으면 오른쪽의 결제 진행 버튼을 눌러주세요.</p>
                                     </div>
+
+                                </section>
 
                                 <!-- 오른쪽 결제 요약 -->
                                 <aside class="panel side-panel">
@@ -130,10 +138,14 @@
                                     </div>
 
                                     <div class="btn-row">
-                                        <button type="button" class="btn primary full" id="paymentButton"
-                                            data-client-key="${tossClientKey}" data-amount="${payment.amount}"
-                                            data-order-id="${tossOrderId}" data-order-name="${fn:escapeXml(orderName)}"
-                                            data-payment-status="${payment.status}">
+                                        <button type="button"
+                                                class="btn primary full"
+                                                id="paymentButton"
+                                                data-client-key="${tossClientKey}"
+                                                data-amount="${payment.amount}"
+                                                data-order-id="${tossOrderId}"
+                                                data-order-name="${fn:escapeXml(orderName)}"
+                                                data-payment-status="${payment.status}">
                                             결제 진행하기
                                         </button>
                                     </div>
@@ -152,12 +164,12 @@
 
                     </section>
 
-                    <footer class="site-footer">
-                        <div class="footer-inner">
-                            <strong>HANDMADE</strong>
-                            <p>결제창이 자동으로 열리지 않으면 결제 진행하기 버튼을 눌러주세요.</p>
-                        </div>
-                    </footer>
+                                    <footer class="site-footer">
+                                        <div class="footer-inner">
+                                            <strong>HANDMADE</strong>
+                                            <p>결제창이 자동으로 열리지 않으면 결제 진행하기 버튼을 눌러주세요.</p>
+                                        </div>
+                                    </footer>
 
                     <script>
                         let paymentRequested = false;
@@ -223,4 +235,80 @@
 
                 </body>
 
-                </html>
+        window.addEventListener("load", function () {
+            const paymentButton = document.getElementById("paymentButton");
+
+            if (paymentButton == null) {
+                return;
+            }
+
+            const amount = Number(paymentButton.dataset.amount || 0);
+            const paymentStatus = paymentButton.dataset.paymentStatus;
+
+            // 0원 결제는 Toss 결제창을 열지 않음
+            if (amount <= 0) {
+                paymentButton.innerText = "결제완료 처리 중...";
+                paymentButton.disabled = true;
+
+                location.href = "/order/complete?order_id=${order.order_id}";
+                return;
+            }
+
+            paymentButton.addEventListener("click", requestTossPayment);
+
+            if (paymentStatus === "READY") {
+                setTimeout(function () {
+                    requestTossPayment();
+                }, 600);
+            }
+        });
+
+        function requestTossPayment() {
+            if (paymentRequested) {
+                return;
+            }
+
+            const paymentButton = document.getElementById("paymentButton");
+
+            if (paymentButton == null) {
+                return;
+            }
+
+            const amount = Number(paymentButton.dataset.amount || 0);
+
+            if (amount <= 0) {
+                location.href = "/order/complete?order_id=${order.order_id}";
+                return;
+            }
+
+            paymentRequested = true;
+
+            paymentButton.innerText = "결제창을 여는 중...";
+            paymentButton.disabled = true;
+
+            const clientKey = paymentButton.dataset.clientKey;
+            const orderId = paymentButton.dataset.orderId;
+            const orderName = paymentButton.dataset.orderName;
+
+            const tossPayments = TossPayments(clientKey);
+
+            tossPayments.requestPayment("카드", {
+                amount: amount,
+                orderId: orderId,
+                orderName: orderName,
+                customerName: "회원",
+                successUrl: window.location.origin + "/payment/toss/success",
+                failUrl: window.location.origin + "/payment/toss/fail"
+            }).catch(function (error) {
+                paymentRequested = false;
+
+                paymentButton.innerText = "결제 진행하기";
+                paymentButton.disabled = false;
+
+                alert("결제창을 열지 못했습니다. 다시 시도해주세요.\n" + error.message);
+            });
+        }
+    </script>
+
+    </body>
+</html>

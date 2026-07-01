@@ -1332,6 +1332,79 @@ select {
     flex-shrink: 0;
 }
 
+/* =========================================================
+   주문서 쿠폰 / 포인트 입력 영역 보정
+========================================================= */
+
+#userCouponId {
+    width: 160px;
+    height: 36px;
+    padding: 0 12px;
+
+    border: 1px solid #ead2c4;
+    border-radius: 8px;
+    background: #fff;
+
+    color: #4b4b4b;
+    font-size: 13px;
+    font-weight: 800;
+
+    outline: none;
+    cursor: pointer;
+}
+
+#userCouponId:focus {
+    border-color: #ff6f4f;
+    box-shadow: 0 0 0 3px rgba(255, 111, 79, 0.12);
+}
+
+#usePointInput {
+    width: 90px;
+    height: 36px;
+    padding: 0 10px;
+
+    border: 1px solid #ead2c4;
+    border-radius: 8px;
+    background: #fff;
+
+    color: #171717;
+    font-size: 13px;
+    font-weight: 800;
+
+    outline: none;
+}
+
+#usePointInput:focus {
+    border-color: #ff6f4f;
+    box-shadow: 0 0 0 3px rgba(255, 111, 79, 0.12);
+}
+
+#useAllPointBtn {
+    height: 36px;
+    margin-left: 6px;
+    padding: 0 12px;
+
+    border: 1px solid #ffb49f;
+    border-radius: 8px;
+    background: #fff7f3;
+    color: #ff6f4f;
+
+    font-size: 13px;
+    font-weight: 900;
+
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+#useAllPointBtn:hover {
+    background: #ff6f4f;
+    color: #fff;
+}
+
+#pointPriceText {
+    color: #d31c0c;
+
+}
 
 /* 기본배송지 뱃지 */
 .default-badge {

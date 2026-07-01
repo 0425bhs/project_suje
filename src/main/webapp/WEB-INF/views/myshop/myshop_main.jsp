@@ -41,11 +41,20 @@
         <link rel="stylesheet" href="/css/product/product_card.css?v=1">
         <link rel="stylesheet" href="/css/myshop/recent.css?v=1">
     </c:if>
+
+    <c:if test="${contentPage eq '/myshop/point_history'}">
+        <link rel="stylesheet" href="/css/myshop/point_history.css?v=1">
+    </c:if>
     
     <script src="/js/product_main.js" defer></script>
+
     <c:if test="${contentPage eq '/myshop/order_list'}">
         <script src="/js/cart.js" defer></script>
         <script src="/js/order-payment.js" defer></script>
+    </c:if>
+
+    <c:if test="${contentPage eq '/myshop/coupon_history'}">
+        <link rel="stylesheet" href="/css/myshop/coupon_history.css?v=1">
     </c:if>
 </head>
 
@@ -58,19 +67,19 @@
     <section class="myshop-page">
         <div class="myshop-layout">
 
+            <c:if test="${not empty flashMsg}">
+                <script>alert("${flashMsg}");</script>
+                <c:remove var="flashMsg" scope="session" />
+            </c:if>
 
-<c:if test="${not empty flashMsg}">
-    <script>alert("${flashMsg}");</script>
-    <c:remove var="flashMsg" scope="session" />
-</c:if>
-        <!-- 왼쪽 사이드바 -->
-        <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" >
-            <jsp:param name="activeMenu" value="${activeMenu}" />
-        </jsp:include>
+            <!-- 왼쪽 사이드바 -->
+            <jsp:include page="/WEB-INF/views/myshop/common/myshop_sidebar.jsp" >
+                <jsp:param name="activeMenu" value="${activeMenu}" />
+            </jsp:include>
 
-        <main class="myshop-content ${contentPage eq '/myshop/dashboard' ? 'myshop-dashboard-content' : ''}">
-            <jsp:include page="/WEB-INF/views${contentPage}.jsp" />
-        </main>
+            <main class="myshop-content ${contentPage eq '/myshop/dashboard' ? 'myshop-dashboard-content' : ''}">
+                <jsp:include page="/WEB-INF/views${contentPage}.jsp" />
+            </main>
 
         </div>
     </section>

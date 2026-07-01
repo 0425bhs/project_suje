@@ -1,94 +1,301 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
-    <title>관리자 센터 - 판매자 승인/반려</title>
+    <title>관리자 센터 - 판매자 관리</title>
     <link rel="stylesheet" href="/css/admin/admin_common.css">
+    <link rel="stylesheet" href="/css/admin/admin_detail_panel.css">
+    <script src="/js/admin_detail_common.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const master = document.getElementById("adminMasterDetail");
+            const rows = document.querySelectorAll(".admin-clickable-row");
+
+            rows.forEach((row) => {
+                //모든 행에 클릭 이벤트 부여
+                row.addEventListener("click", () => {
+                    //상세 패널이 열려있고 이미 선택된 행을 눌렀을 때
+                    if (!master.classList.contains("is-collapsed") && row.classList.contains("selected")) {
+                        closeDetailPanel(master, row);
+                        return;
+                    }
+
+                    openDetailPanel(master, rows, row);
+
+                    //상세 패널 내용 변경
+                    const sellerId = row.dataset.sellerId;
+
+                    fetch("/admin/sellers/detail?seller_id=" + encodeURIComponent(sellerId))
+                    .then(res => res.json())
+                    .then(data => {
+                        const seller = data.seller;
+
+                        setText("sellerId", seller.seller_id);
+                        setText("userId", seller.user_id);
+                        setText("companyName", seller.company_name);
+                        setText("representativeName", seller.representative_name);
+                        setText("businessNumber", seller.business_number);
+                        setText("openingDate", seller.opening_date);
+                        setText("businessAddress", seller.business_address);
+                        setText("status", seller.status);
+                        setText("createdAt", seller.created_at);
+                        highlightAdminKeyword(document.getElementById("adminDetailPanel"));
+                    })
+                });
+            });
+        });
+    </script>
 </head>
+
 <body>
-<div class="admin-board">
-    <jsp:include page="admin_sidebar.jsp">
-        <jsp:param name="activeMenu" value="sellers" />
-        <jsp:param name="sidebarTitle" value="판매자 승인 관리" />
-    </jsp:include>
+    <div class="admin-board">
+        <jsp:include page="admin_sidebar.jsp">
+            <jsp:param name="activeMenu" value="sellers" />
+            <jsp:param name="sidebarTitle" value="판매자 관리" />
+        </jsp:include>
 
-    <main class="admin-main">
-        <header class="admin-main-header">
-            <div>
-                <span class="admin-page-label">SELLER APPROVAL</span>
-                <h1>판매자 승인/반려</h1>
-                <p>입점 신청 서류와 상점 정보를 검토하고 승인 또는 반려합니다.</p>
-            </div>
-            <div class="admin-header-actions">
-                <button type="button" class="admin-btn">선택 승인</button>
-                <button type="button" class="admin-btn danger">선택 반려</button>
-            </div>
-        </header>
-
-        <section class="admin-card">
-            <div class="admin-filter-box">
-                <div class="admin-filter-tabs">
-                    <button type="button" class="active">승인대기</button>
-                    <button type="button">승인완료</button>
-                    <button type="button">반려</button>
-                    <button type="button">보류</button>
+        <main class="admin-main">
+            <header class="admin-main-header">
+                <div>
+                    <span class="admin-page-label">SELLER MANAGEMENT</span>
+                    <h1>판매자 관리</h1>
+                    <p>판매자 신청 정보와 현재 상태를 확인합니다.</p>
                 </div>
-                <input type="text" class="admin-search" placeholder="상점명, 대표자 검색">
+            </header>
+
+            <div class="admin-filter-box admin-filter-modern">
+                <form class="admin-filter-form" action="/admin/sellers" method="get">
+                    <div class="admin-filter-main-row">
+                        <div class="admin-filter-tabs">
+                            <a href="/admin/sellers?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                class="${status eq 'all' ? 'active' : ''}">전체</a>
+                            <a href="/admin/sellers?status=pending&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
+                            <a href="/admin/sellers?status=approved&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                class="${status eq 'approved' ? 'active' : ''}">승인완료</a>
+                            <a href="/admin/sellers?status=rejected&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                class="${status eq 'rejected' ? 'active' : ''}">반려</a>
+                        </div>
+
+                        <div class="admin-search-wrap">
+                            <input type="text" id="keyword" class="admin-search" name="keyword"
+                                placeholder="상점명, 대표자 검색" value="${keyword}">
+                            <span class="admin-search-icon" aria-hidden="true"></span>
+                        </div>
+                        <button type="submit" class="admin-btn admin-search-submit">검색</button>
+                        <button type="button" class="admin-btn light admin-filter-toggle">상세 검색</button>
+                        <select class="admin-filter-control admin-sort-control" id="sort" name="sort">
+                            <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
+                            <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
+                            <option value="name" ${sort eq 'name' ? 'selected' : ''}>이름순</option>
+                        </select>
+                        <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
+                            <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
+                            <option value="30" ${pagination.size == 30 ? 'selected' : ''}>30개씩</option>
+                            <option value="50" ${pagination.size == 50 ? 'selected' : ''}>50개씩</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-filter-detail-row">
+                        <label class="admin-filter-field">
+                            <span>상태</span>
+                            <select class="admin-filter-control" name="status">
+                                <option value="all" ${status eq 'all' ? 'selected' : ''}>전체</option>
+                                <option value="pending" ${status eq 'pending' ? 'selected' : ''}>승인대기</option>
+                                <option value="approved" ${status eq 'approved' ? 'selected' : ''}>승인완료</option>
+                                <option value="rejected" ${status eq 'rejected' ? 'selected' : ''}>반려</option>
+                            </select>
+                        </label>
+                        <label class="admin-filter-field admin-filter-date-range">
+                            <span>신청일 범위</span>
+                            <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
+                            <em>~</em>
+                            <input type="date" class="admin-filter-control" name="endDate" value="${endDate}">
+                        </label>
+                        <button type="submit" class="admin-btn admin-filter-submit">적용</button>
+                    </div>
+
+                    <c:if test="${status ne 'all' || not empty keyword || not empty startDate || not empty endDate}">
+                        <div class="admin-filter-applied">
+                            <span class="admin-filter-applied-label">적용된 조건:</span>
+                            <c:if test="${status ne 'all'}">
+                                <a class="admin-filter-chip"
+                                    href="/admin/sellers?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    상태:
+                                    ${status eq 'pending' ? '승인대기' : status eq 'approved' ? '승인완료' : '반려'}
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
+                            <c:if test="${not empty keyword}">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    검색어: ${keyword}
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
+                            <c:if test="${not empty startDate || not empty endDate}">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                                    신청일: ${startDate} ~ ${endDate}
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
+                            <a class="admin-filter-clear" href="/admin/sellers">전체 해제</a>
+                        </div>
+                    </c:if>
+
+                    <input type="hidden" name="page" value="1">
+                </form>
             </div>
 
-            <div class="admin-table-wrap">
-                <table class="admin-table">
-                    <thead>
-                    <tr>
-                        <th><input type="checkbox"></th>
-                        <th>신청번호</th>
-                        <th>상점명</th>
-                        <th>대표자</th>
-                        <th>사업자번호</th>
-                        <th>주요 카테고리</th>
-                        <th>상태</th>
-                        <th>신청일</th>
-                        <th>처리</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>#S-204</td>
-                        <td class="left"><strong>라온공방</strong></td>
-                        <td>박라온</td>
-                        <td>123-45-67890</td>
-                        <td>가죽공예</td>
-                        <td><span class="admin-status pending">대기</span></td>
-                        <td>2026-06-16</td>
-                        <td class="admin-table-actions">
-                            <button type="button" class="admin-btn">승인</button>
-                            <button type="button" class="admin-btn danger">반려</button>
-                            <button type="button" class="admin-btn light">서류</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>#S-203</td>
-                        <td class="left"><strong>소일 세라믹</strong></td>
-                        <td>이소일</td>
-                        <td>222-11-77777</td>
-                        <td>도자기</td>
-                        <td><span class="admin-status pending">대기</span></td>
-                        <td>2026-06-15</td>
-                        <td class="admin-table-actions">
-                            <button type="button" class="admin-btn">승인</button>
-                            <button type="button" class="admin-btn danger">반려</button>
-                            <button type="button" class="admin-btn light">서류</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <section class="admin-master-detail admin-master-detail-filtered is-collapsed" id="adminMasterDetail">
+                <div class="admin-card admin-list-panel">
+                    <div class="admin-table-wrap">
+                        <table class="admin-table admin-seller-table">
+                            <thead>
+                                <tr>
+                                    <th>신청번호</th>
+                                    <th>상점명</th>
+                                    <th>대표자</th>
+                                    <th>사업자번호</th>
+                                    <th>상태</th>
+                                    <th>신청일</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="seller" items="${sellerList}">
+                                    <tr class="admin-clickable-row" data-user-id="${seller.user_id}"
+                                        data-seller-id="${seller.seller_id}"
+                                        data-company-name="${seller.company_name}"
+                                        data-representative-name="${seller.representative_name}"
+                                        data-business-number="${seller.business_number}"
+                                        data-opening-date="${seller.opening_date}"
+                                        data-business-address="${seller.business_address}"
+                                        data-status="${seller.status}"
+                                        data-status-label="${seller.status eq 'PENDING' ? '승인대기' : seller.status eq 'APPROVED' ? '승인완료' : '반려'}"
+                                        data-created-at="${seller.created_at}">
+                                        <td>${seller.user_id}</td>
+                                        <td class="left admin-highlight-target"><strong>${seller.company_name}</strong></td>
+                                        <td class="admin-highlight-target">${seller.representative_name}</td>
+                                        <td class="admin-highlight-target">${seller.business_number}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${seller.status eq 'PENDING'}">
+                                                    <span class="admin-status pending">승인대기</span>
+                                                </c:when>
+
+                                                <c:when test="${seller.status eq 'APPROVED'}">
+                                                    <span class="admin-status approved">승인완료</span>
+                                                </c:when>
+
+                                                <c:when test="${seller.status eq 'REJECTED'}">
+                                                    <span class="admin-status rejected">반려</span>
+                                                </c:when>
+                                            </c:choose>
+                                        </td>
+                                        <td>${seller.created_at}</td>
+                                        <td class="admin-table-actions">
+                                            <button type="button"
+                                                class="admin-btn light admin-detail-btn">상세</button>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <aside class="admin-card admin-detail-panel" id="adminDetailPanel"
+                    aria-labelledby="sellerDetailTitle">
+                    <div class="admin-detail-panel-inner">
+                        <div class="admin-detail-content">
+                            <div class="admin-detail-head">
+                                <div>
+                                    <span class="admin-page-label">SELLER DETAIL</span>
+                                    <h2 id="sellerDetailTitle">판매자 상세</h2>
+                                </div>
+                                <button type="button" class="admin-detail-close"
+                                    aria-label="닫기">&times;</button>
+                            </div>
+                            <dl class="admin-detail-grid">
+                                <div>
+                                    <dt>신청번호</dt>
+                                    <dd id="sellerId">-</dd>
+                                </div>
+                                <div>
+                                    <dt>판매자번호</dt>
+                                    <dd id="userId">-</dd>
+                                </div>
+                                <div>
+                                    <dt>상점명</dt>
+                                    <dd id="companyName" class="admin-highlight-target">-</dd>
+                                </div>
+                                <div>
+                                    <dt>대표자</dt>
+                                    <dd id="representativeName" class="admin-highlight-target">-</dd>
+                                </div>
+                                <div>
+                                    <dt>사업자번호</dt>
+                                    <dd id="businessNumber" class="admin-highlight-target">-</dd>
+                                </div>
+                                <div>
+                                    <dt>개업일자</dt>
+                                    <dd id="openingDate">-</dd>
+                                </div>
+                                <div>
+                                    <dt>사업자 주소</dt>
+                                    <dd id="businessAddress" class="admin-highlight-target">-</dd>
+                                </div>
+                                <div>
+                                    <dt>상태</dt>
+                                    <dd id="status">-</dd>
+                                </div>
+                                <div>
+                                    <dt>신청일</dt>
+                                    <dd id="createdAt">-</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+
+            <div class="admin-pagination">
+                <div class="admin-pagination-pages">
+                    <c:if test="${pagination.totalPage > 0}">
+                        <c:if test="${pagination.hasPrev}">
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                                이전
+                            </a>
+                        </c:if>
+                        <c:if test="${!pagination.hasPrev}">
+                            <span class="disabled">이전</span>
+                        </c:if>
+
+                        <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                                class="${pagination.page == i ? 'active' : ''}">
+                                ${i}
+                            </a>
+                        </c:forEach>
+
+                        <c:if test="${pagination.hasNext}">
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                                다음
+                            </a>
+                        </c:if>
+                        <c:if test="${!pagination.hasNext}">
+                            <span class="disabled">다음</span>
+                        </c:if>
+                    </c:if>
+                </div>
+                <span class="admin-filter-count">전체 ${totalCount}건</span>
             </div>
-        </section>
-    </main>
-</div>
+        </main>
+    </div>
 </body>
+
 </html>

@@ -195,7 +195,7 @@
         let previewImageList = [
             <c:forEach var="image" items="${review.imageList}" varStatus="st">
             {
-                image_id: ${image.image_id},
+                image_id : ${image.image_id},
                 image_url: "${image.image_url}",
                 file: null,
                 isNew: false

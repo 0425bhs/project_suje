@@ -8,10 +8,10 @@
 
 <head>
     <link rel="stylesheet" href="/css/seller/seller_form_common.css">
-    <link rel="stylesheet" href="/css/seller/seller_product_list.css">
     <link rel="stylesheet" href="/css/seller/seller_order_list.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <script src="/js/seller_order.js"></script>
+    <script src="/js/seller_order.js" defer></script>
 </head>
 
 <body>
@@ -38,7 +38,7 @@
                     <span class="view-icon simple"></span>
                 </button>
 
-                <button type="button" class="view-icon-btn" data-view="card" title="카드형태">
+                <button type="button" class="view-icon-btn active" data-view="card" title="카드형태">
                     <span class="view-icon card"></span>
                 </button>
 
@@ -81,7 +81,6 @@
                        class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}">
                         취소
                     </a>
-
                 </div>
             </div>
 
@@ -141,15 +140,11 @@
                                                             </c:when>
 
                                                             <c:when test="${fn:startsWith(fn:trim(mainItem.imageL), '/upload/')}">
-                                                                <img src="${fn:trim(mainItem.imageL)}"
-                                                                     alt="${mainItem.productName}"
-                                                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                                <img src="${fn:trim(mainItem.imageL)}" alt="${mainItem.productName}">
                                                             </c:when>
 
                                                             <c:otherwise>
-                                                                <img src="/upload/${fn:trim(mainItem.imageL)}"
-                                                                     alt="${mainItem.productName}"
-                                                                     onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                                <img src="/upload/${fn:trim(mainItem.imageL)}" alt="${mainItem.productName}">
                                                             </c:otherwise>
                                                         </c:choose>
 
@@ -165,8 +160,8 @@
 
                                                     <div class="simple-product-option">
                                                         <c:choose>
-                                                            <c:when test="${not empty mainItem.optionName}">
-                                                                옵션: ${mainItem.optionName}
+                                                            <c:when test="${not empty mainItem.option_name}">
+                                                                옵션: ${mainItem.option_name}
                                                             </c:when>
 
                                                             <c:otherwise>
@@ -204,7 +199,7 @@
                                                           method="post"
                                                           class="order-status-form">
 
-                                                        <input type="hidden" name="order_id" value="${order.order_id}">
+                                                        <input type="hidden" name="order_item_id" value="${mainItem.order_item_id}">
                                                         <input type="hidden" name="selectedStatus" value="${selectedStatus}">
 
                                                         <select name="status"
@@ -269,7 +264,7 @@
 
                         </section>
 
-                        <section class="seller-order-card-view" data-view-panel="card">
+                        <section class="seller-order-card-view active" data-view-panel="card">
 
                             <div class="seller-order-list">
 
@@ -330,7 +325,7 @@
                                                       method="post"
                                                       class="order-status-form">
 
-                                                    <input type="hidden" name="order_id" value="${order.order_id}">
+                                                    <input type="hidden" name="order_item_id" value="${mainItem.order_item_id}">
                                                     <input type="hidden" name="selectedStatus" value="${selectedStatus}">
 
                                                     <select name="status"
@@ -383,15 +378,11 @@
                                                         </c:when>
 
                                                         <c:when test="${fn:startsWith(fn:trim(mainItem.imageL), '/upload/')}">
-                                                            <img src="${fn:trim(mainItem.imageL)}"
-                                                                 alt="${mainItem.productName}"
-                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                            <img src="${fn:trim(mainItem.imageL)}" alt="${mainItem.productName}">
                                                         </c:when>
 
                                                         <c:otherwise>
-                                                            <img src="/upload/${fn:trim(mainItem.imageL)}"
-                                                                 alt="${mainItem.productName}"
-                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                            <img src="/upload/${fn:trim(mainItem.imageL)}" alt="${mainItem.productName}">
                                                         </c:otherwise>
                                                     </c:choose>
 
@@ -487,15 +478,11 @@
                                                         </c:when>
 
                                                         <c:when test="${fn:startsWith(fn:trim(item.imageL), '/upload/')}">
-                                                            <img src="${fn:trim(item.imageL)}"
-                                                                 alt="${item.productName}"
-                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                            <img src="${fn:trim(item.imageL)}" alt="${item.productName}">
                                                         </c:when>
 
                                                         <c:otherwise>
-                                                            <img src="/upload/${fn:trim(item.imageL)}"
-                                                                 alt="${item.productName}"
-                                                                 onerror="this.onerror=null; this.src='/images/no_image.png';">
+                                                            <img src="/upload/${fn:trim(item.imageL)}" alt="${item.productName}">
                                                         </c:otherwise>
                                                     </c:choose>
 
@@ -506,8 +493,8 @@
 
                                                     <p>
                                                         <c:choose>
-                                                            <c:when test="${not empty item.optionName}">
-                                                                옵션: ${item.optionName}
+                                                            <c:when test="${not empty item.option_name}">
+                                                                옵션: ${item.option_name}
                                                             </c:when>
 
                                                             <c:otherwise>

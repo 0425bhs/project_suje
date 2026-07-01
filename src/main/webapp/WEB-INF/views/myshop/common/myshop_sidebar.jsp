@@ -27,16 +27,13 @@
             <a href="/myshop/reviews" class="${activeMenu eq 'writtenReview' ? 'active' : ''}">내가 작성한 리뷰</a>
             
             <a href="/myshop/reviews?tab=writable" class="${activeMenu eq 'writableReview' ? 'active' : ''}">작성 가능한 리뷰</a>
-            </button>
             
         </div>
 
         <div class="myshop-side-group">
             <strong>문의 관리</strong>
             <a href="/myshop/qnas" class="${activeMenu eq 'qna' ? 'active' : ''}">내 문의</a>
-            <!-- <button type="button" onclick="alert('상품 Q&A는 준비중입니다.');">
-                상품 Q&amp;A
-            </button> -->
+            
         </div>
 
         <div class="myshop-side-group">

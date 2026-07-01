@@ -853,3 +853,12 @@
     }
 }
 
+.myshop-order-item-actions .inline-form {
+    margin: 0;
+}
+
+.myshop-order-item-actions .inline-form button {
+    width: 100%;
+}
+
+        

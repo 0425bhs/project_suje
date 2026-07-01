@@ -1,25 +1,125 @@
-function cartInsert(productId, quantityValue,optionIdValue){
+function cartInsert(productId, quantityValue, optionIdValue){
 
-    let product_id = productId;
-    let quantity = quantityValue;
+    if(productId != null && productId !== ""){
 
-    if(product_id == null || product_id === ""){
-        let productInput = document.getElementById("product_id");
+        const params = new URLSearchParams();
+        params.append("product_id", productId);
+        params.append("quantity", quantityValue == null || quantityValue === "" ? 1 : quantityValue);
 
-        if(productInput == null){
-            alert("상품 정보를 찾을 수 없습니다.");
+        if(optionIdValue != null && optionIdValue !== "" && optionIdValue !== "null"){
+            params.append("option_id", optionIdValue);
+        }
+
+        fetch("/cart_insert.do",{method:"POST",headers:{"Content-Type": "application/x-www-form-urlencoded"},body: params.toString()}).then(response=>response.json()).then(data=>{
+            if(data.result == "login"){
+                alert("로그인 후 이용 가능합니다.");
+                location.href = "/login.do";
+                return;
+            }
+
+            if(data.result == "success"){
+                if(confirm("장바구니에 담았습니다. 장바구니로 이동하시겠습니까?")){
+                    location.href = "/cart_list.do";
+                }
+                return;
+            }
+
+            alert("장바구니 담기에 실패했습니다.");
+        })
+
+        return;
+    }
+
+    const productInput = document.getElementById("product_id");
+
+    if(productInput == null){
+        alert("상품 정보를 찾을 수 없습니다.");
+        return;
+    }
+
+    const product_id = productInput.value;
+
+    const selectedOptionBox = document.getElementById("selectedOptionBox");
+    const optionSelect = document.getElementById("option_id");
+
+    if(optionSelect != null){
+
+        const selectedItems = selectedOptionBox == null
+            ? []
+            : selectedOptionBox.querySelectorAll(".selected-option-item");
+
+        if(selectedItems.length === 0){
+            alert("옵션을 선택해주세요.");
+            optionSelect.focus();
             return;
         }
 
-        product_id = productInput.value;
+        const requestList = [];
+
+        selectedItems.forEach(function(item){
+
+            const optionInput = item.querySelector("input[name='option_id']");
+            const quantityInput = item.querySelector("input[name='quantity']");
+
+            if(optionInput == null || quantityInput == null){
+                return;
+            }
+
+            const params = new URLSearchParams();
+            params.append("product_id", product_id);
+            params.append("option_id", optionInput.value);
+            params.append("quantity", quantityInput.value);
+
+            requestList.push(
+                fetch("/cart_insert.do",{method:"POST",headers:{"Content-Type": "application/x-www-form-urlencoded"},body: params.toString()}).then(response => response.json())
+            );
+        });
+
+        Promise.all(requestList)
+            .then(function(resultList){
+
+                const loginResult = resultList.some(function(data){
+                    return data.result == "login";
+                });
+
+                if(loginResult){
+                    alert("로그인 후 이용 가능합니다.");
+                    location.href = "/login.do";
+                    return;
+                }
+
+                const failResult = resultList.some(function(data){
+                    return !(
+        data.result == "success" ||
+        data.result == "insert" ||
+        data.result == "update" ||
+        data.result == "quantityPlus" ||
+        data.result == 1 ||
+        data.result == "1"
+    );
+});
+
+                if(failResult){
+                    alert("일부 옵션을 장바구니에 담지 못했습니다.");
+                    return;
+                }
+
+                if(confirm("장바구니에 담았습니다. 장바구니로 이동하시겠습니까?")){
+                    location.href = "/cart_list.do";
+                }
+            })
+
+        return;
     }
 
+    let quantity = quantityValue;
+
     if(quantity == null || quantity === ""){
-        let quantityInput = document.getElementById("detailQuantity");
+        const quantityInput = document.getElementById("detailQuantity");
 
         if(quantityInput != null){
             quantity = quantityInput.value;
-        }else{
+        } else {
             quantity = 1;
         }
     }
@@ -28,35 +128,11 @@ function cartInsert(productId, quantityValue,optionIdValue){
         quantity = 1;
     }
 
-    const optionSelect = document.getElementById("option_id");
-
-    let optionId = "";
-
-    if(optionSelect != null){
-
-        if(optionSelect.value === ""){
-            alert("옵션을 선택해주세요.");
-            optionSelect.focus();
-            return;
-        }
-
-        optionId = optionSelect.value;
-
-    }else if(optionIdValue != null && optionIdValue !== "" && optionIdValue !== "null"){
-
-        optionId = optionIdValue;
-    }
-
     const params = new URLSearchParams();
     params.append("product_id", product_id);
     params.append("quantity", quantity);
 
-    if(optionId !== ""){
-        params.append("option_id", optionId);
-    }
-
-    fetch("/cart_insert.do",{method: "POST",headers: {"Content-Type": "application/x-www-form-urlencoded"},body: params.toString()
-    }).then(response=>response.json()).then(data=>{
+    fetch("/cart_insert.do",{method:"POST",headers:{"Content-Type": "application/x-www-form-urlencoded"},body: params.toString()}).then(response=>response.json()).then(data=>{
 
         if(data.result == "login"){
             alert("로그인 후 이용 가능합니다.");
@@ -72,10 +148,7 @@ function cartInsert(productId, quantityValue,optionIdValue){
         }
 
         alert("장바구니 담기에 실패했습니다.");
-    }).catch(error => {
-        console.log(error);
-        alert("장바구니 처리 중 오류가 발생했습니다.");
-    });
+    })
 }
 
 
@@ -84,12 +157,17 @@ function allCartCheck(){
     const allCheck = document.getElementById("allCheck");
     const sellerChecks = document.querySelectorAll(".seller-check");
     const checks = document.querySelectorAll(".cart-check");
+    const productGroupChecks = document.querySelectorAll(".product-group-check");
 
     sellerChecks.forEach(chk => {
         chk.checked = allCheck.checked;
     });
 
     checks.forEach(chk => {
+        chk.checked = allCheck.checked;
+    });
+
+    productGroupChecks.forEach(chk => {
         chk.checked = allCheck.checked;
     });
 
@@ -101,8 +179,13 @@ function sellerCartCheck(sellerCheck){
 
     const sellerId = sellerCheck.dataset.sellerId;
     const checks = document.querySelectorAll(".cart-check[data-seller-id='" + sellerId + "']");
+    const productGroupChecks = document.querySelectorAll(".product-group-check[data-seller-id='" + sellerId + "']");
 
     checks.forEach(chk => {
+        chk.checked = sellerCheck.checked;
+    });
+
+    productGroupChecks.forEach(chk => {
         chk.checked = sellerCheck.checked;
     });
 
@@ -172,6 +255,23 @@ function calcCartTotal(){
     if(orderCountBadge != null){
         orderCountBadge.innerText = checked.length;
     }
+
+    const productGroupChecks = document.querySelectorAll(".product-group-check");
+
+    productGroupChecks.forEach(productCheck => {
+
+        const productId = productCheck.dataset.productId;
+
+        const productItems = document.querySelectorAll(
+            ".cart-check[data-product-id='" + productId + "']"
+        );
+
+        const productChecked = document.querySelectorAll(
+            ".cart-check[data-product-id='" + productId + "']:checked"
+        );
+
+        productCheck.checked = productItems.length > 0 && productItems.length == productChecked.length;
+    });
 
     sellerChecks.forEach(sellerCheck => {
 
@@ -260,7 +360,7 @@ function updateSellerOrderSummary(hasFreeShipping, appliedSellerId, maxDeliveryF
 }
 
 
-function setMoneyText(id, value, prefix){
+function setMoneyText(id,value,prefix){
 
     const el = document.getElementById(id);
 
@@ -430,5 +530,47 @@ function cartOrderCheck() {
     }
 
     return true;
+}
+
+function productGroupCheck(productCheck) {
+    const productId = productCheck.dataset.productId;
+    const checked = productCheck.checked;
+
+    const optionChecks = document.querySelectorAll(
+        ".cart-option-check[data-product-id='" + productId + "']"
+    );
+
+    optionChecks.forEach(function (check) {
+        check.checked = checked;
+    });
+
+    calcCartTotal();
+}
+
+function deleteOneCart(btn) {
+
+    const cartId = btn.dataset.cartId;
+
+    if (cartId == null || cartId === "") {
+        alert("삭제할 장바구니 정보를 찾을 수 없습니다.");
+        return;
+    }
+
+    if (!confirm("선택한 옵션을 삭제하시겠습니까?")) {
+        return;
+    }
+
+    const form = document.createElement("form");
+    form.method = "post";
+    form.action = "/cart_delete_selected.do";
+
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "cart_id";
+    input.value = cartId;
+
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
 }
 

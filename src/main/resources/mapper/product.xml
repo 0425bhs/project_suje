@@ -16,6 +16,72 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LIMIT #{start}, #{blockList}
     </select>
 
+    <select id="getProductListByKeyword" resultType="product">
+        SELECT p.*, s.company_name, c.name category_name
+        FROM products p
+        JOIN sellers s ON p.seller_id = s.seller_id
+        JOIN categories c ON p.category_id = c.category_id
+        <where>
+            <if test="status != null and status != 'all'">
+                p.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    p.name LIKE CONCAT("%", #{keyword}, "%")
+                    OR s.company_name LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND p.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND p.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            </if>
+        </where>
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY p.created_at ASC, p.product_id ASC
+            </when>
+            <when test="sort == 'name'">
+                ORDER BY p.name ASC, p.product_id DESC
+            </when>
+            <otherwise>
+                ORDER BY p.created_at DESC, p.product_id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getProductListCountByKeyword" resultType="int">
+        SELECT count(*)
+        FROM products p
+        JOIN sellers s ON p.seller_id = s.seller_id
+        JOIN categories c ON p.category_id = c.category_id
+        <where>
+            <if test="status != null and status != 'all'">
+                p.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    p.name LIKE CONCAT("%", #{keyword}, "%")
+                    OR s.company_name LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND p.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND p.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            </if>
+        </where>
+    </select>
+
     <!-- 상품 상세 조회 -->
     <select id="product_one" resultType="product">
         SELECT
@@ -38,6 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.sale_price_updated_at,
 
             s.company_name,
+            c.name AS category_name,
 
             IFNULL(rv.review_avg, 0) AS review_avg,
             IFNULL(rv.review_count, 0) AS review_count
@@ -46,6 +113,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         LEFT JOIN sellers s
         ON p.seller_id = s.seller_id
+
+        LEFT JOIN categories c
+        ON p.category_id = c.category_id
 
         LEFT JOIN (
             SELECT

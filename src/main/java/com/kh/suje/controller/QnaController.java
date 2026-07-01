@@ -26,7 +26,13 @@ public class QnaController {
     private final ProductDAO productDAO;
 
     @GetMapping("qna_form.do")
-    public String qnaForm(Model model, int product_id) {
+    public String qnaForm(HttpSession session, Model model, int product_id) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
         ProductVO product = productDAO.product_one(product_id);
         model.addAttribute("product", product);
         
@@ -66,7 +72,7 @@ public class QnaController {
 
     @GetMapping("qna_delete.do")
     public String qnaDelete(int qna_id) {
-       qnaDAO.deleteQna(qna_id);
+        qnaDAO.deleteQna(qna_id);
 
         return "redirect:/myshop/qnas";
     }

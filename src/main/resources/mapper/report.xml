@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.ReportDAO">
+    <insert id="addReport">
+        INSERT INTO reports (reporter_id, target_type, target_id, reason)
+        VALUES (#{reporter_id}, #{target_type}, #{target_id}, #{reason})
+    </insert>
+
+    <select id="getReportListByKeyword" resultType="report">
+        SELECT r.*, 
+               u.name AS reporter_name
+        FROM reports r
+        JOIN users u ON u.user_id = r.reporter_id
+        LEFT JOIN products p ON p.product_id = r.target_id AND target_type = 'PRODUCT' 
+        LEFT JOIN reviews rv ON rv.review_id = r.target_id AND target_type = 'REVIEW'
+        LEFT JOIN qnas q ON q.qna_id = r.target_id AND target_type = 'QNA'
+        <where>
+        <if test="status != null and status != 'all'">
+            r.status = #{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (
+                r.reason LIKE CONCAT("%", #{keyword} ,"%")
+                OR u.name LIKE CONCAT("%", #{keyword} ,"%")
+            )
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND r.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND r.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+        </if>
+        </where>
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY r.created_at ASC, r.report_id ASC
+            </when>
+            <when test="sort == 'target'">
+                ORDER BY r.target_type ASC, r.target_id ASC, r.report_id DESC
+            </when>
+            <otherwise>
+                ORDER BY r.created_at DESC, r.report_id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getReportListCountByKeyword" resultType="int">
+        SELECT count(*)
+        FROM reports r
+        JOIN users u ON u.user_id = r.reporter_id
+        LEFT JOIN products p ON p.product_id = r.target_id AND target_type = 'PRODUCT' 
+        LEFT JOIN reviews rv ON rv.review_id = r.target_id AND target_type = 'REVIEW'
+        LEFT JOIN qnas q ON q.qna_id = r.target_id AND target_type = 'QNA'
+        <where>
+        <if test="status != null and status != 'all'">
+            r.status = #{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (
+                r.reason LIKE CONCAT("%", #{keyword} ,"%")
+                OR u.name LIKE CONCAT("%", #{keyword} ,"%")
+            )
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND r.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND r.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+        </if>
+        </where>
+    </select>
+
+    <select id="getReportById" resultType="report">
+        SELECT r.*,
+               u.name AS reporter_name
+        FROM reports r
+        JOIN users u ON u.user_id = r.reporter_id
+        WHERE r.report_id = #{report_id}
+    </select>
+</mapper>

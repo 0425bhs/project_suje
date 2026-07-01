@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.InquiryDAO">
+
+    <insert id="addInquiry">
+        INSERT INTO inquiries (
+            user_id, inquiry_type, title, content
+        )
+        VALUES (
+            #{user_id}, #{inquiry_type}, #{title}, #{content}
+        )
+    </insert>
+
+    <select id="getInquryListByKeyword" resultType="inquiry">
+        SELECT i.*, u.name user_name
+        FROM inquiries i
+        JOIN users u ON u.user_id = i.user_id
+        <where>
+            <if test="status != null and status != 'all'">
+                i.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                and (
+                    i.title LIKE CONCAT("%", #{keyword}, "%")
+                    OR u.name LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND i.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND i.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            </if>
+        </where>
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY i.created_at ASC, i.inquiry_id ASC
+            </when>
+            <when test="sort == 'title'">
+                ORDER BY i.title ASC, i.inquiry_id DESC
+            </when>
+            <otherwise>
+                ORDER BY i.created_at DESC, i.inquiry_id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getInquryListCountByKeyword" resultType="int">
+        SELECT count(*)
+        FROM inquiries i
+        JOIN users u ON u.user_id = i.user_id
+        <where>
+            <if test="status != null and status != 'all'">
+                i.status = #{status}
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                and (
+                    i.title LIKE CONCAT("%", #{keyword}, "%")
+                    OR u.name LIKE CONCAT("%", #{keyword}, "%")
+                )
+            </if>
+
+            <if test="startDate != null and startDate != ''">
+                AND i.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+
+            <if test="endDate != null and endDate != ''">
+                AND i.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            </if>
+        </where>
+    </select>
+
+    <select id="getInquiryById">
+        SELECT *
+        FROM inquiries
+        WHERE inquiry_id = #{inquiry_id}
+    </select>
+</mapper>

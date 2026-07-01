@@ -61,7 +61,7 @@
     <section class="dashboard-section dashboard-recent-orders">
         
             <div class="dashboard-section-head">
-                <h3>최근 주문 내역 <span>최근 3건</span></h3>
+                <h3>최근 주문 내역 <span>최근 5건</span></h3>
                 <a href="/myshop/orders" class="view-all-btn">전체보기 &gt;</a>
             </div>
 
@@ -74,7 +74,7 @@
 
                 <c:otherwise>
                     <div class="myshop-order dashboard-list-compact">
-                        <%-- 최근 3건만 출력 --%>
+                        <%-- 최근 5건만 출력 --%>
                         <c:forEach var="order" items="${orderList}" varStatus="status">
                             <c:if test="${status.index < 5}"> 
 
@@ -153,7 +153,7 @@
                                         </div>
 
                                         <div class="myshop-order-actions">
-                                            <c:if test="${order.status eq 'PENDING'}">
+                                            <c:if test="${order.status eq 'PENDING' and order.total_amount > 0}"> 
                                                 <a href="/payment/ready?order_id=${order.order_id}" class="primary">
                                                     결제하기
                                                 </a>
@@ -206,13 +206,23 @@
                 <h3>나의 쇼핑 혜택</h3>
             </div>
             <div class="dashboard-benefit-row">
-                <div class="dashboard-benefit-item point">
+                <div class="dashboard-benefit-item point"
+                    onclick="location.href='/myshop/points'"
+                    style="cursor:pointer;">
                     <span>적립금</span>
-                    <strong>2,500<small>원</small></strong>
-                </div>
-                <div class="dashboard-benefit-item coupon">
+                    <strong>
+                        <fmt:formatNumber value="${empty pointBalance ? 0 : pointBalance}" pattern="#,###"/>
+                        <small>P</small>
+                    </strong>
+                </div>  
+                <div class="dashboard-benefit-item coupon"
+                    onclick="location.href='/myshop/coupons'"
+                    style="cursor:pointer;">
                     <span>쿠폰</span>
-                    <strong>2<small>장</small></strong>
+                    <strong>
+                        ${empty couponCount ? 0 : couponCount}
+                        <small>장</small>
+                    </strong>
                 </div>
             </div>
         </section>
@@ -260,7 +270,7 @@
                                 onclick="location.href='/review_form.do?order_item_id=${review.order_item_id}'">
                             리뷰쓰기
                         </button>
-                        <a href="/mypage/review/write" class="action">리뷰 쓰고 500원 받기</a>
+                        <a href="/mypage/review/write" class="action">리뷰 쓰고 100원 받기</a>
                     </div>
                 </li>
                 </c:forEach>

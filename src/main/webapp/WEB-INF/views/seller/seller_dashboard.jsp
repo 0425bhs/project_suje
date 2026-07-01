@@ -7,6 +7,7 @@
     <head>
         <link rel="stylesheet" href="/css/seller/seller_form_common.css">
         <link rel="stylesheet" href="/css/seller/seller_dashobard.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     </head>
 
     <body>
@@ -60,12 +61,6 @@
                                 <span class="count">${deliveredCount}<small>건</small></span>
                             </div>
 
-                            <div class="funnel-arrow">〉</div>
-
-                            <div class="funnel-step">
-                                <span class="label">구매확정</span>
-                                <span class="count">0<small>건(미구현)</small></span>
-                            </div>
                         </div>
                     </div>
 
@@ -122,7 +117,7 @@
 
                         <div class="list-group">
                             <div class="list-item clickable" onclick="location.href='/seller_qna_list.do'">
-                                <span class="label">미답변 상품 Q&amp;A</span>
+                                <span class="label">미답변 상품 Q&A</span>
                                 <span class="value zero">${unansweredQnaCount}</span>
                             </div>
 

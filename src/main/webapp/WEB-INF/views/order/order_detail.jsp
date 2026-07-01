@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -47,10 +48,18 @@
                             <c:forEach var="item" items="${orderItemList}">
                                 <div class="order-item">
                                     <c:choose>
-                                        <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
-                                            <img src="/upload/${item.imageL}"
-                                                alt="${item.productName}"
-                                                onerror="this.src='/images/no_image.png';">
+                                        <c:when test="${not empty item.imageL and fn:trim(item.imageL) ne 'no_file'}">
+                                            <c:set var="itemImagePath" value="${fn:trim(item.imageL)}" />
+
+                                            <c:choose>
+                                                <c:when test="${fn:startsWith(itemImagePath, '/upload/')}">
+                                                    <img src="${itemImagePath}" alt="${item.productName}">
+                                                </c:when>
+
+                                                <c:otherwise>
+                                                    <img src="/upload/${itemImagePath}" alt="${item.productName}">
+                                                </c:otherwise>
+                                            </c:choose>
                                         </c:when>
 
                                         <c:otherwise>
@@ -62,9 +71,9 @@
                                         <div class="creator-line">작가 상품</div>
                                         <strong>${item.productName}</strong>
 
-                                        <c:if test="${not empty item.optionName}">
+                                        <c:if test="${not empty item.option_name}">
                                             <p class="order-option-text">
-                                                옵션 : ${item.optionName}
+                                                옵션 : ${item.option_name}
 
                                                 <c:if test="${item.optionPrice gt 0}">
                                                     (+<fmt:formatNumber value="${item.optionPrice}" pattern="#,###" />원)
