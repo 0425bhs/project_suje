@@ -106,6 +106,8 @@ public interface OrderDAO {
             @Param("status") String status,
             @Param("keyword") String keyword,
             @Param("userId") Integer userId,
+            @Param("sellerId") Integer sellerId,
+            @Param("productId") Integer productId,
             @Param("startDate") String startDate,
             @Param("endDate") String endDate
     );
@@ -115,6 +117,8 @@ public interface OrderDAO {
             @Param("status") String status,
             @Param("keyword") String keyword,
             @Param("userId") Integer userId,
+            @Param("sellerId") Integer sellerId,
+            @Param("productId") Integer productId,
             @Param("size") int size,
             @Param("offset") int offset,
             @Param("startDate") String startDate,

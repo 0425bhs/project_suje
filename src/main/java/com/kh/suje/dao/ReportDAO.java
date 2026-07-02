@@ -11,6 +11,7 @@ public interface ReportDAO {
     ReportVO getReportById(int report_id);
     List<ReportVO> getReportListByKeyword(@Param("status") String status,
                                           @Param("keyword") String keyword,
+                                          @Param("user_id") Integer user_id,
                                           @Param("size") Integer size,
                                           @Param("offset") int offset,
                                           @Param("startDate") String startDate,
@@ -18,8 +19,12 @@ public interface ReportDAO {
                                           @Param("sort") String sort);
     int getReportListCountByKeyword(@Param("status") String status,
                                     @Param("keyword") String keyword,
+                                    @Param("user_id") Integer user_id,
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
+
+    int updateReportStatus(@Param("report_id") int report_id,
+                           @Param("status") String status);
 
     int getReportCountByReporterId(int user_id);
 }

@@ -52,6 +52,161 @@ function setDetailStatusBadge(id, status, label) {
     setText(id, label || statusText);
 }
 
+function loadAdminDetailMemo(targetType, targetId, memoContent) {
+    if (!targetType || !targetId || !memoContent) {
+        return;
+    }
+
+    fetch("/admin/memos?target_type=" + encodeURIComponent(targetType)
+        + "&target_id=" + encodeURIComponent(targetId))
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.message || "메모를 불러오지 못했습니다.");
+                return;
+            }
+
+            memoContent.value = data.memoList && data.memoList.length > 0
+                ? data.memoList[0].content || ""
+                : "";
+        });
+}
+
+function initAdminDetailManage(options) {
+    const statusControl = document.querySelector(".admin-detail-status-control");
+    const statusChangeButton = document.querySelector(".admin-detail-status-change");
+    const statusCancelButton = document.querySelector(".admin-detail-status-section .admin-btn.light");
+    const memoContent = document.querySelector(".admin-detail-memo");
+    const memoSaveButton = memoContent
+        ? memoContent.closest(".admin-detail-manage-section").querySelector(".admin-detail-section-actions .admin-btn")
+        : null;
+
+    const config = options || {};
+    const statusLabels = config.statusLabels || {};
+    let selectedId = null;
+    let selectedStatus = "";
+    let selectedRow = null;
+
+    function statusLabel(status) {
+        const key = String(status || "").toUpperCase();
+        return statusLabels[key] || status || "-";
+    }
+
+    function renderStatus(status) {
+        const statusText = String(status || "");
+        const label = statusLabel(statusText);
+
+        selectedStatus = statusText;
+
+        if (statusControl) {
+            statusControl.value = statusText;
+        }
+
+        if (statusChangeButton) {
+            statusChangeButton.disabled = true;
+        }
+
+        if (config.statusBadgeId) {
+            setDetailStatusBadge(config.statusBadgeId, statusText, label);
+        }
+
+        setText("status", label);
+
+        if (selectedRow) {
+            const rowStatus = selectedRow.querySelector(".admin-status");
+
+            if (rowStatus) {
+                rowStatus.className = "admin-status " + statusText.toLowerCase();
+                rowStatus.textContent = label;
+            }
+        }
+    }
+
+    if (statusControl && statusChangeButton && config.statusUrl) {
+        statusChangeButton.disabled = true;
+
+        statusControl.addEventListener("change", () => {
+            statusChangeButton.disabled = statusControl.value === selectedStatus;
+        });
+
+        statusChangeButton.addEventListener("click", () => {
+            if (!selectedId) {
+                return;
+            }
+
+            fetch(config.statusUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: encodeURIComponent(config.idParam) + "=" + encodeURIComponent(selectedId)
+                    + "&status=" + encodeURIComponent(statusControl.value)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || "상태 변경에 실패했습니다.");
+                    return;
+                }
+
+                renderStatus(data.status || statusControl.value);
+            });
+        });
+    }
+
+    if (statusCancelButton && statusControl) {
+        statusCancelButton.addEventListener("click", () => {
+            statusControl.value = selectedStatus;
+
+            if (statusChangeButton) {
+                statusChangeButton.disabled = true;
+            }
+        });
+    }
+
+    if (memoSaveButton && memoContent) {
+        memoSaveButton.addEventListener("click", () => {
+            if (!selectedId || !config.targetType) {
+                return;
+            }
+
+            fetch("/admin/memos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "target_type=" + encodeURIComponent(config.targetType)
+                    + "&target_id=" + encodeURIComponent(selectedId)
+                    + "&content=" + encodeURIComponent(memoContent.value)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || "메모 저장에 실패했습니다.");
+                    return;
+                }
+
+                alert("메모가 저장되었습니다.");
+            });
+        });
+    }
+
+    return {
+        setTarget(id, status, row) {
+            selectedId = id;
+            selectedRow = row || null;
+
+            if (statusControl && status != null) {
+                renderStatus(status);
+            }
+
+            if (memoContent && config.targetType) {
+                loadAdminDetailMemo(config.targetType, id, memoContent);
+            }
+        }
+    };
+}
+
 // 상세 검색 조건 창이 열려있고 상세 검색 버튼이 활성화되어 있으면
 // 상세 검색 조건 창을 닫고 상세 검색 버튼을 비활성화
 function closeAdminAdvancedFilters() {

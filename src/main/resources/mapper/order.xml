@@ -474,6 +474,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="userId != null">
             AND o.user_id = #{userId}
         </if>
+        <if test="sellerId != null">
+            AND p.seller_id = #{sellerId}
+        </if>
+        <if test="productId != null">
+            AND p.product_id = #{productId}
+        </if>
         <if test="keyword != null and keyword != ''">
             AND (
                 CAST(o.order_id AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
@@ -525,6 +531,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
         <if test="userId != null">
             AND o.user_id = #{userId}
+        </if>
+        <if test="sellerId != null">
+            AND p.seller_id = #{sellerId}
+        </if>
+        <if test="productId != null">
+            AND p.product_id = #{productId}
         </if>
         <if test="keyword != null and keyword != ''">
             AND (

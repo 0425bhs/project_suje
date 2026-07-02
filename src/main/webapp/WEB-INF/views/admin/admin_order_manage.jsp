@@ -52,6 +52,21 @@
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
+            const statusLabels = {
+                PENDING: "결제대기",
+                PAID: "결제완료",
+                PREPARING: "배송준비",
+                SHIPPING: "배송중",
+                DELIVERED: "배송완료",
+                CANCELLED: "취소"
+            };
+            const managePanel = initAdminDetailManage({
+                targetType: "ORDER",
+                statusUrl: "/admin/orders/status",
+                idParam: "order_id",
+                statusBadgeId: "orderDetailStatusBadge",
+                statusLabels
+            });
 
             rows.forEach((row) => {
                 row.addEventListener("click", () => {
@@ -68,14 +83,6 @@
                     .then(res => res.json())
                     .then(data => {
                         const order = data.order;
-                        const statusLabels = {
-                            PENDING: "결제대기",
-                            PAID: "결제완료",
-                            PREPARING: "배송준비",
-                            SHIPPING: "배송중",
-                            DELIVERED: "배송완료",
-                            CANCELLED: "취소"
-                        };
                         const statusKey = String(order.status || "").toUpperCase();
                         const statusLabel = statusLabels[statusKey] || order.status;
 
@@ -107,6 +114,14 @@
                         setText("createdAt", order.created_at);
                         setText("updatedAt", order.updated_at);
                         renderOrderItems(data.orderItemList);
+                        managePanel.setTarget(order.order_id, statusKey, row);
+
+                        document.getElementById("orderMemberLink").href =
+                            "/admin/members?user_id=" + encodeURIComponent(order.user_id);
+                        document.getElementById("orderMemberOrdersLink").href =
+                            "/admin/orders?user_id=" + encodeURIComponent(order.user_id);
+                        document.getElementById("orderPublicDetailLink").href =
+                            "/order/detail?order_id=" + encodeURIComponent(order.order_id);
 
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     })
@@ -136,17 +151,19 @@
             <form class="admin-filter-form" action="/admin/orders" method="get">
                 <div class="admin-filter-main-row">
                     <div class="admin-filter-tabs">
-                        <a href="/admin/orders?status=all&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                        <a href="/admin/orders?status=all&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                             class="${status eq 'all' ? 'active' : ''}">전체</a>
-                        <a href="/admin/orders?status=pending&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                        <a href="/admin/orders?status=pending&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                             class="${status eq 'pending' ? 'active' : ''}">결제대기</a>
-                        <a href="/admin/orders?status=paid&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                        <a href="/admin/orders?status=paid&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                             class="${status eq 'paid' ? 'active' : ''}">결제완료</a>
-                        <a href="/admin/orders?status=shipping&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                        <a href="/admin/orders?status=preparing&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            class="${status eq 'preparing' ? 'active' : ''}">배송준비</a>
+                        <a href="/admin/orders?status=shipping&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                             class="${status eq 'shipping' ? 'active' : ''}">배송중</a>
-                        <a href="/admin/orders?status=delivered&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                        <a href="/admin/orders?status=delivered&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                             class="${status eq 'delivered' ? 'active' : ''}">배송완료</a>
-                        <a href="/admin/orders?status=cancelled&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                        <a href="/admin/orders?status=cancelled&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                             class="${status eq 'cancelled' ? 'active' : ''}">취소</a>
                     </div>
 
@@ -195,12 +212,12 @@
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
-                <c:if test="${status ne 'all' || not empty keyword || not empty user_id || not empty startDate || not empty endDate}">
+                <c:if test="${status ne 'all' || not empty keyword || not empty user_id || not empty seller_id || not empty product_id || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
                         <span class="admin-filter-applied-label">적용된 조건:</span>
                         <c:if test="${status ne 'all'}">
                             <a class="admin-filter-chip"
-                                href="/admin/orders?status=all&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                href="/admin/orders?status=all&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 상태:
                                 <c:choose>
                                     <c:when test="${status eq 'pending'}">결제대기</c:when>
@@ -215,21 +232,53 @@
                         </c:if>
                         <c:if test="${not empty keyword}">
                             <a class="admin-filter-chip"
-                                href="/admin/orders?status=${status}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                href="/admin/orders?status=${status}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 검색어: ${keyword}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
                         <c:if test="${not empty user_id}">
                             <a class="admin-filter-chip"
-                                href="/admin/orders?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
-                                회원번호: ${user_id}
+                                href="/admin/orders?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                회원:
+                                <c:choose>
+                                    <c:when test="${not empty filterUser}">
+                                        ${filterUser.name} · ${filterUser.login_id}
+                                    </c:when>
+                                    <c:otherwise>${user_id}</c:otherwise>
+                                </c:choose>
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${not empty seller_id}">
+                            <a class="admin-filter-chip"
+                                href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                판매자:
+                                <c:choose>
+                                    <c:when test="${not empty filterSeller}">
+                                        ${filterSeller.company_name} · ${filterSeller.representative_name}
+                                    </c:when>
+                                    <c:otherwise>${seller_id}</c:otherwise>
+                                </c:choose>
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${not empty product_id}">
+                            <a class="admin-filter-chip"
+                                href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                상품:
+                                <c:choose>
+                                    <c:when test="${not empty filterProduct}">
+                                        ${filterProduct.name}
+                                    </c:when>
+                                    <c:otherwise>${product_id}</c:otherwise>
+                                </c:choose>
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
                         <c:if test="${not empty startDate || not empty endDate}">
                             <a class="admin-filter-chip"
-                                href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&sort=${sort}&size=${pagination.size}&page=1">
+                                href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&sort=${sort}&size=${pagination.size}&page=1">
                                 주문일: ${startDate} ~ ${endDate}
                                 <span aria-hidden="true">&times;</span>
                             </a>
@@ -238,6 +287,8 @@
                     </div>
                 </c:if>
 
+                <input type="hidden" name="seller_id" value="${seller_id}">
+                <input type="hidden" name="product_id" value="${product_id}">
                 <input type="hidden" name="page" value="1">
             </form>
         </div>
@@ -271,19 +322,19 @@
                                             <span class="admin-status pending">결제대기</span>
                                         </c:when>
                                         <c:when test="${order.status eq 'PAID'}">
-                                            <span class="admin-status active">결제완료</span>
+                                            <span class="admin-status paid">결제완료</span>
                                         </c:when>
                                         <c:when test="${order.status eq 'PREPARING'}">
                                             <span class="admin-status warning">배송준비</span>
                                         </c:when>
                                         <c:when test="${order.status eq 'SHIPPING'}">
-                                            <span class="admin-status waiting">배송중</span>
+                                            <span class="admin-status shipping">배송중</span>
                                         </c:when>
                                         <c:when test="${order.status eq 'DELIVERED'}">
                                             <span class="admin-status done">배송완료</span>
                                         </c:when>
                                         <c:when test="${order.status eq 'CANCELLED'}">
-                                            <span class="admin-status withdrawn">취소</span>
+                                            <span class="admin-status cancelled">취소</span>
                                         </c:when>
                                     </c:choose>
                                 </td>
@@ -451,6 +502,23 @@
                                                         <button type="button" class="admin-btn light">메모 저장</button>
                                                     </div>
                                                 </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="orderMemberLink">
+                                                            <span>회원 관리</span>
+                                                        </a>
+                                                        <a href="#" id="orderMemberOrdersLink">
+                                                            <span>회원 주문</span>
+                                                        </a>
+                                                        <a href="#" id="orderPublicDetailLink">
+                                                            <span>주문 상세</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -464,7 +532,7 @@
             <div class="admin-pagination-pages">
                 <c:if test="${pagination.totalPage > 0}">
                     <c:if test="${pagination.hasPrev}">
-                        <a href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                        <a href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                             이전
                         </a>
                     </c:if>
@@ -473,14 +541,14 @@
                     </c:if>
 
                     <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                        <a href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                        <a href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                             class="${pagination.page == i ? 'active' : ''}">
                             ${i}
                         </a>
                     </c:forEach>
 
                     <c:if test="${pagination.hasNext}">
-                        <a href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                        <a href="/admin/orders?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                             다음
                         </a>
                     </c:if>

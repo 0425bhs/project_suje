@@ -20,6 +20,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="status != null and status != 'all'">
             r.status = #{status}
         </if>
+        <if test="user_id != null">
+            AND r.reporter_id = #{user_id}
+        </if>
         <if test="keyword != null and keyword != ''">
             AND (
                 r.reason LIKE CONCAT("%", #{keyword} ,"%")
@@ -58,6 +61,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="status != null and status != 'all'">
             r.status = #{status}
         </if>
+        <if test="user_id != null">
+            AND r.reporter_id = #{user_id}
+        </if>
         <if test="keyword != null and keyword != ''">
             AND (
                 r.reason LIKE CONCAT("%", #{keyword} ,"%")
@@ -80,6 +86,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN users u ON u.user_id = r.reporter_id
         WHERE r.report_id = #{report_id}
     </select>
+
+    <update id="updateReportStatus">
+        UPDATE reports
+        SET status = #{status}
+        WHERE report_id = #{report_id}
+    </update>
 
     <select id="getReportCountByReporterId" parameterType="int" resultType="int">
         SELECT COUNT(*)

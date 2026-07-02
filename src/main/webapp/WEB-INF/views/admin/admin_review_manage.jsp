@@ -13,6 +13,9 @@
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
+            const managePanel = initAdminDetailManage({
+                targetType: "REVIEW"
+            });
 
             rows.forEach((row) => {
                 row.addEventListener("click", () => {
@@ -43,6 +46,15 @@
                         setText("rating", review.rating);
                         setText("content", review.content);
                         setText("createdAt", review.created_at);
+                        managePanel.setTarget(review.review_id);
+
+                        document.getElementById("reviewMemberLink").href =
+                            "/admin/members?user_id=" + encodeURIComponent(review.user_id);
+                        document.getElementById("reviewProductLink").href =
+                            "/admin/products?product_id=" + encodeURIComponent(review.product_id);
+                        document.getElementById("reviewProductPublicLink").href =
+                            "/product_detail.do?product_id=" + encodeURIComponent(review.product_id);
+
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     })
                 })
@@ -68,6 +80,9 @@
         <div class="admin-fixed-list-layout">
             <div class="admin-filter-box admin-filter-modern">
             <form class="admin-filter-form" action="/admin/reviews" method="get">
+                <input type="hidden" name="user_id" value="${user_id}">
+                <input type="hidden" name="product_id" value="${product_id}">
+                <input type="hidden" name="review_id" value="${review_id}">
                 <div class="admin-filter-main-row">
                     <div class="admin-search-wrap">
                         <input type="text" id="keyword" class="admin-search" name="keyword"
@@ -98,17 +113,53 @@
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
-                <c:if test="${not empty keyword || not empty startDate || not empty endDate}">
+                <c:if test="${not empty keyword || not empty user_id || not empty product_id || not empty review_id || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
                         <span class="admin-filter-applied-label">적용된 조건:</span>
                         <c:if test="${not empty keyword}">
-                            <a class="admin-filter-chip" href="/admin/reviews?startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reviews?user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 검색어: ${keyword}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
+                        <c:if test="${not empty user_id}">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                회원:
+                                <c:choose>
+                                    <c:when test="${not empty filterUser}">
+                                        ${filterUser.name} · ${filterUser.login_id}
+                                    </c:when>
+                                    <c:otherwise>${user_id}</c:otherwise>
+                                </c:choose>
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${not empty product_id}">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                상품:
+                                <c:choose>
+                                    <c:when test="${not empty filterProduct}">
+                                        ${filterProduct.name}
+                                    </c:when>
+                                    <c:otherwise>${product_id}</c:otherwise>
+                                </c:choose>
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${not empty review_id}">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                후기:
+                                <c:choose>
+                                    <c:when test="${not empty filterReview}">
+                                        #${filterReview.review_id} · ${filterReview.product_name}
+                                    </c:when>
+                                    <c:otherwise>${review_id}</c:otherwise>
+                                </c:choose>
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
                         <c:if test="${not empty startDate || not empty endDate}">
-                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&sort=${sort}&size=${pagination.size}&page=1">
                                 작성일: ${startDate} ~ ${endDate}
                                 <span aria-hidden="true">&times;</span>
                             </a>
@@ -199,7 +250,7 @@
                                 <dd id="reviewId">-</dd>
                             </div>
                             <div>
-                                <dt>유저번호</dt>
+                                <dt>회원번호</dt>
                                 <dd id="userId">-</dd>
                             </div>
                             <div>
@@ -237,6 +288,23 @@
                                                         <button type="button" class="admin-btn light">메모 저장</button>
                                                     </div>
                                                 </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="reviewMemberLink">
+                                                            <span>회원 관리</span>
+                                                        </a>
+                                                        <a href="#" id="reviewProductLink">
+                                                            <span>상품 관리</span>
+                                                        </a>
+                                                        <a href="#" id="reviewProductPublicLink">
+                                                            <span>상품 페이지</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -250,7 +318,7 @@
             <div class="admin-pagination-pages">
                 <c:if test="${pagination.totalPage > 0}">
                     <c:if test="${pagination.hasPrev}">
-                        <a href="/admin/reviews?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                        <a href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                             이전
                         </a>
                     </c:if>
@@ -259,14 +327,14 @@
                     </c:if>
 
                     <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                        <a href="/admin/reviews?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                        <a href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                             class="${pagination.page == i ? 'active' : ''}">
                             ${i}
                         </a>
                     </c:forEach>
 
                     <c:if test="${pagination.hasNext}">
-                        <a href="/admin/reviews?keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                        <a href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                             다음
                         </a>
                     </c:if>

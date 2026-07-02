@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,6 +15,25 @@
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
+            const statusLabels = {
+                PENDING: "승인대기",
+                APPROVED: "판매중",
+                REJECTED: "반려",
+                HIDDEN: "숨김"
+            };
+
+            function formatProductPrice(value) {
+                const number = Number(value || 0);
+
+                return number.toLocaleString("ko-KR") + "원";
+            }
+            const managePanel = initAdminDetailManage({
+                targetType: "PRODUCT",
+                statusUrl: "/admin/products/status",
+                idParam: "product_id",
+                statusBadgeId: "productDetailStatusBadge",
+                statusLabels
+            });
 
             rows.forEach((row) => {
                 row.addEventListener("click", () => {
@@ -30,12 +50,6 @@
                     .then(res => res.json())
                     .then(data => {
                         const product = data.product;
-                        const statusLabels = {
-                            PENDING: "승인대기",
-                            APPROVED: "판매중",
-                            REJECTED: "반려",
-                            HIDDEN: "숨김"
-                        };
                         const statusKey = String(product.status || "").toUpperCase();
                         const statusLabel = statusLabels[statusKey] || product.status;
 
@@ -52,18 +66,29 @@
                         setText("sellerId", product.seller_id);
                         setText("categoryId", product.category_name || product.category_id);
                         // setText("description", product.description);
-                        setText("price", product.price);
-                        setText("salePrice", product.sale_price);
+                        setText("price", formatProductPrice(product.price));
+                        setText("salePrice", formatProductPrice(product.sale_price));
                         setText("stock", product.stock);
-                        setText("deliveryFee", product.delivery_fee);
+                        setText("deliveryFee", formatProductPrice(product.delivery_fee));
                         setText("status", statusLabel);
                         document.getElementById("imageL").src = "/upload/" + product.image_l;
                         setText("createdAt", product.created_at);
                         setText("updatedAt", product.updated_at);
-                        setText("freeShipping", product.free_shipping);
+                        setText("freeShipping", formatProductPrice(product.free_shipping));
                         setText("salePriceUpdatedAt", product.sale_price_updated_at);
                         setText("saleStartAt", product.sale_start_at);
-                        setText("saleEndAt", product.sale_end);
+                        setText("saleEndAt", product.sale_end_at);
+                        managePanel.setTarget(product.product_id, statusKey, row);
+
+                        document.getElementById("productSellerLink").href =
+                            "/admin/sellers?seller_id=" + encodeURIComponent(product.seller_id);
+                        document.getElementById("productReviewLink").href =
+                            "/admin/reviews?product_id=" + encodeURIComponent(product.product_id);
+                        document.getElementById("productOrderLink").href =
+                            "/admin/orders?product_id=" + encodeURIComponent(product.product_id);
+                        document.getElementById("productPublicLink").href =
+                            "/product_detail.do?product_id=" + encodeURIComponent(product.product_id);
+
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                         
                     })
@@ -93,15 +118,15 @@
                 <form class="admin-filter-form" action="/admin/products" method="get">
                     <div class="admin-filter-main-row">
                         <div class="admin-filter-tabs">
-                            <a href="/admin/products?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=all&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'all' ? 'active' : ''}">전체</a>
-                            <a href="/admin/products?status=pending&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=pending&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
-                            <a href="/admin/products?status=approved&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=approved&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'approved' ? 'active' : ''}">판매중</a>
-                            <a href="/admin/products?status=rejected&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=rejected&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'rejected' ? 'active' : ''}">반려</a>
-                            <a href="/admin/products?status=hidden&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=hidden&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'hidden' ? 'active' : ''}">숨김</a>
                         </div>
 
@@ -144,25 +169,49 @@
                         <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                     </div>
 
-                    <c:if test="${status ne 'all' || not empty keyword || not empty startDate || not empty endDate}">
+                    <c:if test="${status ne 'all' || not empty keyword || not empty seller_id || not empty product_id || not empty startDate || not empty endDate}">
                         <div class="admin-filter-applied">
                             <span class="admin-filter-applied-label">적용된 조건:</span>
                             <c:if test="${status ne 'all'}">
                                 <a class="admin-filter-chip"
-                                    href="/admin/products?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    href="/admin/products?status=all&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     상태:
                                     ${status eq 'pending' ? '승인대기' : status eq 'approved' ? '판매중' : status eq 'rejected' ? '반려' : '숨김'}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
                             <c:if test="${not empty keyword}">
-                                <a class="admin-filter-chip" href="/admin/products?status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     검색어: ${keyword}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
+                            <c:if test="${not empty seller_id}">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    판매자:
+                                    <c:choose>
+                                        <c:when test="${not empty filterSeller}">
+                                            ${filterSeller.company_name} · ${filterSeller.representative_name}
+                                        </c:when>
+                                        <c:otherwise>${seller_id}</c:otherwise>
+                                    </c:choose>
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
+                            <c:if test="${not empty product_id}">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    상품:
+                                    <c:choose>
+                                        <c:when test="${not empty filterProduct}">
+                                            ${filterProduct.name}
+                                        </c:when>
+                                        <c:otherwise>${product_id}</c:otherwise>
+                                    </c:choose>
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
                             <c:if test="${not empty startDate || not empty endDate}">
-                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&sort=${sort}&size=${pagination.size}&page=1">
                                     등록일: ${startDate} ~ ${endDate}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
@@ -171,6 +220,8 @@
                         </div>
                     </c:if>
 
+                    <input type="hidden" name="seller_id" value="${seller_id}">
+                    <input type="hidden" name="product_id" value="${product_id}">
                     <input type="hidden" name="page" value="1">
                 </form>
             </div>
@@ -202,7 +253,7 @@
                                         <td class="left admin-highlight-target"><strong>${product.name}</strong></td>
                                         <td class="admin-highlight-target">${product.company_name}</td>
                                         <td class="admin-highlight-target">${product.category_name}</td>
-                                        <td>${product.price}</td>
+                                        <td><fmt:formatNumber value="${product.price}" pattern="#,###" />원</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${product.status eq 'PENDING'}">
@@ -291,7 +342,7 @@
                                     <dd id="sellerId">-</dd>
                                 </div>
                                 <div>
-                                    <dt>카테고리번호</dt>
+                                    <dt>카테고리</dt>
                                     <dd id="categoryId">-</dd>
                                 </div>
                                 
@@ -379,6 +430,26 @@
                                                         <button type="button" class="admin-btn light">메모 저장</button>
                                                     </div>
                                                 </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="productSellerLink">
+                                                            <span>판매자 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productReviewLink">
+                                                            <span>후기 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productOrderLink">
+                                                            <span>주문 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productPublicLink">
+                                                            <span>상품 페이지</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -392,7 +463,7 @@
                 <div class="admin-pagination-pages">
                     <c:if test="${pagination.totalPage > 0}">
                         <c:if test="${pagination.hasPrev}">
-                            <a href="/admin/products?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                            <a href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                                 이전
                             </a>
                         </c:if>
@@ -401,14 +472,14 @@
                         </c:if>
 
                         <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                            <a href="/admin/products?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                            <a href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                                 class="${pagination.page == i ? 'active' : ''}">
                                 ${i}
                             </a>
                         </c:forEach>
 
                         <c:if test="${pagination.hasNext}">
-                            <a href="/admin/products?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                            <a href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                                 다음
                             </a>
                         </c:if>

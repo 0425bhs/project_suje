@@ -13,6 +13,9 @@
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
+            const managePanel = initAdminDetailManage({
+                targetType: "NOTICE"
+            });
 
             rows.forEach((row) => {
                 row.addEventListener("click", () => {
@@ -41,6 +44,11 @@
                         setText("content", notice.content);
                         setText("createdAt", notice.created_at);
                         setText("updatedAt", notice.updated_at);
+                        managePanel.setTarget(notice.notice_id);
+
+                        document.getElementById("noticePublicDetailLink").href =
+                            "/notice_detail.do?notice_id=" + encodeURIComponent(notice.notice_id);
+
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     });
                 });
@@ -218,25 +226,6 @@
                                         </div>
                                         <div class="admin-detail-tab-panel" data-detail-panel="manage">
                                             <div class="admin-detail-manage">
-                                                <div class="admin-detail-manage-section admin-detail-status-section">
-                                                    <div class="admin-detail-section-head">
-                                                        <h3>상태 관리</h3>
-                                                    </div>
-                                                    <div class="admin-detail-setting-row">
-                                                        <label class="admin-detail-control">
-                                                            <span>공지 상태</span>
-                                                            <select class="admin-filter-control admin-detail-status-control">
-                                                            <option value="ACTIVE">게시중</option>
-                                                            <option value="HIDDEN">숨김</option>
-                                                            </select>
-                                                        </label>
-                                                    </div>
-                                                    <div class="admin-detail-section-actions">
-                                                        <button type="button" class="admin-btn light">변경 취소</button>
-                                                        <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
-                                                    </div>
-                                                </div>
-
                                                 <div class="admin-detail-manage-section">
                                                     <div class="admin-detail-section-head">
                                                         <h3>관리 메모</h3>
@@ -245,6 +234,17 @@
                                                         placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">메모 저장</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="noticePublicDetailLink">
+                                                            <span>공지 상세</span>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

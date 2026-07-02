@@ -171,14 +171,14 @@
     color: #2467b2;
 }
 
-.admin-detail-status-badge.rejected,
-.admin-detail-status-badge.cancelled {
+.admin-detail-status-badge.rejected {
     background: #ffe7df;
     color: #d6452f;
 }
 
 .admin-detail-status-badge.hidden,
-.admin-detail-status-badge.private {
+.admin-detail-status-badge.private,
+.admin-detail-status-badge.cancelled {
     background: #eceff3;
     color: #68707a;
 }
@@ -319,6 +319,59 @@
     font-weight: 900;
 }
 
+.admin-detail-link-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.admin-detail-link-actions[hidden] {
+    display: none;
+}
+
+.admin-detail-link-actions .admin-btn {
+    flex: 1;
+    justify-content: center;
+    min-height: 34px;
+}
+
+.admin-detail-link-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.admin-detail-link-list a {
+    min-width: 0;
+    min-height: 42px;
+    padding: 10px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #edf0f3;
+    border-radius: 7px;
+    background: #fff;
+    text-decoration: none;
+}
+
+.admin-detail-link-list a[hidden] {
+    display: none;
+}
+
+.admin-detail-link-list a:hover {
+    border-color: #ff654f;
+    background: #fff7f5;
+}
+
+.admin-detail-link-list span {
+    color: #333;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.admin-detail-link-list a:hover span {
+    color: #ff654f;
+}
+
 .admin-detail-grid {
     margin: 0;
     display: grid;
@@ -365,6 +418,10 @@
     border: 1px solid #edf0f3;
     border-radius: 8px;
     background: #fff;
+}
+
+.admin-detail-manage-section[hidden] {
+    display: none;
 }
 
 .admin-detail-section-head {

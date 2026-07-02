@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kh.suje.dao.AdminMemoDAO;
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.InquiryDAO;
 import com.kh.suje.dao.NoticeDAO;
@@ -19,6 +20,7 @@ import com.kh.suje.dao.ReportDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.dao.UserDAO;
+import com.kh.suje.vo.AdminMemoVO;
 import com.kh.suje.vo.CategoryVO;
 import com.kh.suje.vo.InquiryVO;
 import com.kh.suje.vo.NoticeVO;
@@ -28,6 +30,7 @@ import com.kh.suje.vo.ReportVO;
 import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.UserVO;
+import com.kh.suje.vo.order.OrderVO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,6 +46,7 @@ public class AdminController {
     private final ReportDAO reportDao;
     private final NoticeDAO noticeDao;
     private final OrderDAO orderDao;
+    private final AdminMemoDAO adminMemoDao;
 
     @GetMapping(value = {"/admin", "/admin/dashboard"})
     public String adminDashboard() {
@@ -54,6 +58,7 @@ public class AdminController {
     public String members(Model model, 
                           String role, String keyword, 
                           String gender, String status,
+                          Integer user_id,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
 
@@ -74,12 +79,14 @@ public class AdminController {
             sort = "latest";
         }
 
-        int totalCount = userDao.getUserListCountByKeyword(role, keyword,
+        UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
+
+        int totalCount = userDao.getUserListCountByKeyword(role, keyword, user_id,
                                                            gender, status,
                                                            startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
 
-        List<UserVO> userList = userDao.getUserListByKeyword(role, keyword, 
+        List<UserVO> userList = userDao.getUserListByKeyword(role, keyword, user_id,
                                                              pagination.getSize(), 
                                                              pagination.getOffset(),
                                                              gender, status,
@@ -88,6 +95,8 @@ public class AdminController {
 
         model.addAttribute("role", role);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("user_id", user_id);
+        model.addAttribute("filterUser", filterUser);
         model.addAttribute("gender", gender);
         model.addAttribute("status", status);
         model.addAttribute("sort", sort);
@@ -116,9 +125,11 @@ public class AdminController {
         int reviewCount = reviewDao.getReviewCountByUserId(user_id);
         int inquiryCount = inquiryDao.getInquiryCountByUserId(user_id);
         int reportCount = reportDao.getReportCountByReporterId(user_id);
+        SellerVO seller = "SELLER".equals(user.getRole()) ? sellerDao.selectSellerByUserId(user_id) : null;
 
         map.put("success", true);
         map.put("user", user);
+        map.put("seller", seller);
 
         map.put("orderCount", orderCount);
         map.put("reviewCount", reviewCount);
@@ -149,6 +160,7 @@ public class AdminController {
 
     @GetMapping("/admin/sellers")
     public String sellers(Model model, String status, String keyword,
+                          Integer user_id, Integer seller_id,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"approved".equals(status) && !"rejected".equals(status)) {
@@ -159,9 +171,13 @@ public class AdminController {
             sort = "latest";
         }
 
-        int totalCount = sellerDao.getSellerListCountByKeyword(status, keyword, startDate, endDate);
+        UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
+        SellerVO filterSeller = seller_id == null ? null : sellerDao.getSellerById(seller_id);
+        int totalCount = sellerDao.getSellerListCountByKeyword(status, keyword, user_id, seller_id, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<SellerVO> sellerList = sellerDao.getSellerListByKeyword(status, keyword,
+                                                                     user_id,
+                                                                     seller_id,
                                                                      pagination.getSize(),
                                                                      pagination.getOffset(),
                                                                      startDate, endDate,
@@ -169,6 +185,10 @@ public class AdminController {
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("user_id", user_id);
+        model.addAttribute("seller_id", seller_id);
+        model.addAttribute("filterUser", filterUser);
+        model.addAttribute("filterSeller", filterSeller);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -196,8 +216,28 @@ public class AdminController {
         return map;
     }
 
+    @PostMapping("/admin/sellers/status")
+    @ResponseBody
+    public Map<String, Object> updateSellerStatus(int seller_id, String status) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (!"PENDING".equals(status) && !"APPROVED".equals(status) && !"REJECTED".equals(status)) {
+            map.put("success", false);
+            map.put("message", "잘못된 상태입니다.");
+            return map;
+        }
+
+        sellerDao.updateAdminSellerStatus(seller_id, status);
+
+        map.put("success", true);
+        map.put("status", status);
+
+        return map;
+    }
+
     @GetMapping("/admin/products")
     public String products(Model model, String status, String keyword,
+                           Integer seller_id, Integer product_id,
                            String startDate, String endDate,
                            String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"approved".equals(status) &&
@@ -209,9 +249,14 @@ public class AdminController {
             sort = "latest";
         }
 
-        int totalCount = productDao.getProductListCountByKeyword(status, keyword, startDate, endDate);
+        SellerVO filterSeller = seller_id == null ? null : sellerDao.getSellerById(seller_id);
+        ProductVO filterProduct = product_id == null ? null : productDao.product_one(product_id);
+
+        int totalCount = productDao.getProductListCountByKeyword(status, keyword, seller_id, product_id, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ProductVO> productList = productDao.getProductListByKeyword(status, keyword,
+                                                                         seller_id,
+                                                                         product_id,
                                                                          pagination.getSize(),
                                                                          pagination.getOffset(),
                                                                          startDate, endDate,
@@ -219,6 +264,10 @@ public class AdminController {
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("seller_id", seller_id);
+        model.addAttribute("product_id", product_id);
+        model.addAttribute("filterSeller", filterSeller);
+        model.addAttribute("filterProduct", filterProduct);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -246,23 +295,56 @@ public class AdminController {
         return map;
     }
 
+    @PostMapping("/admin/products/status")
+    @ResponseBody
+    public Map<String, Object> updateProductStatus(int product_id, String status) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (!"PENDING".equals(status) && !"APPROVED".equals(status) &&
+            !"REJECTED".equals(status) && !"HIDDEN".equals(status)) {
+            map.put("success", false);
+            map.put("message", "잘못된 상태입니다.");
+            return map;
+        }
+
+        productDao.updateAdminProductStatus(product_id, status);
+
+        map.put("success", true);
+        map.put("status", status);
+
+        return map;
+    }
+
     @GetMapping("/admin/reviews")
     public String reviews(Model model, String keyword,
+                          Integer user_id, Integer product_id, Integer review_id,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
         if (!"oldest".equals(sort) && !"rating".equals(sort)) {
             sort = "latest";
         }
 
-        int totalCount = reviewDao.getReviewListCountByKeyword(keyword, startDate, endDate);
+        UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
+        ProductVO filterProduct = product_id == null ? null : productDao.product_one(product_id);
+        ReviewVO filterReview = review_id == null ? null : reviewDao.getReviewById(review_id);
+        int totalCount = reviewDao.getReviewListCountByKeyword(keyword, user_id, product_id, review_id, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ReviewVO> reviewList = reviewDao.getReviewListByKeyword(keyword,
+                                                                     user_id,
+                                                                     product_id,
+                                                                     review_id,
                                                                      pagination.getSize(),
                                                                      pagination.getOffset(),
                                                                      startDate, endDate,
                                                                      sort);
 
         model.addAttribute("keyword", keyword);
+        model.addAttribute("user_id", user_id);
+        model.addAttribute("product_id", product_id);
+        model.addAttribute("review_id", review_id);
+        model.addAttribute("filterUser", filterUser);
+        model.addAttribute("filterProduct", filterProduct);
+        model.addAttribute("filterReview", filterReview);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -292,7 +374,7 @@ public class AdminController {
 
     @GetMapping("/admin/orders")
     public String orders(Model model, String status, String keyword,
-                         Integer user_id,
+                         Integer user_id, Integer seller_id, Integer product_id,
                          String startDate, String endDate,
                          String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"paid".equals(status) &&
@@ -305,10 +387,15 @@ public class AdminController {
             sort = "latest";
         }
 
-        int totalCount = orderDao.getAdminOrderListCountByKeyword(status, keyword, user_id, startDate, endDate);
+        UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
+        SellerVO filterSeller = seller_id == null ? null : sellerDao.getSellerById(seller_id);
+        ProductVO filterProduct = product_id == null ? null : productDao.product_one(product_id);
+        int totalCount = orderDao.getAdminOrderListCountByKeyword(status, keyword, user_id, seller_id, product_id, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<Map<String, Object>> orderList = orderDao.getAdminOrderListByKeyword(status, keyword,
                                                                                   user_id,
+                                                                                  seller_id,
+                                                                                  product_id,
                                                                                   pagination.getSize(),
                                                                                   pagination.getOffset(),
                                                                                   startDate, endDate,
@@ -317,6 +404,11 @@ public class AdminController {
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
         model.addAttribute("user_id", user_id);
+        model.addAttribute("seller_id", seller_id);
+        model.addAttribute("product_id", product_id);
+        model.addAttribute("filterUser", filterUser);
+        model.addAttribute("filterSeller", filterSeller);
+        model.addAttribute("filterProduct", filterProduct);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -345,8 +437,38 @@ public class AdminController {
         return map;
     }
 
+    @PostMapping("/admin/orders/status")
+    @ResponseBody
+    public Map<String, Object> updateOrderStatus(int order_id, String status) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (!"PENDING".equals(status) && !"PAID".equals(status) &&
+            !"PREPARING".equals(status) && !"SHIPPING".equals(status) &&
+            !"DELIVERED".equals(status) && !"CANCELLED".equals(status)) {
+            map.put("success", false);
+            map.put("message", "잘못된 상태입니다.");
+            return map;
+        }
+
+        OrderVO order = new OrderVO();
+        order.setOrder_id(order_id);
+        order.setStatus(status);
+        orderDao.updateOrderStatus(order);
+
+        Map<String, Object> itemStatusMap = new HashMap<>();
+        itemStatusMap.put("order_id", order_id);
+        itemStatusMap.put("status", status);
+        orderDao.updateOrderItemsStatusByOrderId(itemStatusMap);
+
+        map.put("success", true);
+        map.put("status", status);
+
+        return map;
+    }
+
     @GetMapping("/admin/inquiries")
     public String inquiries(Model model, String status, String keyword,
+                            Integer user_id,
                             String startDate, String endDate,
                             String sort, Integer size, Integer page) {
         if (!"waiting".equals(status) && !"answered".equals(status)) {
@@ -357,9 +479,11 @@ public class AdminController {
             sort = "latest";
         }
 
-        int totalCount = inquiryDao.getInquryListCountByKeyword(status, keyword, startDate, endDate);
+        UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
+        int totalCount = inquiryDao.getInquryListCountByKeyword(status, keyword, user_id, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<InquiryVO> inquiryList = inquiryDao.getInquryListByKeyword(status, keyword,
+                                                                       user_id,
                                                                        pagination.getSize(),
                                                                        pagination.getOffset(),
                                                                        startDate, endDate,
@@ -367,6 +491,8 @@ public class AdminController {
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("user_id", user_id);
+        model.addAttribute("filterUser", filterUser);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -394,8 +520,28 @@ public class AdminController {
         return map;
     }
 
+    @PostMapping("/admin/inquiries/status")
+    @ResponseBody
+    public Map<String, Object> updateInquiryStatus(int inquiry_id, String status) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (!"WAITING".equals(status) && !"ANSWERED".equals(status)) {
+            map.put("success", false);
+            map.put("message", "잘못된 상태입니다.");
+            return map;
+        }
+
+        inquiryDao.updateInquiryStatus(inquiry_id, status);
+
+        map.put("success", true);
+        map.put("status", status);
+
+        return map;
+    }
+
     @GetMapping("/admin/reports")
     public String reports(Model model, String status, String keyword,
+                          Integer user_id,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"processed".equals(status) &&
@@ -407,9 +553,11 @@ public class AdminController {
             sort = "latest";
         }
 
-        int totalCount = reportDao.getReportListCountByKeyword(status, keyword, startDate, endDate);
+        UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
+        int totalCount = reportDao.getReportListCountByKeyword(status, keyword, user_id, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ReportVO> reportList = reportDao.getReportListByKeyword(status, keyword,
+                                                                     user_id,
                                                                      pagination.getSize(),
                                                                      pagination.getOffset(),
                                                                      startDate, endDate,
@@ -417,6 +565,8 @@ public class AdminController {
 
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("user_id", user_id);
+        model.addAttribute("filterUser", filterUser);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -441,6 +591,25 @@ public class AdminController {
 
         map.put("success", true);
         map.put("report", report);
+        return map;
+    }
+
+    @PostMapping("/admin/reports/status")
+    @ResponseBody
+    public Map<String, Object> updateReportStatus(int report_id, String status) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (!"PENDING".equals(status) && !"PROCESSED".equals(status) && !"REJECTED".equals(status)) {
+            map.put("success", false);
+            map.put("message", "잘못된 상태입니다.");
+            return map;
+        }
+
+        reportDao.updateReportStatus(report_id, status);
+
+        map.put("success", true);
+        map.put("status", status);
+
         return map;
     }
 
@@ -500,5 +669,36 @@ public class AdminController {
     public String statistics() {
 
         return "/admin/admin_statistics";
+    }
+
+    @GetMapping("/admin/memos")
+    @ResponseBody
+    public Map<String, Object> getAdminMemoList(String target_type, int target_id) {
+        Map<String, Object> map = new HashMap<>();
+
+        List<AdminMemoVO> memoList = adminMemoDao.getAdminMemoList(target_type, target_id);
+
+        map.put("success", true);
+        map.put("memoList", memoList);
+
+        return map;
+    }
+
+    @PostMapping("/admin/memos")
+    @ResponseBody
+    public Map<String, Object> addAdminMemo(AdminMemoVO memo) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (memo.getContent() == null || memo.getContent().trim().isEmpty()) {
+            map.put("success", false);
+            map.put("message", "메모 내용을 입력하세요.");
+            return map;
+        }
+
+        adminMemoDao.addAdminMemo(memo);
+
+        map.put("success", true);
+
+        return map;
     }
 }

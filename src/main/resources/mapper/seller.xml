@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.kh.suje.dao.SellerDAO">
     <select id="getSellerById">
-        SELECT *
+        SELECT *, seller_status status
         FROM sellers
         WHERE seller_id = #{seller_id}
     </select>
@@ -16,6 +16,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
         <if test="status != null and status != 'all'">
             seller_status = #{status}
+        </if>
+
+        <if test="user_id != null">
+            AND user_id = #{user_id}
+        </if>
+
+        <if test="seller_id != null">
+            AND seller_id = #{seller_id}
         </if>
 
         <if test="keyword != null and keyword != ''">
@@ -56,6 +64,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             seller_status = #{status}
         </if>
 
+        <if test="user_id != null">
+            AND user_id = #{user_id}
+        </if>
+
+        <if test="seller_id != null">
+            AND seller_id = #{seller_id}
+        </if>
+
         <if test="keyword != null and keyword != ''">
             AND (
                 company_name LIKE CONCAT("%", #{keyword}, "%")
@@ -72,6 +88,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
         </where>
     </select>
+
+    <update id="updateAdminSellerStatus">
+        UPDATE sellers
+        SET seller_status = #{status}
+        WHERE seller_id = #{seller_id}
+    </update>
+
     <!--가입-->
     <insert id = "insertSeller" 
             parameterType="seller">
@@ -97,7 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectSeller"
             parameterType="int"
             resultType="seller">
-        SELECT *
+        SELECT *, seller_status status
         FROM sellers
         WHERE user_id = #{user_id}
     </select>
@@ -333,7 +356,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectSellerByUserId" parameterType="int" resultType="seller">
-        SELECT *
+        SELECT *, seller_status status
         FROM sellers
         WHERE user_id = #{value}
     </select>

@@ -14,6 +14,18 @@
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
+            const statusLabels = {
+                PENDING: "승인대기",
+                APPROVED: "승인완료",
+                REJECTED: "반려"
+            };
+            const managePanel = initAdminDetailManage({
+                targetType: "SELLER",
+                statusUrl: "/admin/sellers/status",
+                idParam: "seller_id",
+                statusBadgeId: "sellerDetailStatusBadge",
+                statusLabels
+            });
 
             rows.forEach((row) => {
                 //모든 행에 클릭 이벤트 부여
@@ -33,11 +45,6 @@
                     .then(res => res.json())
                     .then(data => {
                         const seller = data.seller;
-                        const statusLabels = {
-                            PENDING: "승인대기",
-                            APPROVED: "승인완료",
-                            REJECTED: "반려"
-                        };
                         const statusKey = String(seller.status || "").toUpperCase();
                         const statusLabel = statusLabels[statusKey] || seller.status;
 
@@ -57,6 +64,15 @@
                         setText("businessAddress", seller.business_address);
                         setText("status", statusLabel);
                         setText("createdAt", seller.created_at);
+                        managePanel.setTarget(seller.seller_id, statusKey, row);
+
+                        document.getElementById("sellerMemberLink").href =
+                            "/admin/members?user_id=" + encodeURIComponent(seller.user_id);
+                        document.getElementById("sellerProductLink").href =
+                            "/admin/products?seller_id=" + encodeURIComponent(seller.seller_id);
+                        document.getElementById("sellerShopLink").href =
+                            "/seller_shop_homepage.do?seller_id=" + encodeURIComponent(seller.seller_id);
+
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     })
                 });
@@ -85,13 +101,13 @@
                 <form class="admin-filter-form" action="/admin/sellers" method="get">
                     <div class="admin-filter-main-row">
                         <div class="admin-filter-tabs">
-                            <a href="/admin/sellers?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=all&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'all' ? 'active' : ''}">전체</a>
-                            <a href="/admin/sellers?status=pending&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=pending&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
-                            <a href="/admin/sellers?status=approved&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=approved&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'approved' ? 'active' : ''}">승인완료</a>
-                            <a href="/admin/sellers?status=rejected&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=rejected&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'rejected' ? 'active' : ''}">반려</a>
                         </div>
 
@@ -133,25 +149,49 @@
                         <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                     </div>
 
-                    <c:if test="${status ne 'all' || not empty keyword || not empty startDate || not empty endDate}">
+                    <c:if test="${status ne 'all' || not empty keyword || not empty user_id || not empty seller_id || not empty startDate || not empty endDate}">
                         <div class="admin-filter-applied">
                             <span class="admin-filter-applied-label">적용된 조건:</span>
                             <c:if test="${status ne 'all'}">
                                 <a class="admin-filter-chip"
-                                    href="/admin/sellers?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    href="/admin/sellers?status=all&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     상태:
                                     ${status eq 'pending' ? '승인대기' : status eq 'approved' ? '승인완료' : '반려'}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
                             <c:if test="${not empty keyword}">
-                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     검색어: ${keyword}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
+                            <c:if test="${not empty user_id}">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    회원:
+                                    <c:choose>
+                                        <c:when test="${not empty filterUser}">
+                                            ${filterUser.name} · ${filterUser.login_id}
+                                        </c:when>
+                                        <c:otherwise>${user_id}</c:otherwise>
+                                    </c:choose>
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
+                            <c:if test="${not empty seller_id}">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    판매자:
+                                    <c:choose>
+                                        <c:when test="${not empty filterSeller}">
+                                            ${filterSeller.company_name} · ${filterSeller.representative_name}
+                                        </c:when>
+                                        <c:otherwise>${seller_id}</c:otherwise>
+                                    </c:choose>
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
                             <c:if test="${not empty startDate || not empty endDate}">
-                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&sort=${sort}&size=${pagination.size}&page=1">
                                     신청일: ${startDate} ~ ${endDate}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
@@ -160,6 +200,8 @@
                         </div>
                     </c:if>
 
+                    <input type="hidden" name="user_id" value="${user_id}">
+                    <input type="hidden" name="seller_id" value="${seller_id}">
                     <input type="hidden" name="page" value="1">
                 </form>
             </div>
@@ -191,7 +233,7 @@
                                         data-status="${seller.status}"
                                         data-status-label="${seller.status eq 'PENDING' ? '승인대기' : seller.status eq 'APPROVED' ? '승인완료' : '반려'}"
                                         data-created-at="${seller.created_at}">
-                                        <td>${seller.user_id}</td>
+                                        <td>${seller.seller_id}</td>
                                         <td class="left admin-highlight-target"><strong>${seller.company_name}</strong></td>
                                         <td class="admin-highlight-target">${seller.representative_name}</td>
                                         <td class="admin-highlight-target">${seller.business_number}</td>
@@ -258,7 +300,7 @@
                                     <dd id="sellerId">-</dd>
                                 </div>
                                 <div>
-                                    <dt>판매자번호</dt>
+                                    <dt>회원번호</dt>
                                     <dd id="userId">-</dd>
                                 </div>
                                 <div>
@@ -324,6 +366,23 @@
                                                         <button type="button" class="admin-btn light">메모 저장</button>
                                                     </div>
                                                 </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="sellerMemberLink">
+                                                            <span>회원 관리</span>
+                                                        </a>
+                                                        <a href="#" id="sellerProductLink">
+                                                            <span>상품 관리</span>
+                                                        </a>
+                                                        <a href="#" id="sellerShopLink">
+                                                            <span>판매자 페이지</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -337,7 +396,7 @@
                 <div class="admin-pagination-pages">
                     <c:if test="${pagination.totalPage > 0}">
                         <c:if test="${pagination.hasPrev}">
-                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                                 이전
                             </a>
                         </c:if>
@@ -346,14 +405,14 @@
                         </c:if>
 
                         <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                                 class="${pagination.page == i ? 'active' : ''}">
                                 ${i}
                             </a>
                         </c:forEach>
 
                         <c:if test="${pagination.hasNext}">
-                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                                 다음
                             </a>
                         </c:if>

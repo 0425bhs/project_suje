@@ -22,6 +22,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 i.status = #{status}
             </if>
 
+            <if test="user_id != null">
+                AND i.user_id = #{user_id}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 and (
                     i.title LIKE CONCAT("%", #{keyword}, "%")
@@ -60,6 +64,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 i.status = #{status}
             </if>
 
+            <if test="user_id != null">
+                AND i.user_id = #{user_id}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 and (
                     i.title LIKE CONCAT("%", #{keyword}, "%")
@@ -82,6 +90,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM inquiries
         WHERE inquiry_id = #{inquiry_id}
     </select>
+
+    <update id="updateInquiryStatus">
+        UPDATE inquiries
+        SET status = #{status}
+        WHERE inquiry_id = #{inquiry_id}
+    </update>
 
     <select id="getInquiryCountByUserId" parameterType="int" resultType="int">
         SELECT COUNT(*)

@@ -12,6 +12,7 @@ public interface UserDAO {
     // List<UserVO> getUserListByRole(String role); //특정 권한 회원 정보 가져오기
     List<UserVO> getUserListByKeyword(@Param("role") String role,
                                       @Param("keyword") String keyword,
+                                      @Param("user_id") Integer user_id,
                                       @Param("size") Integer size,
                                       @Param("offset") int offset,
                                       @Param("gender") String gender,
@@ -22,6 +23,7 @@ public interface UserDAO {
 
     int getUserListCountByKeyword(@Param("role") String role,
                                   @Param("keyword") String keyword,
+                                  @Param("user_id") Integer user_id,
                                   @Param("gender") String gender,
                                   @Param("status") String status,
                                   @Param("startDate") String startDate,

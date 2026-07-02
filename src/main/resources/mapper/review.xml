@@ -103,6 +103,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN products p ON r.product_id = p.product_id
         JOIN users u ON r.user_id = u.user_id
         <where>
+            <if test="user_id != null">
+                AND r.user_id = #{user_id}
+            </if>
+
+            <if test="product_id != null">
+                AND r.product_id = #{product_id}
+            </if>
+
+            <if test="review_id != null">
+                AND r.review_id = #{review_id}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 AND (
                     p.name LIKE CONCAT("%", #{keyword}, "%")
@@ -140,6 +152,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN products p ON r.product_id = p.product_id
         JOIN users u ON r.user_id = u.user_id
         <where>
+            <if test="user_id != null">
+                AND r.user_id = #{user_id}
+            </if>
+
+            <if test="product_id != null">
+                AND r.product_id = #{product_id}
+            </if>
+
+            <if test="review_id != null">
+                AND r.review_id = #{review_id}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 AND (
                     p.name LIKE CONCAT("%", #{keyword}, "%")

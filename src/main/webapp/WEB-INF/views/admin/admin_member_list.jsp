@@ -13,58 +13,130 @@
             <script>
                 document.addEventListener("DOMContentLoaded", () => {
                     let selectedMemberId = "";
+                    let selectedMemberRow = null;
                     let selectedMemberStatus = "";
-
-                    const statusLabel = {
-                        active: "활성",
-                        suspended: "정지",
-                        withdrawn: "탈퇴"
-                    };
-
-                    const statusControl = document.getElementById("statusControl");
-                    const statusChangeButton = document.getElementById("statusChangeButton");
 
                     const master = document.getElementById("adminMasterDetail");
                     const rows = document.querySelectorAll(".admin-clickable-row");
 
-                    function memberDetailHeadInit(data) {
+                    const statusControl = document.getElementById("statusControl");
+                    const statusChangeButton = document.getElementById("statusChangeButton");
+                    const statusCancelButton = document.getElementById("statusCancelButton");
+
+                    const memoContent = document.getElementById("adminMemoContent");
+                    const memoSaveButton = document.getElementById("adminMemoSaveButton");
+
+                    //상태값을 한글로 반환
+                    function getMemberStatusLabel(status) {
+                        switch (status) {
+                            case "active":
+                                return "활성";
+                            case "suspended":
+                                return "정지";
+                            case "withdrawn":
+                                return "탈퇴";
+                            default:
+                                return "-";
+                        }
+                    }
+                    //상태값 렌더링(상세정보, 상태뱃지, 상태변경, 목록)
+                    function renderMemberStatus(status) {
+                        const memberStatus = status || selectedMemberStatus;
+                        const statusText = getMemberStatusLabel(memberStatus);
+                        const statusBadge = document.getElementById("memberDetailStatusBadge");
+
+                        if (!memberStatus) {
+                            return;
+                        }
+
+                        selectedMemberStatus = memberStatus;
+
+                        //상세 정보에 반영
+                        setText("status", statusText);
+
+                        //상태 뱃지에 반영
+                        if (statusBadge) {
+                            statusBadge.className = "admin-detail-status-badge " + memberStatus;
+                            statusBadge.textContent = statusText;
+                        }
+
+                        //상태 변경 버튼에 반영
+                        if (statusControl) {
+                            statusControl.value = memberStatus;
+                        }
+
+                        if (statusChangeButton) {
+                            statusChangeButton.disabled = true;
+                        }
+
+                        //목록에 반영
+                        if (selectedMemberRow) {
+                            const rowBadge = selectedMemberRow.querySelector("[data-member-status]");
+
+                            if (rowBadge) {
+                                rowBadge.className = "admin-status " + memberStatus;
+                                rowBadge.textContent = statusText;
+                            }
+
+                            selectedMemberRow.dataset.status = memberStatus;
+                        }
+                    }
+                    //상세 패널 상단값 렌더링
+                    function renderMemberDetailHead(data) {
                         const user = data.user;
                         const memberMeta = (user.login_id || "-") + " · " + (user.role === "SELLER" ? "판매자" : "일반회원");
                         setText("memberDetailTitle", user.name);
                         setText("memberDetailMeta", memberMeta);
 
-                        memberDetailHeadBadgeInit(data);
+                        renderMemberStatus(user.status);
                     }
-                    function memberDetailHeadBadgeInit(data) {
+                    //상세 정보 회원 활동 렌더링
+                    function renderMemberActivity(data) {
                         const user = data.user;
+                        const memberId = encodeURIComponent(user.user_id);
 
-                        const statusBadge = document.getElementById("memberDetailStatusBadge");
-                        if (statusBadge) {
-                            statusBadge.className = "admin-detail-status-badge " + user.status;
-                            statusBadge.textContent = statusLabel[user.status] || "-";
+                        document.getElementById("memberOrderLink").href =
+                            "/admin/orders?user_id=" + memberId;
+
+                        document.getElementById("memberReviewLink").href =
+                            "/admin/reviews?user_id=" + memberId;
+
+                        document.getElementById("memberInquiryLink").href =
+                            "/admin/inquiries?user_id=" + memberId;
+
+                        document.getElementById("memberReportLink").href =
+                            "/admin/reports?user_id=" + memberId;
+
+                        const sellerActions = document.getElementById("memberSellerActions");
+                        const sellerManageLink = document.getElementById("memberSellerManageLink");
+                        const sellerShopLink = document.getElementById("memberSellerShopLink");
+                        const seller = data.seller;
+
+                        if (sellerActions && sellerManageLink && sellerShopLink) {
+                            const hasSeller = user.role === "SELLER" && seller;
+
+                            sellerActions.hidden = !hasSeller;
+                            sellerManageLink.href = "/admin/sellers?user_id=" + memberId;
+
+                            if (hasSeller) {
+                                sellerShopLink.href = "/seller_shop_homepage.do?seller_id="
+                                    + encodeURIComponent(seller.seller_id);
+                            }
                         }
-                    }
-                    function memberDetailPanelInit(data) {
-                        const user = data.user;
 
-                        const orderLink = document.getElementById("memberOrderLink");
-                        const reviewLink = document.getElementById("memberReviewLink");
-                        const inquiryLink = document.getElementById("memberInquiryLink");
-                        const reportLink = document.getElementById("memberReportLink");
-
-                        orderLink.href = "/admin/orders?status=all&user_id=" + encodeURIComponent(user.login_id) + "&page=1";
-                        reviewLink.href = "/admin/reviews?user_id=" + encodeURIComponent(user.login_id) + "&page=1";
-                        inquiryLink.href = "/admin/inquiries?status=all&user_id=" + encodeURIComponent(user.login_id) + "&page=1";
-                        reportLink.href = "/admin/reports?status=all&user_id=" + encodeURIComponent(user.login_id) + "&page=1";
-                        
                         setText("memberOrderCount", data.orderCount);
                         setText("memberReviewCount", data.reviewCount);
                         setText("memberInquiryCount", data.inquiryCount);
                         setText("memberReportCount", data.reportCount);
+                    }
+                    //상세 정보 값 렌더링
+                    function renderMemberDetailInfo(data) {
+                        const user = data.user;
+
+                        renderMemberActivity(data);
 
                         setText("userId", user.user_id);
                         setText("role", user.role === "SELLER" ? "판매자" : "일반회원");
-                        setText("status", statusLabel[user.status]);
                         setText("name", user.name);
                         setText("nickName", user.nick_name);
                         setText("loginId", user.login_id);
@@ -74,18 +146,32 @@
                         setText("createdAt", user.created_at);
                         setText("updatedAt", user.updated_at);
                     }
-                    function memberManagePanelInit(data) {
-                        const user = data.user;
-
-                        selectedMemberId = user.user_id;
-                        selectedMemberStatus = user.status;
-                        if (statusControl) {
-                            statusControl.value = selectedMemberStatus;
+                    //관리자 메모 불러오기
+                    function loadAdminMemo(targetType, targetId) {
+                        if (!memoContent) {
+                            return;
                         }
+
+                        fetch("/admin/memos?target_type=" + encodeURIComponent(targetType)
+                            + "&target_id=" + encodeURIComponent(targetId))
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data.success) {
+                                    alert(data.message || "메모를 불러오지 못했습니다.");
+                                    return;
+                                }
+
+                                if (data.memoList && data.memoList.length > 0) {
+                                    memoContent.value = data.memoList[0].content || "";
+                                    return;
+                                }
+
+                                memoContent.value = "";
+                            });
                     }
                     
+                    //행을 눌렀을 때 상세 패널 열리고 닫히는 이벤트
                     rows.forEach((row) => {
-                        //모든 행에 클릭 이벤트 부여
                         row.addEventListener("click", () => {
                             //상세 패널이 열려있고 이미 선택된 행을 눌렀을 때
                             if (!master.classList.contains("is-collapsed") && row.classList.contains("selected")) {
@@ -94,6 +180,7 @@
                             }
 
                             openDetailPanel(master, rows, row);
+                            selectedMemberRow = row;
 
                             //상세 패널 내용 변경
                             const userId = row.dataset.userId;
@@ -105,50 +192,100 @@
                                         alert(data.message);
                                         return;
                                     }        
+                                    const user = data.user;
+                                    selectedMemberId = user.user_id;
 
-                                    memberDetailHeadInit(data);
-                                    memberDetailPanelInit(data);
-                                    memberManagePanelInit(data);
+                                    renderMemberDetailHead(data);
+                                    renderMemberDetailInfo(data);
+                                    loadAdminMemo("MEMBER", user.user_id);
 
                                     highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                                 })
                         });
                     });
 
-                    statusChangeButton.addEventListener("click", () => {
-                        fetch("/admin/members/status", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                            body: "user_id=" + encodeURIComponent(selectedMemberId)
-                                + "&status=" + encodeURIComponent(statusControl.value)
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (!data.success) {
-                                alert(data.message);
-                                return;
-                            }
-
-                            setText("status", statusLabel[data.status]);
-                            memberDetailHeadBadgeInit(data);
-                        });
-                    });
-
+                    //상세 패널 탭 버튼 기능
                     document.querySelectorAll(".admin-detail-tab").forEach((tab) => {
                         tab.addEventListener("click", () => {
                             const tabName = tab.dataset.detailTab;
 
+                            //선택된 버튼 변경
                             document.querySelectorAll(".admin-detail-tab").forEach((item) => {
                                 item.classList.toggle("active", item === tab);
                             });
 
+                            //선택된 패널 변경
                             document.querySelectorAll(".admin-detail-tab-panel").forEach((panel) => {
                                 panel.classList.toggle("active", panel.dataset.detailPanel === tabName);
                             });
                         });
                     });
+
+                    //상태 변경 버튼 동작
+                    if (statusChangeButton && statusControl) {
+                        statusChangeButton.disabled = true;
+
+                        statusControl.addEventListener("change", () => {
+                            statusChangeButton.disabled = statusControl.value === selectedMemberStatus;
+                        });
+
+                        statusChangeButton.addEventListener("click", () => {
+                            fetch("/admin/members/status", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: "user_id=" + encodeURIComponent(selectedMemberId)
+                                    + "&status=" + encodeURIComponent(statusControl.value)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data.success) {
+                                    alert(data.message);
+                                    return;
+                                }
+
+                                renderMemberStatus(data.status);
+                            });
+                        });
+                    }
+
+                    //상태 변경 취소
+                    if (statusCancelButton && statusControl) {
+                        statusCancelButton.addEventListener("click", () => {
+                            if (selectedMemberStatus) {
+                                statusControl.value = selectedMemberStatus;
+                            }
+
+                            if (statusChangeButton) {
+                                statusChangeButton.disabled = true;
+                            }
+                        });
+                    }
+
+                    //메모 작성 기능
+                    if (memoSaveButton && memoContent) {
+                        memoSaveButton.addEventListener("click", () => {
+                            fetch("/admin/memos", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: "target_type=MEMBER"
+                                    + "&target_id=" + encodeURIComponent(selectedMemberId)
+                                    + "&content=" + encodeURIComponent(memoContent.value)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data.success) {
+                                    alert(data.message || "메모 저장에 실패했습니다.");
+                                    return;
+                                }
+
+                                alert("메모가 저장되었습니다.");
+                            });
+                        });
+                    }
                 });
 
             </script>
@@ -174,11 +311,11 @@
                         <form class="admin-filter-form" action="/admin/members" method="get">
                             <div class="admin-filter-main-row">
                                 <div class="admin-filter-tabs">
-                                    <a href="/admin/members?role=all&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                    <a href="/admin/members?role=all&keyword=${keyword}&user_id=${user_id}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                         class="${role == 'all' ? 'active' : ''}">전체</a>
-                                    <a href="/admin/members?role=user&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                    <a href="/admin/members?role=user&keyword=${keyword}&user_id=${user_id}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                         class="${role == 'user' ? 'active' : ''}">일반회원</a>
-                                    <a href="/admin/members?role=seller&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                    <a href="/admin/members?role=seller&keyword=${keyword}&user_id=${user_id}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                         class="${role == 'seller' ? 'active' : ''}">판매자</a>
                                 </div>
 
@@ -234,7 +371,7 @@
                                 <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                             </div>
 
-                            <c:if test="${role ne 'all' || not empty keyword
+                            <c:if test="${role ne 'all' || not empty keyword || not empty user_id
                                           || gender ne 'all' || status ne 'all'
                                           || not empty startDate || not empty endDate}">
                                 <div class="admin-filter-applied">
@@ -242,7 +379,7 @@
 
                                     <c:if test="${role ne 'all'}">
                                         <a class="admin-filter-chip"
-                                            href="/admin/members?role=all&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                            href="/admin/members?role=all&keyword=${keyword}&user_id=${user_id}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                             유형:
                                             ${role eq 'user' ? '일반회원' : '판매자'}
                                             <span>&times;</span>
@@ -251,15 +388,29 @@
 
                                     <c:if test="${not empty keyword}">
                                         <a class="admin-filter-chip"
-                                            href="/admin/members?role=${role}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                            href="/admin/members?role=${role}&user_id=${user_id}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                             검색어: ${keyword}
+                                            <span>&times;</span>
+                                        </a>
+                                    </c:if>
+
+                                    <c:if test="${not empty user_id}">
+                                        <a class="admin-filter-chip"
+                                            href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                            회원:
+                                            <c:choose>
+                                                <c:when test="${not empty filterUser}">
+                                                    ${filterUser.name} · ${filterUser.login_id}
+                                                </c:when>
+                                                <c:otherwise>${user_id}</c:otherwise>
+                                            </c:choose>
                                             <span>&times;</span>
                                         </a>
                                     </c:if>
 
                                     <c:if test="${gender ne 'all'}">
                                         <a class="admin-filter-chip"
-                                            href="/admin/members?role=${role}&keyword=${keyword}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                            href="/admin/members?role=${role}&keyword=${keyword}&user_id=${user_id}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                             성별:
                                             <c:choose>
                                                 <c:when test="${gender eq 'male'}">
@@ -275,7 +426,7 @@
                                     
                                     <c:if test="${status ne 'all'}">
                                         <a class="admin-filter-chip"
-                                            href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                            href="/admin/members?role=${role}&keyword=${keyword}&user_id=${user_id}&gender=${gender}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                             상태:
                                             <c:choose>
                                                 <c:when test="${status eq 'active'}">
@@ -294,7 +445,7 @@
 
                                     <c:if test="${not empty startDate or not empty endDate}">
                                         <a class="admin-filter-chip"
-                                            href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&status=${status}&sort=${sort}&size=${pagination.size}&page=1">
+                                            href="/admin/members?role=${role}&keyword=${keyword}&user_id=${user_id}&gender=${gender}&status=${status}&sort=${sort}&size=${pagination.size}&page=1">
                                             가입일: ${startDate} ~ ${endDate}
                                             <span>&times;</span>
                                         </a>
@@ -304,6 +455,7 @@
                             </c:if>
 
                             <input type="hidden" name="role" value="${role}">
+                            <input type="hidden" name="user_id" value="${user_id}">
                             <input type="hidden" name="page" value="1">
                         </form>
                     </div>
@@ -333,19 +485,19 @@
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${user.status eq 'active'}">
-                                                            <span class="admin-status active">
+                                                            <span class="admin-status active" data-member-status>
                                                                 활성
                                                             </span>
                                                         </c:when>
                                                         
                                                         <c:when test="${user.status eq 'suspended'}">
-                                                            <span class="admin-status suspended">
+                                                            <span class="admin-status suspended" data-member-status>
                                                                 정지
                                                             </span>
                                                         </c:when>
 
                                                         <c:when test="${user.status eq 'withdrawn'}">
-                                                            <span class="admin-status withdrawn">
+                                                            <span class="admin-status withdrawn" data-member-status>
                                                                 탈퇴
                                                             </span>
                                                         </c:when>
@@ -478,7 +630,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="admin-detail-section-actions">
-                                                        <button type="button" class="admin-btn light">변경 취소</button>
+                                                        <button type="button" class="admin-btn light" id="statusCancelButton">변경 취소</button>
                                                         <button type="button" class="admin-btn" id="statusChangeButton">상태 변경</button>
                                                     </div>
                                                 </div>
@@ -487,10 +639,25 @@
                                                     <div class="admin-detail-section-head">
                                                         <h3>관리 메모</h3>
                                                     </div>
-                                                    <textarea class="admin-detail-memo" rows="5"
+                                                    <textarea id="adminMemoContent" class="admin-detail-memo" rows="5"
                                                         placeholder="회원 관리에 필요한 메모를 입력하세요."></textarea>
+
                                                     <div class="admin-detail-section-actions">
-                                                        <button type="button" class="admin-btn light">메모 저장</button>
+                                                        <button type="button" class="admin-btn light" id="adminMemoSaveButton">메모 저장</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section" id="memberSellerActions" hidden>
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="memberSellerManageLink">
+                                                            <span>판매자 관리</span>
+                                                        </a>
+                                                        <a href="#" id="memberSellerShopLink">
+                                                            <span>판매자 페이지</span>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -505,7 +672,7 @@
                         <div class="admin-pagination-pages">
                             <c:if test="${pagination.totalPage > 0}">
                                 <c:if test="${pagination.hasPrev}">
-                                    <a href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                                    <a href="/admin/members?role=${role}&keyword=${keyword}&user_id=${user_id}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                                         
                                         이전
                                     </a>
@@ -515,14 +682,14 @@
                                 </c:if>
 
                                 <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                                    <a href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                                    <a href="/admin/members?role=${role}&keyword=${keyword}&user_id=${user_id}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                                         class="${pagination.page == i ? 'active' : ''}">
                                         ${i}
                                     </a>
                                 </c:forEach>
 
                                 <c:if test="${pagination.hasNext}">
-                                    <a href="/admin/members?role=${role}&keyword=${keyword}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                                    <a href="/admin/members?role=${role}&keyword=${keyword}&user_id=${user_id}&gender=${gender}&status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                                         다음
                                     </a>
                                 </c:if>

@@ -26,6 +26,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 p.status = #{status}
             </if>
 
+            <if test="seller_id != null">
+                AND p.seller_id = #{seller_id}
+            </if>
+
+            <if test="product_id != null">
+                AND p.product_id = #{product_id}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 AND (
                     p.name LIKE CONCAT("%", #{keyword}, "%")
@@ -63,6 +71,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="status != null and status != 'all'">
                 p.status = #{status}
+            </if>
+
+            <if test="seller_id != null">
+                AND p.seller_id = #{seller_id}
+            </if>
+
+            <if test="product_id != null">
+                AND p.product_id = #{product_id}
             </if>
 
             <if test="keyword != null and keyword != ''">
@@ -129,6 +145,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         WHERE p.product_id = #{value}
     </select>
+
+    <update id="updateAdminProductStatus">
+        UPDATE products
+        SET status = #{status},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE product_id = #{product_id}
+    </update>
 
     <!-- 판매자 상품 등록 -->
     <insert id="seller_product_insert" parameterType="product" useGeneratedKeys="true" keyProperty="product_id">
