@@ -192,10 +192,6 @@
                                         </div>
                                     </div>
 
-                                    <input type="hidden" name="address_id" id="selectedAddressId"
-                                        value="${defaultAddr.address_id}" />
-
-
                                     <aside class="panel side-panel">
                                         <h3 class="panel-title">결제 요약</h3>
 
@@ -312,15 +308,15 @@
                         </div>
                     </footer>
 
-                    <div class="cancel-modal-wrap" id="addressModal">
-                        <div class="cancel-modal-bg" onclick="closeAddressModal()"></div>
-                        <div class="cancel-modal-box">
-                            <div class="cancel-modal-head">
+                    <div class="address-modal-wrap" id="addressModal">
+                        <div class="address-modal-bg" onclick="closeAddressModal()"></div>
+                        <div class="address-modal-box">
+                            <div class="address-modal-head">
                                 <h3>배송지 선택</h3>
-                                <button type="button" class="cancel-modal-close"
+                                <button type="button" class="address-modal-close"
                                     onclick="closeAddressModal()">×</button>
                             </div>
-                            <div class="cancel-modal-body">
+                            <div class="address-modal-body">
                                 <c:choose>
                                     <c:when test="${not empty param.product_id}">
                                         <c:set var="currentUrl"
@@ -354,7 +350,7 @@
                                                 </p>
                                             </div>
                                             <button type="button" class="btn light"
-                                                onclick="selectAddress(${addr.address_id}, '${addr.address_name}', '${addr.address} ${addr.detail_address}')">
+                                                onclick="selectAddress('${addr.address_id}', '${addr.address_name}', '${addr.address} ${addr.detail_address}')">
                                                 선택
                                             </button>
                                         </div>

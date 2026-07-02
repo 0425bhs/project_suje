@@ -986,22 +986,29 @@ select {
    결제취소 모달
 ========================================================= */
 
-.cancel-modal-wrap {
+/* 모달 열고 닫기 */
+.cancel-modal-wrap,
+.address-modal-wrap {
     display: none !important;
 }
 
-.cancel-modal-wrap.open {
+.cancel-modal-wrap.open,
+.address-modal-wrap.open {
     display: block !important;
 }
 
-.cancel-modal-bg {
+/* 모달 배경 어두워지는 부분 */
+.cancel-modal-bg,
+.address-modal-bg {
     position: fixed;
     inset: 0;
     z-index: 500;
     background: rgba(0, 0, 0, 0.45);
 }
 
-.cancel-modal-box {
+/* 모달 본체 박스 */
+.cancel-modal-box,
+.address-modal-box {
     position: fixed;
     left: 50%;
     top: 50%;
@@ -1018,7 +1025,9 @@ select {
     overflow: hidden;
 }
 
-.cancel-modal-head {
+/* 모달 헤더 */
+.cancel-modal-head,
+.address-modal-head {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -1037,7 +1046,8 @@ select {
     letter-spacing: 1.5px;
 }
 
-.cancel-modal-head h3 {
+.cancel-modal-head h3,
+.address-modal-head h3 {
     margin: 0;
 
     color: #222;
@@ -1053,7 +1063,9 @@ select {
     font-size: 14px;
 }
 
-.cancel-modal-close {
+/* 모달 닫기 버튼 (X) */
+.cancel-modal-close,
+.address-modal-close {
     border: none;
     background: transparent;
     color: #777;
@@ -1063,11 +1075,14 @@ select {
     cursor: pointer;
 }
 
-.cancel-modal-close:hover {
+.cancel-modal-close:hover,
+.address-modal-close:hover {
     color: #222;
 }
 
-.cancel-modal-body {
+/* 모달 바디 */
+.cancel-modal-body,
+.address-modal-body {
     padding: 24px 28px;
 }
 
@@ -1226,7 +1241,7 @@ select {
 }
 
 /* =========================================================
-   반응형
+    반응형
 ========================================================= */
 
 @media (max-width: 1100px) {
@@ -1246,7 +1261,6 @@ select {
     .info-box {
         grid-template-columns: 1fr;
     }
-
 }
 
 @media (max-width: 720px) {
@@ -1295,12 +1309,14 @@ select {
         grid-template-columns: 1fr;
     }
 
-    .cancel-modal-box {
+    /* 💡 반응형 조건에서도 배송지 모달이 정상 축소되도록 클래스 추가 완료 */
+    .cancel-modal-box,
+    .address-modal-box {
         width: calc(100% - 28px);
     }
 
-    .cancel-modal-head,
-    .cancel-modal-body,
+    .cancel-modal-head, .address-modal-head,
+    .cancel-modal-body, .address-modal-body,
     .cancel-modal-actions {
         padding-left: 20px;
         padding-right: 20px;
@@ -1314,7 +1330,6 @@ select {
     .cancel-submit-btn {
         width: 100%;
     }
-
 }
 
 /* 주문서 작성 페이지 상품 이미지가 없을 때 표시 */
@@ -1333,7 +1348,7 @@ select {
 }
 
 /* =========================================================
-   주문서 쿠폰 / 포인트 입력 영역 보정
+    주문서 쿠폰 / 포인트 입력 영역 보정
 ========================================================= */
 
 #userCouponId {
@@ -1403,7 +1418,6 @@ select {
 
 #pointPriceText {
     color: #d31c0c;
-
 }
 
 /* 기본배송지 뱃지 */

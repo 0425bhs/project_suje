@@ -33,7 +33,7 @@ public class OrderItemVO {
     private String optionName;
     private int optionPrice;
  
-   // private String option_name;
-  //  private int option_price;
+    // private String option_name;
+    // private int option_price;
 
 }
