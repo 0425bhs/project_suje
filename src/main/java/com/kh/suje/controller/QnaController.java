@@ -47,6 +47,10 @@ public class QnaController {
             return "redirect:/login.do";
         }
 
+        if (qna.getQna_type() == null || qna.getQna_type().trim().isEmpty()) {
+            qna.setQna_type("PRODUCT");
+        }
+
         int user_id = loginUser.getUser_id();
 
         qna.setUser_id(user_id);
@@ -65,10 +69,14 @@ public class QnaController {
 
     @PostMapping("qna_update_form.do")
     public String qnaUpdateFormFin(QnaVO qna) {
-        qnaDAO.updateQna(qna);
+        if (qna.getQna_type() == null || qna.getQna_type().trim().isEmpty()) {
+            qna.setQna_type("PRODUCT");
+        }
 
-        return "redirect:/qna_detail.do?qna_id=" + qna.getQna_id();
-    }
+    qnaDAO.updateQna(qna);
+
+    return "redirect:/qna_detail.do?qna_id=" + qna.getQna_id();
+}
 
     @GetMapping("qna_delete.do")
     public String qnaDelete(int qna_id) {

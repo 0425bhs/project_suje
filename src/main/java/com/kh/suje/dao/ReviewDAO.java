@@ -44,6 +44,7 @@ public interface ReviewDAO {
     
     List<ReviewVO> sellerReviewList(@Param ("seller_id") int seller_id);
     
+    List<ReviewVO> sellerReviewProductList(@Param("seller_id") int seller_id);
 
     int sellerReviewReply(Map<String, Object> map);
 
