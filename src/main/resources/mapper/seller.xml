@@ -198,19 +198,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <!-- 판매자 새 리뷰 개수 조회 -->
-    <select id="getNewReviewCount"
-            parameterType="int"
-            resultType="int">
+    <select id="getNewReviewCount" parameterType="int" resultType="int">
         SELECT COUNT(*)
         FROM reviews r
         JOIN products p ON p.product_id = r.product_id
         WHERE p.seller_id = #{seller_id}
     </select>
 
+    <!-- 판매자 주문 개수 조회 -->
+    <select id="getSellerOrderCount" parameterType="map" resultType="int">
+        SELECT COUNT(DISTINCT o.order_id)
+        FROM orders o
+
+        JOIN order_items oi
+        ON oi.order_id = o.order_id
+
+        JOIN products p
+        ON p.product_id = oi.product_id
+
+        WHERE p.seller_id = #{seller_id}
+
+        <if test="status != null and status != ''">
+            AND o.status = #{status}
+        </if>
+    </select>
+
     <!-- 판매자 주문 목록 조회 -->
-    <select id="getSellerOrderList"
-            parameterType="map"
-            resultType="order">
+    <select id="getSellerOrderList" parameterType="map" resultType="order">
         SELECT DISTINCT
             o.order_id,
             o.user_id,
@@ -244,6 +258,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
 
         ORDER BY o.order_id DESC
+        LIMIT #{size} OFFSET #{offset}
     </select>
 
     <!-- 판매자 주문별 상품 목록 조회 -->

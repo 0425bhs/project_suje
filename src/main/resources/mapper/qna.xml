@@ -138,10 +138,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY p.name ASC
     </select>
 
-    <select id="productQnaList"
-            parameterType="int"
-            resultType="qna">
-        SELECT q.*, u.name AS user_name
+    <select id="productQnaList" parameterType="int" resultType="qna">
+        SELECT 
+            q.*,
+            u.name AS user_name,
+            u.nick_name AS nick_name,
+            u.photo_name AS photo_name
         FROM qnas q
         JOIN users u ON q.user_id = u.user_id
         WHERE q.product_id = #{product_id}

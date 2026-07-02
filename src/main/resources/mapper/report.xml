@@ -3,9 +3,10 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.suje.dao.ReportDAO">
+
     <insert id="addReport">
-        INSERT INTO reports (reporter_id, target_type, target_id, reason)
-        VALUES (#{reporter_id}, #{target_type}, #{target_id}, #{reason})
+        INSERT INTO reports (reporter_id, target_type, target_id, report_type,reason)
+        VALUES (#{reporter_id}, #{target_type}, #{target_id},#{report_type}, #{reason})
     </insert>
 
     <select id="getReportListByKeyword" resultType="report">
@@ -13,9 +14,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                u.name AS reporter_name
         FROM reports r
         JOIN users u ON u.user_id = r.reporter_id
-        LEFT JOIN products p ON p.product_id = r.target_id AND target_type = 'PRODUCT' 
-        LEFT JOIN reviews rv ON rv.review_id = r.target_id AND target_type = 'REVIEW'
-        LEFT JOIN qnas q ON q.qna_id = r.target_id AND target_type = 'QNA'
+        LEFT JOIN products p ON p.product_id = r.target_id AND r.target_type = 'PRODUCT' 
+        LEFT JOIN reviews rv ON rv.review_id = r.target_id AND r.target_type = 'REVIEW'
+        LEFT JOIN qnas q ON q.qna_id = r.target_id AND r.target_type = 'QNA'
         <where>
         <if test="status != null and status != 'all'">
             r.status = #{status}
@@ -74,8 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getReportById" resultType="report">
-        SELECT r.*,
-               u.name AS reporter_name
+        SELECT r.*,u.name AS reporter_name
         FROM reports r
         JOIN users u ON u.user_id = r.reporter_id
         WHERE r.report_id = #{report_id}

@@ -48,4 +48,6 @@ public interface SellerDAO {
 
     SellerVO selectSellerByUserId(int user_id);
 
+    int getSellerOrderCount(Map<String, Object> map);
+
 }
