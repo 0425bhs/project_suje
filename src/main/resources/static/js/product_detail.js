@@ -7,6 +7,7 @@ window.addEventListener("load",function(){
     reviewButton();
     initReviewScoreBars();
     initProductDetailReviewFilter();
+    bindDetailReportModal();
 });
 
 function productDetailImageSlider(){
@@ -59,7 +60,7 @@ function productDetailImageSlider(){
     mainImage.remove();
 
     if(nextBtn != null){
-        imageBox.insertBefore(slideTrack, nextBtn);
+        imageBox.insertBefore(slideTrack,nextBtn);
     } else {
         imageBox.appendChild(slideTrack);
     }
@@ -76,11 +77,11 @@ function productDetailImageSlider(){
 
     function updateArrowState(){
         if(prevBtn != null){
-            prevBtn.classList.toggle("disabled", imageList.length <= 1);
+            prevBtn.classList.toggle("disabled",imageList.length <= 1);
         }
 
         if(nextBtn != null){
-            nextBtn.classList.toggle("disabled", imageList.length <= 1);
+            nextBtn.classList.toggle("disabled",imageList.length <= 1);
         }
     }
 
@@ -115,23 +116,23 @@ function productDetailImageSlider(){
 
         setTimeout(function(){
             isSliding = false;
-        }, 650);
+        },650);
     }
 
     if(prevBtn != null){
-        prevBtn.addEventListener("click", function(){
+        prevBtn.addEventListener("click",function(){
             slideTo(currentIndex - 1);
         });
     }
 
     if(nextBtn != null){
-        nextBtn.addEventListener("click", function(){
+        nextBtn.addEventListener("click",function(){
             slideTo(currentIndex + 1);
         });
     }
 
     thumbButtons.forEach(function(btn){
-        btn.addEventListener("click", function(){
+        btn.addEventListener("click",function(){
             const imgSrc = btn.dataset.img;
             const newIndex = imageList.indexOf(imgSrc);
 
@@ -204,7 +205,7 @@ function productDetailQuantity(){
             qtyPlus.disabled = quantity >= max || qtyInput.disabled;
         }
 
-        qtyMinus.addEventListener("click", function(){
+        qtyMinus.addEventListener("click",function(){
             let quantity = Number(qtyInput.value || 1);
 
             if(quantity > 1){
@@ -214,7 +215,7 @@ function productDetailQuantity(){
             updateNoOptionTotal();
         });
 
-        qtyPlus.addEventListener("click", function(){
+        qtyPlus.addEventListener("click",function(){
             let quantity = Number(qtyInput.value || 1);
             const max = Number(qtyInput.max || 1);
 
@@ -227,7 +228,7 @@ function productDetailQuantity(){
             updateNoOptionTotal();
         });
 
-        qtyInput.addEventListener("input", updateNoOptionTotal);
+        qtyInput.addEventListener("input",updateNoOptionTotal);
 
         updateNoOptionTotal();
         return;
@@ -327,7 +328,7 @@ function productDetailQuantity(){
         updateTotal();
     }
 
-    optionSelect.addEventListener("change", function(){
+    optionSelect.addEventListener("change",function(){
 
         if(optionSelect.value === ""){
             return;
@@ -369,7 +370,7 @@ function productDetailQuantity(){
         renderSelectedOptions();
     });
 
-    selectedOptionBox.addEventListener("click", function(event){
+    selectedOptionBox.addEventListener("click",function(event){
 
         const target = event.target;
         const optionId = target.dataset.optionId;
@@ -389,7 +390,7 @@ function productDetailQuantity(){
         const item = selectedOptions[index];
 
         if(target.classList.contains("selected-option-remove")){
-            selectedOptions.splice(index, 1);
+            selectedOptions.splice(index,1);
             renderSelectedOptions();
             return;
         }
@@ -483,7 +484,7 @@ function productDetailTabs(){
     }
 
     tabs.forEach(function(tab){
-        tab.addEventListener("click", function(){
+        tab.addEventListener("click",function(){
             const targetId = tab.dataset.tabTarget;
             moveToSection(targetId);
         });
@@ -502,8 +503,8 @@ function productDetailTabs(){
         setActiveTab(currentId);
     }
 
-    window.addEventListener("scroll", updateActiveByScroll);
-    window.addEventListener("resize", updateActiveByScroll);
+    window.addEventListener("scroll",updateActiveByScroll);
+    window.addEventListener("resize",updateActiveByScroll);
 
     updateActiveByScroll();
 }
@@ -516,10 +517,10 @@ function reviewButton(){
         return;
     }
 
-    moreBtn.addEventListener("click", function(event){
+    moreBtn.addEventListener("click",function(event){
         event.preventDefault();
 
-        // ✅ 수정: reviewSection 아님, 실제 id인 reviewBox 사용
+        // ✅ 수정: reviewSection 아님,실제 id인 reviewBox 사용
         const reviewSection = document.getElementById("reviewBox");
         const tabWrap = document.querySelector(".store-detail-tab-wrap");
 
@@ -544,7 +545,7 @@ function reviewButton(){
         });
 
         // ✅ 수정: 주소도 #reviewBox
-        history.replaceState(null, "", "#reviewBox");
+        history.replaceState(null,"","#reviewBox");
 
         const tabs = document.querySelectorAll(".store-detail-tab[data-tab-target]");
 
@@ -567,10 +568,10 @@ function productWishButton(){
         return;
     }
 
-    productWishBtn.addEventListener("click", function(){
+    productWishBtn.addEventListener("click",function(){
         const product_id = productWishBtn.dataset.productId;
 
-        fetch("/favorite_product.do", {
+        fetch("/favorite_product.do",{
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -615,8 +616,8 @@ function sellerWishButton(){
         return;
     }
 
-    wishBtn.addEventListener("click", function(){
-        fetch("/favorite_shop.do", {
+    wishBtn.addEventListener("click",function(){
+        fetch("/favorite_shop.do",{
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -731,26 +732,26 @@ function initProductDetailReviewFilter(){
     let currentKeyword = "";
 
     if(ratingBtn != null && ratingMenu != null){
-        ratingBtn.addEventListener("click", function(event){
+        ratingBtn.addEventListener("click",function(event){
             event.stopPropagation();
             ratingMenu.classList.toggle("open");
         });
     }
 
-    document.addEventListener("click", function(){
+    document.addEventListener("click",function(){
         if(ratingMenu != null){
             ratingMenu.classList.remove("open");
         }
     });
 
     if(ratingMenu != null){
-        ratingMenu.addEventListener("click", function(event){
+        ratingMenu.addEventListener("click",function(event){
             event.stopPropagation();
         });
     }
 
     tabButtons.forEach(function(button){
-        button.addEventListener("click", function(){
+        button.addEventListener("click",function(){
             tabButtons.forEach(function(item){
                 item.classList.remove("active");
             });
@@ -763,14 +764,14 @@ function initProductDetailReviewFilter(){
     });
 
     if(searchInput != null){
-        searchInput.addEventListener("input", function(){
+        searchInput.addEventListener("input",function(){
             currentKeyword = searchInput.value.trim().toLowerCase();
             applyReviewFilter();
         });
     }
 
     ratingOptions.forEach(function(option){
-        option.addEventListener("click", function(){
+        option.addEventListener("click",function(){
             ratingOptions.forEach(function(item){
                 item.classList.remove("active");
             });
@@ -795,7 +796,7 @@ function initProductDetailReviewFilter(){
     });
 
     if(resetBtn != null){
-        resetBtn.addEventListener("click", function(){
+        resetBtn.addEventListener("click",function(){
             currentTab = "all";
             currentRating = "all";
             currentKeyword = "";
@@ -854,7 +855,7 @@ function initProductDetailReviewFilter(){
         }
 
         if(currentTab === "best"){
-            filteredCards.sort(function(a, b){
+            filteredCards.sort(function(a,b){
                 const ratingA = Number(a.dataset.rating || 0);
                 const ratingB = Number(b.dataset.rating || 0);
 
@@ -872,7 +873,7 @@ function initProductDetailReviewFilter(){
                 return Number(a.dataset.reviewIndex) - Number(b.dataset.reviewIndex);
             });
         } else {
-            filteredCards.sort(function(a, b){
+            filteredCards.sort(function(a,b){
                 return Number(a.dataset.reviewIndex) - Number(b.dataset.reviewIndex);
             });
         }
@@ -891,4 +892,160 @@ function initProductDetailReviewFilter(){
         }
     }
 }
+
+function bindDetailReportModal(){
+
+    const modalBg = document.getElementById("detailReportModalBg");
+    const reportTargetType = document.getElementById("reportTargetType");
+    const reportTargetId = document.getElementById("reportTargetId");
+    const reportType = document.getElementById("reportType");
+    const reportReason = document.getElementById("reportReason");
+
+    const closeBtn = document.querySelector(".qna-report-close-btn");
+    const cancelBtn = document.querySelector(".qna-report-cancel-btn");
+    const submitBtn = document.querySelector(".qna-report-submit-btn");
+    const reportButtons = document.querySelectorAll(".detail-report-btn");
+
+    const modalTitle = document.querySelector(".qna-report-modal-head h3");
+
+    if(modalBg == null || reportTargetType == null || reportTargetId == null || reportType == null || reportReason == null){
+        return;
+    }
+
+    reportButtons.forEach(function(button){
+        button.addEventListener("click", function(event){
+            event.preventDefault();
+            event.stopPropagation();
+
+            const targetType = button.dataset.reportTargetType;
+            const targetId = button.dataset.reportTargetId;
+
+            if(targetType == null || targetType === "" || targetId == null || targetId === ""){
+                alert("신고 대상을 찾을 수 없습니다.");
+                return;
+            }
+
+            openDetailReportModal(targetType, targetId);
+        });
+    });
+
+    if(closeBtn != null){
+        closeBtn.addEventListener("click", closeDetailReportModal);
+    }
+
+    if(cancelBtn != null){
+        cancelBtn.addEventListener("click", closeDetailReportModal);
+    }
+
+    modalBg.addEventListener("click", function(event){
+        if(event.target === modalBg){
+            closeDetailReportModal();
+        }
+    });
+
+    document.addEventListener("keydown", function(event){
+        if(event.key === "Escape" && modalBg.classList.contains("open")){
+            closeDetailReportModal();
+        }
+    });
+
+    if(submitBtn != null){
+        submitBtn.addEventListener("click", function(){
+
+            const targetType = reportTargetType.value;
+            const targetId = reportTargetId.value;
+            const type = reportType.value;
+            const reason = reportReason.value.trim();
+
+            if(type === ""){
+                alert("신고 유형을 선택해주세요.");
+                reportType.focus();
+                return;
+            }
+
+            if(reason === ""){
+                alert("신고 사유를 입력해주세요.");
+                reportReason.focus();
+                return;
+            }
+
+            fetch("/report.do",{method: "POST",headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body: new URLSearchParams({target_type: targetType,target_id: targetId,report_type: type,reason: reason})
+            }).then(function(response){
+                return response.json();
+            })
+            .then(function(data){
+
+                if(data.result === "login"){
+                    alert("로그인 후 신고할 수 있습니다.");
+                    location.href = "/login.do";
+                    return;
+                }
+
+                if(data.result === "empty"){
+                    alert("신고 내용을 입력해주세요.");
+                    return;
+                }
+
+                if(data.result === "success"){
+                    alert("신고가 접수되었습니다.");
+                    closeDetailReportModal();
+                    return;
+                }
+
+                alert("신고 처리 중 오류가 발생했습니다.");
+            })
+        });
+    }
+
+    function openDetailReportModal(targetType, targetId){
+        reportTargetType.value = targetType;
+        reportTargetId.value = targetId;
+        reportType.value = "";
+        reportReason.value = "";
+
+        if(modalTitle != null){
+            if(targetType === "REVIEW"){
+                modalTitle.textContent = "리뷰 신고";
+            } else if(targetType === "QNA"){
+                modalTitle.textContent = "문의 신고";
+            } else {
+                modalTitle.textContent = "신고하기";
+            }
+        }
+
+        if(submitBtn != null){
+            if(targetType === "REVIEW"){
+                submitBtn.textContent = "리뷰 신고";
+            } else if(targetType === "QNA"){
+                submitBtn.textContent = "문의 신고";
+            } else {
+                submitBtn.textContent = "신고하기";
+            }
+        }
+
+        modalBg.classList.add("open");
+        modalBg.classList.add("active");
+    }
+
+    function closeDetailReportModal(){
+        modalBg.classList.remove("open");
+        modalBg.classList.remove("active");
+
+        reportTargetType.value = "";
+        reportTargetId.value = "";
+        reportType.value = "";
+        reportReason.value = "";
+
+        if(modalTitle != null){
+            modalTitle.textContent = "신고하기";
+        }
+
+        if(submitBtn != null){
+            submitBtn.textContent = "신고하기";
+        }
+    }
+}
+
+
 
