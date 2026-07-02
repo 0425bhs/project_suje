@@ -34,4 +34,7 @@ public class UserVO {
     private String photo_name;
     private String kakao_id;
     private String naver_id;
+
+
+    
 }
