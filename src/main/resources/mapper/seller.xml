@@ -137,7 +137,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE user_id = #{user_id}
     </update>
 
-    <!-- 판매자 주문 상태 개수 조회 -->
+    <!-- 판매자 주문 상태 개수 조회
     <select id="getOrderStatusCountsOld"
             parameterType="int"
             resultType="java.util.Map">
@@ -149,7 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             COUNT(CASE WHEN oi.status = 'CONFIRMED' THEN 1 END) AS confirmedCount,
             COUNT(CASE WHEN oi.status = 'CANCELLED' THEN 1 END) AS cancelledCount
         FROM order_items oi
-    </select>
+    </select> -->
 
     <!-- 판매자샵 정보 조회 + 작가 전체 통계 -->
     <select id="sellerShopInfoOld" parameterType="int" resultType="map">

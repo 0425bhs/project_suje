@@ -14,7 +14,7 @@
     height: calc(100vh - 210px);
     min-height: 360px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 360px;
+    grid-template-columns: minmax(0, 1fr) 420px;
     gap: 12px;
     align-items: stretch;
     transition: grid-template-columns 0.22s ease, gap 0.22s ease;
@@ -373,7 +373,6 @@
 }
 
 .admin-detail-grid {
-    margin: 0;
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
