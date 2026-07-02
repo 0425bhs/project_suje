@@ -12,6 +12,7 @@ public interface ReportDAO {
     List<ReportVO> getReportListByKeyword(@Param("status") String status,
                                           @Param("keyword") String keyword,
                                           @Param("user_id") Integer user_id,
+                                          @Param("targetType") String targetType,
                                           @Param("size") Integer size,
                                           @Param("offset") int offset,
                                           @Param("startDate") String startDate,
@@ -20,6 +21,7 @@ public interface ReportDAO {
     int getReportListCountByKeyword(@Param("status") String status,
                                     @Param("keyword") String keyword,
                                     @Param("user_id") Integer user_id,
+                                    @Param("targetType") String targetType,
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
 

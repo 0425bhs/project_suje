@@ -104,6 +104,17 @@
                 </div>
 
                 <div class="admin-filter-detail-row">
+                    <label class="admin-filter-field">
+                        <span>평점</span>
+                        <select class="admin-filter-control" name="rating">
+                            <option value="">전체</option>
+                            <option value="5" ${rating == 5 ? 'selected' : ''}>5점</option>
+                            <option value="4" ${rating == 4 ? 'selected' : ''}>4점</option>
+                            <option value="3" ${rating == 3 ? 'selected' : ''}>3점</option>
+                            <option value="2" ${rating == 2 ? 'selected' : ''}>2점</option>
+                            <option value="1" ${rating == 1 ? 'selected' : ''}>1점</option>
+                        </select>
+                    </label>
                     <label class="admin-filter-field admin-filter-date-range">
                         <span>작성일 범위</span>
                         <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
@@ -113,17 +124,17 @@
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
-                <c:if test="${not empty keyword || not empty user_id || not empty product_id || not empty review_id || not empty startDate || not empty endDate}">
+                <c:if test="${not empty keyword || not empty user_id || not empty product_id || not empty review_id || not empty rating || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
                         <span class="admin-filter-applied-label">적용된 조건:</span>
                         <c:if test="${not empty keyword}">
-                            <a class="admin-filter-chip" href="/admin/reviews?user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reviews?user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&rating=${rating}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 검색어: ${keyword}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
                         <c:if test="${not empty user_id}">
-                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&product_id=${product_id}&review_id=${review_id}&rating=${rating}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 회원:
                                 <c:choose>
                                     <c:when test="${not empty filterUser}">
@@ -135,7 +146,7 @@
                             </a>
                         </c:if>
                         <c:if test="${not empty product_id}">
-                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&review_id=${review_id}&rating=${rating}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 상품:
                                 <c:choose>
                                     <c:when test="${not empty filterProduct}">
@@ -147,7 +158,7 @@
                             </a>
                         </c:if>
                         <c:if test="${not empty review_id}">
-                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&rating=${rating}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 후기:
                                 <c:choose>
                                     <c:when test="${not empty filterReview}">
@@ -158,8 +169,14 @@
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
+                        <c:if test="${not empty rating}">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                평점: ${rating}점
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
                         <c:if test="${not empty startDate || not empty endDate}">
-                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&rating=${rating}&sort=${sort}&size=${pagination.size}&page=1">
                                 작성일: ${startDate} ~ ${endDate}
                                 <span aria-hidden="true">&times;</span>
                             </a>
@@ -318,7 +335,7 @@
             <div class="admin-pagination-pages">
                 <c:if test="${pagination.totalPage > 0}">
                     <c:if test="${pagination.hasPrev}">
-                        <a href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                        <a href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&rating=${rating}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                             이전
                         </a>
                     </c:if>
@@ -327,14 +344,14 @@
                     </c:if>
 
                     <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                        <a href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                        <a href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&rating=${rating}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                             class="${pagination.page == i ? 'active' : ''}">
                             ${i}
                         </a>
                     </c:forEach>
 
                     <c:if test="${pagination.hasNext}">
-                        <a href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                        <a href="/admin/reviews?keyword=${keyword}&user_id=${user_id}&product_id=${product_id}&review_id=${review_id}&rating=${rating}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                             다음
                         </a>
                     </c:if>

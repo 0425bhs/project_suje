@@ -24,6 +24,7 @@ public interface ReviewDAO {
                                           @Param("user_id") Integer user_id,
                                           @Param("product_id") Integer product_id,
                                           @Param("review_id") Integer review_id,
+                                          @Param("rating") Integer rating,
                                           @Param("size") Integer size,
                                           @Param("offset") int offset,
                                           @Param("startDate") String startDate,
@@ -33,6 +34,7 @@ public interface ReviewDAO {
                                     @Param("user_id") Integer user_id,
                                     @Param("product_id") Integer product_id,
                                     @Param("review_id") Integer review_id,
+                                    @Param("rating") Integer rating,
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
 

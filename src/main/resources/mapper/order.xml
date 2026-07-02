@@ -480,6 +480,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="productId != null">
             AND p.product_id = #{productId}
         </if>
+        <if test="minAmount != null">
+            AND o.total_amount &gt;= #{minAmount}
+        </if>
+        <if test="maxAmount != null">
+            AND o.total_amount &lt;= #{maxAmount}
+        </if>
         <if test="keyword != null and keyword != ''">
             AND (
                 CAST(o.order_id AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
@@ -537,6 +543,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
         <if test="productId != null">
             AND p.product_id = #{productId}
+        </if>
+        <if test="minAmount != null">
+            AND o.total_amount &gt;= #{minAmount}
+        </if>
+        <if test="maxAmount != null">
+            AND o.total_amount &lt;= #{maxAmount}
         </if>
         <if test="keyword != null and keyword != ''">
             AND (

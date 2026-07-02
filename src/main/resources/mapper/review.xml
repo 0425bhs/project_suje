@@ -115,6 +115,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND r.review_id = #{review_id}
             </if>
 
+            <if test="rating != null">
+                AND r.rating = #{rating}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 AND (
                     p.name LIKE CONCAT("%", #{keyword}, "%")
@@ -162,6 +166,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             <if test="review_id != null">
                 AND r.review_id = #{review_id}
+            </if>
+
+            <if test="rating != null">
+                AND r.rating = #{rating}
             </if>
 
             <if test="keyword != null and keyword != ''">

@@ -116,10 +116,10 @@
             <form class="admin-filter-form" action="/admin/reports" method="get">
                 <div class="admin-filter-main-row">
                     <div class="admin-filter-tabs">
-                        <a href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
-                        <a href="/admin/reports?status=pending&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'pending' ? 'active' : ''}">처리대기</a>
-                        <a href="/admin/reports?status=processed&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'processed' ? 'active' : ''}">처리완료</a>
-                        <a href="/admin/reports?status=rejected&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
+                        <a href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
+                        <a href="/admin/reports?status=pending&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'pending' ? 'active' : ''}">처리대기</a>
+                        <a href="/admin/reports?status=processed&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'processed' ? 'active' : ''}">처리완료</a>
+                        <a href="/admin/reports?status=rejected&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
                     </div>
 
                     <div class="admin-search-wrap">
@@ -151,6 +151,15 @@
                             <option value="rejected" ${status eq 'rejected' ? 'selected' : ''}>반려</option>
                         </select>
                     </label>
+                    <label class="admin-filter-field">
+                        <span>대상 유형</span>
+                        <select class="admin-filter-control" name="targetType">
+                            <option value="all" ${targetType eq 'all' ? 'selected' : ''}>전체</option>
+                            <option value="PRODUCT" ${targetType eq 'PRODUCT' ? 'selected' : ''}>상품</option>
+                            <option value="REVIEW" ${targetType eq 'REVIEW' ? 'selected' : ''}>후기</option>
+                            <option value="QNA" ${targetType eq 'QNA' ? 'selected' : ''}>문의</option>
+                        </select>
+                    </label>
                     <label class="admin-filter-field admin-filter-date-range">
                         <span>접수일 범위</span>
                         <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
@@ -160,25 +169,25 @@
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
-                <c:if test="${status ne 'all' || not empty keyword || not empty user_id || not empty startDate || not empty endDate}">
+                <c:if test="${status ne 'all' || not empty keyword || not empty user_id || targetType ne 'all' || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
                         <span class="admin-filter-applied-label">적용된 조건:</span>
                         <c:if test="${status ne 'all'}">
                             <a class="admin-filter-chip"
-                                href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 상태:
                                 ${status eq 'pending' ? '처리대기' : status eq 'processed' ? '처리완료' : '반려'}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
                         <c:if test="${not empty keyword}">
-                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 검색어: ${keyword}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
                         <c:if test="${not empty user_id}">
-                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 회원:
                                 <c:choose>
                                     <c:when test="${not empty filterUser}">
@@ -189,8 +198,19 @@
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
+                        <c:if test="${targetType ne 'all'}">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                대상 유형:
+                                <c:choose>
+                                    <c:when test="${targetType eq 'PRODUCT'}">상품</c:when>
+                                    <c:when test="${targetType eq 'REVIEW'}">후기</c:when>
+                                    <c:otherwise>문의</c:otherwise>
+                                </c:choose>
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
                         <c:if test="${not empty startDate || not empty endDate}">
-                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&sort=${sort}&size=${pagination.size}&page=1">
                                 접수일: ${startDate} ~ ${endDate}
                                 <span aria-hidden="true">&times;</span>
                             </a>
@@ -388,7 +408,7 @@
             <div class="admin-pagination-pages">
                 <c:if test="${pagination.totalPage > 0}">
                     <c:if test="${pagination.hasPrev}">
-                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                             이전
                         </a>
                     </c:if>
@@ -397,14 +417,14 @@
                     </c:if>
 
                     <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                             class="${pagination.page == i ? 'active' : ''}">
                             ${i}
                         </a>
                     </c:forEach>
 
                     <c:if test="${pagination.hasNext}">
-                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                             다음
                         </a>
                     </c:if>

@@ -11,6 +11,7 @@ public interface InquiryDAO {
     List<InquiryVO> getInquryListByKeyword(@Param("status") String status,
                                            @Param("keyword") String keyword,
                                            @Param("user_id") Integer user_id,
+                                           @Param("inquiryType") String inquiryType,
                                            @Param("size") Integer size,
                                            @Param("offset") int offset,
                                            @Param("startDate") String startDate,
@@ -19,6 +20,7 @@ public interface InquiryDAO {
     int getInquryListCountByKeyword(@Param("status") String status,
                                     @Param("keyword") String keyword,
                                     @Param("user_id") Integer user_id,
+                                    @Param("inquiryType") String inquiryType,
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
     InquiryVO getInquiryById(int inquiry_id);

@@ -34,6 +34,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND p.product_id = #{product_id}
             </if>
 
+            <if test="category_id != null">
+                AND (
+                    p.category_id = #{category_id}
+                    OR p.category_id IN (
+                        SELECT category_id
+                        FROM categories
+                        WHERE parent_id = #{category_id}
+                    )
+                )
+            </if>
+
+            <if test="minPrice != null">
+                AND p.price &gt;= #{minPrice}
+            </if>
+
+            <if test="maxPrice != null">
+                AND p.price &lt;= #{maxPrice}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 AND (
                     p.name LIKE CONCAT("%", #{keyword}, "%")
@@ -79,6 +98,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             <if test="product_id != null">
                 AND p.product_id = #{product_id}
+            </if>
+
+            <if test="category_id != null">
+                AND (
+                    p.category_id = #{category_id}
+                    OR p.category_id IN (
+                        SELECT category_id
+                        FROM categories
+                        WHERE parent_id = #{category_id}
+                    )
+                )
+            </if>
+
+            <if test="minPrice != null">
+                AND p.price &gt;= #{minPrice}
+            </if>
+
+            <if test="maxPrice != null">
+                AND p.price &lt;= #{maxPrice}
             </if>
 
             <if test="keyword != null and keyword != ''">

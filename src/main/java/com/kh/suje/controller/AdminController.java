@@ -238,6 +238,7 @@ public class AdminController {
     @GetMapping("/admin/products")
     public String products(Model model, String status, String keyword,
                            Integer seller_id, Integer product_id,
+                           Integer category_id, Integer minPrice, Integer maxPrice,
                            String startDate, String endDate,
                            String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"approved".equals(status) &&
@@ -251,12 +252,19 @@ public class AdminController {
 
         SellerVO filterSeller = seller_id == null ? null : sellerDao.getSellerById(seller_id);
         ProductVO filterProduct = product_id == null ? null : productDao.product_one(product_id);
+        String filterCategoryName = category_id == null ? null : categoryDao.getCategroyNameById(category_id);
+        List<CategoryVO> categoryList = categoryDao.small_category_all_list();
 
-        int totalCount = productDao.getProductListCountByKeyword(status, keyword, seller_id, product_id, startDate, endDate);
+        int totalCount = productDao.getProductListCountByKeyword(status, keyword, seller_id, product_id,
+                                                                 category_id, minPrice, maxPrice,
+                                                                 startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ProductVO> productList = productDao.getProductListByKeyword(status, keyword,
                                                                          seller_id,
                                                                          product_id,
+                                                                         category_id,
+                                                                         minPrice,
+                                                                         maxPrice,
                                                                          pagination.getSize(),
                                                                          pagination.getOffset(),
                                                                          startDate, endDate,
@@ -266,8 +274,13 @@ public class AdminController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("seller_id", seller_id);
         model.addAttribute("product_id", product_id);
+        model.addAttribute("category_id", category_id);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("filterSeller", filterSeller);
         model.addAttribute("filterProduct", filterProduct);
+        model.addAttribute("filterCategoryName", filterCategoryName);
+        model.addAttribute("categoryList", categoryList);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -318,8 +331,13 @@ public class AdminController {
     @GetMapping("/admin/reviews")
     public String reviews(Model model, String keyword,
                           Integer user_id, Integer product_id, Integer review_id,
+                          Integer rating,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
+        if (rating != null && (rating < 1 || rating > 5)) {
+            rating = null;
+        }
+
         if (!"oldest".equals(sort) && !"rating".equals(sort)) {
             sort = "latest";
         }
@@ -327,12 +345,13 @@ public class AdminController {
         UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
         ProductVO filterProduct = product_id == null ? null : productDao.product_one(product_id);
         ReviewVO filterReview = review_id == null ? null : reviewDao.getReviewById(review_id);
-        int totalCount = reviewDao.getReviewListCountByKeyword(keyword, user_id, product_id, review_id, startDate, endDate);
+        int totalCount = reviewDao.getReviewListCountByKeyword(keyword, user_id, product_id, review_id, rating, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ReviewVO> reviewList = reviewDao.getReviewListByKeyword(keyword,
                                                                      user_id,
                                                                      product_id,
                                                                      review_id,
+                                                                     rating,
                                                                      pagination.getSize(),
                                                                      pagination.getOffset(),
                                                                      startDate, endDate,
@@ -342,6 +361,7 @@ public class AdminController {
         model.addAttribute("user_id", user_id);
         model.addAttribute("product_id", product_id);
         model.addAttribute("review_id", review_id);
+        model.addAttribute("rating", rating);
         model.addAttribute("filterUser", filterUser);
         model.addAttribute("filterProduct", filterProduct);
         model.addAttribute("filterReview", filterReview);
@@ -375,6 +395,7 @@ public class AdminController {
     @GetMapping("/admin/orders")
     public String orders(Model model, String status, String keyword,
                          Integer user_id, Integer seller_id, Integer product_id,
+                         Integer minAmount, Integer maxAmount,
                          String startDate, String endDate,
                          String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"paid".equals(status) &&
@@ -390,12 +411,16 @@ public class AdminController {
         UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
         SellerVO filterSeller = seller_id == null ? null : sellerDao.getSellerById(seller_id);
         ProductVO filterProduct = product_id == null ? null : productDao.product_one(product_id);
-        int totalCount = orderDao.getAdminOrderListCountByKeyword(status, keyword, user_id, seller_id, product_id, startDate, endDate);
+        int totalCount = orderDao.getAdminOrderListCountByKeyword(status, keyword, user_id, seller_id, product_id,
+                                                                  minAmount, maxAmount,
+                                                                  startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<Map<String, Object>> orderList = orderDao.getAdminOrderListByKeyword(status, keyword,
                                                                                   user_id,
                                                                                   seller_id,
                                                                                   product_id,
+                                                                                  minAmount,
+                                                                                  maxAmount,
                                                                                   pagination.getSize(),
                                                                                   pagination.getOffset(),
                                                                                   startDate, endDate,
@@ -406,6 +431,8 @@ public class AdminController {
         model.addAttribute("user_id", user_id);
         model.addAttribute("seller_id", seller_id);
         model.addAttribute("product_id", product_id);
+        model.addAttribute("minAmount", minAmount);
+        model.addAttribute("maxAmount", maxAmount);
         model.addAttribute("filterUser", filterUser);
         model.addAttribute("filterSeller", filterSeller);
         model.addAttribute("filterProduct", filterProduct);
@@ -469,6 +496,7 @@ public class AdminController {
     @GetMapping("/admin/inquiries")
     public String inquiries(Model model, String status, String keyword,
                             Integer user_id,
+                            String inquiryType,
                             String startDate, String endDate,
                             String sort, Integer size, Integer page) {
         if (!"waiting".equals(status) && !"answered".equals(status)) {
@@ -479,11 +507,18 @@ public class AdminController {
             sort = "latest";
         }
 
+        if (!"SERVICE".equals(inquiryType) && !"ACCOUNT".equals(inquiryType) &&
+            !"PAYMENT".equals(inquiryType) && !"SELLER".equals(inquiryType) &&
+            !"POLICY".equals(inquiryType) && !"ETC".equals(inquiryType)) {
+            inquiryType = "all";
+        }
+
         UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
-        int totalCount = inquiryDao.getInquryListCountByKeyword(status, keyword, user_id, startDate, endDate);
+        int totalCount = inquiryDao.getInquryListCountByKeyword(status, keyword, user_id, inquiryType, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<InquiryVO> inquiryList = inquiryDao.getInquryListByKeyword(status, keyword,
                                                                        user_id,
+                                                                       inquiryType,
                                                                        pagination.getSize(),
                                                                        pagination.getOffset(),
                                                                        startDate, endDate,
@@ -492,6 +527,7 @@ public class AdminController {
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
         model.addAttribute("user_id", user_id);
+        model.addAttribute("inquiryType", inquiryType);
         model.addAttribute("filterUser", filterUser);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);
@@ -542,6 +578,7 @@ public class AdminController {
     @GetMapping("/admin/reports")
     public String reports(Model model, String status, String keyword,
                           Integer user_id,
+                          String targetType,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"processed".equals(status) &&
@@ -553,11 +590,16 @@ public class AdminController {
             sort = "latest";
         }
 
+        if (!"PRODUCT".equals(targetType) && !"REVIEW".equals(targetType) && !"QNA".equals(targetType)) {
+            targetType = "all";
+        }
+
         UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
-        int totalCount = reportDao.getReportListCountByKeyword(status, keyword, user_id, startDate, endDate);
+        int totalCount = reportDao.getReportListCountByKeyword(status, keyword, user_id, targetType, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ReportVO> reportList = reportDao.getReportListByKeyword(status, keyword,
                                                                      user_id,
+                                                                     targetType,
                                                                      pagination.getSize(),
                                                                      pagination.getOffset(),
                                                                      startDate, endDate,
@@ -566,6 +608,7 @@ public class AdminController {
         model.addAttribute("status", status);
         model.addAttribute("keyword", keyword);
         model.addAttribute("user_id", user_id);
+        model.addAttribute("targetType", targetType);
         model.addAttribute("filterUser", filterUser);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);

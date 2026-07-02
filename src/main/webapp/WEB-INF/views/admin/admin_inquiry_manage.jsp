@@ -107,11 +107,11 @@
                         <form class="admin-filter-form" action="/admin/inquiries" method="get">
                             <div class="admin-filter-main-row">
                                 <div class="admin-filter-tabs">
-                                    <a href="/admin/inquiries?status=all&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                    <a href="/admin/inquiries?status=all&keyword=${keyword}&user_id=${user_id}&inquiryType=${inquiryType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                         class="${status eq 'all' ? 'active' : ''}">전체</a>
-                                    <a href="/admin/inquiries?status=waiting&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                    <a href="/admin/inquiries?status=waiting&keyword=${keyword}&user_id=${user_id}&inquiryType=${inquiryType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                         class="${status eq 'waiting' ? 'active' : ''}">미답변</a>
-                                    <a href="/admin/inquiries?status=answered&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                    <a href="/admin/inquiries?status=answered&keyword=${keyword}&user_id=${user_id}&inquiryType=${inquiryType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                         class="${status eq 'answered' ? 'active' : ''}">답변완료</a>
                                 </div>
 
@@ -143,6 +143,18 @@
                                         <option value="answered" ${status eq 'answered' ? 'selected' : ''}>답변완료</option>
                                     </select>
                                 </label>
+                                <label class="admin-filter-field">
+                                    <span>문의 유형</span>
+                                    <select class="admin-filter-control" name="inquiryType">
+                                        <option value="all" ${inquiryType eq 'all' ? 'selected' : ''}>전체</option>
+                                        <option value="SERVICE" ${inquiryType eq 'SERVICE' ? 'selected' : ''}>서비스 이용</option>
+                                        <option value="ACCOUNT" ${inquiryType eq 'ACCOUNT' ? 'selected' : ''}>회원/계정</option>
+                                        <option value="PAYMENT" ${inquiryType eq 'PAYMENT' ? 'selected' : ''}>결제 오류</option>
+                                        <option value="SELLER" ${inquiryType eq 'SELLER' ? 'selected' : ''}>판매자 센터</option>
+                                        <option value="POLICY" ${inquiryType eq 'POLICY' ? 'selected' : ''}>운영 정책</option>
+                                        <option value="ETC" ${inquiryType eq 'ETC' ? 'selected' : ''}>기타</option>
+                                    </select>
+                                </label>
                                 <label class="admin-filter-field admin-filter-date-range">
                                     <span>작성일 범위</span>
                                     <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
@@ -152,24 +164,24 @@
                                 <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                             </div>
 
-                            <c:if test="${status ne 'all' || not empty keyword || not empty user_id || not empty startDate || not empty endDate}">
+                            <c:if test="${status ne 'all' || not empty keyword || not empty user_id || inquiryType ne 'all' || not empty startDate || not empty endDate}">
                                 <div class="admin-filter-applied">
                                     <span class="admin-filter-applied-label">적용된 조건:</span>
                                     <c:if test="${status ne 'all'}">
                                         <a class="admin-filter-chip"
-                                            href="/admin/inquiries?status=all&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                            href="/admin/inquiries?status=all&keyword=${keyword}&user_id=${user_id}&inquiryType=${inquiryType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                             상태: ${status eq 'waiting' ? '미답변' : '답변완료'}
                                             <span aria-hidden="true">&times;</span>
                                         </a>
                                     </c:if>
                                     <c:if test="${not empty keyword}">
-                                        <a class="admin-filter-chip" href="/admin/inquiries?status=${status}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                        <a class="admin-filter-chip" href="/admin/inquiries?status=${status}&user_id=${user_id}&inquiryType=${inquiryType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                             검색어: ${keyword}
                                             <span aria-hidden="true">&times;</span>
                                         </a>
                                     </c:if>
                                     <c:if test="${not empty user_id}">
-                                        <a class="admin-filter-chip" href="/admin/inquiries?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                        <a class="admin-filter-chip" href="/admin/inquiries?status=${status}&keyword=${keyword}&inquiryType=${inquiryType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                             회원:
                                             <c:choose>
                                                 <c:when test="${not empty filterUser}">
@@ -180,8 +192,22 @@
                                             <span aria-hidden="true">&times;</span>
                                         </a>
                                     </c:if>
+                                    <c:if test="${inquiryType ne 'all'}">
+                                        <a class="admin-filter-chip" href="/admin/inquiries?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                            문의 유형:
+                                            <c:choose>
+                                                <c:when test="${inquiryType eq 'SERVICE'}">서비스 이용</c:when>
+                                                <c:when test="${inquiryType eq 'ACCOUNT'}">회원/계정</c:when>
+                                                <c:when test="${inquiryType eq 'PAYMENT'}">결제 오류</c:when>
+                                                <c:when test="${inquiryType eq 'SELLER'}">판매자 센터</c:when>
+                                                <c:when test="${inquiryType eq 'POLICY'}">운영 정책</c:when>
+                                                <c:otherwise>기타</c:otherwise>
+                                            </c:choose>
+                                            <span aria-hidden="true">&times;</span>
+                                        </a>
+                                    </c:if>
                                     <c:if test="${not empty startDate || not empty endDate}">
-                                        <a class="admin-filter-chip" href="/admin/inquiries?status=${status}&keyword=${keyword}&user_id=${user_id}&sort=${sort}&size=${pagination.size}&page=1">
+                                        <a class="admin-filter-chip" href="/admin/inquiries?status=${status}&keyword=${keyword}&user_id=${user_id}&inquiryType=${inquiryType}&sort=${sort}&size=${pagination.size}&page=1">
                                             작성일: ${startDate} ~ ${endDate}
                                             <span aria-hidden="true">&times;</span>
                                         </a>
@@ -379,7 +405,7 @@
                             <c:if test="${pagination.totalPage > 0}">
                                 <c:if test="${pagination.hasPrev}">
                                     <a
-                                        href="/admin/inquiries?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                                        href="/admin/inquiries?status=${status}&keyword=${keyword}&user_id=${user_id}&inquiryType=${inquiryType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                                         이전
                                     </a>
                                 </c:if>
@@ -388,7 +414,7 @@
                                 </c:if>
 
                                 <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                                <a href="/admin/inquiries?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                                <a href="/admin/inquiries?status=${status}&keyword=${keyword}&user_id=${user_id}&inquiryType=${inquiryType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                                         class="${pagination.page == i ? 'active' : ''}">
                                         ${i}
                                     </a>
@@ -396,7 +422,7 @@
 
                                 <c:if test="${pagination.hasNext}">
                                     <a
-                                        href="/admin/inquiries?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                                        href="/admin/inquiries?status=${status}&keyword=${keyword}&user_id=${user_id}&inquiryType=${inquiryType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                                         다음
                                     </a>
                                 </c:if>

@@ -118,15 +118,15 @@
                 <form class="admin-filter-form" action="/admin/products" method="get">
                     <div class="admin-filter-main-row">
                         <div class="admin-filter-tabs">
-                            <a href="/admin/products?status=all&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=all&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'all' ? 'active' : ''}">전체</a>
-                            <a href="/admin/products?status=pending&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=pending&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
-                            <a href="/admin/products?status=approved&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=approved&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'approved' ? 'active' : ''}">판매중</a>
-                            <a href="/admin/products?status=rejected&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=rejected&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'rejected' ? 'active' : ''}">반려</a>
-                            <a href="/admin/products?status=hidden&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/products?status=hidden&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'hidden' ? 'active' : ''}">숨김</a>
                         </div>
 
@@ -166,28 +166,45 @@
                             <em>~</em>
                             <input type="date" class="admin-filter-control" name="endDate" value="${endDate}">
                         </label>
+                        <label class="admin-filter-field">
+                            <span>카테고리</span>
+                            <select class="admin-filter-control" name="category_id">
+                                <option value="">전체</option>
+                                <c:forEach var="category" items="${categoryList}">
+                                    <option value="${category.category_id}" ${category_id == category.category_id ? 'selected' : ''}>
+                                        ${category.name}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </label>
+                        <label class="admin-filter-field admin-filter-date-range">
+                            <span>가격 범위</span>
+                            <input type="number" class="admin-filter-control" name="minPrice" value="${minPrice}" min="0" placeholder="최소">
+                            <em>~</em>
+                            <input type="number" class="admin-filter-control" name="maxPrice" value="${maxPrice}" min="0" placeholder="최대">
+                        </label>
                         <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                     </div>
 
-                    <c:if test="${status ne 'all' || not empty keyword || not empty seller_id || not empty product_id || not empty startDate || not empty endDate}">
+                    <c:if test="${status ne 'all' || not empty keyword || not empty seller_id || not empty product_id || not empty category_id || not empty minPrice || not empty maxPrice || not empty startDate || not empty endDate}">
                         <div class="admin-filter-applied">
                             <span class="admin-filter-applied-label">적용된 조건:</span>
                             <c:if test="${status ne 'all'}">
                                 <a class="admin-filter-chip"
-                                    href="/admin/products?status=all&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    href="/admin/products?status=all&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     상태:
                                     ${status eq 'pending' ? '승인대기' : status eq 'approved' ? '판매중' : status eq 'rejected' ? '반려' : '숨김'}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
                             <c:if test="${not empty keyword}">
-                                <a class="admin-filter-chip" href="/admin/products?status=${status}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     검색어: ${keyword}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
                             <c:if test="${not empty seller_id}">
-                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     판매자:
                                     <c:choose>
                                         <c:when test="${not empty filterSeller}">
@@ -199,7 +216,7 @@
                                 </a>
                             </c:if>
                             <c:if test="${not empty product_id}">
-                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     상품:
                                     <c:choose>
                                         <c:when test="${not empty filterProduct}">
@@ -210,8 +227,20 @@
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
+                            <c:if test="${not empty category_id}">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    카테고리: ${filterCategoryName}
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
+                            <c:if test="${not empty minPrice || not empty maxPrice}">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    가격: ${minPrice} ~ ${maxPrice}
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
                             <c:if test="${not empty startDate || not empty endDate}">
-                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&size=${pagination.size}&page=1">
                                     등록일: ${startDate} ~ ${endDate}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
@@ -463,7 +492,7 @@
                 <div class="admin-pagination-pages">
                     <c:if test="${pagination.totalPage > 0}">
                         <c:if test="${pagination.hasPrev}">
-                            <a href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                            <a href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                                 이전
                             </a>
                         </c:if>
@@ -472,14 +501,14 @@
                         </c:if>
 
                         <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                            <a href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                            <a href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                                 class="${pagination.page == i ? 'active' : ''}">
                                 ${i}
                             </a>
                         </c:forEach>
 
                         <c:if test="${pagination.hasNext}">
-                            <a href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                            <a href="/admin/products?status=${status}&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                                 다음
                             </a>
                         </c:if>

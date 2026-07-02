@@ -26,6 +26,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND i.user_id = #{user_id}
             </if>
 
+            <if test="inquiryType != null and inquiryType != 'all'">
+                AND i.inquiry_type = #{inquiryType}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 and (
                     i.title LIKE CONCAT("%", #{keyword}, "%")
@@ -66,6 +70,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             <if test="user_id != null">
                 AND i.user_id = #{user_id}
+            </if>
+
+            <if test="inquiryType != null and inquiryType != 'all'">
+                AND i.inquiry_type = #{inquiryType}
             </if>
 
             <if test="keyword != null and keyword != ''">

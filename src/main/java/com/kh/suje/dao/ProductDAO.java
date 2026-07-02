@@ -16,6 +16,9 @@ public interface ProductDAO {
                                             @Param("keyword") String keyword,
                                             @Param("seller_id") Integer seller_id,
                                             @Param("product_id") Integer product_id,
+                                            @Param("category_id") Integer category_id,
+                                            @Param("minPrice") Integer minPrice,
+                                            @Param("maxPrice") Integer maxPrice,
                                             @Param("size") Integer size,
                                             @Param("offset") int offset,
                                             @Param("startDate") String startDate,
@@ -25,6 +28,9 @@ public interface ProductDAO {
                                      @Param("keyword") String keyword,
                                      @Param("seller_id") Integer seller_id,
                                      @Param("product_id") Integer product_id,
+                                     @Param("category_id") Integer category_id,
+                                     @Param("minPrice") Integer minPrice,
+                                     @Param("maxPrice") Integer maxPrice,
                                      @Param("startDate") String startDate,
                                      @Param("endDate") String endDate);
 

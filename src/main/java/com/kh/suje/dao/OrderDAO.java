@@ -108,6 +108,8 @@ public interface OrderDAO {
             @Param("userId") Integer userId,
             @Param("sellerId") Integer sellerId,
             @Param("productId") Integer productId,
+            @Param("minAmount") Integer minAmount,
+            @Param("maxAmount") Integer maxAmount,
             @Param("startDate") String startDate,
             @Param("endDate") String endDate
     );
@@ -119,6 +121,8 @@ public interface OrderDAO {
             @Param("userId") Integer userId,
             @Param("sellerId") Integer sellerId,
             @Param("productId") Integer productId,
+            @Param("minAmount") Integer minAmount,
+            @Param("maxAmount") Integer maxAmount,
             @Param("size") int size,
             @Param("offset") int offset,
             @Param("startDate") String startDate,

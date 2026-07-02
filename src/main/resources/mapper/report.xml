@@ -23,6 +23,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="user_id != null">
             AND r.reporter_id = #{user_id}
         </if>
+        <if test="targetType != null and targetType != 'all'">
+            AND r.target_type = #{targetType}
+        </if>
         <if test="keyword != null and keyword != ''">
             AND (
                 r.reason LIKE CONCAT("%", #{keyword} ,"%")
@@ -63,6 +66,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
         <if test="user_id != null">
             AND r.reporter_id = #{user_id}
+        </if>
+        <if test="targetType != null and targetType != 'all'">
+            AND r.target_type = #{targetType}
         </if>
         <if test="keyword != null and keyword != ''">
             AND (
