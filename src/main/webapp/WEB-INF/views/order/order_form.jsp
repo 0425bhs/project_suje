@@ -1,10 +1,10 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
             <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
                 <!DOCTYPE html>
-                <html>
+                <html lang="ko">
 
                 <head>
                     <meta charset="UTF-8">
@@ -14,12 +14,14 @@
                     <link rel="stylesheet" href="/css/order-payment.css">
 
                     <script src="/js/product_main.js" defer></script>
+                    <script src="/js/order_form.js" defer></script>
                     <script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
                     <script>
                         function openAddressModal() {
                             document.getElementById("addressModal").classList.add("open");
                         }
+
                         function closeAddressModal() {
                             document.getElementById("addressModal").classList.remove("open");
                         }
@@ -50,6 +52,7 @@
 
                     <section class="page-block soft">
                         <div class="block-inner">
+
                             <div class="page-title-row">
                                 <div>
                                     <span>ORDER FORM</span>
@@ -59,7 +62,16 @@
                             </div>
 
                             <form action="/order/create" method="post">
+
+                                <input type="hidden" id="totalItemPrice" value="${totalItemPrice}">
+                                <input type="hidden" id="totalDeliveryFee" value="${totalDeliveryFee}">
+                                <input type="hidden" id="pointBalance" value="${empty pointBalance ? 0 : pointBalance}">
+
+                                <input type="hidden" name="address_id" id="selectedAddressId"
+                                    value="${defaultAddr.address_id}" />
+
                                 <div class="order-layout">
+
                                     <div class="panel">
                                         <h3 class="panel-title">주문 상품</h3>
 
@@ -68,6 +80,7 @@
                                                 <c:when test="${vo.cart_id ne 0}">
                                                     <input type="hidden" name="cart_id" value="${vo.cart_id}">
                                                 </c:when>
+
                                                 <c:otherwise>
                                                     <input type="hidden" name="product_id" value="${vo.product_id}">
                                                     <input type="hidden" name="quantity" value="${vo.quantity}">
@@ -75,21 +88,25 @@
                                             </c:choose>
 
                                             <div class="order-item">
+
                                                 <c:choose>
                                                     <c:when
                                                         test="${not empty vo.image_l and fn:trim(vo.image_l) ne 'no_file'}">
                                                         <c:set var="orderImagePath" value="${fn:trim(vo.image_l)}" />
+
                                                         <c:choose>
                                                             <c:when test="${fn:startsWith(orderImagePath, '/upload/')}">
                                                                 <img src="${orderImagePath}" alt="${vo.name}"
                                                                     onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
                                                             </c:when>
+
                                                             <c:otherwise>
                                                                 <img src="/upload/${orderImagePath}" alt="${vo.name}"
                                                                     onerror="this.outerHTML='<div class=&quot;order-no-image&quot;>이미지 없음</div>';">
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </c:when>
+
                                                     <c:otherwise>
                                                         <div class="order-no-image">이미지 없음</div>
                                                     </c:otherwise>
@@ -107,6 +124,7 @@
                                                                     <fmt:formatNumber value="${vo.price}"
                                                                         pattern="#,###" />원
                                                                 </p>
+
                                                                 <p class="order-sale-price">
                                                                     가격
                                                                     <strong>
@@ -116,6 +134,7 @@
                                                                 </p>
                                                             </div>
                                                         </c:when>
+
                                                         <c:otherwise>
                                                             <p class="order-normal-price">
                                                                 가격
@@ -126,6 +145,7 @@
                                                             </p>
                                                         </c:otherwise>
                                                     </c:choose>
+
                                                     <p>수량 ${vo.quantity}개</p>
                                                 </div>
 
@@ -133,6 +153,19 @@
                                                     <strong>
                                                         <fmt:formatNumber value="${vo.item_total}" pattern="#,###" />원
                                                     </strong>
+                                                </div>
+                                                <div class="cancel-modal-body">
+                                                    <c:choose>
+                                                        <c:when test="${not empty param.product_id}">
+                                                            <c:set var="currentUrl"
+                                                                value="${pageContext.request.requestURL}${not empty pageContext.request.queryString ? '?'.concat(pageContext.request.queryString) : ''}" />
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:set var="currentUrl"
+                                                                value="${pageContext.request.contextPath}/order_cart_form.do" />
+                                                        </c:otherwise>
+                                                    </c:choose>
+
                                                 </div>
                                             </div>
                                         </c:forEach>
@@ -162,6 +195,7 @@
                                     <input type="hidden" name="address_id" id="selectedAddressId"
                                         value="${defaultAddr.address_id}" />
 
+
                                     <aside class="panel side-panel">
                                         <h3 class="panel-title">결제 요약</h3>
 
@@ -174,15 +208,67 @@
 
                                         <div class="summary-line discount">
                                             <span>즉시 할인금액</span>
-                                            <strong>-
+                                            <strong>
+                                                -
                                                 <fmt:formatNumber value="${totalDiscountPrice}" pattern="#,###" />원
+                                            </strong>
+                                        </div>
+
+                                        <div class="summary-line">
+                                            <span>쿠폰 선택</span>
+
+                                            <strong>
+                                                <select name="user_coupon_id" id="userCouponId">
+                                                    <option value="0" data-discount="0">쿠폰 사용 안 함</option>
+
+                                                    <c:forEach var="coupon" items="${couponList}">
+                                                        <option value="${coupon.user_coupon_id}"
+                                                            data-discount="${coupon.discount_amount}">
+                                                            ${coupon.coupon_name}
+                                                            (-
+                                                            <fmt:formatNumber value="${coupon.discount_amount}"
+                                                                pattern="#,###" />원)
+                                                        </option>
+                                                    </c:forEach>
+                                                </select>
                                             </strong>
                                         </div>
 
                                         <div class="summary-line discount">
                                             <span>쿠폰 할인금액</span>
-                                            <strong>-
-                                                <fmt:formatNumber value="${couponPrice}" pattern="#,###" />원
+                                            <strong>
+                                                <span id="couponPriceText">
+                                                    -
+                                                    <fmt:formatNumber value="${couponPrice}" pattern="#,###" />원
+                                                </span>
+                                            </strong>
+                                        </div>
+
+                                        <div class="summary-line">
+                                            <span>보유 포인트</span>
+                                            <strong>
+                                                <fmt:formatNumber value="${empty pointBalance ? 0 : pointBalance}"
+                                                    pattern="#,###" /> P
+                                            </strong>
+                                        </div>
+
+                                        <div class="summary-line">
+                                            <span>사용 포인트</span>
+
+                                            <strong>
+                                                <input type="number" name="use_point" id="usePointInput" min="0"
+                                                    max="${empty pointBalance ? 0 : pointBalance}" value="0">
+
+                                                <button type="button" id="useAllPointBtn">
+                                                    전액사용
+                                                </button>
+                                            </strong>
+                                        </div>
+
+                                        <div class="summary-line discount">
+                                            <span>포인트 할인</span>
+                                            <strong id="pointPriceText">
+                                                -0원
                                             </strong>
                                         </div>
 
@@ -202,15 +288,18 @@
 
                                         <div class="summary-total">
                                             <span>총 결제금액</span>
-                                            <strong>
+                                            <strong id="paymentPriceText">
                                                 <fmt:formatNumber value="${paymentPrice}" pattern="#,###" />원
                                             </strong>
                                         </div>
 
                                         <div class="btn-row">
-                                            <button type="submit" class="btn primary full">주문하고 결제하기</button>
+                                            <button type="submit" class="btn primary full">
+                                                주문하고 결제하기
+                                            </button>
                                         </div>
                                     </aside>
+
                                 </div>
                             </form>
                         </div>
