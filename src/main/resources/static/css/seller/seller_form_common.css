@@ -610,6 +610,67 @@ body {
 }
 
 /* =========================================================
+   판매자 페이지 공통 페이징 - 숫자/세모만 표시
+========================================================= */
+
+.seller-page-menu {
+    margin-top: 26px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+
+    color: #999;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.seller-page-menu a,
+.seller-page-menu span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: auto;
+    width: auto;
+    height: auto;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+
+    color: #999;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+    text-decoration: none;
+
+    box-sizing: border-box;
+}
+
+.seller-page-menu a:hover {
+    background: transparent;
+    border: none;
+    color: #ff654f;
+}
+
+.seller-page-menu .page-current {
+    background: transparent;
+    border: none;
+    color: #ff654f;
+    font-weight: 900;
+}
+
+.seller-page-menu .page-disabled {
+    background: transparent;
+    border: none;
+    color: #d0d0d0;
+    cursor: default;
+}
+
+/* =========================================================
    반응형
 ========================================================= */
 

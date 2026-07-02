@@ -441,6 +441,47 @@
 
                         </section>
 
+                        <c:if test="${pagination.totalPage > 1}">
+                            <div class="seller-page-menu">
+
+                                <c:choose>
+                                    <c:when test="${pagination.hasPrev}">
+                                        <a href="/seller_order_list.do?page=${pagination.prevPage}&size=${pagination.size}&status=${selectedStatus}">
+                                            ◀
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="page-disabled">◀</span>
+                                    </c:otherwise>
+                                </c:choose>
+
+                                <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                                    <c:choose>
+                                        <c:when test="${pagination.page == i}">
+                                            <span class="page-current">${i}</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a href="/seller_order_list.do?page=${i}&size=${pagination.size}&status=${selectedStatus}">
+                                                ${i}
+                                            </a>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+
+                                <c:choose>
+                                    <c:when test="${pagination.hasNext}">
+                                        <a href="/seller_order_list.do?page=${pagination.nextPage}&size=${pagination.size}&status=${selectedStatus}">
+                                            ▶
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="page-disabled">▶</span>
+                                    </c:otherwise>
+                                </c:choose>
+
+                            </div>
+                        </c:if>
+
                         <!-- 주문 상품 모달 템플릿 -->
                         <div class="seller-order-modal-templates">
 

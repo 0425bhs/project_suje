@@ -109,4 +109,6 @@ public interface ProductDAO {
 
     // 테스트 용도 최근 본 상품 목록 출력
     List<ProductVO> product_recent(int user_id);
+
+    int seller_product_count(Map<String, Object> map);
 }

@@ -224,7 +224,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             u.nick_name,
             u.photo_name,
 
-            oi.option_name AS option_name
+            COALESCE(oi.option_name, po.option_name) AS option_name
 
         FROM reviews r
 
@@ -233,6 +233,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         LEFT JOIN order_items oi
             ON r.order_item_id = oi.order_item_id
+
+        LEFT JOIN product_options po
+            ON oi.option_id = po.option_id
 
         WHERE r.product_id = #{value}
 

@@ -23,4 +23,6 @@ public class QnaVO {
     private String option_name;
     private String qna_type;
     private int is_private;
+
+    private String photo_name;
 }
