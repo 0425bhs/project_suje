@@ -30,10 +30,7 @@ public class OrderItemVO {
 
     //옵션
     private Integer option_id;
-    private String optionName;
-    private int optionPrice;
- 
-    // private String option_name;
-    // private int option_price;
+    private String option_name;
+    private int option_price;
 
 }

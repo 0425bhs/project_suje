@@ -178,12 +178,12 @@
                                             ${mainItem.productName}
                                         </strong>
 
-                                        <c:if test="${not empty mainItem.optionName}">
+                                        <c:if test="${not empty mainItem.option_name}">
                                             <span class="myshop-order-option-text">
-                                                옵션 : ${mainItem.optionName}
+                                                옵션 : ${mainItem.option_name}
 
-                                                <c:if test="${mainItem.optionPrice gt 0}">
-                                                    (+<fmt:formatNumber value="${mainItem.optionPrice}" pattern="#,###" />원)
+                                                <c:if test="${mainItem.option_price gt 0}">
+                                                    (+<fmt:formatNumber value="${mainItem.option_price}" pattern="#,###" />원)
                                                 </c:if>
                                             </span>
                                         </c:if>
@@ -300,12 +300,12 @@
                                                 ${item.productName}
                                             </a>
 
-                                            <c:if test="${not empty item.optionName}">
+                                            <c:if test="${not empty item.option_name}">
                                                 <p class="myshop-order-option-text">
-                                                    옵션 : ${item.optionName}
+                                                    옵션 : ${item.option_name}
 
-                                                    <c:if test="${item.optionPrice gt 0}">
-                                                        (+<fmt:formatNumber value="${item.optionPrice}" pattern="#,###" />원)
+                                                    <c:if test="${item.option_price gt 0}">
+                                                        (+<fmt:formatNumber value="${item.option_price}" pattern="#,###" />원)
                                                     </c:if>
                                                 </p>
                                             </c:if>
