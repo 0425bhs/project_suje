@@ -355,7 +355,7 @@
                 return;
             }
 
-            f.action = "qna_report.do";
+            f.action = "report.do";
             f.method = "post";
             f.submit();
         }

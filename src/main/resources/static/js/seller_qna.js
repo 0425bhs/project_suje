@@ -543,10 +543,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 alert("답변 등록에 실패했습니다.");
             }
         })
-        .catch(function(error){
-            console.error(error);
-            alert("답변 등록 중 오류가 발생했습니다.");
-        });
     }
 
     /*
@@ -714,7 +710,7 @@ document.addEventListener("DOMContentLoaded", function(){
             return;
         }
 
-        fetch("/seller_qna_report.do", {
+        fetch("/report.do", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
@@ -746,10 +742,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 alert("신고 접수에 실패했습니다.");
             }
         })
-        .catch(function(error){
-            console.error(error);
-            alert("신고 접수 중 오류가 발생했습니다.");
-        });
     }
 
     /*
