@@ -1,20 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-    background-color: #FAFAFA;
-    font-family: 'Noto Sans KR', sans-serif;
-    color: #333;
+.join-container,
+.join-container * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-table {
+.join-container {
+    background: #fff;
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.join-container table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 8px;
 }
 
-caption {
+.join-container caption {
     font-size: 18px;
     font-weight: 700;
     text-align: left;
@@ -24,13 +33,14 @@ caption {
     display: table-caption;
 }
 
-th, td {
+.join-container th,
+.join-container td {
     padding: 10px 0;
     vertical-align: middle;
     text-align: left;
 }
 
-th {
+.join-container th {
     width: 30%;
     font-size: 13px;
     font-weight: 500;
@@ -38,19 +48,19 @@ th {
     white-space: nowrap;
 }
 
-.sellertable th::after {
+.join-container .sellertable th::after {
     content: " *";
     color: #FF3B30;
     font-size: 12px;
     font-weight: 700;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="number"],
-input[type="date"],
-input[type="email"],
-input:not([type]) {
+.join-container input[type="text"],
+.join-container input[type="password"],
+.join-container input[type="number"],
+.join-container input[type="date"],
+.join-container input[type="email"],
+.join-container input:not([type]) {
     width: 100%;
     height: 44px;
     padding: 0 12px;
@@ -64,22 +74,22 @@ input:not([type]) {
     outline: none;
 }
 
-input:focus {
+.join-container input:focus {
     border-color: #FF7E36;
     background: #fff;
     box-shadow: 0 0 0 3px rgba(255,126,54,0.1);
 }
 
-input::placeholder { color: #BBB; }
+.join-container input::placeholder { color: #BBB; }
 
-.btn-area {
+.join-container .btn-area {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 30px;
 }
 
-.btn-main {
+.join-container .btn-main {
     height: 50px;
     padding: 0 32px;
     background: #FF7E36;
@@ -93,9 +103,9 @@ input::placeholder { color: #BBB; }
     transition: background 0.15s;
 }
 
-.btn-main:hover { background: #E66A23; }
+.join-container .btn-main:hover { background: #E66A23; }
 
-.btn-cancel {
+.join-container .btn-cancel {
     height: 50px;
     padding: 0 32px;
     background: #EEE;
@@ -109,15 +119,4 @@ input::placeholder { color: #BBB; }
     transition: background 0.15s;
 }
 
-.btn-cancel:hover { background: #DDD; color: #333; }
-
-
-.join-container {
-    background: #fff;
-    width: 100%;
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-}
+.join-container .btn-cancel:hover { background: #DDD; color: #333; }
