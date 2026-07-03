@@ -36,13 +36,10 @@
         </div>
 
         <c:set var="isClaimMode" value="${selectedStatus eq 'RETURN_EXCHANGE'}" />
-        <c:set var="currentClaimTab" value="${empty claimTab ? 'RETURN_REQUEST' : claimTab}" />
+        <c:set var="currentClaimTab" value="${empty claimTab ? 'ALL' : claimTab}" />
 
-
-        <!-- 흰 박스: 상단 탭 + 상태 필터 + 주문 목록 + 페이지네이션 + 모달 -->
         <div class="seller-order-white-box">
 
-            <!-- 상단: 상품관리/반품교환 탭 + 리스트/카드 버튼 -->
             <div class="seller-order-top-line">
 
                 <div class="seller-order-tab-wrap">
@@ -79,12 +76,15 @@
 
             </div>
 
-
-            <!-- 상태 필터 -->
             <c:choose>
                 <c:when test="${isClaimMode}">
 
                     <div class="seller-claim-filter-buttons">
+
+                        <a href="/seller_order_list.do?status=RETURN_EXCHANGE&amp;claimTab=ALL"
+                           class="${currentClaimTab eq 'ALL' ? 'active' : ''}">
+                            전체
+                        </a>
 
                         <a href="/seller_order_list.do?status=RETURN_EXCHANGE&amp;claimTab=RETURN_REQUEST"
                            class="${currentClaimTab eq 'RETURN_REQUEST' ? 'active' : ''}">
@@ -149,7 +149,6 @@
                 </c:otherwise>
             </c:choose>
 
-
             <c:choose>
 
                 <c:when test="${empty orderList}">
@@ -172,18 +171,38 @@
                                 <table class="simple-order-table">
 
                                     <thead>
-                                    <tr>
-                                        <th>주문번호</th>
-                                        <th>상품이미지</th>
-                                        <th>상품명 / 옵션</th>
-                                        <th>수량</th>
-                                        <th>상품가격</th>
-                                        <th>수취인 / 연락처</th>
-                                        <th>배송지</th>
-                                        <th>배송상태</th>
-                                        <th>주문일</th>
-                                        <th>접수</th>
-                                    </tr>
+                                        <c:choose>
+                                            <c:when test="${isClaimMode}">
+                                                <tr>
+                                                    <th>주문번호</th>
+                                                    <th>상품이미지</th>
+                                                    <th>상품명 / 옵션</th>
+                                                    <th>수량</th>
+                                                    <th>결제액</th>
+                                                    <th>수취인 / 연락처</th>
+                                                    <th>배송지</th>
+                                                    <th>주문일</th>
+                                                    <th>접수일</th>
+                                                    <th>배송상태</th>
+                                                    <th>접수</th>
+                                                </tr>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <tr>
+                                                    <th>주문번호</th>
+                                                    <th>상품이미지</th>
+                                                    <th>상품명 / 옵션</th>
+                                                    <th>수량</th>
+                                                    <th>결제액</th>
+                                                    <th>수취인 / 연락처</th>
+                                                    <th>배송지</th>
+                                                    <th>주문일</th>
+                                                    <th>배송상태</th>
+                                                    <th>접수</th>
+                                                </tr>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </thead>
 
                                     <tbody>
@@ -194,7 +213,8 @@
                                         <c:set var="mainItem" value="${itemList[0]}" />
                                         <c:set var="itemCount" value="${fn:length(itemList)}" />
 
-                                        <tr>
+                                        <tr class="seller-order-click-row"
+                                            data-modal-target="order-modal-${order.order_id}">
 
                                             <td class="simple-order-no">
                                                 #${order.order_id}
@@ -254,8 +274,8 @@
                                                 ${mainItem.quantity}개
                                             </td>
 
-                                            <td class="simple-price">
-                                                <fmt:formatNumber value="${mainItem.subtotalAmount}" pattern="#,###" />원
+                                            <td class="simple-price order-total-price">
+                                                <fmt:formatNumber value="${order.total_amount}" pattern="#,###" />원
                                             </td>
 
                                             <td class="simple-receiver">
@@ -267,62 +287,121 @@
                                                 ${order.delivery_address}
                                             </td>
 
-                                            <td>
-                                                <form action="/seller_order_status_update.do"
-                                                      method="post"
-                                                      class="order-status-form">
+                                            <c:choose>
+                                                <c:when test="${isClaimMode}">
 
-                                                    <input type="hidden" name="order_id" value="${order.order_id}">
-                                                    <input type="hidden" name="selectedStatus" value="${selectedStatus}">
+                                                    <!-- 주문일 -->
+                                                    <td class="simple-date">
+                                                        ${order.created_at}
+                                                    </td>
 
-                                                    <select name="status"
-                                                            class="seller-status-select simple-status-select status-${order.status}"
-                                                            data-current="${order.status}">
+                                                    <!-- 접수일 -->
+                                                    <td class="simple-date">
+                                                        ${order.claim_requested_at}
+                                                    </td>
 
-                                                        <option value="PAID" ${order.status eq 'PAID' ? 'selected' : ''}>
-                                                            신규주문
-                                                        </option>
+                                                    <!-- 배송상태 자리에 반품/교환 상태 표시 -->
+                                                    <td>
+                                                        <span class="seller-claim-status-badge ${order.claim_status}">
+                                                            <c:choose>
+                                                                <c:when test="${order.claim_status eq 'RETURN_REQUEST'}">반품요청</c:when>
+                                                                <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">교환요청</c:when>
+                                                                <c:when test="${order.claim_status eq 'RETURN_DONE'}">반품완료</c:when>
+                                                                <c:when test="${order.claim_status eq 'EXCHANGE_DONE'}">교환완료</c:when>
+                                                                <c:otherwise>${order.claim_status}</c:otherwise>
+                                                            </c:choose>
+                                                        </span>
+                                                    </td>
 
-                                                        <option value="PREPARING" ${order.status eq 'PREPARING' ? 'selected' : ''}>
-                                                            제작준비
-                                                        </option>
+                                                    <!-- 접수 -->
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${order.claim_status eq 'RETURN_REQUEST'}">
+                                                                <button type="button" class="simple-receipt-btn return">
+                                                                    반품처리
+                                                                </button>
+                                                            </c:when>
 
-                                                        <option value="SHIPPING" ${order.status eq 'SHIPPING' ? 'selected' : ''}>
-                                                            배송중
-                                                        </option>
+                                                            <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">
+                                                                <button type="button" class="simple-receipt-btn refund">
+                                                                    교환처리
+                                                                </button>
+                                                            </c:when>
 
-                                                        <option value="DELIVERED" ${order.status eq 'DELIVERED' ? 'selected' : ''}>
-                                                            배송완료
-                                                        </option>
+                                                            <c:otherwise>
+                                                                <span class="seller-claim-done-text">
+                                                                    처리완료
+                                                                </span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
 
-                                                        <option value="CANCELLED" ${order.status eq 'CANCELLED' ? 'selected' : ''}>
-                                                            취소
-                                                        </option>
+                                                </c:when>
 
-                                                    </select>
+                                                <c:otherwise>
 
-                                                </form>
-                                            </td>
+                                                    <!-- 주문일 -->
+                                                    <td class="simple-date">
+                                                        ${order.created_at}
+                                                    </td>
 
-                                            <td class="simple-date">
-                                                ${order.created_at}
-                                            </td>
+                                                    <!-- 배송상태 -->
+                                                    <td>
+                                                        <form action="/seller_order_status_update.do"
+                                                              method="post"
+                                                              class="order-status-form">
 
-                                            <td>
-                                                <c:if test="${order.status eq 'DELIVERED'}">
-                                                    <div class="simple-action-buttons">
+                                                            <input type="hidden" name="order_id" value="${order.order_id}">
+                                                            <input type="hidden" name="selectedStatus" value="${selectedStatus}">
 
-                                                        <button type="button" class="simple-receipt-btn refund">
-                                                            환불
-                                                        </button>
+                                                            <select name="status"
+                                                                    class="seller-status-select simple-status-select status-${order.status}"
+                                                                    data-current="${order.status}">
 
-                                                        <button type="button" class="simple-receipt-btn return">
-                                                            반품
-                                                        </button>
+                                                                <option value="PAID" ${order.status eq 'PAID' ? 'selected' : ''}>
+                                                                    신규주문
+                                                                </option>
 
-                                                    </div>
-                                                </c:if>
-                                            </td>
+                                                                <option value="PREPARING" ${order.status eq 'PREPARING' ? 'selected' : ''}>
+                                                                    제작준비
+                                                                </option>
+
+                                                                <option value="SHIPPING" ${order.status eq 'SHIPPING' ? 'selected' : ''}>
+                                                                    배송중
+                                                                </option>
+
+                                                                <option value="DELIVERED" ${order.status eq 'DELIVERED' ? 'selected' : ''}>
+                                                                    배송완료
+                                                                </option>
+
+                                                                <option value="CANCELLED" ${order.status eq 'CANCELLED' ? 'selected' : ''}>
+                                                                    취소
+                                                                </option>
+
+                                                            </select>
+
+                                                        </form>
+                                                    </td>
+
+                                                    <!-- 접수 -->
+                                                    <td>
+                                                        <c:if test="${order.status eq 'DELIVERED'}">
+                                                            <div class="simple-action-buttons">
+
+                                                                <button type="button" class="simple-receipt-btn refund">
+                                                                    환불 접수
+                                                                </button>
+
+                                                                <button type="button" class="simple-receipt-btn return">
+                                                                    반품 접수
+                                                                </button>
+
+                                                            </div>
+                                                        </c:if>
+                                                    </td>
+
+                                                </c:otherwise>
+                                            </c:choose>
 
                                         </tr>
 
@@ -336,7 +415,6 @@
 
                         </section>
 
-
                         <!-- 카드형 화면 -->
                         <section class="seller-order-card-view" data-view-panel="card">
 
@@ -348,7 +426,8 @@
                                     <c:set var="mainItem" value="${itemList[0]}" />
                                     <c:set var="itemCount" value="${fn:length(itemList)}" />
 
-                                    <article class="seller-order-card">
+                                    <article class="seller-order-card seller-order-click-card"
+                                             data-modal-target="order-modal-${order.order_id}">
 
                                         <div class="seller-order-card-top">
 
@@ -363,6 +442,13 @@
                                                     <span>주문일</span>
                                                     <strong>${order.created_at}</strong>
                                                 </div>
+
+                                                <c:if test="${isClaimMode}">
+                                                    <div class="seller-order-info-item">
+                                                        <span>접수일</span>
+                                                        <strong>${order.claim_requested_at}</strong>
+                                                    </div>
+                                                </c:if>
 
                                                 <div class="seller-order-info-item seller-order-delivery-mini">
 
@@ -384,7 +470,7 @@
                                                 </div>
 
                                                 <div class="seller-order-info-item">
-                                                    <span>주문금액</span>
+                                                    <span>총 결제액</span>
                                                     <strong class="order-total-price">
                                                         <fmt:formatNumber value="${order.total_amount}" pattern="#,###" />원
                                                     </strong>
@@ -394,42 +480,64 @@
 
                                             <div class="seller-order-status-box">
 
-                                                <span class="status-title">배송상태</span>
+                                                <c:choose>
+                                                    <c:when test="${isClaimMode}">
 
-                                                <form action="/seller_order_status_update.do"
-                                                      method="post"
-                                                      class="order-status-form">
+                                                        <span class="status-title">배송상태</span>
 
-                                                    <input type="hidden" name="order_id" value="${order.order_id}">
-                                                    <input type="hidden" name="selectedStatus" value="${selectedStatus}">
+                                                        <span class="seller-claim-status-badge ${order.claim_status}">
+                                                            <c:choose>
+                                                                <c:when test="${order.claim_status eq 'RETURN_REQUEST'}">반품요청</c:when>
+                                                                <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">교환요청</c:when>
+                                                                <c:when test="${order.claim_status eq 'RETURN_DONE'}">반품완료</c:when>
+                                                                <c:when test="${order.claim_status eq 'EXCHANGE_DONE'}">교환완료</c:when>
+                                                                <c:otherwise>${order.claim_status}</c:otherwise>
+                                                            </c:choose>
+                                                        </span>
 
-                                                    <select name="status"
-                                                            class="seller-status-select status-${order.status}"
-                                                            data-current="${order.status}">
+                                                    </c:when>
 
-                                                        <option value="PAID" ${order.status eq 'PAID' ? 'selected' : ''}>
-                                                            신규주문
-                                                        </option>
+                                                    <c:otherwise>
 
-                                                        <option value="PREPARING" ${order.status eq 'PREPARING' ? 'selected' : ''}>
-                                                            제작준비
-                                                        </option>
+                                                        <span class="status-title">배송상태</span>
 
-                                                        <option value="SHIPPING" ${order.status eq 'SHIPPING' ? 'selected' : ''}>
-                                                            배송중
-                                                        </option>
+                                                        <form action="/seller_order_status_update.do"
+                                                              method="post"
+                                                              class="order-status-form">
 
-                                                        <option value="DELIVERED" ${order.status eq 'DELIVERED' ? 'selected' : ''}>
-                                                            배송완료
-                                                        </option>
+                                                            <input type="hidden" name="order_id" value="${order.order_id}">
+                                                            <input type="hidden" name="selectedStatus" value="${selectedStatus}">
 
-                                                        <option value="CANCELLED" ${order.status eq 'CANCELLED' ? 'selected' : ''}>
-                                                            취소
-                                                        </option>
+                                                            <select name="status"
+                                                                    class="seller-status-select status-${order.status}"
+                                                                    data-current="${order.status}">
 
-                                                    </select>
+                                                                <option value="PAID" ${order.status eq 'PAID' ? 'selected' : ''}>
+                                                                    신규주문
+                                                                </option>
 
-                                                </form>
+                                                                <option value="PREPARING" ${order.status eq 'PREPARING' ? 'selected' : ''}>
+                                                                    제작준비
+                                                                </option>
+
+                                                                <option value="SHIPPING" ${order.status eq 'SHIPPING' ? 'selected' : ''}>
+                                                                    배송중
+                                                                </option>
+
+                                                                <option value="DELIVERED" ${order.status eq 'DELIVERED' ? 'selected' : ''}>
+                                                                    배송완료
+                                                                </option>
+
+                                                                <option value="CANCELLED" ${order.status eq 'CANCELLED' ? 'selected' : ''}>
+                                                                    취소
+                                                                </option>
+
+                                                            </select>
+
+                                                        </form>
+
+                                                    </c:otherwise>
+                                                </c:choose>
 
                                             </div>
 
@@ -467,6 +575,18 @@
                                                         ${mainItem.productName}
                                                     </button>
 
+                                                    <div class="simple-product-option">
+                                                        <c:choose>
+                                                            <c:when test="${not empty mainItem.option_name}">
+                                                                옵션: ${mainItem.option_name}
+                                                            </c:when>
+
+                                                            <c:otherwise>
+                                                                옵션 없음
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </div>
+
                                                     <p class="seller-order-product-sub">
                                                         수량 ${mainItem.quantity}개
                                                         <span>·</span>
@@ -490,19 +610,49 @@
 
                                             </div>
 
-                                            <c:if test="${order.status eq 'DELIVERED'}">
-                                                <div class="seller-order-card-actions">
+                                            <c:choose>
+                                                <c:when test="${isClaimMode}">
+                                                    <div class="seller-order-card-actions">
 
-                                                    <button type="button" class="card-receipt-btn refund">
-                                                        환불 접수
-                                                    </button>
+                                                        <c:choose>
+                                                            <c:when test="${order.claim_status eq 'RETURN_REQUEST'}">
+                                                                <button type="button" class="card-receipt-btn return">
+                                                                    반품처리
+                                                                </button>
+                                                            </c:when>
 
-                                                    <button type="button" class="card-receipt-btn return">
-                                                        반품 접수
-                                                    </button>
+                                                            <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">
+                                                                <button type="button" class="card-receipt-btn refund">
+                                                                    교환처리
+                                                                </button>
+                                                            </c:when>
 
-                                                </div>
-                                            </c:if>
+                                                            <c:otherwise>
+                                                                <span class="seller-claim-done-text">
+                                                                    처리완료
+                                                                </span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+
+                                                    </div>
+                                                </c:when>
+
+                                                <c:otherwise>
+                                                    <c:if test="${order.status eq 'DELIVERED'}">
+                                                        <div class="seller-order-card-actions">
+
+                                                            <button type="button" class="card-receipt-btn refund">
+                                                                환불 접수
+                                                            </button>
+
+                                                            <button type="button" class="card-receipt-btn return">
+                                                                반품 접수
+                                                            </button>
+
+                                                        </div>
+                                                    </c:if>
+                                                </c:otherwise>
+                                            </c:choose>
 
                                         </div>
 
@@ -514,7 +664,6 @@
 
                         </section>
 
-
                         <!-- 페이지네이션 -->
                         <c:if test="${pagination.totalPage > 1}">
 
@@ -522,7 +671,7 @@
 
                                 <c:choose>
                                     <c:when test="${pagination.hasPrev}">
-                                        <a href="/seller_order_list.do?page=${pagination.prevPage}&size=${pagination.size}&status=${selectedStatus}">
+                                        <a href="/seller_order_list.do?page=${pagination.prevPage}&amp;size=${pagination.size}&amp;status=${selectedStatus}&amp;claimTab=${currentClaimTab}">
                                             ◀
                                         </a>
                                     </c:when>
@@ -540,7 +689,7 @@
                                         </c:when>
 
                                         <c:otherwise>
-                                            <a href="/seller_order_list.do?page=${i}&size=${pagination.size}&status=${selectedStatus}">
+                                            <a href="/seller_order_list.do?page=${i}&amp;size=${pagination.size}&amp;status=${selectedStatus}&amp;claimTab=${currentClaimTab}">
                                                 ${i}
                                             </a>
                                         </c:otherwise>
@@ -550,7 +699,7 @@
 
                                 <c:choose>
                                     <c:when test="${pagination.hasNext}">
-                                        <a href="/seller_order_list.do?page=${pagination.nextPage}&size=${pagination.size}&status=${selectedStatus}">
+                                        <a href="/seller_order_list.do?page=${pagination.nextPage}&amp;size=${pagination.size}&amp;status=${selectedStatus}&amp;claimTab=${currentClaimTab}">
                                             ▶
                                         </a>
                                     </c:when>
@@ -563,7 +712,6 @@
                             </div>
 
                         </c:if>
-
 
                         <!-- 주문 상품 모달 템플릿 -->
                         <div class="seller-order-modal-templates">
@@ -587,6 +735,14 @@
                                         <p class="modal-address">
                                             ${order.delivery_address}
                                         </p>
+
+                                        <c:if test="${isClaimMode}">
+                                            <p>
+                                                접수일
+                                                <span>·</span>
+                                                ${order.claim_requested_at}
+                                            </p>
+                                        </c:if>
 
                                     </div>
 
@@ -650,7 +806,6 @@
                             </c:forEach>
 
                         </div>
-
 
                         <!-- 실제 모달 -->
                         <div class="seller-order-modal" id="sellerOrderModal">

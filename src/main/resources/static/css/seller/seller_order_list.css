@@ -1381,3 +1381,57 @@ body.modal-open {
         grid-template-columns: 48px 1fr;
     }
 }
+
+.seller-order-click-row {
+    cursor: pointer;
+}
+
+.seller-order-click-card {
+    cursor: pointer;
+}
+
+/* =========================================================
+   반품/교환 상태 배지
+========================================================= */
+
+.seller-claim-status-badge {
+    min-width: 82px;
+    height: 32px;
+    padding: 0 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.seller-claim-status-badge.RETURN_REQUEST {
+    background: #fff0e8;
+    color: #e25b35;
+}
+
+.seller-claim-status-badge.EXCHANGE_REQUEST {
+    background: #eef4ff;
+    color: #2563eb;
+}
+
+.seller-claim-status-badge.RETURN_DONE {
+    background: #edf9f0;
+    color: #168447;
+}
+
+.seller-claim-status-badge.EXCHANGE_DONE {
+    background: #f2f7ed;
+    color: #4d7c0f;
+}
+
+.seller-claim-done-text {
+    color: #777;
+    font-size: 12px;
+    font-weight: 900;
+}

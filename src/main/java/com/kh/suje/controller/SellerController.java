@@ -94,7 +94,7 @@ public class SellerController {
     }
 
     @GetMapping("/seller_order_list.do")
-    public String seller_order_list(Model model,String status,Integer size,Integer page){
+    public String seller_order_list(Model model, String status, String claimTab, Integer size, Integer page){
 
         Integer seller_id = getLoginSellerId();
 
@@ -102,9 +102,16 @@ public class SellerController {
             return "redirect:/login.do";
         }
 
+        if ("RETURN_EXCHANGE".equals(status)) {
+            if (claimTab == null || claimTab.trim().equals("")) {
+                claimTab = "ALL";
+            }
+        }
+
         Map<String, Object> countMap = new HashMap<>();
         countMap.put("seller_id", seller_id);
         countMap.put("status", status);
+        countMap.put("claimTab", claimTab);
 
         int totalCount = sellerdao.getSellerOrderCount(countMap);
 
@@ -113,6 +120,7 @@ public class SellerController {
         Map<String, Object> map = new HashMap<>();
         map.put("seller_id", seller_id);
         map.put("status", status);
+        map.put("claimTab", claimTab);
         map.put("size", pagination.getSize());
         map.put("offset", pagination.getOffset());
 
@@ -132,6 +140,7 @@ public class SellerController {
         model.addAttribute("orderList", orderList);
         model.addAttribute("orderItemMap", orderItemMap);
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("claimTab", claimTab);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("pagination", pagination);
 
@@ -140,7 +149,7 @@ public class SellerController {
     
     @PostMapping("/seller_order_status_update.do")
     public String sellerOrderStatusUpdate(
-            @RequestParam("order_id") int order_id
+            @RequestParam("order_id") int order_id,
             @RequestParam("status") String status,
             @RequestParam(value = "selectedStatus", required = false) String selectedStatus,
             @RequestParam(value = "page", required = false) Integer page) {

@@ -264,8 +264,19 @@
     margin-top: 0;
 }
 
+/* 옵션 텍스트 */
+.myshop-order-option-text {
+    display: block;
+    margin-top: 4px;
+
+    color: #777;
+    font-size: 13px;
+    font-weight: 650;
+}
+
 /* =========================================================
    주문 카드 오른쪽 버튼
+   - 단일 상품일 때 카드 오른쪽 버튼
 ========================================================= */
 
 .myshop-order-actions {
@@ -405,7 +416,7 @@
 
 .myshop-order-item-row {
     display: grid;
-    grid-template-columns: 64px minmax(0, 1fr) 148px;
+    grid-template-columns: 64px minmax(0, 1fr) 190px;
     gap: 14px;
     align-items: center;
 
@@ -468,18 +479,34 @@
 
 /* =========================================================
    펼친 상품 목록 오른쪽 버튼
+   형태:
+   [장바구니 담기] [바로 구매하기]
+   [반품/교환]   [구매확정]
+   [문의하기 전체폭]
 ========================================================= */
 
 .myshop-order-item-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    width: 190px;
+    margin-left: auto;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 7px 8px;
+    align-items: center;
 }
 
-.myshop-order-item-actions a,
-.myshop-order-item-actions button {
+/* 구매확정 form 때문에 grid 깨지는 것 방지 */
+.myshop-order-item-actions .inline-form {
+    width: 100%;
+    margin: 0;
+    display: block;
+}
+
+/* 버튼 공통 */
+.myshop-order-item-actions .myshop-order-action-btn {
+    width: 100%;
     height: 32px;
-    padding: 0 10px;
+    padding: 0 8px;
 
     display: flex;
     align-items: center;
@@ -489,19 +516,43 @@
     border-radius: 8px;
     background: #fff;
 
-    color: #444;
+    color: #333;
     font-size: 12px;
-    font-weight: 850;
+    font-weight: 800;
+    line-height: 1;
     text-decoration: none;
+    box-sizing: border-box;
 
     cursor: pointer;
+    white-space: nowrap;
+
+    transition: border-color 0.15s ease,
+                color 0.15s ease,
+                background-color 0.15s ease;
 }
 
-.myshop-order-item-actions a:hover,
-.myshop-order-item-actions button:hover {
-    border-color: #ff6f4f;
-    background: #fff7f3;
+/* 바로 구매하기 버튼 강조 */
+.myshop-order-item-actions .myshop-order-action-btn.buy {
     color: #ff6f4f;
+    border-color: #ffb9a9;
+    background: #fff;
+}
+
+/* 문의하기는 마지막 줄 전체폭 */
+.myshop-order-item-actions .myshop-order-action-btn.qna {
+    grid-column: 1 / -1;
+}
+
+/* 리뷰쓰기만 단독으로 나올 때 전체폭 */
+.myshop-order-item-actions .myshop-order-action-btn.review {
+    grid-column: 1 / -1;
+}
+
+/* hover */
+.myshop-order-item-actions .myshop-order-action-btn:hover {
+    border-color: #ffb9a9;
+    color: #ff6f4f;
+    background: #fff8f5;
 }
 
 /* =========================================================
@@ -762,110 +813,7 @@
 }
 
 /* =========================================================
-   반응형
-========================================================= */
-
-@media (max-width: 1100px) {
-    .myshop-order-body {
-        grid-template-columns: 92px minmax(0, 1fr);
-    }
-
-    .myshop-order-actions {
-        grid-column: 1 / -1;
-        justify-content: flex-end;
-    }
-
-    .myshop-order-item-row {
-        grid-template-columns: 64px minmax(0, 1fr);
-    }
-
-    .myshop-order-item-actions {
-        grid-column: 1 / -1;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-    }
-}
-
-@media (max-width: 720px) {
-    .myshop-order,
-    .myshop-order-list {
-        padding: 14px;
-        gap: 14px;
-    }
-
-    .myshop-order-top {
-        padding: 14px 16px;
-        align-items: flex-start;
-    }
-
-    .myshop-order-top > div {
-        display: grid;
-        gap: 8px;
-    }
-
-    .myshop-order-body {
-        padding: 16px;
-        grid-template-columns: 76px minmax(0, 1fr);
-        gap: 14px;
-    }
-
-    .myshop-product-thumb {
-        width: 76px;
-        height: 76px;
-    }
-
-    .myshop-order-actions {
-        grid-column: 1 / -1;
-        justify-content: flex-start;
-    }
-
-    .myshop-order-actions a,
-    .myshop-order-actions button {
-        min-width: 76px;
-    }
-
-    .myshop-order-toggle,
-    .myshop-order-items-panel {
-        width: calc(100% - 32px);
-        margin-left: 16px;
-        margin-right: 16px;
-    }
-
-    .myshop-order-item-row {
-        grid-template-columns: 56px minmax(0, 1fr);
-        gap: 12px;
-    }
-
-    .myshop-order-item-thumb {
-        width: 56px;
-        height: 56px;
-    }
-
-    .cancel-modal-actions {
-        flex-direction: column;
-    }
-
-    .cancel-modal-actions form,
-    .cancel-close-btn,
-    .cancel-submit-btn {
-        width: 100%;
-    }
-}
-
-.myshop-order-item-actions .inline-form {
-    margin: 0;
-}
-
-.myshop-order-item-actions .inline-form button {
-    width: 100%;
-}
-
-        
-
-
-/* =========================================================
-   교환/환불(CS) 모달
+   교환/반품(CS) 모달
 ========================================================= */
 
 /* 모달 열고 닫기 */
@@ -968,8 +916,8 @@
     font-weight: 900;
 }
 
-/* 교환/환불 라디오 선택 영역 */
-.cs-modal-body td {
+/* 교환/반품 라디오 선택 영역 */
+.cs-type-select {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -979,7 +927,7 @@
     border-bottom: 1px solid #f0f0f0;
 }
 
-.cs-modal-body td label {
+.cs-type-select label {
     margin-right: 16px;
 
     color: #333;
@@ -988,7 +936,7 @@
     cursor: pointer;
 }
 
-.cs-modal-body td input[type="radio"] {
+.cs-type-select input[type="radio"] {
     cursor: pointer;
 }
 
@@ -1190,8 +1138,102 @@
     background: #e9533f;
 }
 
-/* 반응형 */
+/* =========================================================
+   반응형
+========================================================= */
+
+@media (max-width: 1100px) {
+    .myshop-order-body {
+        grid-template-columns: 92px minmax(0, 1fr);
+    }
+
+    .myshop-order-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+    }
+
+    .myshop-order-item-row {
+        grid-template-columns: 64px minmax(0, 1fr);
+    }
+
+    .myshop-order-item-actions {
+        grid-column: 1 / -1;
+        width: 190px;
+        margin-left: auto;
+    }
+}
+
 @media (max-width: 720px) {
+    .myshop-order,
+    .myshop-order-list {
+        padding: 14px;
+        gap: 14px;
+    }
+
+    .myshop-order-top {
+        padding: 14px 16px;
+        align-items: flex-start;
+    }
+
+    .myshop-order-top > div {
+        display: grid;
+        gap: 8px;
+    }
+
+    .myshop-order-body {
+        padding: 16px;
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .myshop-product-thumb {
+        width: 76px;
+        height: 76px;
+    }
+
+    .myshop-order-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+
+    .myshop-order-actions a,
+    .myshop-order-actions button {
+        min-width: 76px;
+    }
+
+    .myshop-order-toggle,
+    .myshop-order-items-panel {
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    .myshop-order-item-row {
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .myshop-order-item-thumb {
+        width: 56px;
+        height: 56px;
+    }
+
+    .myshop-order-item-actions {
+        grid-column: 1 / -1;
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .cancel-modal-actions {
+        flex-direction: column;
+    }
+
+    .cancel-modal-actions form,
+    .cancel-close-btn,
+    .cancel-submit-btn {
+        width: 100%;
+    }
+
     .cs-modal-box {
         width: calc(100% - 28px);
     }

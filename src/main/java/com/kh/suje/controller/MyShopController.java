@@ -15,7 +15,6 @@ import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
-import com.kh.suje.dao.UserDAO;
 import com.kh.suje.vo.AddressVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.QnaVO;
@@ -32,7 +31,6 @@ import lombok.RequiredArgsConstructor;
 public class MyShopController {
 
     private final HttpSession session;
-    private final UserDAO userDao;
     private final AddressDAO addressDao;
     private final OrderDAO orderDAO;
     private final QnaDAO qnaDAO;
@@ -294,7 +292,7 @@ if ("true".equals(vo.getIs_default())) {
         model.addAttribute("cancelItemMap", cancelItemMap);
 
         model.addAttribute("activeMenu", "order/cancel");
-        model.addAttribute("contentPage", "/order/cancel_list");
+        model.addAttribute("contentPage", "/myshop/cancel_list");
 
         return "myshop/myshop_main";
     }
