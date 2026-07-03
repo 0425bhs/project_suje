@@ -11,7 +11,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getReportListByKeyword" resultType="report">
         SELECT r.*, 
-               u.name AS reporter_name
+               u.name AS reporter_name,
+               CASE
+                   WHEN r.target_type = 'PRODUCT' THEN p.name
+                   WHEN r.target_type = 'REVIEW' THEN CONCAT('후기 #', rv.review_id)
+                   WHEN r.target_type = 'QNA' THEN q.title
+                   ELSE CONCAT('대상 #', r.target_id)
+               END AS target_title
         FROM reports r
         JOIN users u ON u.user_id = r.reporter_id
         LEFT JOIN products p ON p.product_id = r.target_id AND r.target_type = 'PRODUCT' 
@@ -20,6 +26,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
         <if test="status != null and status != 'all'">
             r.status = #{status}
+        </if>
+        <if test="user_id != null">
+            AND r.reporter_id = #{user_id}
+        </if>
+        <if test="targetType != null and targetType != 'all'">
+            AND r.target_type = #{targetType}
+        </if>
+        <if test="target_id != null">
+            AND r.target_id = #{target_id}
         </if>
         <if test="keyword != null and keyword != ''">
             AND (
@@ -59,6 +74,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="status != null and status != 'all'">
             r.status = #{status}
         </if>
+        <if test="user_id != null">
+            AND r.reporter_id = #{user_id}
+        </if>
+        <if test="targetType != null and targetType != 'all'">
+            AND r.target_type = #{targetType}
+        </if>
+        <if test="target_id != null">
+            AND r.target_id = #{target_id}
+        </if>
         <if test="keyword != null and keyword != ''">
             AND (
                 r.reason LIKE CONCAT("%", #{keyword} ,"%")
@@ -75,9 +99,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getReportById" resultType="report">
-        SELECT r.*,u.name AS reporter_name
+        SELECT
+            r.*,
+            u.name AS reporter_name,
+            CASE
+                WHEN r.target_type = 'PRODUCT' THEN p.name
+                WHEN r.target_type = 'REVIEW' THEN CONCAT('후기 #', rv.review_id)
+                WHEN r.target_type = 'QNA' THEN q.title
+                ELSE CONCAT('대상 #', r.target_id)
+            END AS target_title
         FROM reports r
         JOIN users u ON u.user_id = r.reporter_id
+        LEFT JOIN products p ON p.product_id = r.target_id AND r.target_type = 'PRODUCT'
+        LEFT JOIN reviews rv ON rv.review_id = r.target_id AND r.target_type = 'REVIEW'
+        LEFT JOIN qnas q ON q.qna_id = r.target_id AND r.target_type = 'QNA'
         WHERE r.report_id = #{report_id}
+    </select>
+
+    <update id="updateReportStatus">
+        UPDATE reports
+        SET status = #{status}
+        WHERE report_id = #{report_id}
+    </update>
+
+    <select id="getReportCountByReporterId" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM reports
+        WHERE reporter_id = #{user_id}
     </select>
 </mapper>

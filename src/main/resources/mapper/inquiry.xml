@@ -22,6 +22,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 i.status = #{status}
             </if>
 
+            <if test="user_id != null">
+                AND i.user_id = #{user_id}
+            </if>
+
+            <if test="inquiryType != null and inquiryType != 'all'">
+                AND i.inquiry_type = #{inquiryType}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 and (
                     i.title LIKE CONCAT("%", #{keyword}, "%")
@@ -60,6 +68,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 i.status = #{status}
             </if>
 
+            <if test="user_id != null">
+                AND i.user_id = #{user_id}
+            </if>
+
+            <if test="inquiryType != null and inquiryType != 'all'">
+                AND i.inquiry_type = #{inquiryType}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 and (
                     i.title LIKE CONCAT("%", #{keyword}, "%")
@@ -78,8 +94,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getInquiryById">
-        SELECT *
-        FROM inquiries
+        SELECT i.*, u.name user_name
+        FROM inquiries i
+        JOIN users u ON u.user_id = i.user_id
+        WHERE i.inquiry_id = #{inquiry_id}
+    </select>
+
+    <update id="updateInquiryStatus">
+        UPDATE inquiries
+        SET status = #{status}
         WHERE inquiry_id = #{inquiry_id}
+    </update>
+
+    <update id="updateInquiryAnswer">
+        UPDATE inquiries
+        SET answer = #{answer},
+            status = 'ANSWERED',
+            answered_at = CURRENT_TIMESTAMP
+        WHERE inquiry_id = #{inquiry_id}
+    </update>
+
+    <select id="getInquiryCountByUserId" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM inquiries
+        WHERE user_id = #{user_id}
     </select>
 </mapper>

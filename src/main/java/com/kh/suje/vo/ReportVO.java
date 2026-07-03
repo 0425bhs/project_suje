@@ -18,4 +18,5 @@ public class ReportVO {
 
     //reporter_id(user_id)
     private String reporter_name;
+    private String target_title;
 }

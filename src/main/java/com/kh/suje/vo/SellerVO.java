@@ -26,5 +26,8 @@ public class SellerVO {
      private int user_id;
      private Integer seller_id;
      private String company_name,business_number,status,created_at;
+     private int product_count;
+     private int order_count;
+     private int sales_amount;
 
 }
