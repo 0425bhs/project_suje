@@ -12,6 +12,7 @@
             <a href="/user_modify.do" class="${param.activeMenu eq 'user_modify.do' ? 'active' : ''}">회원 정보 수정</a>
             <a href="/addressList.do" class="${param.activeMenu eq 'addressList.do' ? 'active' : ''}">배송지 관리</a>
             <a href="/update_seller.do" class="${param.activeMenu eq 'update_seller.do' ? 'active' : ''}">판매자 신청하기</a>
+            <a href="/withdraw.do" class="${param.activeMenu eq 'withdraw.do' ? 'active' : ''}">회원 탈퇴하기</a>
         </div>
         
         <div class="myshop-side-group">
