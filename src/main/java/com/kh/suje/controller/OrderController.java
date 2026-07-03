@@ -1045,6 +1045,27 @@ public String orderCartForm(
         return map;
     }
 
+@PostMapping("/cancelClaim.do")
+public String cancelClaim(
+        @RequestParam("claim_id") int claim_id,
+        HttpSession session
+) {
+    UserVO loginUser = getLoginUser(session);
+
+    if (loginUser == null) {
+        return "redirect:/login.do";
+    }
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("claim_id", claim_id);
+    map.put("user_id", loginUser.getUser_id());
+
+    orderItemClaimDao.cancelClaim(map);
+
+    return "redirect:/myshop/claim";
+}
+    
+
 
 
 

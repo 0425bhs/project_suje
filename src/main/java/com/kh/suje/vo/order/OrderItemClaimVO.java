@@ -31,5 +31,7 @@ public class OrderItemClaimVO {
     private String imageL; // products.image_l
     private int price; // order_items.price
     private int quantity; // order_items.quantity
+    private int product_id; 
+
 
 }

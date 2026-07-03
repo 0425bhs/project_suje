@@ -18,7 +18,7 @@
         <div class="myshop-side-group">
             <strong>주문 관리</strong>
             <a href="/myshop/orders" class="${param.activeMenu eq 'order' ? 'active' : ''}">주문/배송내역</a>
-            <a href="/order/cancel" class="${param.activeMenu eq 'order/cancel' ? 'active' : ''}">취소/환불내역</a>
+            <a href="/myshop/claim" class="${param.activeMenu eq 'exchange_refund' ? 'active' : ''}">교환/환불내역</a>
         </div>
 
         <div class="myshop-side-group">

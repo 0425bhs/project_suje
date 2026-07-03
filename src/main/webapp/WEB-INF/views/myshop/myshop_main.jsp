@@ -56,6 +56,11 @@
     <c:if test="${contentPage eq '/myshop/coupon_history'}">
         <link rel="stylesheet" href="/css/myshop/coupon_history.css?v=1">
     </c:if>
+
+    <c:if test="${contentPage eq '/myshop/exchange_return'}">
+    <link rel="stylesheet" href="/css/myshop/order.css?v=1">
+</c:if>
+
 </head>
 
 <body>
