@@ -21,6 +21,11 @@ function closeDetailPanel(master, row) {
 //DB에서 가져온 값을 상세 패널에 출력(입력된 id의 태그의 내부에 value를 출력)
 function setText(id, value) {
     const target = document.getElementById(id);
+
+    if (!target) {
+        return;
+    }
+
     const text = value == null ? "" : String(value);
 
     target.textContent = text.trim() ? text : "-";
@@ -76,7 +81,7 @@ function initAdminDetailManage(options) {
     const statusControl = document.querySelector(".admin-detail-status-control");
     const statusChangeButton = document.querySelector(".admin-detail-status-change");
     const statusCancelButton = document.querySelector(".admin-detail-status-section .admin-btn.light");
-    const memoContent = document.querySelector(".admin-detail-memo");
+    const memoContent = document.querySelector(".admin-detail-memo:not([data-admin-memo-ignore='true'])");
     const memoSaveButton = memoContent
         ? memoContent.closest(".admin-detail-manage-section").querySelector(".admin-detail-section-actions .admin-btn")
         : null;

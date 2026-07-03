@@ -94,11 +94,7 @@
                         );
                         setDetailStatusBadge("orderDetailStatusBadge", order.status, statusLabel);
                         setText("orderId", order.order_id);
-                        setText("userId", order.user_id);
                         setText("userName", order.user_name);
-                        setText("loginId", order.login_id);
-                        setText("email", order.email);
-                        setText("userPhone", order.user_phone);
                         setText("status", statusLabel);
                         setText("totalAmount", formatAdminOrderAmount(order.total_amount));
                         setText("usedPoint", formatAdminOrderAmount(order.used_point));
@@ -395,24 +391,8 @@
                                 <dd id="orderId">-</dd>
                             </div>
                             <div>
-                                <dt>회원번호</dt>
-                                <dd id="userId">-</dd>
-                            </div>
-                            <div>
                                 <dt>주문자</dt>
                                 <dd id="userName" class="admin-highlight-target">-</dd>
-                            </div>
-                            <div>
-                                <dt>아이디</dt>
-                                <dd id="loginId" class="admin-highlight-target">-</dd>
-                            </div>
-                            <div>
-                                <dt>이메일</dt>
-                                <dd id="email" class="admin-highlight-target">-</dd>
-                            </div>
-                            <div>
-                                <dt>연락처</dt>
-                                <dd id="userPhone">-</dd>
                             </div>
                             <div>
                                 <dt>주문 상태</dt>

@@ -54,15 +54,13 @@
                         setDetailTitleBlock(
                             "reportDetailTitle",
                             "reportDetailMeta",
-                            "신고 #" + (report.report_id || "-"),
-                            (targetLabel || "-") + " #" + (report.target_id || "-") + " · " + (report.reporter_name || "-")
+                            report.target_title || "신고 상세",
+                            (targetLabel || "-") + " · " + (report.reporter_name || "-")
                         );
                         setDetailStatusBadge("reportDetailStatusBadge", report.status, statusLabel);
-                        setText("reportId", report.report_id);
                         setText("targetType", targetLabel);
-                        setText("targetId", report.target_id);
+                        setText("targetTitle", report.target_title || "-");
                         setText("reason", report.reason);
-                        setText("reporterId", report.reporter_id);
                         setText("reporterName", report.reporter_name);
                         setText("status", statusLabel);
                         setText("createdAt", report.created_at);
@@ -116,10 +114,10 @@
             <form class="admin-filter-form" action="/admin/reports" method="get">
                 <div class="admin-filter-main-row">
                     <div class="admin-filter-tabs">
-                        <a href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
-                        <a href="/admin/reports?status=pending&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'pending' ? 'active' : ''}">처리대기</a>
-                        <a href="/admin/reports?status=processed&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'processed' ? 'active' : ''}">처리완료</a>
-                        <a href="/admin/reports?status=rejected&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
+                        <a href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
+                        <a href="/admin/reports?status=pending&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'pending' ? 'active' : ''}">처리대기</a>
+                        <a href="/admin/reports?status=processed&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'processed' ? 'active' : ''}">처리완료</a>
+                        <a href="/admin/reports?status=rejected&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
                     </div>
 
                     <div class="admin-search-wrap">
@@ -169,25 +167,25 @@
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
-                <c:if test="${status ne 'all' || not empty keyword || not empty user_id || targetType ne 'all' || not empty startDate || not empty endDate}">
+                <c:if test="${status ne 'all' || not empty keyword || not empty user_id || targetType ne 'all' || not empty target_id || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
                         <span class="admin-filter-applied-label">적용된 조건:</span>
                         <c:if test="${status ne 'all'}">
                             <a class="admin-filter-chip"
-                                href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 상태:
                                 ${status eq 'pending' ? '처리대기' : status eq 'processed' ? '처리완료' : '반려'}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
                         <c:if test="${not empty keyword}">
-                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 검색어: ${keyword}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
                         <c:if test="${not empty user_id}">
-                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 회원:
                                 <c:choose>
                                     <c:when test="${not empty filterUser}">
@@ -199,7 +197,7 @@
                             </a>
                         </c:if>
                         <c:if test="${targetType ne 'all'}">
-                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 대상 유형:
                                 <c:choose>
                                     <c:when test="${targetType eq 'PRODUCT'}">상품</c:when>
@@ -209,8 +207,14 @@
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
+                        <c:if test="${not empty target_id}">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                대상 번호: ${target_id}
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
                         <c:if test="${not empty startDate || not empty endDate}">
-                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&sort=${sort}&size=${pagination.size}&page=1">
                                 접수일: ${startDate} ~ ${endDate}
                                 <span aria-hidden="true">&times;</span>
                             </a>
@@ -218,6 +222,8 @@
                         <a class="admin-filter-clear" href="/admin/reports">전체 해제</a>
                     </div>
                 </c:if>
+
+                <input type="hidden" name="target_id" value="${target_id}">
 
                 <input type="hidden" name="user_id" value="${user_id}">
                 <input type="hidden" name="page" value="1">
@@ -230,9 +236,9 @@
                     <table class="admin-table">
                         <thead>
                         <tr>
-                            <th>신고번호</th>
+                            <th>번호</th>
                             <th>대상 유형</th>
-                            <th>대상 번호</th>
+                            <th>대상 요약</th>
                             <th>사유</th>
                             <th>신고자</th>
                             <th>상태</th>
@@ -241,9 +247,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="report" items="${reportList}">
+                        <c:forEach var="report" items="${reportList}" varStatus="loop">
                         <tr class="admin-clickable-row" data-report-id="${report.report_id}">
-                            <td>${report.report_id}</td>
+                            <td>${pagination.offset + loop.index + 1}</td>
                             <td>
                                 <strong>
                                     <c:choose>    
@@ -253,7 +259,7 @@
                                     </c:choose>
                                     </strong>
                             </td>
-                            <td><strong>${report.target_id}</strong></td>
+                            <td class="admin-highlight-target">${report.target_title}</td>
                             <td class="admin-highlight-target">${report.reason}</td>
                             <td class="admin-highlight-target">${report.reporter_name}</td>
                             <td>
@@ -312,24 +318,16 @@
                                             <div class="admin-detail-info-scroll">
                                                 <dl class="admin-detail-grid">
                             <div>
-                                <dt>신고번호</dt>
-                                <dd id="reportId">-</dd>
-                            </div>
-                            <div>
                                 <dt>대상 유형</dt>
                                 <dd id="targetType">-</dd>
                             </div>
                             <div>
-                                <dt>대상 번호</dt>
-                                <dd id="targetId">-</dd>
+                                <dt>대상 요약</dt>
+                                <dd id="targetTitle" class="admin-highlight-target">-</dd>
                             </div>
                             <div>
                                 <dt>사유</dt>
                                 <dd id="reason" class="admin-highlight-target">-</dd>
-                            </div>
-                            <div>
-                                <dt>신고자 번호</dt>
-                                <dd id="reporterId">-</dd>
                             </div>
                             <div>
                                 <dt>신고자</dt>
@@ -408,7 +406,7 @@
             <div class="admin-pagination-pages">
                 <c:if test="${pagination.totalPage > 0}">
                     <c:if test="${pagination.hasPrev}">
-                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                             이전
                         </a>
                     </c:if>
@@ -417,14 +415,14 @@
                     </c:if>
 
                     <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                             class="${pagination.page == i ? 'active' : ''}">
                             ${i}
                         </a>
                     </c:forEach>
 
                     <c:if test="${pagination.hasNext}">
-                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                             다음
                         </a>
                     </c:if>

@@ -466,20 +466,23 @@
                                 <table class="admin-table admin-member-table">
                                     <thead>
                                         <tr>
-                                            <th>회원번호</th>
+                                            <th>번호</th>
                                             <th>회원명</th>
+                                            <th>아이디</th>
+                                            <th>닉네임</th>
                                             <th>이메일</th>
                                             <th>유형</th>
                                             <th>상태</th>
-                                            <th>가입일</th>
                                             <th>관리</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach var="user" items="${userList}">
+                                        <c:forEach var="user" items="${userList}" varStatus="loop">
                                             <tr class="admin-clickable-row" data-user-id="${user.user_id}">
-                                                <td>${user.user_id}</td>
+                                                <td>${pagination.offset + loop.index + 1}</td>
                                                 <td class="admin-highlight-target"><strong>${user.name}</strong></td>
+                                                <td class="admin-highlight-target">${user.login_id}</td>
+                                                <td class="admin-highlight-target">${user.nick_name}</td>
                                                 <td class="left admin-highlight-target">${user.email}</td>
                                                 <td>${user.role eq 'SELLER' ? "판매자" : "일반회원"}</td>
                                                 <td>
@@ -503,7 +506,6 @@
                                                         </c:when>
                                                     </c:choose>
                                                 </td>
-                                                <td>${user.created_at}</td>
                                                 <td class="admin-table-actions">
                                                     <button type="button"
                                                         class="admin-btn light admin-detail-btn">상세</button>
@@ -566,28 +568,16 @@
                                                 </div>
                                                 <dl class="admin-detail-grid">
                                                     <div>
-                                                        <dt>회원번호</dt>
-                                                        <dd id="userId">-</dd>
-                                                    </div>
-                                                    <div>
-                                                        <dt>회원 유형</dt>
-                                                        <dd id="role">-</dd>
-                                                    </div>
-                                                    <div>
-                                                        <dt>회원 상태</dt>
-                                                        <dd id="status">-</dd>
-                                                    </div>
-                                                    <div>
                                                         <dt>회원명</dt>
                                                         <dd id="name" class="admin-highlight-target">-</dd>
                                                     </div>
                                                     <div>
-                                                        <dt>닉네임</dt>
-                                                        <dd id="nickName" class="admin-highlight-target">-</dd>
-                                                    </div>
-                                                    <div>
                                                         <dt>아이디</dt>
                                                         <dd id="loginId" class="admin-highlight-target">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>닉네임</dt>
+                                                        <dd id="nickName" class="admin-highlight-target">-</dd>
                                                     </div>
                                                     <div>
                                                         <dt>이메일</dt>
@@ -602,12 +592,24 @@
                                                         <dd id="gender">-</dd>
                                                     </div>
                                                     <div>
+                                                        <dt>회원 유형</dt>
+                                                        <dd id="role">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>회원 상태</dt>
+                                                        <dd id="status">-</dd>
+                                                    </div>
+                                                    <div>
                                                         <dt>가입일</dt>
                                                         <dd id="createdAt">-</dd>
                                                     </div>
                                                     <div>
                                                         <dt>수정일</dt>
                                                         <dd id="updatedAt">-</dd>
+                                                    </div>
+                                                    <div>
+                                                        <dt>내부 회원번호</dt>
+                                                        <dd id="userId">-</dd>
                                                     </div>
                                                 </dl>
                                             </div>

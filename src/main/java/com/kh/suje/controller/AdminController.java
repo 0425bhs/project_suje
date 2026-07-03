@@ -14,6 +14,7 @@ import com.kh.suje.dao.AdminMemoDAO;
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.InquiryDAO;
 import com.kh.suje.dao.NoticeDAO;
+import com.kh.suje.dao.OptionDAO;
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.ReportDAO;
@@ -47,6 +48,7 @@ public class AdminController {
     private final NoticeDAO noticeDao;
     private final OrderDAO orderDao;
     private final AdminMemoDAO adminMemoDao;
+    private final OptionDAO optionDao;
 
     @GetMapping(value = {"/admin", "/admin/dashboard"})
     public String adminDashboard() {
@@ -167,7 +169,8 @@ public class AdminController {
             status = "all";
         }
 
-        if (!"oldest".equals(sort) && !"name".equals(sort)) {
+        if (!"oldest".equals(sort) && !"name".equals(sort) &&
+            !"products".equals(sort) && !"orders".equals(sort) && !"sales".equals(sort)) {
             sort = "latest";
         }
 
@@ -246,7 +249,8 @@ public class AdminController {
             status = "all";
         }
 
-        if (!"oldest".equals(sort) && !"name".equals(sort)) {
+        if (!"oldest".equals(sort) && !"name".equals(sort) &&
+            !"reviews".equals(sort) && !"orders".equals(sort) && !"favorites".equals(sort)) {
             sort = "latest";
         }
 
@@ -305,6 +309,7 @@ public class AdminController {
 
         map.put("success", true);
         map.put("product", product);
+        map.put("optionList", optionDao.getOptionListByProductId(product_id));
         return map;
     }
 
@@ -338,7 +343,7 @@ public class AdminController {
             rating = null;
         }
 
-        if (!"oldest".equals(sort) && !"rating".equals(sort)) {
+        if (!"oldest".equals(sort) && !"rating".equals(sort) && !"reports".equals(sort)) {
             sort = "latest";
         }
 
@@ -575,10 +580,30 @@ public class AdminController {
         return map;
     }
 
+    @PostMapping("/admin/inquiries/answer")
+    @ResponseBody
+    public Map<String, Object> updateInquiryAnswer(int inquiry_id, String answer) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (answer == null || answer.trim().isEmpty()) {
+            map.put("success", false);
+            map.put("message", "답변 내용을 입력하세요.");
+            return map;
+        }
+
+        inquiryDao.updateInquiryAnswer(inquiry_id, answer.trim());
+        InquiryVO inquiry = inquiryDao.getInquiryById(inquiry_id);
+
+        map.put("success", true);
+        map.put("inquiry", inquiry);
+
+        return map;
+    }
+
     @GetMapping("/admin/reports")
     public String reports(Model model, String status, String keyword,
                           Integer user_id,
-                          String targetType,
+                          String targetType, Integer target_id,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
         if (!"pending".equals(status) && !"processed".equals(status) &&
@@ -595,11 +620,12 @@ public class AdminController {
         }
 
         UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
-        int totalCount = reportDao.getReportListCountByKeyword(status, keyword, user_id, targetType, startDate, endDate);
+        int totalCount = reportDao.getReportListCountByKeyword(status, keyword, user_id, targetType, target_id, startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ReportVO> reportList = reportDao.getReportListByKeyword(status, keyword,
                                                                      user_id,
                                                                      targetType,
+                                                                     target_id,
                                                                      pagination.getSize(),
                                                                      pagination.getOffset(),
                                                                      startDate, endDate,
@@ -609,6 +635,7 @@ public class AdminController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("user_id", user_id);
         model.addAttribute("targetType", targetType);
+        model.addAttribute("target_id", target_id);
         model.addAttribute("filterUser", filterUser);
         model.addAttribute("sort", sort);
         model.addAttribute("startDate", startDate);

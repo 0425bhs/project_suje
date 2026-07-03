@@ -18,6 +18,8 @@
                         WAITING: "미답변",
                         ANSWERED: "답변완료"
                     };
+                    let selectedInquiryId = "";
+                    let selectedInquiryRow = null;
                     const managePanel = initAdminDetailManage({
                         targetType: "INQUIRY",
                         statusUrl: "/admin/inquiries/status",
@@ -39,6 +41,8 @@
 
                             //상세 패널 내용 변경
                             const inquiryId = row.dataset.inquiryId;
+                            selectedInquiryId = inquiryId;
+                            selectedInquiryRow = row;
 
                             fetch("/admin/inquiries/detail?inquiry_id=" + encodeURIComponent(inquiryId))
                                 .then(res => res.json())
@@ -64,14 +68,18 @@
                                         (inquiry.user_name || "-") + " · " + (typeLabel || "-")
                                     );
                                     setDetailStatusBadge("inquiryDetailStatusBadge", inquiry.status, statusLabel);
-                                    setText("inquiryId", inquiry.inquiry_id);
-                                    setText("userId", inquiry.user_id);
                                     setText("userName", inquiry.user_name);
                                     setText("inquiryType", typeLabel);
                                     setText("title", inquiry.title);
                                     setText("content", inquiry.content);
                                     setText("status", statusLabel);
                                     setText("createdAt", inquiry.created_at);
+                                    setText("answer", inquiry.answer || "-");
+                                    setText("answeredAt", inquiry.answered_at || "-");
+                                    const answerInput = document.getElementById("inquiryAnswerInput");
+                                    if (answerInput) {
+                                        answerInput.value = inquiry.answer || "";
+                                    }
                                     managePanel.setTarget(inquiry.inquiry_id, statusKey, row);
 
                                     document.getElementById("inquiryMemberLink").href =
@@ -83,6 +91,54 @@
                                 })
                         });
                     });
+
+                    const answerSaveButton = document.getElementById("inquiryAnswerSave");
+                    if (answerSaveButton) {
+                        answerSaveButton.addEventListener("click", () => {
+                            const answerInput = document.getElementById("inquiryAnswerInput");
+
+                            if (!selectedInquiryId || !answerInput) {
+                                return;
+                            }
+
+                            const body = new URLSearchParams();
+                            body.append("inquiry_id", selectedInquiryId);
+                            body.append("answer", answerInput.value);
+
+                            fetch("/admin/inquiries/answer", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+                                },
+                                body
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data.success) {
+                                    alert(data.message || "답변 저장에 실패했습니다.");
+                                    return;
+                                }
+
+                                const inquiry = data.inquiry;
+                                const statusLabel = statusLabels[inquiry.status] || inquiry.status;
+
+                                setText("answer", inquiry.answer || "-");
+                                setText("answeredAt", inquiry.answered_at || "-");
+                                setText("status", statusLabel);
+                                setDetailStatusBadge("inquiryDetailStatusBadge", inquiry.status, statusLabel);
+                                managePanel.setTarget(inquiry.inquiry_id, inquiry.status, selectedInquiryRow);
+
+                                if (selectedInquiryRow) {
+                                    selectedInquiryRow.dataset.status = inquiry.status;
+                                    const statusCell = selectedInquiryRow.querySelector(".admin-status");
+                                    if (statusCell) {
+                                        statusCell.className = "admin-status answered";
+                                        statusCell.textContent = "답변";
+                                    }
+                                }
+                            });
+                        });
+                    }
                 });
             </script>
         </head>
@@ -227,7 +283,7 @@
                                 <table class="admin-table">
                                     <thead>
                                         <tr>
-                                            <th>문의번호</th>
+                                            <th>번호</th>
                                             <th>문의 유형</th>
                                             <th>제목</th>
                                             <th>작성자</th>
@@ -237,9 +293,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach var="inquiry" items="${inquiryList}">
+                                        <c:forEach var="inquiry" items="${inquiryList}" varStatus="loop">
                                             <tr class="admin-clickable-row" data-inquiry-id="${inquiry.inquiry_id}">
-                                                <td>${inquiry.inquiry_id}</td>
+                                                <td>${pagination.offset + loop.index + 1}</td>
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${inquiry.inquiry_type eq 'SERVICE'}">서비스 이용
@@ -312,14 +368,6 @@
                                             <div class="admin-detail-info-scroll">
                                                 <dl class="admin-detail-grid">
                                         <div>
-                                            <dt>문의 번호</dt>
-                                            <dd id="inquiryId">-</dd>
-                                        </div>
-                                        <div>
-                                            <dt>회원번호</dt>
-                                            <dd id="userId">-</dd>
-                                        </div>
-                                        <div>
                                             <dt>작성자</dt>
                                             <dd id="userName" class="admin-highlight-target">-</dd>
                                         </div>
@@ -343,6 +391,14 @@
                                             <dt>작성일</dt>
                                             <dd id="createdAt">-</dd>
                                         </div>
+                                        <div>
+                                            <dt>답변일</dt>
+                                            <dd id="answeredAt">-</dd>
+                                        </div>
+                                        <div>
+                                            <dt>답변 내용</dt>
+                                            <dd id="answer" class="admin-highlight-target">-</dd>
+                                        </div>
                                     </dl>
                                             </div>
                                         </div>
@@ -364,6 +420,18 @@
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">변경 취소</button>
                                                         <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>답변 관리</h3>
+                                                    </div>
+                                                    <textarea id="inquiryAnswerInput" class="admin-detail-memo" rows="7"
+                                                        data-admin-memo-ignore="true"
+                                                        placeholder="회원에게 전달할 답변을 입력하세요."></textarea>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn" id="inquiryAnswerSave">답변 저장</button>
                                                     </div>
                                                 </div>
 

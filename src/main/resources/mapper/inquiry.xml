@@ -94,14 +94,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getInquiryById">
-        SELECT *
-        FROM inquiries
-        WHERE inquiry_id = #{inquiry_id}
+        SELECT i.*, u.name user_name
+        FROM inquiries i
+        JOIN users u ON u.user_id = i.user_id
+        WHERE i.inquiry_id = #{inquiry_id}
     </select>
 
     <update id="updateInquiryStatus">
         UPDATE inquiries
         SET status = #{status}
+        WHERE inquiry_id = #{inquiry_id}
+    </update>
+
+    <update id="updateInquiryAnswer">
+        UPDATE inquiries
+        SET answer = #{answer},
+            status = 'ANSWERED',
+            answered_at = CURRENT_TIMESTAMP
         WHERE inquiry_id = #{inquiry_id}
     </update>
 

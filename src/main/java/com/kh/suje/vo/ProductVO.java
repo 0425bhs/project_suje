@@ -29,6 +29,10 @@ public class ProductVO {
     
     private float review_avg;
     private int review_count;
+    private int order_count;
+    private int favorite_count;
+    private int sales_quantity;
+    private int report_count;
 
     //할인 기간 설정
     private String sale_start_at;

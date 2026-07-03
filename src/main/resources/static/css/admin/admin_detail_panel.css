@@ -14,7 +14,7 @@
     height: calc(100vh - 210px);
     min-height: 360px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 420px;
+    grid-template-columns: minmax(0, 1fr) 360px;
     gap: 12px;
     align-items: stretch;
     transition: grid-template-columns 0.22s ease, gap 0.22s ease;
@@ -272,7 +272,6 @@
 
 .admin-detail-info-scroll {
     display: grid;
-    gap: 12px;
     align-content: start;
 }
 

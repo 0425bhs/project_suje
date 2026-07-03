@@ -35,4 +35,8 @@ public class ReviewVO {
     private String reply_content;
     private String reply_created_at;
     private String reply_created_at_text;
+
+    private int report_count;
+    private String order_status;
+    private String order_created_at;
 }

@@ -5,51 +5,100 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.kh.suje.dao.SellerDAO">
     <select id="getSellerById">
-        SELECT *, seller_status status
-        FROM sellers
-        WHERE seller_id = #{seller_id}
+        SELECT
+            s.*,
+            s.seller_status status,
+            COALESCE(pc.product_count, 0) AS product_count,
+            COALESCE(oc.order_count, 0) AS order_count,
+            COALESCE(oc.sales_amount, 0) AS sales_amount
+        FROM sellers s
+        LEFT JOIN (
+            SELECT seller_id, COUNT(*) AS product_count
+            FROM products
+            GROUP BY seller_id
+        ) pc ON pc.seller_id = s.seller_id
+        LEFT JOIN (
+            SELECT
+                p.seller_id,
+                COUNT(DISTINCT o.order_id) AS order_count,
+                COALESCE(SUM(oi.price * oi.quantity), 0) AS sales_amount
+            FROM products p
+            JOIN order_items oi ON oi.product_id = p.product_id
+            JOIN orders o ON o.order_id = oi.order_id
+            GROUP BY p.seller_id
+        ) oc ON oc.seller_id = s.seller_id
+        WHERE s.seller_id = #{seller_id}
     </select>
     <select id="getSellerListByKeyword"
             resultType="seller">
-        SELECT *, seller_status status
-        FROM sellers
+        SELECT
+            s.*,
+            s.seller_status status,
+            COALESCE(pc.product_count, 0) AS product_count,
+            COALESCE(oc.order_count, 0) AS order_count,
+            COALESCE(oc.sales_amount, 0) AS sales_amount
+        FROM sellers s
+        LEFT JOIN (
+            SELECT seller_id, COUNT(*) AS product_count
+            FROM products
+            GROUP BY seller_id
+        ) pc ON pc.seller_id = s.seller_id
+        LEFT JOIN (
+            SELECT
+                p.seller_id,
+                COUNT(DISTINCT o.order_id) AS order_count,
+                COALESCE(SUM(oi.price * oi.quantity), 0) AS sales_amount
+            FROM products p
+            JOIN order_items oi ON oi.product_id = p.product_id
+            JOIN orders o ON o.order_id = oi.order_id
+            GROUP BY p.seller_id
+        ) oc ON oc.seller_id = s.seller_id
         <where>
         <if test="status != null and status != 'all'">
-            seller_status = #{status}
+            s.seller_status = #{status}
         </if>
 
         <if test="user_id != null">
-            AND user_id = #{user_id}
+            AND s.user_id = #{user_id}
         </if>
 
         <if test="seller_id != null">
-            AND seller_id = #{seller_id}
+            AND s.seller_id = #{seller_id}
         </if>
 
         <if test="keyword != null and keyword != ''">
             AND (
-                company_name LIKE CONCAT("%", #{keyword}, "%")
-                or representative_name LIKE CONCAT("%", #{keyword}, "%")
+                s.company_name LIKE CONCAT("%", #{keyword}, "%")
+                or s.representative_name LIKE CONCAT("%", #{keyword}, "%")
             )
         </if>
 
         <if test="startDate != null and startDate != ''">
-            AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            AND s.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
         </if>
 
         <if test="endDate != null and endDate != ''">
-            AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            AND s.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
         </if>
         </where>
         <choose>
             <when test="sort == 'oldest'">
-                ORDER BY created_at ASC, seller_id ASC
+                ORDER BY s.created_at ASC, s.seller_id ASC
             </when>
             <when test="sort == 'name'">
-                ORDER BY company_name ASC, seller_id DESC
+                ORDER BY s.company_name ASC, s.seller_id DESC
+            </when>
+            <when test="sort == 'products'">
+                ORDER BY product_count DESC, s.seller_id DESC
+            </when>
+            <when test="sort == 'orders'">
+                ORDER BY order_count DESC, s.seller_id DESC
+            </when>
+            <when test="sort == 'sales'">
+                ORDER BY sales_amount DESC, s.seller_id DESC
             </when>
             <otherwise>
-                ORDER BY created_at DESC, seller_id DESC
+                ORDER BY s.created_at DESC, s.seller_id DESC
             </otherwise>
         </choose>
         LIMIT #{size} OFFSET #{offset}
@@ -58,33 +107,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getSellerListCountByKeyword"
             resultType="int">
         SELECT count(*)
-        FROM sellers
+        FROM sellers s
         <where>
         <if test="status != null and status != 'all'">
-            seller_status = #{status}
+            s.seller_status = #{status}
         </if>
 
         <if test="user_id != null">
-            AND user_id = #{user_id}
+            AND s.user_id = #{user_id}
         </if>
 
         <if test="seller_id != null">
-            AND seller_id = #{seller_id}
+            AND s.seller_id = #{seller_id}
         </if>
 
         <if test="keyword != null and keyword != ''">
             AND (
-                company_name LIKE CONCAT("%", #{keyword}, "%")
-                or representative_name LIKE CONCAT("%", #{keyword}, "%")
+                s.company_name LIKE CONCAT("%", #{keyword}, "%")
+                or s.representative_name LIKE CONCAT("%", #{keyword}, "%")
             )
         </if>
 
         <if test="startDate != null and startDate != ''">
-            AND created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
+            AND s.created_at &gt;= CONCAT(#{startDate}, ' 00:00:00')
         </if>
 
         <if test="endDate != null and endDate != ''">
-            AND created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
+            AND s.created_at &lt;= CONCAT(#{endDate}, ' 23:59:59')
         </if>
         </where>
     </select>

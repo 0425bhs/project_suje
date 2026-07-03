@@ -36,16 +36,19 @@
                         setDetailTitleBlock(
                             "reviewDetailTitle",
                             "reviewDetailMeta",
-                            "후기 #" + (review.review_id || "-"),
-                            "평점 " + (review.rating || "-") + "점 · 작성자 #" + (review.user_id || "-")
+                            review.product_name || "후기 상세",
+                            (review.user_name || "-") + " · 평점 " + (review.rating || "-") + "점"
                         );
-                        setText("reviewId", review.review_id);
-                        setText("userId", review.user_id);
-                        setText("productId", review.product_id);
-                        setText("orderItemId", review.order_item_id);
+                        setText("productName", review.product_name);
+                        setText("userName", review.user_name);
                         setText("rating", review.rating);
                         setText("content", review.content);
                         setText("createdAt", review.created_at);
+                        setText("reportCount", review.report_count);
+                        setText("orderStatus", review.order_status);
+                        setText("orderCreatedAt", review.order_created_at);
+                        setText("replyContent", review.reply_content || "-");
+                        setText("replyCreatedAt", review.reply_created_at || "-");
                         managePanel.setTarget(review.review_id);
 
                         document.getElementById("reviewMemberLink").href =
@@ -95,6 +98,7 @@
                         <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
                         <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
                         <option value="rating" ${sort eq 'rating' ? 'selected' : ''}>평점순</option>
+                        <option value="reports" ${sort eq 'reports' ? 'selected' : ''}>신고 많은 순</option>
                     </select>
                     <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
                         <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
@@ -193,33 +197,26 @@
             <div class="admin-card admin-list-panel">
                 <div class="admin-table-wrap">
                     <table class="admin-table admin-review-table">
-                        <colgroup>
-                            <col class="review-id-col">
-                            <col class="review-product-col">
-                            <col class="review-user-col">
-                            <col class="review-rating-col">
-                            <col class="review-content-col">
-                            <col class="review-date-col">
-                            <col class="review-action-col">
-                        </colgroup>
                         <thead>
                         <tr>
-                            <th>후기번호</th>
+                            <th>번호</th>
                             <th>상품</th>
                             <th>작성자</th>
                             <th>평점</th>
+                            <th>신고</th>
                             <th>내용</th>
                             <th>작성일</th>
                             <th>관리</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="review" items="${reviewList}">
+                        <c:forEach var="review" items="${reviewList}" varStatus="loop">
                         <tr class="admin-clickable-row" data-review-id="${review.review_id}">
-                            <td>${review.review_id}</td>
+                            <td>${pagination.offset + loop.index + 1}</td>
                             <td class="left admin-highlight-target"><strong>${review.product_name}</strong></td>
                             <td class="admin-highlight-target">${review.user_name}</td>
                             <td>${review.rating}</td>
+                            <td>${review.report_count}</td>
                             <td class="left admin-highlight-target review-content-cell">${review.content}</td>
                             <td>${review.created_at}</td>
                             <td class="admin-table-actions">
@@ -263,20 +260,12 @@
                                             <div class="admin-detail-info-scroll">
                                                 <dl class="admin-detail-grid">
                             <div>
-                                <dt>후기번호</dt>
-                                <dd id="reviewId">-</dd>
+                                <dt>상품</dt>
+                                <dd id="productName" class="admin-highlight-target">-</dd>
                             </div>
                             <div>
-                                <dt>회원번호</dt>
-                                <dd id="userId">-</dd>
-                            </div>
-                            <div>
-                                <dt>상품번호</dt>
-                                <dd id="productId">-</dd>
-                            </div>
-                            <div>
-                                <dt>주문 상품 번호</dt>
-                                <dd id="orderItemId">-</dd>
+                                <dt>작성자</dt>
+                                <dd id="userName" class="admin-highlight-target">-</dd>
                             </div>
                             <div>
                                 <dt>평점</dt>
@@ -289,6 +278,26 @@
                             <div>
                                 <dt>작성일</dt>
                                 <dd id="createdAt">-</dd>
+                            </div>
+                            <div>
+                                <dt>신고 수</dt>
+                                <dd id="reportCount">-</dd>
+                            </div>
+                            <div>
+                                <dt>주문 상태</dt>
+                                <dd id="orderStatus">-</dd>
+                            </div>
+                            <div>
+                                <dt>주문일</dt>
+                                <dd id="orderCreatedAt">-</dd>
+                            </div>
+                            <div>
+                                <dt>판매자 답글</dt>
+                                <dd id="replyContent" class="admin-highlight-target">-</dd>
+                            </div>
+                            <div>
+                                <dt>답글 작성일</dt>
+                                <dd id="replyCreatedAt">-</dd>
                             </div>
                         </dl>
                                             </div>

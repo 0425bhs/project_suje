@@ -27,6 +27,33 @@
 
                 return number.toLocaleString("ko-KR") + "원";
             }
+
+            function renderProductOptions(options) {
+                const target = document.getElementById("productOptions");
+
+                if (!target) {
+                    return;
+                }
+
+                if (!options || !options.length) {
+                    target.textContent = "-";
+                    return;
+                }
+
+                const list = document.createElement("div");
+                list.className = "admin-detail-grid";
+
+                options.forEach((option) => {
+                    const row = document.createElement("div");
+                    row.innerHTML =
+                        "<dt>" + (option.option_name || "-") + "</dt>" +
+                        "<dd>추가금액 " + formatProductPrice(option.option_price) +
+                        " · 재고 " + (option.option_stock || 0) + "</dd>";
+                    list.appendChild(row);
+                });
+
+                target.replaceChildren(list);
+            }
             const managePanel = initAdminDetailManage({
                 targetType: "PRODUCT",
                 statusUrl: "/admin/products/status",
@@ -57,13 +84,11 @@
                             "productDetailTitle",
                             "productDetailMeta",
                             product.name || "상품 상세",
-                            (product.company_name || "-") + " · 상품번호 #" + (product.product_id || "-")
+                            (product.company_name || "-") + " · " + (product.category_name || "-")
                         );
                         setDetailStatusBadge("productDetailStatusBadge", product.status, statusLabel);
-                        setText("productId", product.product_id);
                         setText("productName", product.name);
                         setText("companyName", product.company_name);
-                        setText("sellerId", product.seller_id);
                         setText("categoryId", product.category_name || product.category_id);
                         // setText("description", product.description);
                         setText("price", formatProductPrice(product.price));
@@ -78,6 +103,12 @@
                         setText("salePriceUpdatedAt", product.sale_price_updated_at);
                         setText("saleStartAt", product.sale_start_at);
                         setText("saleEndAt", product.sale_end_at);
+                        setText("reviewCount", product.review_count);
+                        setText("orderCount", product.order_count);
+                        setText("salesQuantity", product.sales_quantity);
+                        setText("favoriteCount", product.favorite_count);
+                        setText("reportCount", product.report_count);
+                        renderProductOptions(data.optionList);
                         managePanel.setTarget(product.product_id, statusKey, row);
 
                         document.getElementById("productSellerLink").href =
@@ -86,6 +117,8 @@
                             "/admin/reviews?product_id=" + encodeURIComponent(product.product_id);
                         document.getElementById("productOrderLink").href =
                             "/admin/orders?product_id=" + encodeURIComponent(product.product_id);
+                        document.getElementById("productReportLink").href =
+                            "/admin/reports?targetType=PRODUCT&target_id=" + encodeURIComponent(product.product_id);
                         document.getElementById("productPublicLink").href =
                             "/product_detail.do?product_id=" + encodeURIComponent(product.product_id);
 
@@ -141,6 +174,9 @@
                             <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
                             <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
                             <option value="name" ${sort eq 'name' ? 'selected' : ''}>이름순</option>
+                            <option value="reviews" ${sort eq 'reviews' ? 'selected' : ''}>후기 많은 순</option>
+                            <option value="orders" ${sort eq 'orders' ? 'selected' : ''}>주문 많은 순</option>
+                            <option value="favorites" ${sort eq 'favorites' ? 'selected' : ''}>찜 많은 순</option>
                         </select>
                         <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
                             <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
@@ -261,19 +297,24 @@
                         <table class="admin-table">
                             <thead>
                                 <tr>
+                                    <th>번호</th>
                                     <th>이미지</th>
                                     <th>상품명</th>
                                     <th>판매자</th>
                                     <th>카테고리</th>
                                     <th>가격</th>
+                                    <th>재고</th>
+                                    <th>후기</th>
+                                    <th>주문</th>
                                     <th>상태</th>
                                     <th>등록일</th>
                                     <th>관리</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach var="product" items="${productList}">
+                                <c:forEach var="product" items="${productList}" varStatus="loop">
                                     <tr class="admin-clickable-row" data-product-id="${product.product_id}">
+                                        <td>${pagination.offset + loop.index + 1}</td>
                                         <td>
                                             <span class="admin-thumb">
                                                 <img src="/upload/${product.image_l}" />
@@ -283,6 +324,9 @@
                                         <td class="admin-highlight-target">${product.company_name}</td>
                                         <td class="admin-highlight-target">${product.category_name}</td>
                                         <td><fmt:formatNumber value="${product.price}" pattern="#,###" />원</td>
+                                        <td>${product.stock}</td>
+                                        <td>${product.review_count}</td>
+                                        <td>${product.order_count}</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${product.status eq 'PENDING'}">
@@ -355,20 +399,12 @@
                                     </dd>
                                 </div>      
                                 <div>
-                                    <dt>상품번호</dt>
-                                    <dd id="productId">-</dd>
-                                </div>
-                                <div>
                                     <dt>상품명</dt>
                                     <dd id="productName" class="admin-highlight-target">-</dd>
                                 </div>
                                 <div>
                                     <dt>판매자</dt>
                                     <dd id="companyName" class="admin-highlight-target">-</dd>
-                                </div>
-                                <div>
-                                    <dt>판매자번호</dt>
-                                    <dd id="sellerId">-</dd>
                                 </div>
                                 <div>
                                     <dt>카테고리</dt>
@@ -423,6 +459,30 @@
                                     <dt>할인 종료일</dt>
                                     <dd id="saleEndAt">-</dd>
                                 </div>
+                                <div>
+                                    <dt>후기 수</dt>
+                                    <dd id="reviewCount">-</dd>
+                                </div>
+                                <div>
+                                    <dt>주문 수</dt>
+                                    <dd id="orderCount">-</dd>
+                                </div>
+                                <div>
+                                    <dt>판매 수량</dt>
+                                    <dd id="salesQuantity">-</dd>
+                                </div>
+                                <div>
+                                    <dt>찜 수</dt>
+                                    <dd id="favoriteCount">-</dd>
+                                </div>
+                                <div>
+                                    <dt>신고 수</dt>
+                                    <dd id="reportCount">-</dd>
+                                </div>
+                                <div>
+                                    <dt>옵션</dt>
+                                    <dd id="productOptions">-</dd>
+                                </div>
                             </dl>
                                             </div>
                                         </div>
@@ -473,6 +533,9 @@
                                                         </a>
                                                         <a href="#" id="productOrderLink">
                                                             <span>주문 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productReportLink">
+                                                            <span>신고 관리</span>
                                                         </a>
                                                         <a href="#" id="productPublicLink">
                                                             <span>상품 페이지</span>

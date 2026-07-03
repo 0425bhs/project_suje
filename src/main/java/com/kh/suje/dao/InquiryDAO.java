@@ -28,5 +28,8 @@ public interface InquiryDAO {
     int updateInquiryStatus(@Param("inquiry_id") int inquiry_id,
                             @Param("status") String status);
 
+    int updateInquiryAnswer(@Param("inquiry_id") int inquiry_id,
+                            @Param("answer") String answer);
+
     int getInquiryCountByUserId(int user_id);
 }

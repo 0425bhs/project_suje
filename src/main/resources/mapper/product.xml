@@ -17,10 +17,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getProductListByKeyword" resultType="product">
-        SELECT p.*, s.company_name, c.name category_name
+        SELECT
+            p.*,
+            s.company_name,
+            c.name category_name,
+            COALESCE(rv.review_count, 0) AS review_count,
+            COALESCE(oc.order_count, 0) AS order_count,
+            COALESCE(oc.sales_quantity, 0) AS sales_quantity,
+            COALESCE(fc.favorite_count, 0) AS favorite_count,
+            COALESCE(rp.report_count, 0) AS report_count
         FROM products p
         JOIN sellers s ON p.seller_id = s.seller_id
         JOIN categories c ON p.category_id = c.category_id
+        LEFT JOIN (
+            SELECT product_id, COUNT(*) AS review_count
+            FROM reviews
+            GROUP BY product_id
+        ) rv ON rv.product_id = p.product_id
+        LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(DISTINCT order_id) AS order_count,
+                COALESCE(SUM(quantity), 0) AS sales_quantity
+            FROM order_items
+            GROUP BY product_id
+        ) oc ON oc.product_id = p.product_id
+        LEFT JOIN (
+            SELECT product_id, COUNT(*) AS favorite_count
+            FROM favorites
+            GROUP BY product_id
+        ) fc ON fc.product_id = p.product_id
+        LEFT JOIN (
+            SELECT target_id, COUNT(*) AS report_count
+            FROM reports
+            WHERE target_type = 'PRODUCT'
+            GROUP BY target_id
+        ) rp ON rp.target_id = p.product_id
         <where>
             <if test="status != null and status != 'all'">
                 p.status = #{status}
@@ -74,6 +106,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </when>
             <when test="sort == 'name'">
                 ORDER BY p.name ASC, p.product_id DESC
+            </when>
+            <when test="sort == 'reviews'">
+                ORDER BY review_count DESC, p.product_id DESC
+            </when>
+            <when test="sort == 'orders'">
+                ORDER BY order_count DESC, p.product_id DESC
+            </when>
+            <when test="sort == 'favorites'">
+                ORDER BY favorite_count DESC, p.product_id DESC
             </when>
             <otherwise>
                 ORDER BY p.created_at DESC, p.product_id DESC
@@ -161,7 +202,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             c.name AS category_name,
 
             IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count
+            IFNULL(rv.review_count, 0) AS review_count,
+            IFNULL(oc.order_count, 0) AS order_count,
+            IFNULL(oc.sales_quantity, 0) AS sales_quantity,
+            IFNULL(fc.favorite_count, 0) AS favorite_count,
+            IFNULL(rp.report_count, 0) AS report_count
 
         FROM products p
 
@@ -180,6 +225,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             GROUP BY product_id
         ) rv
         ON p.product_id = rv.product_id
+
+        LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(DISTINCT order_id) AS order_count,
+                COALESCE(SUM(quantity), 0) AS sales_quantity
+            FROM order_items
+            GROUP BY product_id
+        ) oc
+        ON p.product_id = oc.product_id
+
+        LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(*) AS favorite_count
+            FROM favorites
+            GROUP BY product_id
+        ) fc
+        ON p.product_id = fc.product_id
+
+        LEFT JOIN (
+            SELECT
+                target_id,
+                COUNT(*) AS report_count
+            FROM reports
+            WHERE target_type = 'PRODUCT'
+            GROUP BY target_id
+        ) rp
+        ON p.product_id = rp.target_id
 
         WHERE p.product_id = #{value}
     </select>

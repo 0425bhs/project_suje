@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -52,11 +53,9 @@
                             "sellerDetailTitle",
                             "sellerDetailMeta",
                             seller.company_name || "판매자 상세",
-                            (seller.representative_name || "-") + " · 신청번호 #" + (seller.seller_id || "-")
+                            seller.representative_name || "-"
                         );
                         setDetailStatusBadge("sellerDetailStatusBadge", seller.status, statusLabel);
-                        setText("sellerId", seller.seller_id);
-                        setText("userId", seller.user_id);
                         setText("companyName", seller.company_name);
                         setText("representativeName", seller.representative_name);
                         setText("businessNumber", seller.business_number);
@@ -64,6 +63,9 @@
                         setText("businessAddress", seller.business_address);
                         setText("status", statusLabel);
                         setText("createdAt", seller.created_at);
+                        setText("productCount", seller.product_count);
+                        setText("orderCount", seller.order_count);
+                        setText("salesAmount", Number(seller.sales_amount || 0).toLocaleString("ko-KR") + "원");
                         managePanel.setTarget(seller.seller_id, statusKey, row);
 
                         document.getElementById("sellerMemberLink").href =
@@ -122,6 +124,9 @@
                             <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
                             <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
                             <option value="name" ${sort eq 'name' ? 'selected' : ''}>이름순</option>
+                            <option value="products" ${sort eq 'products' ? 'selected' : ''}>상품 많은 순</option>
+                            <option value="orders" ${sort eq 'orders' ? 'selected' : ''}>주문 많은 순</option>
+                            <option value="sales" ${sort eq 'sales' ? 'selected' : ''}>매출 높은 순</option>
                         </select>
                         <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
                             <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
@@ -212,17 +217,18 @@
                         <table class="admin-table admin-seller-table">
                             <thead>
                                 <tr>
-                                    <th>신청번호</th>
+                                    <th>번호</th>
                                     <th>상점명</th>
                                     <th>대표자</th>
-                                    <th>사업자번호</th>
+                                    <th>상품 수</th>
+                                    <th>주문 수</th>
                                     <th>상태</th>
                                     <th>신청일</th>
                                     <th>관리</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach var="seller" items="${sellerList}">
+                                <c:forEach var="seller" items="${sellerList}" varStatus="loop">
                                     <tr class="admin-clickable-row" data-user-id="${seller.user_id}"
                                         data-seller-id="${seller.seller_id}"
                                         data-company-name="${seller.company_name}"
@@ -233,10 +239,11 @@
                                         data-status="${seller.status}"
                                         data-status-label="${seller.status eq 'PENDING' ? '승인대기' : seller.status eq 'APPROVED' ? '승인완료' : '반려'}"
                                         data-created-at="${seller.created_at}">
-                                        <td>${seller.seller_id}</td>
+                                        <td>${pagination.offset + loop.index + 1}</td>
                                         <td class="left admin-highlight-target"><strong>${seller.company_name}</strong></td>
                                         <td class="admin-highlight-target">${seller.representative_name}</td>
-                                        <td class="admin-highlight-target">${seller.business_number}</td>
+                                        <td>${seller.product_count}</td>
+                                        <td>${seller.order_count}</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${seller.status eq 'PENDING'}">
@@ -296,14 +303,6 @@
                                             <div class="admin-detail-info-scroll">
                                                 <dl class="admin-detail-grid">
                                 <div>
-                                    <dt>신청번호</dt>
-                                    <dd id="sellerId">-</dd>
-                                </div>
-                                <div>
-                                    <dt>회원번호</dt>
-                                    <dd id="userId">-</dd>
-                                </div>
-                                <div>
                                     <dt>상점명</dt>
                                     <dd id="companyName" class="admin-highlight-target">-</dd>
                                 </div>
@@ -330,6 +329,18 @@
                                 <div>
                                     <dt>신청일</dt>
                                     <dd id="createdAt">-</dd>
+                                </div>
+                                <div>
+                                    <dt>상품 수</dt>
+                                    <dd id="productCount">-</dd>
+                                </div>
+                                <div>
+                                    <dt>주문 수</dt>
+                                    <dd id="orderCount">-</dd>
+                                </div>
+                                <div>
+                                    <dt>매출 합계</dt>
+                                    <dd id="salesAmount">-</dd>
                                 </div>
                             </dl>
                                             </div>

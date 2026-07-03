@@ -37,9 +37,8 @@
                             "noticeDetailTitle",
                             "noticeDetailMeta",
                             notice.title || "공지사항 상세",
-                            "공지번호 #" + (notice.notice_id || "-")
+                            notice.created_at || "-"
                         );
-                        setText("noticeId", notice.notice_id);
                         setText("title", notice.title);
                         setText("content", notice.content);
                         setText("createdAt", notice.created_at);
@@ -81,7 +80,6 @@
                 <div class="admin-filter-main-row">
                     <div class="admin-filter-tabs">
                         <button type="button" class="active">전체</button>
-                        <button type="button">공지</button>
                     </div>
 
                     <div class="admin-search-wrap">
@@ -146,20 +144,16 @@
                         <thead>
                         <tr>
                             <th>번호</th>
-                            <th>유형</th>
                             <th>제목</th>
-                            <th>상태</th>
                             <th>등록일</th>
                             <th>관리</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="notice" items="${noticeList}">
+                        <c:forEach var="notice" items="${noticeList}" varStatus="loop">
                         <tr class="admin-clickable-row" data-notice-id="${notice.notice_id}">
-                            <td>${notice.notice_id}</td>
-                            <td>공지(미구현)</td>
+                            <td>${pagination.offset + loop.index + 1}</td>
                             <td class="left admin-highlight-target"><strong>${notice.title}</strong></td>
-                            <td><span class="admin-status active">노출(미구현)</span></td>
                             <td>${notice.created_at}</td>
                             <td class="admin-table-actions">
                                 <a href="/notice_update_form.do?notice_id=${notice.notice_id}" class="admin-btn light">수정</a>
@@ -201,10 +195,6 @@
                                         <div class="admin-detail-tab-panel active" data-detail-panel="info">
                                             <div class="admin-detail-info-scroll">
                                                 <dl class="admin-detail-grid">
-                            <div>
-                                <dt>공지번호</dt>
-                                <dd id="noticeId">-</dd>
-                            </div>
                             <div>
                                 <dt>제목</dt>
                                 <dd id="title" class="admin-highlight-target">-</dd>
