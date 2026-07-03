@@ -53,7 +53,7 @@
     <button type="button"
             class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
             onclick="location.href='/myshop/orders?status=CANCELLED'">
-        <span>취소</span>
+        <span>주문 취소</span>
         <strong>${cancelCount}</strong>
     </button>
 </section>
@@ -122,13 +122,13 @@
                             <div>
                                 <strong class="myshop-status-badge ${mainItem.status}">
                                     <c:choose>
-                                        <c:when test="${mainItem.status eq 'PENDING'}">주문 접수</c:when>
-                                        <c:when test="${mainItem.status eq 'PAID'}">결제 완료</c:when>
-                                        <c:when test="${mainItem.status eq 'PREPARING'}">제작 준비중</c:when>
-                                        <c:when test="${mainItem.status eq 'SHIPPING'}">배송중</c:when>
-                                        <c:when test="${mainItem.status eq 'DELIVERED'}">배송 완료</c:when>
-                                        <c:when test="${mainItem.status eq 'CONFIRMED'}">구매 확정</c:when>
-                                        <c:when test="${mainItem.status eq 'CANCELLED'}">주문 취소</c:when>
+                                        <c:when test="${order.status eq 'PENDING'}">결제 대기</c:when>
+                                        <c:when test="${order.status eq 'PAID'}">결제 완료</c:when>
+                                        <c:when test="${order.status eq 'PREPARING'}">제작 준비중</c:when>
+                                        <c:when test="${order.status eq 'SHIPPING'}">배송중</c:when>
+                                        <c:when test="${order.status eq 'DELIVERED'}">배송 완료</c:when>
+                                        <c:when test="${order.status eq 'CONFIRMED'}">구매 확정</c:when>
+                                        <c:when test="${order.status eq 'CANCELLED'}">주문 취소</c:when>
                                         <c:otherwise>${mainItem.status}</c:otherwise>
                                     </c:choose>
                                 </strong>

@@ -186,8 +186,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE user_id = #{user_id}
     </update>
 
-    <!-- 판매자 주문 상태 개수 조회
-    <select id="getOrderStatusCountsOld"
+    <!-- 판매자 주문 상태 개수 조회 -->
+    <!-- <select id="getOrderStatusCountsOld"
             parameterType="int"
             resultType="java.util.Map">
         SELECT
@@ -344,7 +344,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             oi.option_id,
             oi.price,
             oi.quantity,
-            oi.status,
             oi.confirmed_at,
             oi.updated_at,
 

@@ -161,7 +161,7 @@
 
                                 <c:forEach var="qna" items="${qnaList}" varStatus="status">
 
-                                    <c:set var="answered" value="${not empty qna.answer}" />
+                                    <c:set var="answered" value="${qna.status eq 'ANSWERED'}" />
                                     <c:set var="qnaType" value="${empty qna.qna_type ? 'PRODUCT' : qna.qna_type}" />
 
                                     <c:choose>
