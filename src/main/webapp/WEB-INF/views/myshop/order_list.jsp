@@ -45,15 +45,94 @@
                         <strong>${deliveredCount}</strong>
                     </button>
 
-                    <button type="button" class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
-                        onclick="location.href='/myshop/orders?status=CANCELLED'">
-                        <span>취소</span>
-                        <strong>${cancelCount}</strong>
-                    </button>
-                </section>
+    <button type="button"
+            class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
+            onclick="location.href='/myshop/orders?status=CANCELLED'">
+        <span>주문 취소</span>
+        <strong>${cancelCount}</strong>
+    </button>
+</section>
 
-                <!-- 주문/배송내역 -->
-                <section class="myshop-order-section">
+<!-- 주문/배송내역 -->
+<section class="myshop-order-section">
+
+    <div class="myshop-section-head">
+        <div>
+            <h2>주문/배송내역</h2>
+            <p>주문한 작품의 결제 상태와 배송 상태를 확인할 수 있습니다.</p>
+        </div>
+
+        <a href="/myshop/orders">전체보기</a>
+    </div>
+
+    <c:choose>
+        <c:when test="${empty orderList}">
+            <div class="myshop-empty-order">
+                아직 주문 내역이 없습니다.
+            </div>
+        </c:when>
+
+        <c:otherwise>
+            <div class="myshop-order">
+
+                <c:forEach var="order" items="${orderList}">
+
+                    <!-- 중요: 주문별 상품 목록 -->
+                    <c:set var="items" value="${orderItemMap[order.order_id]}" />
+                    <c:set var="mainItem" value="${items[0]}" />
+                    <c:set var="itemCount" value="${fn:length(items)}" />
+
+                    <c:set var="hasPaidItem" value="false" />
+                    <c:set var="hasPreparingItem" value="false" />
+                    <c:set var="hasShippingItem" value="false" />
+                    <c:set var="hasDeliveredItem" value="false" />
+                    <c:set var="hasConfirmedItem" value="false" />
+
+                    <c:forEach var="item" items="${items}">
+                        <c:if test="${item.status eq 'PAID'}">
+                            <c:set var="hasPaidItem" value="true" />
+                        </c:if>
+
+                        <c:if test="${item.status eq 'PREPARING'}">
+                            <c:set var="hasPreparingItem" value="true" />
+                        </c:if>
+
+                        <c:if test="${item.status eq 'SHIPPING'}">
+                            <c:set var="hasShippingItem" value="true" />
+                        </c:if>
+
+                        <c:if test="${item.status eq 'DELIVERED'}">
+                            <c:set var="hasDeliveredItem" value="true" />
+                        </c:if>
+
+                        <c:if test="${item.status eq 'CONFIRMED'}">
+                            <c:set var="hasConfirmedItem" value="true" />
+                        </c:if>
+                    </c:forEach>
+
+                    <article class="myshop-order-card">
+
+                        <div class="myshop-order-top">
+
+                            <div>
+                                <strong class="myshop-status-badge ${mainItem.status}">
+                                    <c:choose>
+                                        <c:when test="${order.status eq 'PENDING'}">결제 대기</c:when>
+                                        <c:when test="${order.status eq 'PAID'}">결제 완료</c:when>
+                                        <c:when test="${order.status eq 'PREPARING'}">제작 준비중</c:when>
+                                        <c:when test="${order.status eq 'SHIPPING'}">배송중</c:when>
+                                        <c:when test="${order.status eq 'DELIVERED'}">배송 완료</c:when>
+                                        <c:when test="${order.status eq 'CONFIRMED'}">구매 확정</c:when>
+                                        <c:when test="${order.status eq 'CANCELLED'}">주문 취소</c:when>
+                                        <c:otherwise>${mainItem.status}</c:otherwise>
+                                    </c:choose>
+                                </strong>
+
+                            </div>
+
+                            <a href="/order/detail?order_id=${order.order_id}">
+                                주문상세 &gt;
+                            </a>
 
                     <div class="myshop-section-head">
                         <div>

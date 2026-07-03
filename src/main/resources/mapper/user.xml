@@ -18,6 +18,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 role = #{role}
             </if>
 
+            <if test="user_id != null">
+                AND user_id = #{user_id}
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 AND (
                     login_id LIKE CONCAT("%", #{keyword}, "%")
@@ -63,6 +67,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="role != null and role != 'all'">
                 role = #{role}
+            </if>
+
+            <if test="user_id != null">
+                AND user_id = #{user_id}
             </if>
 
             <if test="keyword != null and keyword != ''">
@@ -210,4 +218,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     select * from users where naver_id=#{naver_id}
     </select>
 
+    <update id="updateUserStatus">
+        UPDATE users
+        SET status = #{status}
+        WHERE user_id = #{user_id}
+    </update>
 </mapper>

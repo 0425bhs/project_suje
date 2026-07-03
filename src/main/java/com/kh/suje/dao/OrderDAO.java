@@ -104,6 +104,43 @@ public interface OrderDAO {
     // 사용한 쿠폰 복구
     int restoreCoupon(Map<String, Object> map);
 
+    // 관리자 주문 목록 개수 조회
+    int getAdminOrderListCountByKeyword(
+            @Param("status") String status,
+            @Param("keyword") String keyword,
+            @Param("userId") Integer userId,
+            @Param("sellerId") Integer sellerId,
+            @Param("productId") Integer productId,
+            @Param("minAmount") Integer minAmount,
+            @Param("maxAmount") Integer maxAmount,
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate
+    );
+
+    // 관리자 주문 목록 조회
+    List<Map<String, Object>> getAdminOrderListByKeyword(
+            @Param("status") String status,
+            @Param("keyword") String keyword,
+            @Param("userId") Integer userId,
+            @Param("sellerId") Integer sellerId,
+            @Param("productId") Integer productId,
+            @Param("minAmount") Integer minAmount,
+            @Param("maxAmount") Integer maxAmount,
+            @Param("size") int size,
+            @Param("offset") int offset,
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate,
+            @Param("sort") String sort
+    );
+
+    // 관리자 주문 상세 조회
+    Map<String, Object> getAdminOrderById(int order_id);
+
+    // 관리자 주문 상품 목록 조회
+    List<Map<String, Object>> getAdminOrderItemList(int order_id);
+
+    int getOrderCountByUserId(int user_id);
+
     // 사용 가능한 쿠폰 목록 조회
     List<Map<String, Object>> selectAvailableCouponList(int user_id);
 

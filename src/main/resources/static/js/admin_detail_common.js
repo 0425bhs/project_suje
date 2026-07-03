@@ -21,9 +21,195 @@ function closeDetailPanel(master, row) {
 //DB에서 가져온 값을 상세 패널에 출력(입력된 id의 태그의 내부에 value를 출력)
 function setText(id, value) {
     const target = document.getElementById(id);
+
+    if (!target) {
+        return;
+    }
+
     const text = value == null ? "" : String(value);
 
     target.textContent = text.trim() ? text : "-";
+}
+
+// 상세 패널 제목 영역에 제목과 보조 정보를 출력
+function setDetailTitleBlock(titleId, metaId, title, meta) {
+    setText(titleId, title);
+    setText(metaId, meta);
+}
+
+// 상세 패널 제목 옆 상태 배지 출력
+function setDetailStatusBadge(id, status, label) {
+    const badge = document.getElementById(id);
+
+    if (!badge) {
+        return;
+    }
+
+    const statusText = status == null ? "" : String(status);
+    const statusClass = statusText.toLowerCase();
+
+    badge.className = "admin-detail-status-badge";
+
+    if (statusClass) {
+        badge.classList.add(statusClass);
+    }
+
+    setText(id, label || statusText);
+}
+
+function loadAdminDetailMemo(targetType, targetId, memoContent) {
+    if (!targetType || !targetId || !memoContent) {
+        return;
+    }
+
+    fetch("/admin/memos?target_type=" + encodeURIComponent(targetType)
+        + "&target_id=" + encodeURIComponent(targetId))
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.message || "메모를 불러오지 못했습니다.");
+                return;
+            }
+
+            memoContent.value = data.memoList && data.memoList.length > 0
+                ? data.memoList[0].content || ""
+                : "";
+        });
+}
+
+function initAdminDetailManage(options) {
+    const statusControl = document.querySelector(".admin-detail-status-control");
+    const statusChangeButton = document.querySelector(".admin-detail-status-change");
+    const statusCancelButton = document.querySelector(".admin-detail-status-section .admin-btn.light");
+    const memoContent = document.querySelector(".admin-detail-memo:not([data-admin-memo-ignore='true'])");
+    const memoSaveButton = memoContent
+        ? memoContent.closest(".admin-detail-manage-section").querySelector(".admin-detail-section-actions .admin-btn")
+        : null;
+
+    const config = options || {};
+    const statusLabels = config.statusLabels || {};
+    let selectedId = null;
+    let selectedStatus = "";
+    let selectedRow = null;
+
+    function statusLabel(status) {
+        const key = String(status || "").toUpperCase();
+        return statusLabels[key] || status || "-";
+    }
+
+    function renderStatus(status) {
+        const statusText = String(status || "");
+        const label = statusLabel(statusText);
+
+        selectedStatus = statusText;
+
+        if (statusControl) {
+            statusControl.value = statusText;
+        }
+
+        if (statusChangeButton) {
+            statusChangeButton.disabled = true;
+        }
+
+        if (config.statusBadgeId) {
+            setDetailStatusBadge(config.statusBadgeId, statusText, label);
+        }
+
+        setText("status", label);
+
+        if (selectedRow) {
+            const rowStatus = selectedRow.querySelector(".admin-status");
+
+            if (rowStatus) {
+                rowStatus.className = "admin-status " + statusText.toLowerCase();
+                rowStatus.textContent = label;
+            }
+        }
+    }
+
+    if (statusControl && statusChangeButton && config.statusUrl) {
+        statusChangeButton.disabled = true;
+
+        statusControl.addEventListener("change", () => {
+            statusChangeButton.disabled = statusControl.value === selectedStatus;
+        });
+
+        statusChangeButton.addEventListener("click", () => {
+            if (!selectedId) {
+                return;
+            }
+
+            fetch(config.statusUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: encodeURIComponent(config.idParam) + "=" + encodeURIComponent(selectedId)
+                    + "&status=" + encodeURIComponent(statusControl.value)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || "상태 변경에 실패했습니다.");
+                    return;
+                }
+
+                renderStatus(data.status || statusControl.value);
+            });
+        });
+    }
+
+    if (statusCancelButton && statusControl) {
+        statusCancelButton.addEventListener("click", () => {
+            statusControl.value = selectedStatus;
+
+            if (statusChangeButton) {
+                statusChangeButton.disabled = true;
+            }
+        });
+    }
+
+    if (memoSaveButton && memoContent) {
+        memoSaveButton.addEventListener("click", () => {
+            if (!selectedId || !config.targetType) {
+                return;
+            }
+
+            fetch("/admin/memos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "target_type=" + encodeURIComponent(config.targetType)
+                    + "&target_id=" + encodeURIComponent(selectedId)
+                    + "&content=" + encodeURIComponent(memoContent.value)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || "메모 저장에 실패했습니다.");
+                    return;
+                }
+
+                alert("메모가 저장되었습니다.");
+            });
+        });
+    }
+
+    return {
+        setTarget(id, status, row) {
+            selectedId = id;
+            selectedRow = row || null;
+
+            if (statusControl && status != null) {
+                renderStatus(status);
+            }
+
+            if (memoContent && config.targetType) {
+                loadAdminDetailMemo(config.targetType, id, memoContent);
+            }
+        }
+    };
 }
 
 // 상세 검색 조건 창이 열려있고 상세 검색 버튼이 활성화되어 있으면
@@ -164,6 +350,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// 상세 패널 정보/관리 탭 전환 이벤트 부여(확인필요)
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".admin-detail-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+            const detailPanel = tab.closest(".admin-detail-panel");
+            const tabName = tab.dataset.detailTab;
+
+            if (!detailPanel || !tabName) {
+                return;
+            }
+
+            detailPanel.querySelectorAll(".admin-detail-tab").forEach((item) => {
+                item.classList.toggle("active", item === tab);
+            });
+
+            detailPanel.querySelectorAll(".admin-detail-tab-panel").forEach((panel) => {
+                panel.classList.toggle("active", panel.dataset.detailPanel === tabName);
+            });
+        });
+    });
+});
+
 // html 호출 이후에 키워드 하이라이트 강조
 document.addEventListener("DOMContentLoaded", () => {
     highlightAdminKeyword();
@@ -227,12 +435,13 @@ document.addEventListener("keydown", (event) => {
         return;
     }
 
-    if (closeSelectedDetailPanel()) {
+    if (closeAdminAdvancedFilters()) {
         event.preventDefault();
         return;
     }
 
-    if (closeAdminAdvancedFilters()) {
+    if (closeSelectedDetailPanel()) {
         event.preventDefault();
     }
+
 });

@@ -41,7 +41,7 @@
 
         <a href="/seller_qna_list.do" class="${param.activeMenu eq 'qnaList' ? 'menu-active':''}">
             <i class="bi bi-chat-square-text"></i>
-            <span>상품 문의 답변 관리</span>
+            <span>상품 문의 관리</span>
         </a>
 
         <a href="/seller_statistics.do" class="${param.activeMenu eq 'statistics' ? 'menu-active':''}">

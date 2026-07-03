@@ -74,46 +74,59 @@
 
             </div>   
 
-            <!-- 필터 / 정렬 영역 -->
             <div class="filter-box">
+
+                <form class="product-search-form" action="/seller_product_list.do" method="get">
+                    <input type="hidden" name="status" value="${status}">
+                    <input type="hidden" name="sort" value="${empty sort ? 'new' : sort}">
+
+                    <div class="product-search-wrap">
+                        <i class="bi bi-search"></i>
+                        <input type="text"
+                            name="keyword"
+                            value="${keyword}"
+                            placeholder="상품명 또는 상품번호 검색">
+                        <button type="submit">검색</button>
+                    </div>
+                </form>
 
                 <div class="filter-buttons">
 
-                    <a href="/seller_product_list.do?sort=${sort}" class="${empty status ? 'active' : ''}">
+                    <a href="/seller_product_list.do?sort=${sort}&keyword=${keyword}" class="${empty status ? 'active' : ''}">
                         전체
                     </a>
 
-                    <a href="/seller_product_list.do?status=APPROVED&sort=${sort}" class="${status eq 'APPROVED' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=APPROVED&sort=${sort}&keyword=${keyword}" class="${status eq 'APPROVED' ? 'active' : ''}">
                         판매중
                     </a>
 
-                    <a href="/seller_product_list.do?status=HIDDEN&sort=${sort}" class="${status eq 'HIDDEN' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=HIDDEN&sort=${sort}&keyword=${keyword}" class="${status eq 'HIDDEN' ? 'active' : ''}">
                         판매중지
                     </a>
 
-                    <a href="/seller_product_list.do?status=PENDING&sort=${sort}" class="${status eq 'PENDING' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=PENDING&sort=${sort}&keyword=${keyword}" class="${status eq 'PENDING' ? 'active' : ''}">
                         승인대기
                     </a>
 
-                    <a href="/seller_product_list.do?status=REJECTED&sort=${sort}" class="${status eq 'REJECTED' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=REJECTED&sort=${sort}&keyword=${keyword}" class="${status eq 'REJECTED' ? 'active' : ''}">
                         승인거절
                     </a>
 
                     <span class="filter-divider"></span>
 
-                    <a href="/seller_product_list.do?status=${status}&sort=new" class="${sort eq 'new' or empty sort ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=${status}&sort=new&keyword=${keyword}" class="${sort eq 'new' or empty sort ? 'active' : ''}">
                         최신순
                     </a>
-                    
-                    <a href="/seller_product_list.do?status=${status}&sort=lowPrice" class="${sort eq 'lowPrice' ? 'active' : ''}">
+
+                    <a href="/seller_product_list.do?status=${status}&sort=lowPrice&keyword=${keyword}" class="${sort eq 'lowPrice' ? 'active' : ''}">
                         낮은가격순
                     </a>
 
-                    <a href="/seller_product_list.do?status=${status}&sort=highPrice" class="${sort eq 'highPrice' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=${status}&sort=highPrice&keyword=${keyword}" class="${sort eq 'highPrice' ? 'active' : ''}">
                         높은가격순
                     </a>
 
-                    <a href="/seller_product_list.do?status=${status}&sort=lowStock" class="${sort eq 'lowStock' ? 'active' : ''}">
+                    <a href="/seller_product_list.do?status=${status}&sort=lowStock&keyword=${keyword}" class="${sort eq 'lowStock' ? 'active' : ''}">
                         재고적은순
                     </a>
 
@@ -133,7 +146,6 @@
                 <c:otherwise>
                     <form id="productManageForm" method="post">
 
-                    <!-- 테이블형: 이미지 없는 버전 / 이미지 있는 버전 둘 다 이 테이블 사용 -->
                     <table class="product-manage-table">
 
                         <colgroup>
@@ -447,6 +459,46 @@
 
                     </div>
 
+                    <c:if test="${pagination.totalPage > 1}">
+                        <div class="seller-page-menu">
+
+                            <c:choose>
+                                <c:when test="${pagination.hasPrev}">
+                                    <a href="/seller_product_list.do?page=${pagination.prevPage}&size=${pagination.size}&status=${status}&sort=${sort}&keyword=${keyword}">
+                                        ◀
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="page-disabled">◀</span>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+                                <c:choose>
+                                    <c:when test="${pagination.page == i}">
+                                        <span class="page-current">${i}</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="/seller_product_list.do?page=${i}&size=${pagination.size}&status=${status}&sort=${sort}&keyword=${keyword}">
+                                            ${i}
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+
+                            <c:choose>
+                                <c:when test="${pagination.hasNext}">
+                                    <a href="/seller_product_list.do?page=${pagination.nextPage}&size=${pagination.size}&status=${status}&sort=${sort}&keyword=${keyword}">
+                                        ▶
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="page-disabled">▶</span>
+                                </c:otherwise>
+                            </c:choose>
+
+                        </div>
+                    </c:if>
                 </form>
                 </c:otherwise>
             </c:choose>

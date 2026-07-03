@@ -13,6 +13,8 @@ public interface SellerDAO {
     SellerVO getSellerById(int seller_id);
     List<SellerVO> getSellerListByKeyword(@Param("status") String status,
                                           @Param("keyword") String keyword,
+                                          @Param("user_id") Integer user_id,
+                                          @Param("seller_id") Integer seller_id,
                                           @Param("size") Integer size,
                                           @Param("offset") int offset,
                                           @Param("startDate") String startDate,
@@ -20,8 +22,13 @@ public interface SellerDAO {
                                           @Param("sort") String sort);
     int getSellerListCountByKeyword(@Param("status") String status,
                                     @Param("keyword") String keyword,
+                                    @Param("user_id") Integer user_id,
+                                    @Param("seller_id") Integer seller_id,
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
+
+    int updateAdminSellerStatus(@Param("seller_id") int seller_id,
+                                @Param("status") String status);
     
     int insertSeller(SellerVO svo);
     
@@ -47,5 +54,7 @@ public interface SellerDAO {
     int sellerModify(SellerVO vo);
 
     SellerVO selectSellerByUserId(int user_id);
+
+    int getSellerOrderCount(Map<String, Object> map);
 
 }

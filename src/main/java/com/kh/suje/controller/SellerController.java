@@ -17,6 +17,7 @@ import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.vo.QnaVO;
 import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.vo.ImageVO;
+import com.kh.suje.vo.PaginationVO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.dao.CategoryDAO;
@@ -47,17 +48,17 @@ public class SellerController {
     private final QnaDAO qnadao;
 
     // 로그인한 회원 기준으로 seller_id 찾기
-    private Integer getLoginSellerId() {
+    private Integer getLoginSellerId(){
 
         UserVO user = (UserVO) session.getAttribute("user");
 
-        if (user == null) {
+        if (user == null){
             return null;
         }
 
         SellerVO seller = sellerdao.selectSeller(user.getUser_id());
 
-        if (seller == null) {
+        if (seller == null){
             return null;
         }
 
@@ -65,7 +66,7 @@ public class SellerController {
     }
 
     @GetMapping("/seller_dashboard.do")
-    public String sellerDashboard(Model model) {
+    public String sellerDashboard(Model model){
         
         Integer seller_id=getLoginSellerId();
 
@@ -78,11 +79,11 @@ public class SellerController {
         int unansweredQnaCount = sellerdao.getUnansweredQnaCount(seller_id);
         int newReviewCount = sellerdao.getNewReviewCount(seller_id);
 
-        if (orderStatusCounts != null) {
+        if (orderStatusCounts != null){
             model.addAllAttributes(orderStatusCounts); 
         }
 
-        if (productStatusCounts != null) {
+        if (productStatusCounts != null){
             model.addAllAttributes(productStatusCounts); 
         }
 
@@ -93,27 +94,36 @@ public class SellerController {
     }
 
     @GetMapping("/seller_order_list.do")
-    public String sellerOrderList(Model model, String status) {
+    public String seller_order_list(Model model,String status,Integer size,Integer page){
 
         Integer seller_id = getLoginSellerId();
 
-        if (seller_id == null) {
+        if (seller_id == null){
             return "redirect:/login.do";
         }
+
+        Map<String, Object> countMap = new HashMap<>();
+        countMap.put("seller_id", seller_id);
+        countMap.put("status", status);
+
+        int totalCount = sellerdao.getSellerOrderCount(countMap);
+
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
 
         Map<String, Object> map = new HashMap<>();
         map.put("seller_id", seller_id);
         map.put("status", status);
+        map.put("size", pagination.getSize());
+        map.put("offset", pagination.getOffset());
 
         List<OrderVO> orderList = sellerdao.getSellerOrderList(map);
 
         Map<Integer, List<OrderItemVO>> orderItemMap = new HashMap<>();
 
-        for (OrderVO order : orderList) {
+        for (OrderVO order : orderList){
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("seller_id", seller_id);
             itemMap.put("order_id", order.getOrder_id());
-            itemMap.put("status", status);
 
             List<OrderItemVO> itemList = sellerdao.getSellerOrderItemList(itemMap);
             orderItemMap.put(order.getOrder_id(), itemList);
@@ -122,15 +132,18 @@ public class SellerController {
         model.addAttribute("orderList", orderList);
         model.addAttribute("orderItemMap", orderItemMap);
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
 
         return "/seller/seller_order_list";
     }
     
     @PostMapping("/seller_order_status_update.do")
     public String sellerOrderStatusUpdate(
-            @RequestParam("order_id") int order_id,
+            @RequestParam("order_item_id") int order_item_id,
             @RequestParam("status") String status,
-            @RequestParam(value = "selectedStatus", required = false) String selectedStatus) {
+            @RequestParam(value = "selectedStatus", required = false) String selectedStatus,
+            @RequestParam(value = "page", required = false) Integer page) {
 
         Integer seller_id = getLoginSellerId();
 
@@ -140,47 +153,51 @@ public class SellerController {
 
         Map<String, Object> map = new HashMap<>();
         map.put("seller_id", seller_id);
-        map.put("order_id", order_id);
+        map.put("order_item_id", order_item_id);
         map.put("status", status);
 
-        int result = sellerdao.sellerOrderStatus(map);
+        sellerdao.sellerOrderStatus(map);
 
-        System.out.println("상태변경 결과 = " + result);
-        System.out.println("order_id = " + order_id);
-        System.out.println("status = " + status);
-        System.out.println("seller_id = " + seller_id);
+        String url = "redirect:/seller_order_list.do";
+
+        boolean hasParam = false;
 
         if (selectedStatus != null && !selectedStatus.trim().equals("")) {
-            return "redirect:/seller_order_list.do?status=" + selectedStatus;
+            url += "?status=" + selectedStatus;
+            hasParam = true;
         }
 
-        return "redirect:/seller_order_list.do";
+        if (page != null && page > 0) {
+            url += hasParam ? "&page=" + page : "?page=" + page;
+        }
+
+        return url;
     }
 
     @GetMapping("/seller_review_list.do")
-    public String sellerReviewList(Model model) {
+    public String sellerReviewList(Model model){
 
         Integer seller_id = getLoginSellerId();
 
-        if (seller_id == null) {
+        if (seller_id == null){
             return "redirect:/login.do";
         }
 
         List<ReviewVO> reviewList = reviewdao.sellerReviewList(seller_id);
         List<ReviewVO> productList = reviewdao.sellerReviewProductList(seller_id);
 
-        if (reviewList != null && !reviewList.isEmpty()) {
+        if (reviewList != null && !reviewList.isEmpty()){
             List<Integer> reviewIds = reviewList.stream()
                     .map(ReviewVO::getReview_id)
                     .collect(Collectors.toList());
 
             List<ImageVO> images = imagedao.getImagesByReviewIds(reviewIds);
 
-            if (images != null && !images.isEmpty()) {
+            if (images != null && !images.isEmpty()){
                 Map<Integer, List<ImageVO>> imageMap = images.stream()
                         .collect(Collectors.groupingBy(ImageVO::getTarget_id));
 
-                for (ReviewVO review : reviewList) {
+                for (ReviewVO review : reviewList){
                     review.setImageList(
                             imageMap.getOrDefault(review.getReview_id(), new ArrayList<>())
                     );
@@ -195,11 +212,11 @@ public class SellerController {
     }
 
     @GetMapping("/seller_qna_list.do")
-    public String sellerQnaList(Model model) {
+    public String sellerQnaList(Model model){
 
         Integer seller_id = getLoginSellerId();
 
-        if (seller_id == null) {
+        if (seller_id == null){
             return "redirect:/login.do";
         }
 
@@ -214,20 +231,20 @@ public class SellerController {
 
     // 구매자용 판매자샵
     @GetMapping("/seller_shop_homepage.do")
-    public String sellerShopHomepage(Model model, Integer seller_id, String sort) {
+    public String sellerShopHomepage(Model model, Integer seller_id, String sort){
 
-        if (seller_id == null) {
+        if (seller_id == null){
             return "redirect:/product/main.do";
         }
 
-        if (sort == null || sort.equals("")) {
+        if (sort == null || sort.equals("")){
             sort = "rank";
         }
 
         boolean favorite = false;
         UserVO user = (UserVO) session.getAttribute("user");
 
-        if (user != null) {
+        if (user != null){
             int user_id = user.getUser_id();
 
             Map<String, Integer> map = new HashMap<>();
@@ -249,7 +266,7 @@ public class SellerController {
         
         Number productFavoriteCount = 0;
 
-        if (seller != null && seller.get("product_favorite_count") != null) {
+        if (seller != null && seller.get("product_favorite_count") != null){
             productFavoriteCount = (Number) seller.get("product_favorite_count");
         }
 
@@ -269,19 +286,19 @@ public class SellerController {
         return "/seller/seller_shop_homepage";
     }
 
-    private String compactCount(Number number) {
+    private String compactCount(Number number){
 
-        if (number == null) {
+        if (number == null){
             return "0";
         }
 
         long count = number.longValue();
 
-        if (count < 1000) {
+        if (count < 1000){
             return String.valueOf(count);
         }
 
-        if (count < 10000) {
+        if (count < 10000){
             double value = Math.ceil(count / 100.0) / 10.0;
             return String.format("%.1f천", value);
         }
@@ -299,18 +316,18 @@ public class SellerController {
     @ResponseBody
     public Map<String, Object> sellerReviewReply(
             @RequestParam("review_id") int review_id,
-            @RequestParam("reply_content") String reply_content) {
+            @RequestParam("reply_content") String reply_content){
 
         Map<String, Object> result = new HashMap<>();
 
         Integer seller_id = getLoginSellerId();
 
-        if (seller_id == null) {
+        if (seller_id == null){
             result.put("result", "login");
             return result;
         }
 
-        if (reply_content == null || reply_content.trim().equals("")) {
+        if (reply_content == null || reply_content.trim().equals("")){
             result.put("result", "empty");
             return result;
         }
@@ -322,7 +339,7 @@ public class SellerController {
 
         int updateCount = reviewdao.sellerReviewReply(map);
 
-        if (updateCount > 0) {
+        if (updateCount > 0){
             result.put("result", "success");
         } else {
             result.put("result", "fail");
@@ -335,18 +352,18 @@ public class SellerController {
     @ResponseBody
     public Map<String, Object> sellerQnaAnswer(
             @RequestParam("qna_id") int qna_id,
-            @RequestParam("answer") String answer) {
+            @RequestParam("answer") String answer){
 
         Map<String, Object> result = new HashMap<>();
 
         Integer seller_id = getLoginSellerId();
 
-        if (seller_id == null) {
+        if (seller_id == null){
             result.put("result", "login");
             return result;
         }
 
-        if (answer == null || answer.trim().equals("")) {
+        if (answer == null || answer.trim().equals("")){
             result.put("result", "empty");
             return result;
         }
@@ -358,7 +375,7 @@ public class SellerController {
 
         int updateCount = qnadao.sellerQnaAnswer(map);
 
-        if (updateCount > 0) {
+        if (updateCount > 0){
             result.put("result", "success");
         } else {
             result.put("result", "fail");

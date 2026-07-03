@@ -14,6 +14,11 @@ public interface ProductDAO {
 
     List<ProductVO> getProductListByKeyword(@Param("status") String status,
                                             @Param("keyword") String keyword,
+                                            @Param("seller_id") Integer seller_id,
+                                            @Param("product_id") Integer product_id,
+                                            @Param("category_id") Integer category_id,
+                                            @Param("minPrice") Integer minPrice,
+                                            @Param("maxPrice") Integer maxPrice,
                                             @Param("size") Integer size,
                                             @Param("offset") int offset,
                                             @Param("startDate") String startDate,
@@ -21,12 +26,20 @@ public interface ProductDAO {
                                             @Param("sort") String sort);
     int getProductListCountByKeyword(@Param("status") String status,
                                      @Param("keyword") String keyword,
+                                     @Param("seller_id") Integer seller_id,
+                                     @Param("product_id") Integer product_id,
+                                     @Param("category_id") Integer category_id,
+                                     @Param("minPrice") Integer minPrice,
+                                     @Param("maxPrice") Integer maxPrice,
                                      @Param("startDate") String startDate,
                                      @Param("endDate") String endDate);
 
     int product_cnt();
     
     ProductVO product_one(int product_id);
+
+    int updateAdminProductStatus(@Param("product_id") int product_id,
+                                 @Param("status") String status);
 
     int seller_product_insert(ProductVO vo);
 
@@ -96,4 +109,6 @@ public interface ProductDAO {
 
     // 테스트 용도 최근 본 상품 목록 출력
     List<ProductVO> product_recent(int user_id);
+
+    int seller_product_count(Map<String, Object> map);
 }
