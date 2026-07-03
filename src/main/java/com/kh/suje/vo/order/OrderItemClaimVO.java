@@ -24,6 +24,7 @@ public class OrderItemClaimVO {
 
     private String created_at; // 데이터 생성 일시
     private String updated_at; // 데이터 수정 일시
+    private String detail_reason;
 
     // 화면 출력용 JOIN 데이터
     private String productName; // products.name

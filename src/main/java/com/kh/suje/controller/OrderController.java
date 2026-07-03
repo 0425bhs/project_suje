@@ -13,17 +13,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.suje.dao.AddressDAO;
 import com.kh.suje.dao.CartDAO;
 import com.kh.suje.dao.OptionDAO;
 import com.kh.suje.dao.OrderDAO;
+import com.kh.suje.dao.OrderItemClaimDAO;
 import com.kh.suje.dao.PaymentDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.vo.AddressVO;
 import com.kh.suje.vo.OptionVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.UserVO;
+import com.kh.suje.vo.order.OrderItemClaimVO;
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
 import com.kh.suje.vo.payment.PaymentVO;
@@ -41,6 +44,8 @@ public class OrderController {
     private final CartDAO cartdao;
     private final OptionDAO optiondao;
     private final AddressDAO addressDao;
+    private final OrderItemClaimDAO orderItemClaimDao;
+
 
     private UserVO getLoginUser(HttpSession session) {
         return (UserVO) session.getAttribute("user");
@@ -1011,4 +1016,39 @@ public String orderCartForm(
 
         return "redirect:/myshop/orders";
     }
+
+
+
+    @PostMapping("/insertClaim.do")
+    @ResponseBody
+    public Map<String, Object> exchangeRequest( HttpSession session, OrderItemClaimVO orderitemclaim, Model model ) 
+    {
+        //int order_item_id = orderDAO.getOrder_item_id();
+
+        int res = orderItemClaimDao.insertClaim(orderitemclaim);
+
+        Map<String, Object> map = new HashMap<>();
+
+        if(res == 1){
+            if("EXCHANGE_REQUEST".equals(orderitemclaim.getStatus())){
+                map.put("result", "Success_ExchangeRequest");
+            }else{
+                map.put("result", "Success_ReturnRequest");}
+        }else{
+            if("EXCHANGE_REQUEST".equals(orderitemclaim.getStatus())){
+                map.put("result", "Fail_ExchangeRequest");
+            }else{
+                map.put("result", "Fail_ReturnRequest");
+            }
+        }
+
+        return map;
+    }
+
+
+
+
+
+
+
 }
