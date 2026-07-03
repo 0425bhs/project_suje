@@ -16,7 +16,6 @@ import com.kh.suje.dao.OrderItemClaimDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.dao.ReviewDAO;
-import com.kh.suje.dao.UserDAO;
 import com.kh.suje.vo.AddressVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.QnaVO;
@@ -34,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 public class MyShopController {
 
     private final HttpSession session;
-    private final UserDAO userDao;
     private final AddressDAO addressDao;
     private final OrderDAO orderDAO;
     private final QnaDAO qnaDAO;
