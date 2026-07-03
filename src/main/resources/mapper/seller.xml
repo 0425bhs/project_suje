@@ -369,7 +369,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY oi.order_item_id ASC
     </select>
 
-    <!-- 판매자 주문상품 상태 변경 -->
     <update id="sellerOrderStatus" parameterType="map">
         UPDATE orders o
         SET o.status = #{status},

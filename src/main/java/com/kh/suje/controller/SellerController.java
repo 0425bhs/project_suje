@@ -140,7 +140,7 @@ public class SellerController {
     
     @PostMapping("/seller_order_status_update.do")
     public String sellerOrderStatusUpdate(
-            @RequestParam("order_item_id") int order_item_id,
+            @RequestParam("order_id") int order_id
             @RequestParam("status") String status,
             @RequestParam(value = "selectedStatus", required = false) String selectedStatus,
             @RequestParam(value = "page", required = false) Integer page) {
@@ -153,7 +153,7 @@ public class SellerController {
 
         Map<String, Object> map = new HashMap<>();
         map.put("seller_id", seller_id);
-        map.put("order_item_id", order_item_id);
+        map.put("order_id", order_id);
         map.put("status", status);
 
         sellerdao.sellerOrderStatus(map);
