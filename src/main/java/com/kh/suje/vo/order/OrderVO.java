@@ -38,4 +38,8 @@ public class OrderVO {
     private String receiver_phone;
     private String delivery_address;
 
+    private Integer claim_id;
+    private String claim_status;
+    private String claim_reason;
+    private String claim_requested_at;
 }
