@@ -862,3 +862,354 @@
 }
 
         
+
+
+/* =========================================================
+   교환/환불(CS) 모달
+========================================================= */
+
+/* 모달 열고 닫기 */
+.cs-modal-wrap {
+    display: none !important;
+}
+
+.cs-modal-wrap.open {
+    display: block !important;
+}
+
+/* 모달 배경 어두워지는 부분 */
+.cs-modal-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* 모달 본체 박스 */
+.cs-modal-box {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 501;
+
+    width: 500px;
+    max-width: calc(100% - 40px);
+    max-height: calc(100% - 40px);
+    overflow-y: auto;
+
+    transform: translate(-50%, -50%);
+
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+/* 모달 헤더 */
+.cs-modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    padding: 26px 28px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.cs-modal-head span {
+    display: block;
+    margin-bottom: 6px;
+
+    color: #ff654f;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.cs-modal-head h3 {
+    margin: 0;
+
+    color: #222;
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: -0.7px;
+}
+
+.cs-modal-head p {
+    margin: 8px 0 0;
+
+    color: #777;
+    font-size: 14px;
+}
+
+/* 모달 닫기 버튼 (X) */
+.cs-modal-close {
+    border: none;
+    background: transparent;
+    color: #777;
+
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cs-modal-close:hover {
+    color: #222;
+}
+
+/* 모달 바디 */
+.cs-modal-body {
+    padding: 24px 28px;
+}
+
+.cs-modal-body > h3 {
+    margin: 0 0 14px;
+
+    color: #222;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+/* 교환/환불 라디오 선택 영역 */
+.cs-modal-body td {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cs-modal-body td label {
+    margin-right: 16px;
+
+    color: #333;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.cs-modal-body td input[type="radio"] {
+    cursor: pointer;
+}
+
+/* 주문번호 / 결제금액 표시 행 */
+.cs-info-row,
+.exchange-info-row,
+.return-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cs-info-row span,
+.exchange-info-row span,
+.return-info-row span {
+    color: #777;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.cs-info-row input,
+.exchange-info-row input,
+.return-info-row input {
+    border: none;
+    background: transparent;
+
+    color: #222;
+    font-size: 16px;
+    font-weight: 900;
+    text-align: right;
+
+    outline: none;
+}
+
+/* 사유 select / 상세사유 textarea */
+.exchange-form-row,
+.cs-form-row,
+.return-form-row {
+    margin-top: 20px;
+}
+
+.exchange-form-row label,
+.cs-form-row label,
+.return-form-row label {
+    display: block;
+    margin-bottom: 8px;
+
+    color: #222;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.exchange-form-row select,
+.exchange-form-row textarea,
+.cs-form-row select,
+.cs-form-row textarea,
+.return-form-row select,
+.return-form-row textarea {
+    width: 100%;
+
+    border: 1px solid #ddd;
+    border-radius: 9px;
+    background: #fff;
+
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+}
+
+.exchange-form-row select,
+.cs-form-row select,
+.return-form-row select {
+    height: 44px;
+    padding: 0 12px;
+}
+
+.exchange-form-row textarea,
+.cs-form-row textarea,
+.return-form-row textarea {
+    height: 86px;
+    padding: 12px;
+    resize: none;
+    line-height: 1.6;
+}
+
+.exchange-form-row select:focus,
+.exchange-form-row textarea:focus,
+.cs-form-row select:focus,
+.cs-form-row textarea:focus,
+.return-form-row select:focus,
+.return-form-row textarea:focus {
+    border-color: #ff654f;
+    box-shadow: 0 0 0 3px rgba(255, 101, 79, 0.12);
+}
+
+/* 안내 박스 */
+.exchange-guide-box,
+.return-guide-box {
+    margin-top: 20px;
+    padding: 16px 18px;
+
+    background: #fff8f6;
+    border: 1px solid #ffe0d8;
+    border-radius: 12px;
+}
+
+.exchange-guide-box strong,
+.return-guide-box strong {
+    display: block;
+    margin-bottom: 8px;
+
+    color: #222;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.exchange-guide-box ul,
+.return-guide-box ul {
+    margin: 0;
+    padding-left: 18px;
+
+    color: #666;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.exchange-guide-box b,
+.return-guide-box b {
+    color: #ff654f;
+}
+
+/* 안내사항 동의 체크박스 */
+.exchange-agree,
+.return-agree {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 18px;
+
+    color: #333;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.exchange-agree input,
+.return-agree input {
+    cursor: pointer;
+}
+
+/* 하단 버튼 영역 */
+.cs-modal-actions,
+.return-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid #eee;
+}
+
+.cs-close-btn,
+.exchange-submit-btn,
+.cs-submit-btn {
+    min-width: 124px;
+    height: 44px;
+
+    border: none;
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.cs-close-btn {
+    background: #f1f1f1;
+    color: #333;
+}
+
+.cs-close-btn:hover {
+    background: #e5e5e5;
+}
+
+.exchange-submit-btn,
+.cs-submit-btn {
+    background: #ff654f;
+    color: #fff;
+}
+
+.exchange-submit-btn:hover,
+.cs-submit-btn:hover {
+    background: #e9533f;
+}
+
+/* 반응형 */
+@media (max-width: 720px) {
+    .cs-modal-box {
+        width: calc(100% - 28px);
+    }
+
+    .cs-modal-head,
+    .cs-modal-body {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .cs-modal-actions,
+    .return-modal-actions {
+        flex-direction: column;
+    }
+
+    .cs-close-btn,
+    .exchange-submit-btn,
+    .cs-submit-btn {
+        width: 100%;
+    }
+}

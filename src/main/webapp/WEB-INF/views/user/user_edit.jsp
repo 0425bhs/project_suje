@@ -145,7 +145,7 @@
                         </tr>
                         <tr>
                             <th>사업자 등록번호</th>
-                            <td><input name="business_number" type="number" value="${dto.seller.business_number}"
+                            <td><input name="business_number" value="${dto.seller.business_number}"
                                     placeholder="사업자 등록번호" /></td>
                         </tr>
                         <tr>

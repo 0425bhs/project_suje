@@ -98,6 +98,9 @@ public interface OrderDAO {
     //취소 내역 조회
     List<OrderVO> selectCancelList(int user_id);
 
+
+    //탈퇴전 주문내역 조회('PENDING', 'PAID', 'PREPARING', 'SHIPPING')
+    List<OrderVO> withdrawCheck(int user_id);
     // 사용한 쿠폰 복구
     int restoreCoupon(Map<String, Object> map);
 
