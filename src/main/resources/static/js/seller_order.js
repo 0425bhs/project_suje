@@ -5,7 +5,7 @@ window.addEventListener("load", function (){
 });
 
 /*
-    카드형 / 심플형 전환
+    리스트 형태 전환
 */
 function initSellerOrderViewSwitch(){
     const buttons = document.querySelectorAll(".view-icon-btn");
@@ -17,17 +17,19 @@ function initSellerOrderViewSwitch(){
 
     let savedView = localStorage.getItem("sellerOrderView");
 
-    if (savedView == null || savedView === ""){
-        savedView = "card";
+    if (savedView !== "simple" && savedView !== "card"){
+        savedView = "simple";
     }
 
     changeSellerOrderView(savedView);
 
-    buttons.forEach(function (button){
-        button.addEventListener("click", function (){
-            const view = button.dataset.view;
+    buttons.forEach(function(button){
+        button.addEventListener("click", function(event){
+            event.preventDefault();
 
-            if (view == null || view === ""){
+            const view = button.getAttribute("data-view");
+
+            if (view !== "simple" && view !== "card"){
                 return;
             }
 
@@ -44,12 +46,24 @@ function changeSellerOrderView(view){
     const buttons = document.querySelectorAll(".view-icon-btn");
     const panels = document.querySelectorAll("[data-view-panel]");
 
-    buttons.forEach(function (button){
-        button.classList.toggle("active", button.dataset.view === view);
+    buttons.forEach(function(button){
+        const buttonView = button.getAttribute("data-view");
+
+        if (buttonView === view){
+            button.classList.add("active");
+        } else {
+            button.classList.remove("active");
+        }
     });
 
-    panels.forEach(function (panel){
-        panel.classList.toggle("active", panel.dataset.viewPanel === view);
+    panels.forEach(function(panel){
+        const panelView = panel.getAttribute("data-view-panel");
+
+        if (panelView === view){
+            panel.classList.add("active");
+        } else {
+            panel.classList.remove("active");
+        }
     });
 }
 
