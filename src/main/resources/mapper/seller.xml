@@ -476,5 +476,96 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM sellers
         WHERE user_id = #{value}
     </select>
+
+    <!-- 판매자 대시보드 공지사항 목록 -->
+    <select id="selectSellerNoticeList" resultType="map">
+        SELECT
+            notice_id,
+            title,
+            DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at
+        FROM notices
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 판매자 매출 요약 -->
+    <select id="getSellerSalesSummary"
+            parameterType="int"
+            resultType="map">
+        SELECT
+            COALESCE(SUM(
+                CASE
+                    WHEN DATE(o.created_at) = CURDATE()
+                    THEN oi.price * oi.quantity
+                    ELSE 0
+                END
+            ), 0) AS todaySales,
+
+            COALESCE(SUM(
+                CASE
+                    WHEN DATE_FORMAT(o.created_at, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+                    THEN oi.price * oi.quantity
+                    ELSE 0
+                END
+            ), 0) AS monthSales,
+
+            COALESCE(SUM(oi.price * oi.quantity), 0) AS totalSales
+        FROM order_items oi
+        JOIN orders o ON oi.order_id = o.order_id
+        JOIN products p ON oi.product_id = p.product_id
+        WHERE p.seller_id = #{seller_id}
+        AND oi.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CONFIRMED')
+    </select>
+
+    <!-- 판매자 최근 7일 매출 -->
+    <select id="getSellerDailySales"
+            parameterType="int"
+            resultType="map">
+        SELECT
+            DATE(o.created_at) AS salesDate,
+            COALESCE(SUM(oi.price * oi.quantity), 0) AS salesAmount
+        FROM order_items oi
+        JOIN orders o ON oi.order_id = o.order_id
+        JOIN products p ON oi.product_id = p.product_id
+        WHERE p.seller_id = #{seller_id}
+        AND oi.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CONFIRMED')
+        AND o.created_at >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+        GROUP BY DATE(o.created_at)
+        ORDER BY DATE(o.created_at)
+    </select>
+
+    <!-- 판매자 상품별 매출 목록 -->
+    <select id="getSellerProductSalesTop"
+            parameterType="int"
+            resultType="map">
+        SELECT
+            p.product_id,
+            p.name,
+            COALESCE(SUM(oi.quantity), 0) AS totalQuantity,
+            COALESCE(SUM(oi.price * oi.quantity), 0) AS totalSales
+        FROM order_items oi
+        JOIN orders o ON oi.order_id = o.order_id
+        JOIN products p ON oi.product_id = p.product_id
+        WHERE p.seller_id = #{seller_id}
+        AND oi.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CONFIRMED')
+        GROUP BY p.product_id, p.name
+        ORDER BY totalSales DESC
+    </select>
+    
+    <!-- 판매자 카테고리별 매출 -->
+    <select id="getSellerCategorySales"
+            parameterType="int"
+            resultType="map">
+        SELECT
+            c.name AS categoryName,
+            COALESCE(SUM(oi.price * oi.quantity), 0) AS salesAmount
+        FROM order_items oi
+        JOIN orders o ON oi.order_id = o.order_id
+        JOIN products p ON oi.product_id = p.product_id
+        JOIN categories c ON p.category_id = c.category_id
+        WHERE p.seller_id = #{seller_id}
+        AND oi.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CONFIRMED')
+        GROUP BY c.category_id, c.name
+        ORDER BY salesAmount DESC
+    </select>
     
 </mapper>
