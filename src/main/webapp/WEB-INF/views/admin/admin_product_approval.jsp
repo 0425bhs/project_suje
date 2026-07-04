@@ -503,6 +503,8 @@
                                                             </select>
                                                         </label>
                                                     </div>
+                                                    <textarea class="admin-detail-memo admin-detail-status-reason"
+                                                        rows="3" placeholder="상태 변경 사유를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">변경 취소</button>
                                                         <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>

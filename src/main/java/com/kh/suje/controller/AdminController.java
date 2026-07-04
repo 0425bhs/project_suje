@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kh.suje.dao.AdminActionLogDAO;
 import com.kh.suje.dao.AdminMemoDAO;
 import com.kh.suje.dao.CategoryDAO;
 import com.kh.suje.dao.InquiryDAO;
@@ -21,6 +22,7 @@ import com.kh.suje.dao.ReportDAO;
 import com.kh.suje.dao.ReviewDAO;
 import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.dao.UserDAO;
+import com.kh.suje.vo.AdminActionLogVO;
 import com.kh.suje.vo.AdminMemoVO;
 import com.kh.suje.vo.CategoryVO;
 import com.kh.suje.vo.InquiryVO;
@@ -33,6 +35,7 @@ import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.UserVO;
 import com.kh.suje.vo.order.OrderVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -48,12 +51,103 @@ public class AdminController {
     private final NoticeDAO noticeDao;
     private final OrderDAO orderDao;
     private final AdminMemoDAO adminMemoDao;
+    private final AdminActionLogDAO adminActionLogDao;
     private final OptionDAO optionDao;
+    private final HttpSession session;
+
+    private Integer getLoginAdminId() {
+        UserVO admin = (UserVO) session.getAttribute("user");
+        return admin == null ? null : admin.getUser_id();
+    }
+
+    private void addActionLog(String targetType, int targetId, String actionType,
+                              String beforeStatus, String afterStatus, String memo) {
+        AdminActionLogVO log = new AdminActionLogVO();
+        log.setAdmin_id(getLoginAdminId());
+        log.setTarget_type(targetType);
+        log.setTarget_id(targetId);
+        log.setAction_type(actionType);
+        log.setBefore_status(beforeStatus);
+        log.setAfter_status(afterStatus);
+        log.setMemo(memo);
+
+        adminActionLogDao.addAdminActionLog(log);
+    }
+
+    private String getStringValue(Map<String, Object> map, String key) {
+        Object value = map == null ? null : map.get(key);
+        return value == null ? null : String.valueOf(value);
+    }
+
+    private String cleanMemo(String memo, String defaultMemo) {
+        if (memo == null || memo.trim().isEmpty()) {
+            return defaultMemo;
+        }
+
+        return memo.trim();
+    }
 
     @GetMapping(value = {"/admin", "/admin/dashboard"})
-    public String adminDashboard() {
+    public String adminDashboard(Model model) {
+        model.addAttribute("pendingSellerCount",
+                           sellerDao.getSellerListCountByKeyword("pending", null, null, null, null, null));
+        model.addAttribute("pendingProductCount",
+                           productDao.getProductListCountByKeyword("pending", null, null, null, null,
+                                                                   null, null, null, null));
+        model.addAttribute("pendingReportCount",
+                           reportDao.getReportListCountByKeyword("pending", null, null, "all", null, null, null));
+        model.addAttribute("waitingInquiryCount",
+                           inquiryDao.getInquryListCountByKeyword("waiting", null, null, "all", null, null));
+        model.addAttribute("recentActionLogList", adminActionLogDao.getRecentAdminActionLogList(5));
 
         return "/admin/admin_dashboard";
+    }
+
+    @GetMapping("/admin/action-logs")
+    public String actionLogs(Model model, Integer size, Integer page,
+                             String targetType, String actionType, String status,
+                             Integer targetId, String keyword,
+                             String startDate, String endDate, String sort) {
+        targetType = cleanFilter(targetType, "all");
+        actionType = cleanFilter(actionType, "all");
+        status = cleanFilter(status, "all");
+        sort = cleanFilter(sort, "latest");
+        keyword = cleanFilter(keyword, "");
+        startDate = cleanFilter(startDate, "");
+        endDate = cleanFilter(endDate, "");
+
+        String queryTargetType = "all".equals(targetType) ? "all" : targetType.toUpperCase();
+        String queryActionType = "all".equals(actionType) ? "all" : actionType.toUpperCase();
+        String queryStatus = "all".equals(status) ? "all" : status.toUpperCase();
+
+        int totalCount = adminActionLogDao.getAdminActionLogCount(queryTargetType, queryActionType, queryStatus,
+                                                                  targetId, keyword, startDate, endDate);
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+
+        model.addAttribute("actionLogList",
+                           adminActionLogDao.getAdminActionLogPageList(pagination.getSize(), pagination.getOffset(),
+                                                                       queryTargetType, queryActionType, queryStatus,
+                                                                       targetId, keyword, startDate, endDate, sort));
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
+        model.addAttribute("targetType", queryTargetType);
+        model.addAttribute("actionType", queryActionType);
+        model.addAttribute("status", queryStatus);
+        model.addAttribute("targetId", targetId);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("sort", sort);
+
+        return "/admin/admin_action_log_list";
+    }
+
+    private String cleanFilter(String value, String defaultValue) {
+        if (value == null || value.trim().isEmpty()) {
+            return defaultValue;
+        }
+
+        return value.trim();
     }
 
     @GetMapping("/admin/members")
@@ -143,7 +237,7 @@ public class AdminController {
 
     @PostMapping("/admin/members/status")
     @ResponseBody
-    public Map<String, Object> updateMemberStatus(int user_id, String status) {
+    public Map<String, Object> updateMemberStatus(int user_id, String status, String memo) {
         Map<String, Object> map = new HashMap<>();
 
         if (!"active".equals(status) && !"suspended".equals(status) && !"withdrawn".equals(status)) {
@@ -152,7 +246,11 @@ public class AdminController {
             return map;
         }
 
+        UserVO user = userDao.selectUser(user_id);
+        String beforeStatus = user == null ? null : user.getStatus();
+
         userDao.updateUserStatus(user_id, status);
+        addActionLog("MEMBER", user_id, "STATUS_CHANGE", beforeStatus, status, cleanMemo(memo, "회원 상태 변경"));
 
         map.put("success", true);
         map.put("status", status);
@@ -221,7 +319,7 @@ public class AdminController {
 
     @PostMapping("/admin/sellers/status")
     @ResponseBody
-    public Map<String, Object> updateSellerStatus(int seller_id, String status) {
+    public Map<String, Object> updateSellerStatus(int seller_id, String status, String memo) {
         Map<String, Object> map = new HashMap<>();
 
         if (!"PENDING".equals(status) && !"APPROVED".equals(status) && !"REJECTED".equals(status)) {
@@ -230,7 +328,11 @@ public class AdminController {
             return map;
         }
 
+        SellerVO seller = sellerDao.getSellerById(seller_id);
+        String beforeStatus = seller == null ? null : seller.getStatus();
+
         sellerDao.updateAdminSellerStatus(seller_id, status);
+        addActionLog("SELLER", seller_id, "STATUS_CHANGE", beforeStatus, status, cleanMemo(memo, "판매자 상태 변경"));
 
         map.put("success", true);
         map.put("status", status);
@@ -315,7 +417,7 @@ public class AdminController {
 
     @PostMapping("/admin/products/status")
     @ResponseBody
-    public Map<String, Object> updateProductStatus(int product_id, String status) {
+    public Map<String, Object> updateProductStatus(int product_id, String status, String memo) {
         Map<String, Object> map = new HashMap<>();
 
         if (!"PENDING".equals(status) && !"APPROVED".equals(status) &&
@@ -325,7 +427,11 @@ public class AdminController {
             return map;
         }
 
+        ProductVO product = productDao.product_one(product_id);
+        String beforeStatus = product == null ? null : product.getStatus();
+
         productDao.updateAdminProductStatus(product_id, status);
+        addActionLog("PRODUCT", product_id, "STATUS_CHANGE", beforeStatus, status, cleanMemo(memo, "상품 상태 변경"));
 
         map.put("success", true);
         map.put("status", status);
@@ -471,7 +577,7 @@ public class AdminController {
 
     @PostMapping("/admin/orders/status")
     @ResponseBody
-    public Map<String, Object> updateOrderStatus(int order_id, String status) {
+    public Map<String, Object> updateOrderStatus(int order_id, String status, String memo) {
         Map<String, Object> map = new HashMap<>();
 
         if (!"PENDING".equals(status) && !"PAID".equals(status) &&
@@ -482,6 +588,9 @@ public class AdminController {
             return map;
         }
 
+        Map<String, Object> beforeOrder = orderDao.getAdminOrderById(order_id);
+        String beforeStatus = getStringValue(beforeOrder, "status");
+
         OrderVO order = new OrderVO();
         order.setOrder_id(order_id);
         order.setStatus(status);
@@ -491,6 +600,7 @@ public class AdminController {
         itemStatusMap.put("order_id", order_id);
         itemStatusMap.put("status", status);
         orderDao.updateOrderItemsStatusByOrderId(itemStatusMap);
+        addActionLog("ORDER", order_id, "STATUS_CHANGE", beforeStatus, status, cleanMemo(memo, "주문 상태 변경"));
 
         map.put("success", true);
         map.put("status", status);
@@ -563,7 +673,7 @@ public class AdminController {
 
     @PostMapping("/admin/inquiries/status")
     @ResponseBody
-    public Map<String, Object> updateInquiryStatus(int inquiry_id, String status) {
+    public Map<String, Object> updateInquiryStatus(int inquiry_id, String status, String memo) {
         Map<String, Object> map = new HashMap<>();
 
         if (!"WAITING".equals(status) && !"ANSWERED".equals(status)) {
@@ -572,7 +682,11 @@ public class AdminController {
             return map;
         }
 
+        InquiryVO inquiry = inquiryDao.getInquiryById(inquiry_id);
+        String beforeStatus = inquiry == null ? null : inquiry.getStatus();
+
         inquiryDao.updateInquiryStatus(inquiry_id, status);
+        addActionLog("INQUIRY", inquiry_id, "STATUS_CHANGE", beforeStatus, status, cleanMemo(memo, "문의 상태 변경"));
 
         map.put("success", true);
         map.put("status", status);
@@ -591,8 +705,12 @@ public class AdminController {
             return map;
         }
 
+        InquiryVO beforeInquiry = inquiryDao.getInquiryById(inquiry_id);
+        String beforeStatus = beforeInquiry == null ? null : beforeInquiry.getStatus();
+
         inquiryDao.updateInquiryAnswer(inquiry_id, answer.trim());
         InquiryVO inquiry = inquiryDao.getInquiryById(inquiry_id);
+        addActionLog("INQUIRY", inquiry_id, "ANSWER", beforeStatus, inquiry.getStatus(), "문의 답변 저장");
 
         map.put("success", true);
         map.put("inquiry", inquiry);
@@ -666,7 +784,7 @@ public class AdminController {
 
     @PostMapping("/admin/reports/status")
     @ResponseBody
-    public Map<String, Object> updateReportStatus(int report_id, String status) {
+    public Map<String, Object> updateReportStatus(int report_id, String status, String memo) {
         Map<String, Object> map = new HashMap<>();
 
         if (!"PENDING".equals(status) && !"PROCESSED".equals(status) && !"REJECTED".equals(status)) {
@@ -675,7 +793,11 @@ public class AdminController {
             return map;
         }
 
+        ReportVO report = reportDao.getReportById(report_id);
+        String beforeStatus = report == null ? null : report.getStatus();
+
         reportDao.updateReportStatus(report_id, status);
+        addActionLog("REPORT", report_id, "STATUS_CHANGE", beforeStatus, status, cleanMemo(memo, "신고 상태 변경"));
 
         map.put("success", true);
         map.put("status", status);

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.AdminActionLogDAO">
+
+    <insert id="addAdminActionLog" parameterType="actionLog">
+        INSERT INTO admin_action_logs (
+            admin_id, target_type, target_id, action_type,
+            before_status, after_status, memo
+        )
+        VALUES (
+            #{admin_id}, #{target_type}, #{target_id}, #{action_type},
+            #{before_status}, #{after_status}, #{memo}
+        )
+    </insert>
+
+    <select id="getRecentAdminActionLogList" resultType="actionLog">
+        SELECT l.*,
+               u.name AS admin_name
+        FROM admin_action_logs l
+        LEFT JOIN users u ON u.user_id = l.admin_id
+        ORDER BY l.log_id DESC
+        LIMIT #{size}
+    </select>
+
+    <select id="getAdminActionLogPageList" resultType="actionLog">
+        SELECT l.*,
+               u.name AS admin_name
+        FROM admin_action_logs l
+        LEFT JOIN users u ON u.user_id = l.admin_id
+        <include refid="adminActionLogFilterWhere" />
+        <choose>
+            <when test="sort == 'oldest'">
+                ORDER BY l.log_id ASC
+            </when>
+            <when test="sort == 'target'">
+                ORDER BY l.target_type ASC, l.target_id ASC, l.log_id DESC
+            </when>
+            <when test="sort == 'admin'">
+                ORDER BY u.name ASC, l.log_id DESC
+            </when>
+            <otherwise>
+                ORDER BY l.log_id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getAdminActionLogCount" resultType="int">
+        SELECT COUNT(*)
+        FROM admin_action_logs l
+        LEFT JOIN users u ON u.user_id = l.admin_id
+        <include refid="adminActionLogFilterWhere" />
+    </select>
+
+    <sql id="adminActionLogFilterWhere">
+        <where>
+            <if test="targetType != null and targetType != '' and targetType != 'all'">
+                AND l.target_type = #{targetType}
+            </if>
+            <if test="actionType != null and actionType != '' and actionType != 'all'">
+                AND l.action_type = #{actionType}
+            </if>
+            <if test="status != null and status != '' and status != 'all'">
+                AND (
+                    UPPER(l.before_status) = UPPER(#{status})
+                    OR UPPER(l.after_status) = UPPER(#{status})
+                )
+            </if>
+            <if test="targetId != null">
+                AND l.target_id = #{targetId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    CAST(l.log_id AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+                    OR CAST(l.target_id AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+                    OR u.name LIKE CONCAT('%', #{keyword}, '%')
+                    OR l.target_type LIKE CONCAT('%', #{keyword}, '%')
+                    OR l.action_type LIKE CONCAT('%', #{keyword}, '%')
+                    OR l.before_status LIKE CONCAT('%', #{keyword}, '%')
+                    OR l.after_status LIKE CONCAT('%', #{keyword}, '%')
+                    OR l.memo LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND l.created_at <![CDATA[>=]]> CONCAT(#{startDate}, ' 00:00:00')
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND l.created_at <![CDATA[<=]]> CONCAT(#{endDate}, ' 23:59:59')
+            </if>
+        </where>
+    </sql>
+
+    <select id="getAdminActionLogList" resultType="actionLog">
+        SELECT l.*,
+               u.name AS admin_name
+        FROM admin_action_logs l
+        LEFT JOIN users u ON u.user_id = l.admin_id
+        WHERE l.target_type = #{target_type}
+        AND l.target_id = #{target_id}
+        ORDER BY l.log_id DESC
+    </select>
+
+</mapper>

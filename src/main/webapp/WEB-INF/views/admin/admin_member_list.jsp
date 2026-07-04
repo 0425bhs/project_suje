@@ -22,6 +22,7 @@
                     const statusControl = document.getElementById("statusControl");
                     const statusChangeButton = document.getElementById("statusChangeButton");
                     const statusCancelButton = document.getElementById("statusCancelButton");
+                    const statusReason = document.getElementById("statusReason");
 
                     const memoContent = document.getElementById("adminMemoContent");
                     const memoSaveButton = document.getElementById("adminMemoSaveButton");
@@ -237,6 +238,7 @@
                                 },
                                 body: "user_id=" + encodeURIComponent(selectedMemberId)
                                     + "&status=" + encodeURIComponent(statusControl.value)
+                                    + "&memo=" + encodeURIComponent(statusReason ? statusReason.value : "")
                             })
                             .then(res => res.json())
                             .then(data => {
@@ -246,6 +248,10 @@
                                 }
 
                                 renderMemberStatus(data.status);
+
+                                if (statusReason) {
+                                    statusReason.value = "";
+                                }
                             });
                         });
                     }
@@ -259,6 +265,10 @@
 
                             if (statusChangeButton) {
                                 statusChangeButton.disabled = true;
+                            }
+
+                            if (statusReason) {
+                                statusReason.value = "";
                             }
                         });
                     }
@@ -631,6 +641,8 @@
                                                             </select>
                                                         </label>
                                                     </div>
+                                                    <textarea id="statusReason" class="admin-detail-memo admin-detail-status-reason"
+                                                        rows="3" placeholder="상태 변경 사유를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light" id="statusCancelButton">변경 취소</button>
                                                         <button type="button" class="admin-btn" id="statusChangeButton">상태 변경</button>

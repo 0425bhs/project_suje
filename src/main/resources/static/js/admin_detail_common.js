@@ -81,7 +81,8 @@ function initAdminDetailManage(options) {
     const statusControl = document.querySelector(".admin-detail-status-control");
     const statusChangeButton = document.querySelector(".admin-detail-status-change");
     const statusCancelButton = document.querySelector(".admin-detail-status-section .admin-btn.light");
-    const memoContent = document.querySelector(".admin-detail-memo:not([data-admin-memo-ignore='true'])");
+    const statusReason = document.querySelector(".admin-detail-status-reason");
+    const memoContent = document.querySelector(".admin-detail-memo:not([data-admin-memo-ignore='true']):not(.admin-detail-status-reason)");
     const memoSaveButton = memoContent
         ? memoContent.closest(".admin-detail-manage-section").querySelector(".admin-detail-section-actions .admin-btn")
         : null;
@@ -146,6 +147,7 @@ function initAdminDetailManage(options) {
                 },
                 body: encodeURIComponent(config.idParam) + "=" + encodeURIComponent(selectedId)
                     + "&status=" + encodeURIComponent(statusControl.value)
+                    + "&memo=" + encodeURIComponent(statusReason ? statusReason.value : "")
             })
             .then(res => res.json())
             .then(data => {
@@ -155,6 +157,10 @@ function initAdminDetailManage(options) {
                 }
 
                 renderStatus(data.status || statusControl.value);
+
+                if (statusReason) {
+                    statusReason.value = "";
+                }
             });
         });
     }
@@ -165,6 +171,10 @@ function initAdminDetailManage(options) {
 
             if (statusChangeButton) {
                 statusChangeButton.disabled = true;
+            }
+
+            if (statusReason) {
+                statusReason.value = "";
             }
         });
     }
@@ -207,6 +217,10 @@ function initAdminDetailManage(options) {
 
             if (memoContent && config.targetType) {
                 loadAdminDetailMemo(config.targetType, id, memoContent);
+            }
+
+            if (statusReason) {
+                statusReason.value = "";
             }
         }
     };

@@ -372,6 +372,7 @@
 }
 
 .admin-detail-grid {
+    margin: 0;
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
@@ -453,6 +454,10 @@
 
 .admin-detail-control .admin-filter-control {
     width: 100%;
+}
+
+.admin-detail-status-control {
+    margin-bottom: 12px;
 }
 
 .admin-detail-section-actions {
