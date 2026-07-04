@@ -5,238 +5,246 @@
 <!DOCTYPE html>
 <html lang="ko">
 
-    <head>
-        <meta charset="UTF-8">
-        <title>HANDMADE - 할인</title>
+<head>
+    <meta charset="UTF-8">
+    <title>HANDMADE - 할인</title>
 
-        <link rel="stylesheet" href="/css/product/product_main.css">
-        <link rel="stylesheet" href="/css/product/product_card.css">
-        <link rel="stylesheet" href="/css/product/product_sale_list.css?v=15">
+    <link rel="stylesheet" href="/css/product/product_main.css">
+    <link rel="stylesheet" href="/css/product/product_card.css">
+    <link rel="stylesheet" href="/css/product/product_sale_list.css?v=16">
 
-        <script src="/js/product_main.js" defer></script>
-        <script src="/js/product_sale_list.js" defer></script>
-    </head>
+    <script src="/js/product_main.js" defer></script>
+    <script src="/js/product_sale_list.js" defer></script>
+</head>
 
-    <body>
+<body>
 
-    <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-        <jsp:param name="activeMenu" value="sale" />
-    </jsp:include>
+<jsp:include page="/WEB-INF/views/product/product_header.jsp">
+    <jsp:param name="activeMenu" value="sale" />
+</jsp:include>
 
-    <c:set var="sortValue" value="${empty currentSort ? 'popular' : currentSort}" />
-    <c:set var="saleTypeValue" value="${empty currentSaleType ? 'all' : currentSaleType}" />
-    <c:set var="totalSaleCount" value="${saleCount == null ? 0 : saleCount}" />
+<c:set var="sortValue" value="${empty currentSort ? 'popular' : currentSort}" />
+<c:set var="saleTypeValue" value="${empty currentSaleType ? 'all' : currentSaleType}" />
+<c:set var="totalSaleCount" value="${saleCount == null ? 0 : saleCount}" />
 
-    <c:set var="showSalePeriod" value="true" />
+<div class="sale-page">
 
-    <div class="sale-page">
+    <section class="sale-hero">
+        <div class="sale-hero-inner">
 
-        <section class="sale-hero">
-            <div class="sale-hero-inner">
+            <div class="sale-hero-title-box">
+                <span class="sale-label">TODAY ONLY</span>
+                <h1>오늘 하루만 <em>특별 할인</em></h1>
+                <p>오늘 종료되는 할인 작품을 놓치지 마세요.</p>
+            </div>
 
-                <h1>오늘 하루만 특별 할인</h1>
-
-                <div class="sale-countdown">
+            <div class="sale-countdown">
+                <div>
                     <strong id="saleHour">00</strong>
-                    <span>:</span>
+                    <small>시간</small>
+                </div>
+
+                <span>:</span>
+
+                <div>
                     <strong id="saleMinute">00</strong>
-                    <span>:</span>
+                    <small>분</small>
+                </div>
+
+                <span>:</span>
+
+                <div>
                     <strong id="saleSecond">00</strong>
+                    <small>초</small>
                 </div>
-
-                <c:choose>
-                    <c:when test="${empty saleFeatureList}">
-                        <div class="sale-empty">
-                            오늘 하루만 진행되는 할인 상품이 없습니다.
-                        </div>
-                    </c:when>
-
-                    <c:otherwise>
-                        <div class="sale-feature-wrap">
-
-                            <button type="button" class="sale-slide-btn sale-slide-prev" id="salePrevBtn">
-                                ‹
-                            </button>
-
-                            <button type="button" class="sale-slide-btn sale-slide-next" id="saleNextBtn">
-                                ›
-                            </button>
-
-                            <div class="sale-feature-viewport">
-                                <div class="sale-feature-track common-product-wrap" id="saleFeatureTrack">
-                                    <c:forEach var="vo" items="${saleFeatureList}">
-                                        <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
-                                    </c:forEach>
-                                </div>
-                            </div>
-
-                            <div class="sale-feature-dots" id="saleFeatureDots"></div>
-
-                            <a href="#saleList" class="sale-more-btn">
-                                할인작품 더보기 〉
-                            </a>
-
-                        </div>
-                    </c:otherwise>
-                </c:choose>
-
             </div>
-        </section>
-
-
-        <section class="sale-type-section">
-            <div class="sale-type-tabs">
-
-                <a class="${saleTypeValue eq 'all' ? 'active' : ''}"
-                   href="/product_sale.do?saleType=all&amp;sort=${sortValue}">
-                    전체 할인
-                </a>
-
-                <a class="${saleTypeValue eq 'period' ? 'active' : ''}"
-                   href="/product_sale.do?saleType=period&amp;sort=${sortValue}">
-                    기간 할인
-                </a>
-
-                <a class="${saleTypeValue eq 'always' ? 'active' : ''}"
-                   href="/product_sale.do?saleType=always&amp;sort=${sortValue}">
-                    상시 할인
-                </a>
-
-            </div>
-        </section>
-
-
-        <section class="sale-list-section" id="saleList">
-
-            <div class="sale-sort-row">
-
-                <div class="sale-sort-left">
-
-                    <c:choose>
-                        <c:when test="${sortValue eq 'popular'}">
-                            <strong>✓ 인기순</strong>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=popular">인기순</a>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <span>|</span>
-
-                    <c:choose>
-                        <c:when test="${sortValue eq 'new'}">
-                            <strong>✓ 최신순</strong>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=new">최신순</a>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <span>|</span>
-
-                    <c:choose>
-                        <c:when test="${sortValue eq 'likes'}">
-                            <strong>✓ 찜 많은순</strong>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=likes">찜 많은순</a>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <span>|</span>
-
-                    <c:choose>
-                        <c:when test="${sortValue eq 'reviews'}">
-                            <strong>✓ 구매후기 많은순</strong>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=reviews">구매후기 많은순</a>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <span>|</span>
-
-                    <c:choose>
-                        <c:when test="${sortValue eq 'sales'}">
-                            <strong>✓ 판매수 많은순</strong>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=sales">판매수 많은순</a>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <span>|</span>
-
-                    <c:choose>
-                        <c:when test="${sortValue eq 'discount'}">
-                            <strong>✓ 할인율 높은순</strong>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=discount">할인율 높은순</a>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <span>|</span>
-
-                    <c:choose>
-                        <c:when test="${sortValue eq 'lowPrice'}">
-                            <strong>✓ 낮은 가격순</strong>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=lowPrice">낮은 가격순</a>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <span>|</span>
-
-                    <c:choose>
-                        <c:when test="${sortValue eq 'highPrice'}">
-                            <strong>✓ 높은 가격순</strong>
-                        </c:when>
-                        <c:otherwise>
-                            <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=highPrice">높은 가격순</a>
-                        </c:otherwise>
-                    </c:choose>
-
-                </div>
-
-            </div>
-
-            <p class="sale-count-text">
-                총 <fmt:formatNumber value="${totalSaleCount}" pattern="#,###"/>개
-            </p>
 
             <c:choose>
-                <c:when test="${empty list}">
-                    <div class="sale-empty">
-                        현재 할인 중인 상품이 없습니다.
+                <c:when test="${empty saleFeatureList}">
+                    <div class="sale-empty sale-hero-empty">
+                        <div class="sale-empty-icon">🎁</div>
+                        <strong>오늘 하루만 진행되는 할인 상품이 없습니다.</strong>
+                        <p>아래의 기간 할인과 상시 할인 상품을 확인해보세요.</p>
                     </div>
                 </c:when>
 
                 <c:otherwise>
-                    <div class="common-product-wrap">
-                        <c:forEach var="vo" items="${list}">
-                            <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
-                        </c:forEach>
+                    <div class="sale-feature-wrap">
+
+                        <button type="button" class="sale-slide-btn sale-slide-prev" id="salePrevBtn">
+                            ‹
+                        </button>
+
+                        <button type="button" class="sale-slide-btn sale-slide-next" id="saleNextBtn">
+                            ›
+                        </button>
+
+                        <div class="sale-feature-viewport">
+                            <div class="sale-feature-track common-product-wrap" id="saleFeatureTrack">
+                                <c:forEach var="vo" items="${saleFeatureList}">
+                                    <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
+                                </c:forEach>
+                            </div>
+                        </div>
+
+                        <div class="sale-feature-dots" id="saleFeatureDots"></div>
+
+                        <a href="#saleList" class="sale-more-btn">
+                            할인작품 더보기
+                        </a>
+
                     </div>
                 </c:otherwise>
             </c:choose>
 
-            <div class="sale-page-menu">
-                ${pageMenu}
+        </div>
+    </section>
+
+    <section class="sale-type-section">
+        <div class="sale-type-tabs">
+
+            <a class="${saleTypeValue eq 'all' ? 'active' : ''}"
+               href="/product_sale.do?saleType=all&amp;sort=${sortValue}">
+                🔥 전체 할인
+            </a>
+
+            <a class="${saleTypeValue eq 'period' ? 'active' : ''}"
+               href="/product_sale.do?saleType=period&amp;sort=${sortValue}">
+                ⏰ 기간 할인
+            </a>
+
+            <a class="${saleTypeValue eq 'always' ? 'active' : ''}"
+               href="/product_sale.do?saleType=always&amp;sort=${sortValue}">
+                🏷 상시 할인
+            </a>
+
+        </div>
+    </section>
+
+    <section class="sale-list-section" id="saleList">
+
+        <div class="sale-list-head">
+            <div>
+                <span>SALE PRODUCTS</span>
+                <h2>
+                    할인 상품
+                    <em><fmt:formatNumber value="${totalSaleCount}" pattern="#,###"/>개</em>
+                </h2>
+            </div>
+        </div>
+
+        <div class="sale-sort-row">
+
+            <div class="sale-sort-left">
+
+                <c:choose>
+                    <c:when test="${sortValue eq 'popular'}">
+                        <strong>✓ 인기순</strong>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=popular#saleList">인기순</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:choose>
+                    <c:when test="${sortValue eq 'new'}">
+                        <strong>✓ 최신순</strong>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=new#saleList">최신순</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:choose>
+                    <c:when test="${sortValue eq 'likes'}">
+                        <strong>✓ 찜 많은순</strong>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=likes#saleList">찜 많은순</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:choose>
+                    <c:when test="${sortValue eq 'reviews'}">
+                        <strong>✓ 구매후기 많은순</strong>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=reviews#saleList">구매후기 많은순</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:choose>
+                    <c:when test="${sortValue eq 'sales'}">
+                        <strong>✓ 판매수 많은순</strong>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=sales#saleList">판매수 많은순</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:choose>
+                    <c:when test="${sortValue eq 'discount'}">
+                        <strong>✓ 할인율 높은순</strong>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=discount#saleList">할인율 높은순</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:choose>
+                    <c:when test="${sortValue eq 'lowPrice'}">
+                        <strong>✓ 낮은 가격순</strong>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=lowPrice#saleList">낮은 가격순</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:choose>
+                    <c:when test="${sortValue eq 'highPrice'}">
+                        <strong>✓ 높은 가격순</strong>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/product_sale.do?saleType=${saleTypeValue}&amp;sort=highPrice#saleList">높은 가격순</a>
+                    </c:otherwise>
+                </c:choose>
+
             </div>
 
-        </section>
-
-    </div>
-
-
-    <footer class="product-footer"> 
-        <div class="product-footer-inner">
-            <strong>HANDMADE</strong>
-            <p>작가 상품을 둘러보고 마음에 드는 작품을 주문할 수 있습니다.</p>
         </div>
-    </footer>
 
-    </body>
+        <c:choose>
+            <c:when test="${empty list}">
+                <div class="sale-empty">
+                    <div class="sale-empty-icon">🎁</div>
+                    <strong>현재 할인 중인 상품이 없습니다.</strong>
+                    <p>다른 할인 유형을 선택해보세요.</p>
+                </div>
+            </c:when>
+
+            <c:otherwise>
+                <div class="common-product-wrap sale-product-grid">
+                    <c:forEach var="vo" items="${list}">
+                        <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
+                    </c:forEach>
+                </div>
+            </c:otherwise>
+        </c:choose>
+
+        <div class="sale-page-menu">
+            ${pageMenu}
+        </div>
+
+    </section>
+
+</div>
+
+<footer class="product-footer"> 
+    <div class="product-footer-inner">
+        <strong>HANDMADE</strong>
+        <p>작가 상품을 둘러보고 마음에 드는 작품을 주문할 수 있습니다.</p>
+    </div>
+</footer>
+
+</body>
 </html>

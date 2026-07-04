@@ -35,6 +35,10 @@ public interface SellerDAO {
     Map<String, Object> getOrderStatusCounts(int seller_id);
     Map<String, Object> getProductStatusCounts(int seller_id);
 
+    Map<String, Object> getSellerSalesSummary(int seller_id);
+    List<Map<String, Object>> getSellerDailySales(int seller_id);
+    List<Map<String, Object>> selectSellerNoticeList();
+
     int getUnansweredQnaCount(int seller_id);
     int getNewReviewCount(int seller_id);
 
@@ -56,5 +60,9 @@ public interface SellerDAO {
     SellerVO selectSellerByUserId(int user_id);
 
     int getSellerOrderCount(Map<String, Object> map);
+
+    List<Map<String, Object>> getSellerProductSalesTop(int seller_id);
+    
+    List<Map<String, Object>> getSellerCategorySales(int seller_id);
 
 }
