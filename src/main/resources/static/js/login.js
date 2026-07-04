@@ -57,10 +57,10 @@ function send(f) {
         return;
     }
 
-    if (!pwdReg.test(password)) {
-            alert("비밀번호는 영문과 숫자를 포함하여 8자 이상이어야 합니다.");
-            return;
-        }
+    // if (!pwdReg.test(password)) {
+    //         alert("비밀번호는 영문과 숫자를 포함하여 8자 이상이어야 합니다.");
+    //         return;
+    //     }
 
 
     let formData = new URLSearchParams(new FormData(f));
