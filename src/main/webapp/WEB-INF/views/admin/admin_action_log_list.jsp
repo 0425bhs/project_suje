@@ -162,7 +162,7 @@
                                     <c:when test="${status eq 'SHIPPING'}">배송중</c:when>
                                     <c:when test="${status eq 'DELIVERED'}">배송완료</c:when>
                                     <c:when test="${status eq 'CANCELLED'}">취소</c:when>
-                                    <c:otherwise>${status}</c:otherwise>
+                                    <c:otherwise>알 수 없음</c:otherwise>
                                 </c:choose>
                                 <span aria-hidden="true">&times;</span>
                             </a>
@@ -204,19 +204,41 @@
                         <th>변경</th>
                         <th>사유</th>
                         <th>일시</th>
-                        <th>관리</th>
                     </tr>
                     </thead>
                     <tbody>
                     <c:choose>
                         <c:when test="${empty actionLogList}">
                             <tr>
-                                <td colspan="8">처리 내역이 없습니다.</td>
+                                <td colspan="7">처리 내역이 없습니다.</td>
                             </tr>
                         </c:when>
                         <c:otherwise>
                             <c:forEach var="log" items="${actionLogList}" varStatus="loop">
-                                <tr>
+                                <c:choose>
+                                    <c:when test="${log.target_type eq 'MEMBER'}">
+                                        <c:set var="targetHref" value="/admin/members?user_id=${log.target_id}&page=1" />
+                                    </c:when>
+                                    <c:when test="${log.target_type eq 'SELLER'}">
+                                        <c:set var="targetHref" value="/admin/sellers?seller_id=${log.target_id}&page=1" />
+                                    </c:when>
+                                    <c:when test="${log.target_type eq 'PRODUCT'}">
+                                        <c:set var="targetHref" value="/admin/products?product_id=${log.target_id}&page=1" />
+                                    </c:when>
+                                    <c:when test="${log.target_type eq 'INQUIRY'}">
+                                        <c:set var="targetHref" value="/admin/inquiries?status=all&page=1" />
+                                    </c:when>
+                                    <c:when test="${log.target_type eq 'REPORT'}">
+                                        <c:set var="targetHref" value="/admin/reports?status=all&page=1" />
+                                    </c:when>
+                                    <c:when test="${log.target_type eq 'ORDER'}">
+                                        <c:set var="targetHref" value="/admin/orders?keyword=${log.target_id}&page=1" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="targetHref" value="" />
+                                    </c:otherwise>
+                                </c:choose>
+                                <tr class="${empty targetHref ? '' : 'admin-clickable-row'}" data-href="${targetHref}">
                                     <td>${pagination.offset + loop.index + 1}</td>
                                     <td>${empty log.admin_name ? '관리자' : log.admin_name}</td>
                                     <td>
@@ -227,7 +249,7 @@
                                             <c:when test="${log.target_type eq 'INQUIRY'}">문의 #${log.target_id}</c:when>
                                             <c:when test="${log.target_type eq 'REPORT'}">신고 #${log.target_id}</c:when>
                                             <c:when test="${log.target_type eq 'ORDER'}">주문 #${log.target_id}</c:when>
-                                            <c:otherwise>${log.target_type} #${log.target_id}</c:otherwise>
+                                            <c:otherwise>기타 #${log.target_id}</c:otherwise>
                                         </c:choose>
                                     </td>
                                     <td>
@@ -241,31 +263,8 @@
                                         →
                                         <strong>${log.afterStatusLabel}</strong>
                                     </td>
-                                    <td class="left">${empty log.memo ? '-' : log.memo}</td>
+                                    <td class="left">${empty log.memo ? '없음' : log.memo}</td>
                                     <td>${log.created_at}</td>
-                                    <td>
-                                        <c:choose>
-                                            <c:when test="${log.target_type eq 'MEMBER'}">
-                                                <a href="/admin/members?user_id=${log.target_id}&page=1" class="admin-btn light">보기</a>
-                                            </c:when>
-                                            <c:when test="${log.target_type eq 'SELLER'}">
-                                                <a href="/admin/sellers?seller_id=${log.target_id}&page=1" class="admin-btn light">보기</a>
-                                            </c:when>
-                                            <c:when test="${log.target_type eq 'PRODUCT'}">
-                                                <a href="/admin/products?product_id=${log.target_id}&page=1" class="admin-btn light">보기</a>
-                                            </c:when>
-                                            <c:when test="${log.target_type eq 'INQUIRY'}">
-                                                <a href="/admin/inquiries?status=all&page=1" class="admin-btn light">보기</a>
-                                            </c:when>
-                                            <c:when test="${log.target_type eq 'REPORT'}">
-                                                <a href="/admin/reports?status=all&page=1" class="admin-btn light">보기</a>
-                                            </c:when>
-                                            <c:when test="${log.target_type eq 'ORDER'}">
-                                                <a href="/admin/orders?keyword=${log.target_id}&page=1" class="admin-btn light">보기</a>
-                                            </c:when>
-                                            <c:otherwise>-</c:otherwise>
-                                        </c:choose>
-                                    </td>
                                 </tr>
                             </c:forEach>
                         </c:otherwise>

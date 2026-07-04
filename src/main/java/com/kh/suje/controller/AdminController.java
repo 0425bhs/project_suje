@@ -67,6 +67,13 @@ public class AdminController {
                            reportDao.getReportListCountByKeyword("pending", null, null, "all", null, null, null));
         model.addAttribute("waitingInquiryCount",
                            inquiryDao.getInquryListCountByKeyword("waiting", null, null, "all", null, null));
+        model.addAttribute("totalMemberCount",
+                           userDao.getUserListCountByKeyword("all", null, null, "all", "all", null, null));
+        model.addAttribute("totalSellerCount",
+                           sellerDao.getSellerListCountByKeyword("all", null, null, null, null, null));
+        model.addAttribute("approvedProductCount",
+                           productDao.getProductListCountByKeyword("approved", null, null, null, null,
+                                                                   null, null, null, null));
         model.addAttribute("recentActionLogList", adminActionLogDao.getRecentAdminActionLogList(5));
 
         return "/admin/admin_dashboard";
@@ -840,6 +847,26 @@ public class AdminController {
     public String statistics() {
 
         return "/admin/admin_statistics";
+    }
+
+    @GetMapping("/admin/action-logs/recent")
+    @ResponseBody
+    public Map<String, Object> recentActionLogs(String target_type, Integer target_id) {
+
+        Map<String, Object> map = new HashMap<>();
+
+        if (target_type == null || target_type.trim().isEmpty() || target_id == null) {
+            map.put("success", false);
+            map.put("message", "관리 내역 조회 대상이 올바르지 않습니다.");
+            return map;
+        }
+
+        List<AdminActionLogVO> actionLogList = adminActionLogDao.getAdminActionLogList(target_type, target_id);
+
+        map.put("success", true);
+        map.put("actionLogList", actionLogList.size() > 5 ? actionLogList.subList(0, 5) : actionLogList);
+
+        return map;
     }
 
     @GetMapping("/admin/memos")

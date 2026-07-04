@@ -12,6 +12,21 @@
     <link rel="stylesheet" href="/css/admin/admin_detail_panel.css">
     <script src="/js/admin_detail_common.js"></script>
     <script>
+        const adminOrderStatusLabels = {
+            PENDING: "결제대기",
+            PAID: "결제완료",
+            PREPARING: "배송준비",
+            SHIPPING: "배송중",
+            DELIVERED: "배송완료",
+            CANCELLED: "취소"
+        };
+        const adminPaymentStatusLabels = {
+            READY: "결제대기",
+            SUCCESS: "결제성공",
+            FAIL: "결제실패",
+            CANCELLED: "결제취소"
+        };
+
         function formatAdminOrderAmount(value) {
             const amount = Number(value || 0);
             return amount.toLocaleString("ko-KR") + "원";
@@ -25,7 +40,7 @@
             }
 
             if (!items || !items.length) {
-                target.textContent = "-";
+                target.textContent = "없음";
                 return;
             }
 
@@ -34,11 +49,14 @@
 
             items.forEach((item) => {
                 const row = document.createElement("div");
-                const name = item.product_name || "-";
+                const name = item.product_name || "없음";
                 const option = item.option_name ? " / " + item.option_name : "";
                 const quantity = item.quantity || 0;
                 const price = formatAdminOrderAmount(item.subtotal_amount || item.price);
-                const status = item.status || "-";
+                const itemStatusKey = String(item.status || "").toUpperCase();
+                const status = item.status
+                    ? (adminOrderStatusLabels[itemStatusKey] || "알 수 없음")
+                    : "없음";
 
                 row.innerHTML =
                     "<dt>" + name + option + "</dt>" +
@@ -52,14 +70,8 @@
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
-            const statusLabels = {
-                PENDING: "결제대기",
-                PAID: "결제완료",
-                PREPARING: "배송준비",
-                SHIPPING: "배송중",
-                DELIVERED: "배송완료",
-                CANCELLED: "취소"
-            };
+            const statusLabels = adminOrderStatusLabels;
+            const paymentStatusLabels = adminPaymentStatusLabels;
             const managePanel = initAdminDetailManage({
                 targetType: "ORDER",
                 statusUrl: "/admin/orders/status",
@@ -84,7 +96,9 @@
                     .then(data => {
                         const order = data.order;
                         const statusKey = String(order.status || "").toUpperCase();
-                        const statusLabel = statusLabels[statusKey] || order.status;
+                        const statusLabel = statusLabels[statusKey] || "알 수 없음";
+                        const paymentStatusKey = String(order.payment_status || "").toUpperCase();
+                        const paymentStatusLabel = paymentStatusLabels[paymentStatusKey] || "알 수 없음";
 
                         setDetailTitleBlock(
                             "orderDetailTitle",
@@ -99,7 +113,7 @@
                         setText("totalAmount", formatAdminOrderAmount(order.total_amount));
                         setText("usedPoint", formatAdminOrderAmount(order.used_point));
                         setText("paymentMethod", order.payment_method);
-                        setText("paymentStatus", order.payment_status);
+                        setText("paymentStatus", paymentStatusLabel);
                         setText("paymentAmount", formatAdminOrderAmount(order.payment_amount));
                         setText("transactionId", order.transaction_id);
                         setText("recipientName", order.recipient_name);
@@ -312,10 +326,14 @@
                             <th>주문상태</th>
                             <th>결제상태</th>
                             <th>주문일</th>
-                            <th>관리</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <c:if test="${empty orderList}">
+                            <tr>
+                                <td colspan="7">주문 목록이 없습니다.</td>
+                            </tr>
+                        </c:if>
                         <c:forEach var="order" items="${orderList}">
                             <tr class="admin-clickable-row" data-order-id="${order.order_id}">
                                 <td>${order.order_id}</td>
@@ -344,11 +362,16 @@
                                         </c:when>
                                     </c:choose>
                                 </td>
-                                <td>${order.payment_status}</td>
-                                <td>${order.created_at}</td>
-                                <td class="admin-table-actions">
-                                    <button type="button" class="admin-btn light">상세</button>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${order.payment_status eq 'READY'}">결제대기</c:when>
+                                        <c:when test="${order.payment_status eq 'SUCCESS'}">결제성공</c:when>
+                                        <c:when test="${order.payment_status eq 'FAIL'}">결제실패</c:when>
+                                        <c:when test="${order.payment_status eq 'CANCELLED'}">결제취소</c:when>
+                                        <c:otherwise>없음</c:otherwise>
+                                    </c:choose>
                                 </td>
+                                <td>${order.created_at}</td>
                             </tr>
                         </c:forEach>
                         </tbody>

@@ -27,7 +27,7 @@ public class AdminActionLogVO {
 
     private String getStatusLabel(String status) {
         if (status == null || status.trim().isEmpty()) {
-            return "-";
+            return "없음";
         }
 
         String targetType = target_type == null ? "" : target_type.toUpperCase();
@@ -42,7 +42,7 @@ public class AdminActionLogVO {
                 case "WITHDRAWN":
                     return "탈퇴";
                 default:
-                    return status;
+                    return "알 수 없음";
             }
         }
 
@@ -55,7 +55,7 @@ public class AdminActionLogVO {
                 case "REJECTED":
                     return "반려";
                 default:
-                    return status;
+                    return "알 수 없음";
             }
         }
 
@@ -70,7 +70,7 @@ public class AdminActionLogVO {
                 case "HIDDEN":
                     return "숨김";
                 default:
-                    return status;
+                    return "알 수 없음";
             }
         }
 
@@ -89,7 +89,7 @@ public class AdminActionLogVO {
                 case "CANCELLED":
                     return "취소";
                 default:
-                    return status;
+                    return "알 수 없음";
             }
         }
 
@@ -100,7 +100,7 @@ public class AdminActionLogVO {
                 case "ANSWERED":
                     return "답변완료";
                 default:
-                    return status;
+                    return "알 수 없음";
             }
         }
 
@@ -113,10 +113,10 @@ public class AdminActionLogVO {
                 case "REJECTED":
                     return "반려";
                 default:
-                    return status;
+                    return "알 수 없음";
             }
         }
 
-        return status;
+        return "알 수 없음";
     }
 }

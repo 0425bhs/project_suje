@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <title>관리자 센터 - 대시보드</title>
     <link rel="stylesheet" href="/css/admin/admin_common.css">
+    <script src="/js/admin_detail_common.js"></script>
 </head>
 <body>
 <div class="admin-board">
@@ -26,7 +27,25 @@
             </div>
         </header>
 
-        <section class="admin-grid">
+        <section class="admin-grid three">
+            <a href="/admin/sellers?page=1" class="admin-card admin-stat-card admin-stat-link">
+                <span class="admin-stat-label">전체 판매자</span>
+                <strong class="admin-stat-value">${totalSellerCount}<small>곳</small></strong>
+                <span class="admin-stat-note">판매자 신청/승인 전체</span>
+            </a>
+            <a href="/admin/products?status=approved&page=1" class="admin-card admin-stat-card admin-stat-link">
+                <span class="admin-stat-label">판매중 상품</span>
+                <strong class="admin-stat-value">${approvedProductCount}<small>개</small></strong>
+                <span class="admin-stat-note">현재 구매 가능한 상품</span>
+            </a>
+            <a href="/admin/members?page=1" class="admin-card admin-stat-card admin-stat-link">
+                <span class="admin-stat-label">전체 회원</span>
+                <strong class="admin-stat-value">${totalMemberCount}<small>명</small></strong>
+                <span class="admin-stat-note">가입 계정 전체</span>
+            </a>
+        </section>
+        
+        <section class="admin-grid" style="margin-top:18px;">
             <a href="/admin/sellers?status=pending&page=1" class="admin-card admin-stat-card admin-stat-link">
                 <span class="admin-stat-label">판매자 승인 대기</span>
                 <strong class="admin-stat-value">${pendingSellerCount}<small>건</small></strong>
@@ -61,19 +80,41 @@
                             <th>변경</th>
                             <th>사유</th>
                             <th>일시</th>
-                            <th>관리</th>
                         </tr>
                         </thead>
                         <tbody>
                         <c:choose>
                             <c:when test="${empty recentActionLogList}">
                                 <tr>
-                                    <td colspan="7">최근 상태 변경 내역이 없습니다.</td>
+                                    <td colspan="6">최근 상태 변경 내역이 없습니다.</td>
                                 </tr>
                             </c:when>
                             <c:otherwise>
                                 <c:forEach var="log" items="${recentActionLogList}">
-                                    <tr>
+                                    <c:choose>
+                                        <c:when test="${log.target_type eq 'MEMBER'}">
+                                            <c:set var="targetHref" value="/admin/members?user_id=${log.target_id}&page=1" />
+                                        </c:when>
+                                        <c:when test="${log.target_type eq 'SELLER'}">
+                                            <c:set var="targetHref" value="/admin/sellers?seller_id=${log.target_id}&page=1" />
+                                        </c:when>
+                                        <c:when test="${log.target_type eq 'PRODUCT'}">
+                                            <c:set var="targetHref" value="/admin/products?product_id=${log.target_id}&page=1" />
+                                        </c:when>
+                                        <c:when test="${log.target_type eq 'INQUIRY'}">
+                                            <c:set var="targetHref" value="/admin/inquiries?status=all&page=1" />
+                                        </c:when>
+                                        <c:when test="${log.target_type eq 'REPORT'}">
+                                            <c:set var="targetHref" value="/admin/reports?status=all&page=1" />
+                                        </c:when>
+                                        <c:when test="${log.target_type eq 'ORDER'}">
+                                            <c:set var="targetHref" value="/admin/orders?keyword=${log.target_id}&page=1" />
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:set var="targetHref" value="" />
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <tr class="${empty targetHref ? '' : 'admin-clickable-row'}" data-href="${targetHref}">
                                         <td>${empty log.admin_name ? '관리자' : log.admin_name}</td>
                                         <td>
                                             <c:choose>
@@ -83,7 +124,7 @@
                                                 <c:when test="${log.target_type eq 'INQUIRY'}">문의 #${log.target_id}</c:when>
                                                 <c:when test="${log.target_type eq 'REPORT'}">신고 #${log.target_id}</c:when>
                                                 <c:when test="${log.target_type eq 'ORDER'}">주문 #${log.target_id}</c:when>
-                                                <c:otherwise>${log.target_type} #${log.target_id}</c:otherwise>
+                                                <c:otherwise>기타 #${log.target_id}</c:otherwise>
                                             </c:choose>
                                         </td>
                                         <td>
@@ -97,31 +138,8 @@
                                             →
                                             <strong>${log.afterStatusLabel}</strong>
                                         </td>
-                                        <td class="left">${empty log.memo ? '-' : log.memo}</td>
+                                        <td class="left">${empty log.memo ? '없음' : log.memo}</td>
                                         <td>${log.created_at}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${log.target_type eq 'MEMBER'}">
-                                                    <a href="/admin/members?user_id=${log.target_id}&page=1" class="admin-btn light">보기</a>
-                                                </c:when>
-                                                <c:when test="${log.target_type eq 'SELLER'}">
-                                                    <a href="/admin/sellers?seller_id=${log.target_id}&page=1" class="admin-btn light">보기</a>
-                                                </c:when>
-                                                <c:when test="${log.target_type eq 'PRODUCT'}">
-                                                    <a href="/admin/products?product_id=${log.target_id}&page=1" class="admin-btn light">보기</a>
-                                                </c:when>
-                                                <c:when test="${log.target_type eq 'INQUIRY'}">
-                                                    <a href="/admin/inquiries?status=all&page=1" class="admin-btn light">보기</a>
-                                                </c:when>
-                                                <c:when test="${log.target_type eq 'REPORT'}">
-                                                    <a href="/admin/reports?status=all&page=1" class="admin-btn light">보기</a>
-                                                </c:when>
-                                                <c:when test="${log.target_type eq 'ORDER'}">
-                                                    <a href="/admin/orders?keyword=${log.target_id}&page=1" class="admin-btn light">보기</a>
-                                                </c:when>
-                                                <c:otherwise>-</c:otherwise>
-                                            </c:choose>
-                                        </td>
                                     </tr>
                                 </c:forEach>
                             </c:otherwise>

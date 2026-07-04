@@ -48,8 +48,8 @@
                         };
                         const statusKey = String(report.status || "").toUpperCase();
                         const targetKey = String(report.target_type || "").toUpperCase();
-                        const statusLabel = statusLabels[statusKey] || report.status;
-                        const targetLabel = targetLabels[targetKey] || report.target_type;
+                        const statusLabel = statusLabels[statusKey] || "알 수 없음";
+                        const targetLabel = targetLabels[targetKey] || "알 수 없음";
 
                         setDetailTitleBlock(
                             "reportDetailTitle",
@@ -59,7 +59,7 @@
                         );
                         setDetailStatusBadge("reportDetailStatusBadge", report.status, statusLabel);
                         setText("targetType", targetLabel);
-                        setText("targetTitle", report.target_title || "-");
+                        setText("targetTitle", report.target_title);
                         setText("reason", report.reason);
                         setText("reporterName", report.reporter_name);
                         setText("status", statusLabel);
@@ -243,10 +243,14 @@
                             <th>신고자</th>
                             <th>상태</th>
                             <th>접수일</th>
-                            <th>관리</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <c:if test="${empty reportList}">
+                            <tr>
+                                <td colspan="7">신고 목록이 없습니다.</td>
+                            </tr>
+                        </c:if>
                         <c:forEach var="report" items="${reportList}" varStatus="loop">
                         <tr class="admin-clickable-row" data-report-id="${report.report_id}">
                             <td>${pagination.offset + loop.index + 1}</td>
@@ -276,9 +280,6 @@
                                 </c:choose>
                             </td>
                             <td>${report.created_at}</td>
-                            <td class="admin-table-actions">
-                                <button type="button" class="admin-btn light">상세</button>
-                            </td>
                         </tr>
                         </c:forEach>
                         

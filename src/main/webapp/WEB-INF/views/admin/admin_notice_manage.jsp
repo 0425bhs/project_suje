@@ -146,19 +146,19 @@
                             <th>번호</th>
                             <th>제목</th>
                             <th>등록일</th>
-                            <th>관리</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <c:if test="${empty noticeList}">
+                            <tr>
+                                <td colspan="3">공지 목록이 없습니다.</td>
+                            </tr>
+                        </c:if>
                         <c:forEach var="notice" items="${noticeList}" varStatus="loop">
                         <tr class="admin-clickable-row" data-notice-id="${notice.notice_id}">
                             <td>${pagination.offset + loop.index + 1}</td>
                             <td class="left admin-highlight-target"><strong>${notice.title}</strong></td>
                             <td>${notice.created_at}</td>
-                            <td class="admin-table-actions">
-                                <a href="/notice_update_form.do?notice_id=${notice.notice_id}" class="admin-btn light">수정</a>
-                                <button type="button" class="admin-btn light">상세</button>
-                            </td>
                         </tr>
                         </c:forEach>
                         </tbody>

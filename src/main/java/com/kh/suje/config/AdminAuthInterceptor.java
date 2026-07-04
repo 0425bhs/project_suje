@@ -38,6 +38,7 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
         String uri = request.getRequestURI();
         return "POST".equalsIgnoreCase(request.getMethod())
                || uri.endsWith("/detail")
+               || uri.endsWith("/recent")
                || uri.endsWith("/memos")
                || uri.endsWith("/answer")
                || uri.endsWith("/status");

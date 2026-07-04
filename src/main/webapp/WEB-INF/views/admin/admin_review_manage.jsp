@@ -13,6 +13,14 @@
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
+            const orderStatusLabels = {
+                PENDING: "결제대기",
+                PAID: "결제완료",
+                PREPARING: "배송준비",
+                SHIPPING: "배송중",
+                DELIVERED: "배송완료",
+                CANCELLED: "취소"
+            };
             const managePanel = initAdminDetailManage({
                 targetType: "REVIEW"
             });
@@ -32,6 +40,10 @@
                     .then(res => res.json())
                     .then(data => {
                         const review = data.review;
+                        const orderStatusKey = String(review.order_status || "").toUpperCase();
+                        const orderStatusLabel = review.order_status
+                            ? (orderStatusLabels[orderStatusKey] || "알 수 없음")
+                            : "";
 
                         setDetailTitleBlock(
                             "reviewDetailTitle",
@@ -45,10 +57,10 @@
                         setText("content", review.content);
                         setText("createdAt", review.created_at);
                         setText("reportCount", review.report_count);
-                        setText("orderStatus", review.order_status);
+                        setText("orderStatus", orderStatusLabel);
                         setText("orderCreatedAt", review.order_created_at);
-                        setText("replyContent", review.reply_content || "-");
-                        setText("replyCreatedAt", review.reply_created_at || "-");
+                        setText("replyContent", review.reply_content);
+                        setText("replyCreatedAt", review.reply_created_at);
                         managePanel.setTarget(review.review_id);
 
                         document.getElementById("reviewMemberLink").href =
@@ -206,10 +218,14 @@
                             <th>신고</th>
                             <th>내용</th>
                             <th>작성일</th>
-                            <th>관리</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <c:if test="${empty reviewList}">
+                            <tr>
+                                <td colspan="7">리뷰 목록이 없습니다.</td>
+                            </tr>
+                        </c:if>
                         <c:forEach var="review" items="${reviewList}" varStatus="loop">
                         <tr class="admin-clickable-row" data-review-id="${review.review_id}">
                             <td>${pagination.offset + loop.index + 1}</td>
@@ -219,9 +235,6 @@
                             <td>${review.report_count}</td>
                             <td class="left admin-highlight-target review-content-cell">${review.content}</td>
                             <td>${review.created_at}</td>
-                            <td class="admin-table-actions">
-                                <button type="button" class="admin-btn light">상세</button>
-                            </td>
                         </tr>
                         </c:forEach>
                         

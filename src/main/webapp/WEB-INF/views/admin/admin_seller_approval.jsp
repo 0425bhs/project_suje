@@ -47,7 +47,7 @@
                     .then(data => {
                         const seller = data.seller;
                         const statusKey = String(seller.status || "").toUpperCase();
-                        const statusLabel = statusLabels[statusKey] || seller.status;
+                        const statusLabel = statusLabels[statusKey] || "알 수 없음";
 
                         setDetailTitleBlock(
                             "sellerDetailTitle",
@@ -224,10 +224,14 @@
                                     <th>주문 수</th>
                                     <th>상태</th>
                                     <th>신청일</th>
-                                    <th>관리</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <c:if test="${empty sellerList}">
+                                    <tr>
+                                        <td colspan="7">판매자 목록이 없습니다.</td>
+                                    </tr>
+                                </c:if>
                                 <c:forEach var="seller" items="${sellerList}" varStatus="loop">
                                     <tr class="admin-clickable-row" data-user-id="${seller.user_id}"
                                         data-seller-id="${seller.seller_id}"
@@ -260,10 +264,6 @@
                                             </c:choose>
                                         </td>
                                         <td>${seller.created_at}</td>
-                                        <td class="admin-table-actions">
-                                            <button type="button"
-                                                class="admin-btn light admin-detail-btn">상세</button>
-                                        </td>
                                     </tr>
                                 </c:forEach>
                             </tbody>

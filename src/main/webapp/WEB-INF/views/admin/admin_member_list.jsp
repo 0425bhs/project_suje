@@ -199,6 +199,7 @@
                                     renderMemberDetailHead(data);
                                     renderMemberDetailInfo(data);
                                     loadAdminMemo("MEMBER", user.user_id);
+                                    loadAdminActionLogs("MEMBER", user.user_id);
 
                                     highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                                 })
@@ -248,6 +249,7 @@
                                 }
 
                                 renderMemberStatus(data.status);
+                                loadAdminActionLogs("MEMBER", selectedMemberId);
 
                                 if (statusReason) {
                                     statusReason.value = "";
@@ -483,10 +485,14 @@
                                             <th>이메일</th>
                                             <th>유형</th>
                                             <th>상태</th>
-                                            <th>관리</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <c:if test="${empty userList}">
+                                            <tr>
+                                                <td colspan="7">회원 목록이 없습니다.</td>
+                                            </tr>
+                                        </c:if>
                                         <c:forEach var="user" items="${userList}" varStatus="loop">
                                             <tr class="admin-clickable-row" data-user-id="${user.user_id}">
                                                 <td>${pagination.offset + loop.index + 1}</td>
@@ -515,10 +521,6 @@
                                                             </span>
                                                         </c:when>
                                                     </c:choose>
-                                                </td>
-                                                <td class="admin-table-actions">
-                                                    <button type="button"
-                                                        class="admin-btn light admin-detail-btn">상세</button>
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -627,7 +629,7 @@
 
                                         <div class="admin-detail-tab-panel" data-detail-panel="manage">
                                             <div class="admin-detail-manage">
-                                                <div class="admin-detail-manage-section">
+                                                <div class="admin-detail-manage-section admin-detail-status-section">
                                                     <div class="admin-detail-section-head">
                                                         <h3>상태 관리</h3>
                                                     </div>
