@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -51,7 +52,7 @@
                         <span class="admin-search-icon" aria-hidden="true"></span>
                     </div>
                     <button type="submit" class="admin-btn admin-search-submit">검색</button>
-                    <button type="button" class="admin-btn light admin-filter-toggle ${actionType ne 'all' || status ne 'all' || not empty targetId || not empty startDate || not empty endDate ? 'is-open' : ''}">상세 검색</button>
+                    <button type="button" class="admin-btn light admin-filter-toggle ${not empty startDate || not empty endDate ? 'is-open' : ''}">상세 검색</button>
                     <select class="admin-filter-control admin-sort-control" id="sort" name="sort">
                         <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
                         <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
@@ -65,52 +66,7 @@
                     </select>
                 </div>
 
-                <div class="admin-filter-detail-row ${actionType ne 'all' || status ne 'all' || not empty targetId || not empty startDate || not empty endDate ? 'is-open' : ''}">
-                    <label class="admin-filter-field">
-                        <span>대상 유형</span>
-                        <select class="admin-filter-control" name="targetType">
-                            <option value="all" ${targetType eq 'all' ? 'selected' : ''}>전체</option>
-                            <option value="MEMBER" ${targetType eq 'MEMBER' ? 'selected' : ''}>회원</option>
-                            <option value="SELLER" ${targetType eq 'SELLER' ? 'selected' : ''}>판매자</option>
-                            <option value="PRODUCT" ${targetType eq 'PRODUCT' ? 'selected' : ''}>상품</option>
-                            <option value="INQUIRY" ${targetType eq 'INQUIRY' ? 'selected' : ''}>문의</option>
-                            <option value="REPORT" ${targetType eq 'REPORT' ? 'selected' : ''}>신고</option>
-                            <option value="ORDER" ${targetType eq 'ORDER' ? 'selected' : ''}>주문</option>
-                        </select>
-                    </label>
-                    <label class="admin-filter-field">
-                        <span>작업</span>
-                        <select class="admin-filter-control" name="actionType">
-                            <option value="all" ${actionType eq 'all' ? 'selected' : ''}>전체</option>
-                            <option value="STATUS_CHANGE" ${actionType eq 'STATUS_CHANGE' ? 'selected' : ''}>상태 변경</option>
-                            <option value="ANSWER" ${actionType eq 'ANSWER' ? 'selected' : ''}>답변 저장</option>
-                        </select>
-                    </label>
-                    <label class="admin-filter-field">
-                        <span>변경 상태</span>
-                        <select class="admin-filter-control" name="status">
-                            <option value="all" ${status eq 'all' ? 'selected' : ''}>전체</option>
-                            <option value="PENDING" ${status eq 'PENDING' ? 'selected' : ''}>대기</option>
-                            <option value="APPROVED" ${status eq 'APPROVED' ? 'selected' : ''}>승인/판매중</option>
-                            <option value="REJECTED" ${status eq 'REJECTED' ? 'selected' : ''}>반려</option>
-                            <option value="ACTIVE" ${status eq 'ACTIVE' ? 'selected' : ''}>활성</option>
-                            <option value="SUSPENDED" ${status eq 'SUSPENDED' ? 'selected' : ''}>정지</option>
-                            <option value="WITHDRAWN" ${status eq 'WITHDRAWN' ? 'selected' : ''}>탈퇴</option>
-                            <option value="HIDDEN" ${status eq 'HIDDEN' ? 'selected' : ''}>숨김</option>
-                            <option value="WAITING" ${status eq 'WAITING' ? 'selected' : ''}>미답변</option>
-                            <option value="ANSWERED" ${status eq 'ANSWERED' ? 'selected' : ''}>답변완료</option>
-                            <option value="PROCESSED" ${status eq 'PROCESSED' ? 'selected' : ''}>처리완료</option>
-                            <option value="PAID" ${status eq 'PAID' ? 'selected' : ''}>결제완료</option>
-                            <option value="PREPARING" ${status eq 'PREPARING' ? 'selected' : ''}>배송준비</option>
-                            <option value="SHIPPING" ${status eq 'SHIPPING' ? 'selected' : ''}>배송중</option>
-                            <option value="DELIVERED" ${status eq 'DELIVERED' ? 'selected' : ''}>배송완료</option>
-                            <option value="CANCELLED" ${status eq 'CANCELLED' ? 'selected' : ''}>취소</option>
-                        </select>
-                    </label>
-                    <label class="admin-filter-field">
-                        <span>대상 번호</span>
-                        <input type="number" class="admin-filter-control" name="targetId" value="${targetId}" min="1" placeholder="번호">
-                    </label>
+                <div class="admin-filter-detail-row ${not empty startDate || not empty endDate ? 'is-open' : ''}">
                     <label class="admin-filter-field admin-filter-date-range">
                         <span>처리일 범위</span>
                         <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
@@ -120,6 +76,10 @@
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
+                <input type="hidden" name="targetType" value="${targetType}">
+                <input type="hidden" name="actionType" value="${actionType}">
+                <input type="hidden" name="status" value="${status}">
+                <input type="hidden" name="targetId" value="${targetId}">
                 <c:if test="${targetType ne 'all' || actionType ne 'all' || status ne 'all' || not empty targetId || not empty keyword || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
                         <span class="admin-filter-applied-label">적용된 조건:</span>
@@ -259,9 +219,15 @@
                                         </c:choose>
                                     </td>
                                     <td>
-                                        <strong>${log.beforeStatusLabel}</strong>
-                                        →
-                                        <strong>${log.afterStatusLabel}</strong>
+                                        <div class="admin-action-log-change">
+                                            <span class="admin-status ${fn:toLowerCase(log.before_status)}">
+                                                ${empty log.beforeStatusLabel ? '없음' : log.beforeStatusLabel}
+                                            </span>
+                                            <span class="admin-action-log-arrow">→</span>
+                                            <span class="admin-status ${fn:toLowerCase(log.after_status)}">
+                                                ${empty log.afterStatusLabel ? '없음' : log.afterStatusLabel}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td class="left">${empty log.memo ? '없음' : log.memo}</td>
                                     <td>${log.created_at}</td>

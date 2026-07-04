@@ -483,6 +483,25 @@
     box-shadow: 0 0 0 3px rgba(255, 101, 79, 0.12);
 }
 
+.admin-detail-action-log-section .admin-detail-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-detail-action-log-more {
+    flex: 0 0 auto;
+    color: #222;
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.admin-detail-action-log-more:hover {
+    text-decoration: underline;
+}
+
 .admin-detail-action-log-list {
     display: grid;
     gap: 8px;
@@ -507,7 +526,7 @@
     font-weight: 900;
 }
 
-.admin-detail-action-log-top span {
+.admin-detail-action-log-date {
     flex-shrink: 0;
     color: #8b95a1;
     font-size: 12px;
@@ -516,8 +535,69 @@
 
 .admin-detail-action-log-status {
     margin: 7px 0 0;
-    color: #ff654f;
-    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.admin-detail-action-log-status-badge {
+    min-height: 22px;
+    padding: 0 9px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: #eef1f4;
+    color: #666;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.admin-detail-action-log-status-badge.active,
+.admin-detail-action-log-status-badge.approved,
+.admin-detail-action-log-status-badge.processed,
+.admin-detail-action-log-status-badge.answered,
+.admin-detail-action-log-status-badge.paid,
+.admin-detail-action-log-status-badge.delivered,
+.admin-detail-action-log-status-badge.success,
+.admin-detail-action-log-status-badge.public {
+    background: #dff5e7;
+    color: #22854f;
+}
+
+.admin-detail-action-log-status-badge.pending,
+.admin-detail-action-log-status-badge.waiting,
+.admin-detail-action-log-status-badge.preparing,
+.admin-detail-action-log-status-badge.ready {
+    background: #fff3d8;
+    color: #b36a00;
+}
+
+.admin-detail-action-log-status-badge.shipping {
+    background: #e4f0ff;
+    color: #2467b2;
+}
+
+.admin-detail-action-log-status-badge.rejected,
+.admin-detail-action-log-status-badge.suspended,
+.admin-detail-action-log-status-badge.fail {
+    background: #ffe7df;
+    color: #d6452f;
+}
+
+.admin-detail-action-log-status-badge.hidden,
+.admin-detail-action-log-status-badge.private,
+.admin-detail-action-log-status-badge.cancelled,
+.admin-detail-action-log-status-badge.withdrawn {
+    background: #eceff3;
+    color: #68707a;
+}
+
+.admin-detail-action-log-arrow {
+    color: #8b95a1;
+    font-size: 12px;
     font-weight: 900;
 }
 

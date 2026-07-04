@@ -88,6 +88,23 @@ function getAdminActionLabel(actionType) {
     }
 }
 
+const ADMIN_ACTION_LOG_PREVIEW_SIZE = 3;
+
+function createAdminActionStatusBadge(status, label) {
+    const badge = document.createElement("span");
+    const statusClass = String(status || "").toLowerCase();
+
+    badge.className = "admin-detail-action-log-status-badge";
+
+    if (statusClass) {
+        badge.classList.add(statusClass);
+    }
+
+    badge.textContent = label || "없음";
+
+    return badge;
+}
+
 function ensureAdminActionLogSection() {
     const managePanel = document.querySelector(".admin-detail-manage");
     const statusSection = document.querySelector(".admin-detail-status-section");
@@ -108,7 +125,12 @@ function ensureAdminActionLogSection() {
         const title = document.createElement("h3");
         title.textContent = "최근 관리 내역";
 
-        head.appendChild(title);
+        const moreLink = document.createElement("a");
+        moreLink.className = "admin-detail-action-log-more";
+        moreLink.textContent = "더보기";
+        moreLink.hidden = true;
+
+        head.append(title, moreLink);
 
         const list = document.createElement("div");
         list.className = "admin-detail-action-log-list";
@@ -127,7 +149,24 @@ function renderAdminActionLogList(logList) {
         return;
     }
 
+    const section = list.closest(".admin-detail-action-log-section");
+    const moreLink = section ? section.querySelector(".admin-detail-action-log-more") : null;
+    const targetType = list.dataset.targetType;
+    const targetId = list.dataset.targetId;
+
     list.replaceChildren();
+
+    if (moreLink) {
+        moreLink.hidden = true;
+        moreLink.removeAttribute("href");
+    }
+
+    if (moreLink && targetType && targetId) {
+        moreLink.href = "/admin/action-logs?targetType=" + encodeURIComponent(targetType)
+            + "&targetId=" + encodeURIComponent(targetId)
+            + "&page=1";
+        moreLink.hidden = false;
+    }
 
     if (!logList || !logList.length) {
         const empty = document.createElement("p");
@@ -137,7 +176,7 @@ function renderAdminActionLogList(logList) {
         return;
     }
 
-    logList.forEach((log) => {
+    logList.slice(0, ADMIN_ACTION_LOG_PREVIEW_SIZE).forEach((log) => {
         const item = document.createElement("div");
         item.className = "admin-detail-action-log-item";
 
@@ -148,13 +187,21 @@ function renderAdminActionLogList(logList) {
         action.textContent = getAdminActionLabel(log.action_type);
 
         const date = document.createElement("span");
+        date.className = "admin-detail-action-log-date";
         date.textContent = log.created_at || "없음";
 
         top.append(action, date);
 
         const status = document.createElement("p");
         status.className = "admin-detail-action-log-status";
-        status.textContent = (log.beforeStatusLabel || "없음") + " → " + (log.afterStatusLabel || "없음");
+
+        const beforeStatus = createAdminActionStatusBadge(log.before_status, log.beforeStatusLabel);
+        const arrow = document.createElement("span");
+        arrow.className = "admin-detail-action-log-arrow";
+        arrow.textContent = "→";
+        const afterStatus = createAdminActionStatusBadge(log.after_status, log.afterStatusLabel);
+
+        status.append(beforeStatus, arrow, afterStatus);
 
         const meta = document.createElement("p");
         meta.className = "admin-detail-action-log-meta";
@@ -170,6 +217,16 @@ function loadAdminActionLogs(targetType, targetId) {
 
     if (!targetType || !targetId || !list) {
         return;
+    }
+
+    list.dataset.targetType = targetType;
+    list.dataset.targetId = targetId;
+    const actionLogSection = list.closest(".admin-detail-action-log-section");
+    const moreLink = actionLogSection ? actionLogSection.querySelector(".admin-detail-action-log-more") : null;
+
+    if (moreLink) {
+        moreLink.hidden = true;
+        moreLink.removeAttribute("href");
     }
 
     list.textContent = "불러오는 중...";

@@ -819,6 +819,24 @@ a.admin-stat-link:hover .admin-stat-value {
     font-weight: 900;
 }
 
+.admin-action-log-change {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.admin-action-log-change .admin-status {
+    min-width: 58px;
+}
+
+.admin-action-log-arrow {
+    color: #8b95a1;
+    font-size: 12px;
+    font-weight: 900;
+}
+
 .admin-review-table .review-content-cell {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -854,7 +872,8 @@ a.admin-stat-link:hover .admin-stat-value {
 
 .admin-status.pending,
 .admin-status.waiting,
-.admin-status.shipping {
+.admin-status.shipping,
+.admin-status.ready {
     background: #fff7dc;
     color: #b97900;
 }
@@ -865,13 +884,16 @@ a.admin-stat-link:hover .admin-stat-value {
 .admin-status.paid,
 .admin-status.delivered,
 .admin-status.processed,
-.admin-status.answered {
+.admin-status.answered,
+.admin-status.success,
+.admin-status.public {
     background: #edf9f0;
     color: #168447;
 }
 
 .admin-status.rejected,
-.admin-status.danger {
+.admin-status.danger,
+.admin-status.fail {
     background: #fdecec;
     color: #b91c1c;
 }
@@ -879,7 +901,8 @@ a.admin-stat-link:hover .admin-stat-value {
 .admin-status.hidden,
 .admin-status.muted,
 .admin-status.cancelled,
-.admin-status.withdrawn {
+.admin-status.withdrawn,
+.admin-status.private {
     background: #eef1f5;
     color: #667085;
 }

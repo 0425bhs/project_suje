@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -134,9 +135,15 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <strong>${log.beforeStatusLabel}</strong>
-                                            →
-                                            <strong>${log.afterStatusLabel}</strong>
+                                            <div class="admin-action-log-change">
+                                                <span class="admin-status ${fn:toLowerCase(log.before_status)}">
+                                                    ${empty log.beforeStatusLabel ? '없음' : log.beforeStatusLabel}
+                                                </span>
+                                                <span class="admin-action-log-arrow">→</span>
+                                                <span class="admin-status ${fn:toLowerCase(log.after_status)}">
+                                                    ${empty log.afterStatusLabel ? '없음' : log.afterStatusLabel}
+                                                </span>
+                                            </div>
                                         </td>
                                         <td class="left">${empty log.memo ? '없음' : log.memo}</td>
                                         <td>${log.created_at}</td>
