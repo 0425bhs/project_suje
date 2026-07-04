@@ -75,8 +75,11 @@ public class SellerController {
 
         Map<String, Object> orderStatusCounts = sellerdao.getOrderStatusCounts(seller_id);
         Map<String, Object> productStatusCounts = sellerdao.getProductStatusCounts(seller_id);
+        Map<String, Object> salesSummary = sellerdao.getSellerSalesSummary(seller_id);
+        List<Map<String, Object>> dailySalesList = sellerdao.getSellerDailySales(seller_id);
         int unansweredQnaCount = sellerdao.getUnansweredQnaCount(seller_id);
         int newReviewCount = sellerdao.getNewReviewCount(seller_id);
+        List<Map<String, Object>> noticeList = sellerdao.selectSellerNoticeList();
 
         if (orderStatusCounts != null) {
             model.addAllAttributes(orderStatusCounts); 
@@ -86,8 +89,14 @@ public class SellerController {
             model.addAllAttributes(productStatusCounts); 
         }
 
+        if (salesSummary != null) {
+            model.addAllAttributes(salesSummary);
+        }
+
         model.addAttribute("unansweredQnaCount", unansweredQnaCount); 
         model.addAttribute("newReviewCount", newReviewCount);
+        model.addAttribute("noticeList", noticeList);
+        model.addAttribute("dailySalesList", dailySalesList);
 
         return "/seller/seller_dashboard";
     }
@@ -286,7 +295,33 @@ public class SellerController {
     }
 
     @GetMapping("/seller_statistics.do")
-    public String seller_statistics(){
+    public String seller_statistics(Model model){
+
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
+
+        Map<String, Object> salesSummary = sellerdao.getSellerSalesSummary(seller_id);
+
+        List<Map<String, Object>> dailySalesList =
+                sellerdao.getSellerDailySales(seller_id);
+
+        List<Map<String, Object>> productSalesTopList =
+                sellerdao.getSellerProductSalesTop(seller_id);
+
+        List<Map<String, Object>> categorySalesList =
+                sellerdao.getSellerCategorySales(seller_id);
+
+        if (salesSummary != null) {
+            model.addAllAttributes(salesSummary);
+        }
+
+        model.addAttribute("dailySalesList", dailySalesList);
+        model.addAttribute("productSalesTopList", productSalesTopList);
+        model.addAttribute("categorySalesList", categorySalesList);
+
         return "/seller/seller_statistics";
     }
 

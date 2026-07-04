@@ -1,0 +1,393 @@
+.seller-main {
+    background: #f6f7f9;
+    min-height: 100vh;
+    padding: 38px 48px 70px;
+}
+
+.statistics-header {
+    margin-bottom: 28px;
+}
+
+.page-label {
+    display: inline-block;
+    margin-bottom: 10px;
+
+    color: #ff6f4f;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.seller-main-header h1 {
+    margin: 0;
+
+    color: #111;
+    font-size: 34px;
+    font-weight: 950;
+    letter-spacing: -0.05em;
+}
+
+.seller-main-header p {
+    margin: 10px 0 0;
+
+    color: #777;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* 상단 요약 카드 */
+.sales-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+
+    margin-bottom: 26px;
+}
+
+.sales-summary-card {
+    min-height: 132px;
+    padding: 26px;
+
+    border: 1px solid #eeeeee;
+    border-radius: 22px;
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04);
+}
+
+.sales-summary-card span {
+    color: #555;
+    font-size: 14px;
+    font-weight: 850;
+}
+
+.sales-summary-card strong {
+    display: block;
+    margin-top: 12px;
+
+    color: #111;
+    font-size: 30px;
+    font-weight: 950;
+    letter-spacing: -0.04em;
+}
+
+.sales-summary-card p {
+    margin: 10px 0 0;
+
+    color: #888;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.summary-icon {
+    width: 64px;
+    height: 64px;
+
+    border-radius: 50%;
+    background: #fff1eb;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ff6f4f;
+    font-size: 28px;
+}
+
+/* 통계 카드 */
+.statistics-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 24px;
+}
+
+.statistics-card {
+    padding: 26px;
+
+    border: 1px solid #e8e8e8;
+    border-radius: 22px;
+    background: #ffffff;
+
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+    margin-bottom: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header h3 {
+    margin: 0;
+
+    color: #111;
+    font-size: 19px;
+    font-weight: 950;
+    letter-spacing: -0.04em;
+}
+
+.card-header span {
+    height: 34px;
+    padding: 0 14px;
+
+    border: 1px solid #eeeeee;
+    border-radius: 999px;
+    background: #ffffff;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #666;
+    font-size: 13px;
+    font-weight: 850;
+}
+
+/* Chart.js 그래프 영역 */
+.chart-box {
+    width: 100%;
+    height: 360px;
+}
+
+/* 상품별 매출 순위 */
+.product-rank-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.product-rank-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.rank-num {
+    width: 30px;
+    height: 30px;
+
+    border-radius: 50%;
+    background: #fff1eb;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ff6f4f;
+    font-size: 13px;
+    font-weight: 950;
+}
+
+.product-rank-item:nth-child(1) .rank-num {
+    background: #ff6f4f;
+    color: #ffffff;
+}
+
+.product-rank-item:nth-child(2) .rank-num {
+    background: #ff9a76;
+    color: #ffffff;
+}
+
+.product-rank-item:nth-child(3) .rank-num {
+    background: #ffc2ad;
+    color: #ffffff;
+}
+
+.rank-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.rank-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.rank-top strong {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    color: #222;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.rank-top span {
+    flex-shrink: 0;
+
+    color: #555;
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.rank-bottom {
+    margin-top: 8px;
+
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.rank-bar-bg {
+    height: 8px;
+
+    border-radius: 999px;
+    background: #eeeeee;
+
+    overflow: hidden;
+}
+
+.rank-bar {
+    height: 100%;
+
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff9a76 0%, #ff5a2f 100%);
+}
+
+.rank-bottom em {
+    min-width: 90px;
+
+    color: #111;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 950;
+    text-align: right;
+}
+
+/* 안내 */
+.sales-guide-box {
+    min-height: 48px;
+    margin-top: 24px;
+    padding: 0 18px;
+
+    border: 1px solid #eeeeee;
+    border-radius: 14px;
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: #777;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.sales-guide-box i {
+    color: #ff6f4f;
+    font-size: 17px;
+}
+
+/* 빈 데이터 */
+.empty-box {
+    min-height: 260px;
+
+    border-radius: 18px;
+    background: #fafafa;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #999;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+    .sales-summary-grid,
+    .statistics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .seller-main {
+        padding: 28px 20px 60px;
+    }
+
+    .sales-summary-card {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .statistics-card {
+        padding: 20px;
+    }
+
+    .chart-box {
+        height: 300px;
+    }
+}
+
+.category-card {
+    grid-column: span 2;
+}
+
+.category-chart-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 28px;
+    align-items: center;
+}
+
+.category-chart-box {
+    width: 100%;
+    height: 320px;
+}
+
+.category-sales-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.category-sales-item {
+    min-height: 48px;
+    padding: 0 16px;
+
+    border-radius: 14px;
+    background: #fff7f3;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.category-sales-item span {
+    color: #333;
+    font-size: 14px;
+    font-weight: 850;
+}
+
+.category-sales-item strong {
+    color: #ff6f4f;
+    font-size: 15px;
+    font-weight: 950;
+}
+
+@media (max-width: 1200px) {
+    .category-card {
+        grid-column: span 1;
+    }
+
+    .category-chart-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .category-chart-box {
+        height: 280px;
+    }
+}

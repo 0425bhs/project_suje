@@ -48,4 +48,19 @@ public interface SellerDAO {
 
     SellerVO selectSellerByUserId(int user_id);
 
+    // 판매자 대시보드 공지사항 목록
+    List<Map<String, Object>> selectSellerNoticeList();
+
+    // 판매자 매출 통계
+    Map<String, Object> getSellerSalesSummary(int seller_id);
+
+    // 판매자 최근 7일 매출
+    List<Map<String, Object>> getSellerDailySales(int seller_id);
+
+    // 판매자 상품별 매출 목록
+    List<Map<String, Object>> getSellerProductSalesTop(int seller_id);
+
+    // 판매자 카테고리별 매출
+    List<Map<String, Object>> getSellerCategorySales(int seller_id);
+
 }
