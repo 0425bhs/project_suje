@@ -36,7 +36,6 @@
                 <c:forEach var="order" items="${cancelList}">
                     <div class="panel" style="margin-bottom: 20px;">
 
-
                         <!-- 취소 상품 목록 -->
                         <c:forEach var="item" items="${cancelItemMap[order.order_id]}">
                             <div class="order-item">

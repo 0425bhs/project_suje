@@ -73,6 +73,7 @@ function send(f){
 <div class="join-container">
     <form method="post" >
 
+        <input type="hidden" name="returnUrl" value="${returnUrl}" />
          <div class="form-title">배송지 추가</div>
 
         <table id = "address_input">      

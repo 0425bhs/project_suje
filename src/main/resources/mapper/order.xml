@@ -427,6 +427,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE user_id = #{user_id}
     </update>
 
+  <select id="withdrawCheck" parameterType="int" resultType="order">
+    select * from orders
+    where user_id = #{user_id}
+    and status in ('PENDING', 'PAID', 'PREPARING', 'SHIPPING')
+</select>
     <!-- 포인트 복구 이력 저장 -->
     <insert id="insertRefundPointHistory"
             parameterType="map">

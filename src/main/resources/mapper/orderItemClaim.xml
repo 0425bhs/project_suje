@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kh.suje.dao.OrderItemClaimDAO">
+
+    <!-- 교환/환불 생성 -->
+    <insert id="insertClaim" parameterType="orderitemclaim" useGeneratedKeys="true"
+            keyProperty="claim_id" keyColumn="claim_id">
+        INSERT INTO order_item_claims (
+            order_item_id,
+            status,
+            reason,
+            detail_reason
+        )
+        VALUES (
+            #{order_item_id},
+            #{status},
+            #{reason},
+            #{detail_reason} )
+    </insert>
+
+       <!-- 아이디로 교환/환불 조회-->
+    <select id="selectClaimListByUserId" parameterType="int" resultType="orderitemclaim">
+        SELECT
+            c.claim_id,
+            c.order_item_id,
+            c.status,
+            c.reason,
+            c.seller_answer,
+            c.requested_at,
+            c.completed_at,
+            c.created_at,
+            c.updated_at,
+            c.detail_reason,
+            oi.product_id,
+            p.name      AS productName,
+            p.image_l   AS imageL,
+            oi.price,
+            oi.quantity
+        FROM order_item_claims c
+        JOIN order_items oi ON c.order_item_id = oi.order_item_id
+        JOIN orders o        ON oi.order_id = o.order_id
+        JOIN products p      ON oi.product_id = p.product_id
+        WHERE o.user_id = #{userId}
+        ORDER BY c.requested_at DESC
+    </select>
+
+    <!-- 교환/환불 취소-->
+    <delete id="cancelClaim" parameterType="map">
+        DELETE FROM order_item_claims
+        WHERE claim_id = #{claim_id}
+          AND status IN ('EXCHANGE_REQUEST', 'RETURN_REQUEST')
+          AND order_item_id IN (
+              SELECT oi.order_item_id
+              FROM order_items oi
+              JOIN orders o ON oi.order_id = o.order_id
+              WHERE o.user_id = #{user_id}
+          )
+    </delete>
+   
+    
+</mapper>
