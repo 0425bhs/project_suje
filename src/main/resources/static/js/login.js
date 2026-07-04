@@ -74,6 +74,8 @@ console.log(data);
 
         if (data.param == 'noLoginId') {
             alert("아이디를 확인하세요");
+        }else if (data.param == 'withdrawnId') {
+            alert("탈퇴한 아이디입니다");                
         } else if (data.param == 'noPassword') {
             alert("비밀번호가 일치하지 않습니다");
         } else if (data.param === 'clear') { //자바에서 보낸 "clear"와 일치할 때만 성공 처리

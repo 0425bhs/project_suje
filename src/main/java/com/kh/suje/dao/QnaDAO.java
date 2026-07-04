@@ -22,9 +22,12 @@ public interface QnaDAO {
     int getWatingQnaCount(int user_id);
     int getAnsweredQnaCount(int user_id);
 
+    List<QnaVO> sellerQnaProductList(int seller_id);
+
     List<QnaVO> productQnaList(int product_id);
 
     List<QnaVO> sellerQnaList(int seller_id);
     
     int sellerQnaAnswer(Map<String, Object> map);
+
 }

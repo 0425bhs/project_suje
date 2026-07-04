@@ -27,10 +27,14 @@ public class UserVO {
 
     private String login_id; // login_id VARCHAR(100), Not null, unique
 
+    private String status;  // ENUM(active, withdrawn)
+    private String withdrawn_at;  //탈퇴일시
+
     private MultipartFile photo;
     private String photo_name;
     private String kakao_id;
     private String naver_id;
 
-    private String status;
+
+    
 }

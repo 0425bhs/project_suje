@@ -13,6 +13,8 @@ public interface SellerDAO {
     SellerVO getSellerById(int seller_id);
     List<SellerVO> getSellerListByKeyword(@Param("status") String status,
                                           @Param("keyword") String keyword,
+                                          @Param("user_id") Integer user_id,
+                                          @Param("seller_id") Integer seller_id,
                                           @Param("size") Integer size,
                                           @Param("offset") int offset,
                                           @Param("startDate") String startDate,
@@ -20,8 +22,13 @@ public interface SellerDAO {
                                           @Param("sort") String sort);
     int getSellerListCountByKeyword(@Param("status") String status,
                                     @Param("keyword") String keyword,
+                                    @Param("user_id") Integer user_id,
+                                    @Param("seller_id") Integer seller_id,
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
+
+    int updateAdminSellerStatus(@Param("seller_id") int seller_id,
+                                @Param("status") String status);
     
     int insertSeller(SellerVO svo);
     
@@ -48,19 +55,6 @@ public interface SellerDAO {
 
     SellerVO selectSellerByUserId(int user_id);
 
-    // 판매자 대시보드 공지사항 목록
-    List<Map<String, Object>> selectSellerNoticeList();
-
-    // 판매자 매출 통계
-    Map<String, Object> getSellerSalesSummary(int seller_id);
-
-    // 판매자 최근 7일 매출
-    List<Map<String, Object>> getSellerDailySales(int seller_id);
-
-    // 판매자 상품별 매출 목록
-    List<Map<String, Object>> getSellerProductSalesTop(int seller_id);
-
-    // 판매자 카테고리별 매출
-    List<Map<String, Object>> getSellerCategorySales(int seller_id);
+    int getSellerOrderCount(Map<String, Object> map);
 
 }

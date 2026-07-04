@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.suje.vo.PaginationVO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.vo.QnaVO;
 import com.kh.suje.dao.CategoryDAO;
@@ -1210,29 +1211,40 @@ public class ProductController {
     }
     
     @GetMapping("/seller_product_list.do")
-    public String seller_product_list(Model model,String status,String sort){
+    public String seller_product_list(Model model,String status,String sort,String keyword,Integer size,Integer page) {
 
-        // ⚠️ 주의: 현재 seller_id가 고정되어 있음
-        // 실제 환경에서는 로그인한 판매자의 seller_id를 가져와야 함
-        // UserVO seller = (UserVO) session.getAttribute("seller");
-        // int seller_id = seller.getSeller_id();
-        
-        //int seller_id = 1;
-
-        // ✅ 기본 정렬값 설정
-        if (sort == null || sort.equals("")){
+        // 기본 정렬값 설정
+        if (sort == null || sort.equals("")) {
             sort = "new";
         }
+
+        if (keyword != null) {
+            keyword = keyword.trim();
+        }
+
+        Map<String, Object> countMap = new HashMap<>();
+        countMap.put("status", status);
+        countMap.put("keyword", keyword);
+
+        int totalCount = productdao.seller_product_count(countMap);
+
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
 
         Map<String, Object> map = new HashMap<>();
         map.put("status", status);
         map.put("sort", sort);
+        map.put("keyword", keyword);
+        map.put("size", pagination.getSize());
+        map.put("offset", pagination.getOffset());
 
         List<ProductVO> list = productdao.seller_product_list(map);
 
         model.addAttribute("list", list);
         model.addAttribute("status", status);
         model.addAttribute("sort", sort);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
 
         return "/seller/seller_product_list";
     }

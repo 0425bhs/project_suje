@@ -12,12 +12,13 @@
             <a href="/user_modify.do" class="${param.activeMenu eq 'user_modify.do' ? 'active' : ''}">회원 정보 수정</a>
             <a href="/addressList.do" class="${param.activeMenu eq 'addressList.do' ? 'active' : ''}">배송지 관리</a>
             <a href="/update_seller.do" class="${param.activeMenu eq 'update_seller.do' ? 'active' : ''}">판매자 신청하기</a>
+            <a href="/withdraw.do" class="${param.activeMenu eq 'withdraw.do' ? 'active' : ''}">회원 탈퇴하기</a>
         </div>
         
         <div class="myshop-side-group">
             <strong>주문 관리</strong>
             <a href="/myshop/orders" class="${param.activeMenu eq 'order' ? 'active' : ''}">주문/배송내역</a>
-            <a href="/order/cancel" class="${param.activeMenu eq 'order/cancel' ? 'active' : ''}">취소/환불내역</a>
+            <a href="/myshop/claim" class="${param.activeMenu eq 'exchange_refund' ? 'active' : ''}">교환/환불내역</a>
         </div>
 
         <div class="myshop-side-group">

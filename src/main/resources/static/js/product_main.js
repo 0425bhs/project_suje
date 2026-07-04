@@ -40,8 +40,4 @@ function favoriteToggle(event, productId, heartBtn){
             heartBtn.classList.remove("active");
         }
     })
-    .catch(function (error){
-        console.log(error);
-        alert("상품 찜 처리 중 오류가 발생했습니다.");
-    });
 }

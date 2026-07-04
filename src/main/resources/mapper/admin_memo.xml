@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.suje.dao.AdminMemoDAO">
+
+    <select id="getAdminMemoList" resultType="memo">
+        SELECT m.*,
+               u.name AS admin_name
+        FROM admin_memos m
+        LEFT JOIN users u ON u.user_id = m.admin_id
+        WHERE m.target_type = #{target_type}
+        AND m.target_id = #{target_id}
+        ORDER BY m.memo_id DESC
+    </select>
+
+    <insert id="addAdminMemo" parameterType="memo">
+        INSERT INTO admin_memos (
+            target_type, target_id, admin_id, content
+        )
+        VALUES (
+            #{target_type}, #{target_id}, #{admin_id}, #{content}
+        )
+        ON DUPLICATE KEY UPDATE
+            admin_id = VALUES(admin_id),
+            content = VALUES(content),
+            updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <update id="updateAdminMemo" parameterType="memo">
+        UPDATE admin_memos
+        SET content = #{content}
+        WHERE memo_id = #{memo_id}
+    </update>
+
+    <delete id="deleteAdminMemo" parameterType="int">
+        DELETE FROM admin_memos
+        WHERE memo_id = #{memo_id}
+    </delete>
+
+</mapper>

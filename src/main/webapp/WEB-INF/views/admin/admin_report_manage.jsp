@@ -13,6 +13,18 @@
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
+            const statusLabels = {
+                PENDING: "처리대기",
+                PROCESSED: "처리완료",
+                REJECTED: "반려"
+            };
+            const managePanel = initAdminDetailManage({
+                targetType: "REPORT",
+                statusUrl: "/admin/reports/status",
+                idParam: "report_id",
+                statusBadgeId: "reportDetailStatusBadge",
+                statusLabels
+            });
 
             rows.forEach((row) => {
                 row.addEventListener("click", () => {
@@ -29,15 +41,52 @@
                     .then(res => res.json())
                     .then(data => {
                         const report = data.report;
+                        const targetLabels = {
+                            PRODUCT: "상품",
+                            REVIEW: "후기",
+                            QNA: "문의"
+                        };
+                        const statusKey = String(report.status || "").toUpperCase();
+                        const targetKey = String(report.target_type || "").toUpperCase();
+                        const statusLabel = statusLabels[statusKey] || report.status;
+                        const targetLabel = targetLabels[targetKey] || report.target_type;
 
-                        setText("reportId", report.report_id);
-                        setText("targetType", report.target_type);
-                        setText("targetId", report.target_id);
+                        setDetailTitleBlock(
+                            "reportDetailTitle",
+                            "reportDetailMeta",
+                            report.target_title || "신고 상세",
+                            (targetLabel || "-") + " · " + (report.reporter_name || "-")
+                        );
+                        setDetailStatusBadge("reportDetailStatusBadge", report.status, statusLabel);
+                        setText("targetType", targetLabel);
+                        setText("targetTitle", report.target_title || "-");
                         setText("reason", report.reason);
-                        setText("reporterId", report.reporter_id);
                         setText("reporterName", report.reporter_name);
-                        setText("status", report.status);
+                        setText("status", statusLabel);
                         setText("createdAt", report.created_at);
+                        managePanel.setTarget(report.report_id, statusKey, row);
+
+                        document.getElementById("reportMemberLink").href =
+                            "/admin/members?user_id=" + encodeURIComponent(report.reporter_id);
+                        document.getElementById("reportMemberReportsLink").href =
+                            "/admin/reports?user_id=" + encodeURIComponent(report.reporter_id);
+
+                        const targetLink = document.getElementById("reportTargetLink");
+
+                        if (targetLink) {
+                            if (targetKey === "PRODUCT") {
+                                targetLink.href = "/admin/products?product_id=" + encodeURIComponent(report.target_id);
+                                targetLink.querySelector("span").textContent = "대상 상품";
+                                targetLink.hidden = false;
+                            } else if (targetKey === "REVIEW") {
+                                targetLink.href = "/admin/reviews?review_id=" + encodeURIComponent(report.target_id);
+                                targetLink.querySelector("span").textContent = "대상 후기";
+                                targetLink.hidden = false;
+                            } else {
+                                targetLink.hidden = true;
+                            }
+                        }
+
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     });
                 });
@@ -52,23 +101,23 @@
         <jsp:param name="sidebarTitle" value="신고 관리" />
     </jsp:include>
 
-    <main class="admin-main">
+    <main class="admin-main admin-main-fixed">
         <header class="admin-main-header">
             <div>
                 <span class="admin-page-label">REPORT MANAGEMENT</span>
                 <h1>신고 관리</h1>
-                <p>접수된 신고 내용을 확인하고 처리 상태를 관리하기 위한 기본 화면입니다.</p>
             </div>
         </header>
 
-        <div class="admin-filter-box admin-filter-modern">
+        <div class="admin-fixed-list-layout">
+            <div class="admin-filter-box admin-filter-modern">
             <form class="admin-filter-form" action="/admin/reports" method="get">
                 <div class="admin-filter-main-row">
                     <div class="admin-filter-tabs">
-                        <a href="/admin/reports?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
-                        <a href="/admin/reports?status=pending&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'pending' ? 'active' : ''}">처리대기</a>
-                        <a href="/admin/reports?status=processed&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'processed' ? 'active' : ''}">처리완료</a>
-                        <a href="/admin/reports?status=rejected&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
+                        <a href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'all' ? 'active' : ''}">전체</a>
+                        <a href="/admin/reports?status=pending&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'pending' ? 'active' : ''}">처리대기</a>
+                        <a href="/admin/reports?status=processed&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'processed' ? 'active' : ''}">처리완료</a>
+                        <a href="/admin/reports?status=rejected&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1" class="${status eq 'rejected' ? 'active' : ''}">반려</a>
                     </div>
 
                     <div class="admin-search-wrap">
@@ -100,6 +149,15 @@
                             <option value="rejected" ${status eq 'rejected' ? 'selected' : ''}>반려</option>
                         </select>
                     </label>
+                    <label class="admin-filter-field">
+                        <span>대상 유형</span>
+                        <select class="admin-filter-control" name="targetType">
+                            <option value="all" ${targetType eq 'all' ? 'selected' : ''}>전체</option>
+                            <option value="PRODUCT" ${targetType eq 'PRODUCT' ? 'selected' : ''}>상품</option>
+                            <option value="REVIEW" ${targetType eq 'REVIEW' ? 'selected' : ''}>후기</option>
+                            <option value="QNA" ${targetType eq 'QNA' ? 'selected' : ''}>문의</option>
+                        </select>
+                    </label>
                     <label class="admin-filter-field admin-filter-date-range">
                         <span>접수일 범위</span>
                         <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
@@ -109,25 +167,54 @@
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
-                <c:if test="${status ne 'all' || not empty keyword || not empty startDate || not empty endDate}">
+                <c:if test="${status ne 'all' || not empty keyword || not empty user_id || targetType ne 'all' || not empty target_id || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
                         <span class="admin-filter-applied-label">적용된 조건:</span>
                         <c:if test="${status ne 'all'}">
                             <a class="admin-filter-chip"
-                                href="/admin/reports?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                href="/admin/reports?status=all&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 상태:
                                 ${status eq 'pending' ? '처리대기' : status eq 'processed' ? '처리완료' : '반려'}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
                         <c:if test="${not empty keyword}">
-                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                 검색어: ${keyword}
                                 <span aria-hidden="true">&times;</span>
                             </a>
                         </c:if>
+                        <c:if test="${not empty user_id}">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                회원:
+                                <c:choose>
+                                    <c:when test="${not empty filterUser}">
+                                        ${filterUser.name} · ${filterUser.login_id}
+                                    </c:when>
+                                    <c:otherwise>${user_id}</c:otherwise>
+                                </c:choose>
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${targetType ne 'all'}">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                대상 유형:
+                                <c:choose>
+                                    <c:when test="${targetType eq 'PRODUCT'}">상품</c:when>
+                                    <c:when test="${targetType eq 'REVIEW'}">후기</c:when>
+                                    <c:otherwise>문의</c:otherwise>
+                                </c:choose>
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
+                        <c:if test="${not empty target_id}">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                대상 번호: ${target_id}
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                        </c:if>
                         <c:if test="${not empty startDate || not empty endDate}">
-                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                            <a class="admin-filter-chip" href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&sort=${sort}&size=${pagination.size}&page=1">
                                 접수일: ${startDate} ~ ${endDate}
                                 <span aria-hidden="true">&times;</span>
                             </a>
@@ -136,6 +223,9 @@
                     </div>
                 </c:if>
 
+                <input type="hidden" name="target_id" value="${target_id}">
+
+                <input type="hidden" name="user_id" value="${user_id}">
                 <input type="hidden" name="page" value="1">
             </form>
         </div>
@@ -146,9 +236,9 @@
                     <table class="admin-table">
                         <thead>
                         <tr>
-                            <th>신고번호</th>
+                            <th>번호</th>
                             <th>대상 유형</th>
-                            <th>대상 번호</th>
+                            <th>대상 요약</th>
                             <th>사유</th>
                             <th>신고자</th>
                             <th>상태</th>
@@ -157,9 +247,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="report" items="${reportList}">
+                        <c:forEach var="report" items="${reportList}" varStatus="loop">
                         <tr class="admin-clickable-row" data-report-id="${report.report_id}">
-                            <td>${report.report_id}</td>
+                            <td>${pagination.offset + loop.index + 1}</td>
                             <td>
                                 <strong>
                                     <c:choose>    
@@ -169,7 +259,7 @@
                                     </c:choose>
                                     </strong>
                             </td>
-                            <td><strong>${report.target_id}</strong></td>
+                            <td class="admin-highlight-target">${report.target_title}</td>
                             <td class="admin-highlight-target">${report.reason}</td>
                             <td class="admin-highlight-target">${report.reporter_name}</td>
                             <td>
@@ -201,32 +291,43 @@
                 <div class="admin-detail-panel-inner">
                     <div class="admin-detail-content">
                         <div class="admin-detail-head">
-                            <div>
-                                <span class="admin-page-label">REPORT DETAIL</span>
-                                <h2 id="reportDetailTitle">신고 상세</h2>
-                            </div>
-                            <button type="button" class="admin-detail-close" aria-label="닫기">&times;</button>
-                        </div>
-                        <dl class="admin-detail-grid">
-                            <div>
-                                <dt>신고번호</dt>
-                                <dd id="reportId">-</dd>
-                            </div>
+                                        <div class="admin-detail-head-main">
+                                            <div class="admin-detail-title-block">
+                                                <div class="admin-detail-title-line">
+                                                    <h2 id="reportDetailTitle">신고 상세</h2>
+                                                    <span class="admin-detail-status-badge" id="reportDetailStatusBadge">-</span>
+                                                </div>
+                                                <p id="reportDetailMeta">목록에서 신고를 선택하세요.</p>
+                                            </div>
+                                            <div class="admin-detail-toolbar">
+                                                <button type="button" class="admin-detail-close"
+                                                    aria-label="닫기">&times;</button>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tabs">
+                                            <button type="button" class="admin-detail-tab active" data-detail-tab="info">
+                                                정보
+                                            </button>
+                                            <button type="button" class="admin-detail-tab" data-detail-tab="manage">
+                                                관리
+                                            </button>
+                                        </div>
+                                    </div>
+                        <div class="admin-detail-tab-body">
+                                        <div class="admin-detail-tab-panel active" data-detail-panel="info">
+                                            <div class="admin-detail-info-scroll">
+                                                <dl class="admin-detail-grid">
                             <div>
                                 <dt>대상 유형</dt>
                                 <dd id="targetType">-</dd>
                             </div>
                             <div>
-                                <dt>대상 번호</dt>
-                                <dd id="targetId">-</dd>
+                                <dt>대상 요약</dt>
+                                <dd id="targetTitle" class="admin-highlight-target">-</dd>
                             </div>
                             <div>
                                 <dt>사유</dt>
                                 <dd id="reason" class="admin-highlight-target">-</dd>
-                            </div>
-                            <div>
-                                <dt>신고자 번호</dt>
-                                <dd id="reporterId">-</dd>
                             </div>
                             <div>
                                 <dt>신고자</dt>
@@ -241,6 +342,61 @@
                                 <dd id="createdAt">-</dd>
                             </div>
                         </dl>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tab-panel" data-detail-panel="manage">
+                                            <div class="admin-detail-manage">
+                                                <div class="admin-detail-manage-section admin-detail-status-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>상태 관리</h3>
+                                                    </div>
+                                                    <div class="admin-detail-setting-row">
+                                                        <label class="admin-detail-control">
+                                                            <span>신고 상태</span>
+                                                            <select class="admin-filter-control admin-detail-status-control">
+                                                            <option value="PENDING">처리대기</option>
+                                                            <option value="PROCESSED">처리완료</option>
+                                                            <option value="REJECTED">반려</option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">변경 취소</button>
+                                                        <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>관리 메모</h3>
+                                                    </div>
+                                                    <textarea class="admin-detail-memo" rows="5"
+                                                        placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">메모 저장</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="reportMemberLink">
+                                                            <span>회원 관리</span>
+                                                        </a>
+                                                        <a href="#" id="reportMemberReportsLink">
+                                                            <span>회원 신고</span>
+                                                        </a>
+                                                        <a href="#" id="reportTargetLink" hidden>
+                                                            <span>신고 대상</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                     </div>
                 </div>
             </aside>
@@ -250,7 +406,7 @@
             <div class="admin-pagination-pages">
                 <c:if test="${pagination.totalPage > 0}">
                     <c:if test="${pagination.hasPrev}">
-                        <a href="/admin/reports?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                             이전
                         </a>
                     </c:if>
@@ -259,14 +415,14 @@
                     </c:if>
 
                     <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                        <a href="/admin/reports?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                             class="${pagination.page == i ? 'active' : ''}">
                             ${i}
                         </a>
                     </c:forEach>
 
                     <c:if test="${pagination.hasNext}">
-                        <a href="/admin/reports?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                        <a href="/admin/reports?status=${status}&keyword=${keyword}&user_id=${user_id}&targetType=${targetType}&target_id=${target_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                             다음
                         </a>
                     </c:if>
@@ -277,6 +433,7 @@
             </div>
             <span class="admin-filter-count">전체 ${totalCount}건</span>
         </div>
+            </div>
     </main>
 </div>
 </body>

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,6 +15,18 @@
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
             const rows = document.querySelectorAll(".admin-clickable-row");
+            const statusLabels = {
+                PENDING: "승인대기",
+                APPROVED: "승인완료",
+                REJECTED: "반려"
+            };
+            const managePanel = initAdminDetailManage({
+                targetType: "SELLER",
+                statusUrl: "/admin/sellers/status",
+                idParam: "seller_id",
+                statusBadgeId: "sellerDetailStatusBadge",
+                statusLabels
+            });
 
             rows.forEach((row) => {
                 //모든 행에 클릭 이벤트 부여
@@ -33,16 +46,35 @@
                     .then(res => res.json())
                     .then(data => {
                         const seller = data.seller;
+                        const statusKey = String(seller.status || "").toUpperCase();
+                        const statusLabel = statusLabels[statusKey] || seller.status;
 
-                        setText("sellerId", seller.seller_id);
-                        setText("userId", seller.user_id);
+                        setDetailTitleBlock(
+                            "sellerDetailTitle",
+                            "sellerDetailMeta",
+                            seller.company_name || "판매자 상세",
+                            seller.representative_name || "-"
+                        );
+                        setDetailStatusBadge("sellerDetailStatusBadge", seller.status, statusLabel);
                         setText("companyName", seller.company_name);
                         setText("representativeName", seller.representative_name);
                         setText("businessNumber", seller.business_number);
                         setText("openingDate", seller.opening_date);
                         setText("businessAddress", seller.business_address);
-                        setText("status", seller.status);
+                        setText("status", statusLabel);
                         setText("createdAt", seller.created_at);
+                        setText("productCount", seller.product_count);
+                        setText("orderCount", seller.order_count);
+                        setText("salesAmount", Number(seller.sales_amount || 0).toLocaleString("ko-KR") + "원");
+                        managePanel.setTarget(seller.seller_id, statusKey, row);
+
+                        document.getElementById("sellerMemberLink").href =
+                            "/admin/members?user_id=" + encodeURIComponent(seller.user_id);
+                        document.getElementById("sellerProductLink").href =
+                            "/admin/products?seller_id=" + encodeURIComponent(seller.seller_id);
+                        document.getElementById("sellerShopLink").href =
+                            "/seller_shop_homepage.do?seller_id=" + encodeURIComponent(seller.seller_id);
+
                         highlightAdminKeyword(document.getElementById("adminDetailPanel"));
                     })
                 });
@@ -58,26 +90,26 @@
             <jsp:param name="sidebarTitle" value="판매자 관리" />
         </jsp:include>
 
-        <main class="admin-main">
+        <main class="admin-main admin-main-fixed">
             <header class="admin-main-header">
                 <div>
                     <span class="admin-page-label">SELLER MANAGEMENT</span>
                     <h1>판매자 관리</h1>
-                    <p>판매자 신청 정보와 현재 상태를 확인합니다.</p>
                 </div>
             </header>
 
+            <div class="admin-fixed-list-layout">
             <div class="admin-filter-box admin-filter-modern">
                 <form class="admin-filter-form" action="/admin/sellers" method="get">
                     <div class="admin-filter-main-row">
                         <div class="admin-filter-tabs">
-                            <a href="/admin/sellers?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=all&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'all' ? 'active' : ''}">전체</a>
-                            <a href="/admin/sellers?status=pending&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=pending&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
-                            <a href="/admin/sellers?status=approved&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=approved&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'approved' ? 'active' : ''}">승인완료</a>
-                            <a href="/admin/sellers?status=rejected&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                            <a href="/admin/sellers?status=rejected&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                 class="${status eq 'rejected' ? 'active' : ''}">반려</a>
                         </div>
 
@@ -92,6 +124,9 @@
                             <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
                             <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
                             <option value="name" ${sort eq 'name' ? 'selected' : ''}>이름순</option>
+                            <option value="products" ${sort eq 'products' ? 'selected' : ''}>상품 많은 순</option>
+                            <option value="orders" ${sort eq 'orders' ? 'selected' : ''}>주문 많은 순</option>
+                            <option value="sales" ${sort eq 'sales' ? 'selected' : ''}>매출 높은 순</option>
                         </select>
                         <select id="pageSize" class="admin-filter-control admin-page-size-control" name="size">
                             <option value="10" ${pagination.size == 10 ? 'selected' : ''}>10개씩</option>
@@ -119,25 +154,49 @@
                         <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                     </div>
 
-                    <c:if test="${status ne 'all' || not empty keyword || not empty startDate || not empty endDate}">
+                    <c:if test="${status ne 'all' || not empty keyword || not empty user_id || not empty seller_id || not empty startDate || not empty endDate}">
                         <div class="admin-filter-applied">
                             <span class="admin-filter-applied-label">적용된 조건:</span>
                             <c:if test="${status ne 'all'}">
                                 <a class="admin-filter-chip"
-                                    href="/admin/sellers?status=all&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    href="/admin/sellers?status=all&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     상태:
                                     ${status eq 'pending' ? '승인대기' : status eq 'approved' ? '승인완료' : '반려'}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
                             <c:if test="${not empty keyword}">
-                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                     검색어: ${keyword}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
                             </c:if>
+                            <c:if test="${not empty user_id}">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    회원:
+                                    <c:choose>
+                                        <c:when test="${not empty filterUser}">
+                                            ${filterUser.name} · ${filterUser.login_id}
+                                        </c:when>
+                                        <c:otherwise>${user_id}</c:otherwise>
+                                    </c:choose>
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
+                            <c:if test="${not empty seller_id}">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
+                                    판매자:
+                                    <c:choose>
+                                        <c:when test="${not empty filterSeller}">
+                                            ${filterSeller.company_name} · ${filterSeller.representative_name}
+                                        </c:when>
+                                        <c:otherwise>${seller_id}</c:otherwise>
+                                    </c:choose>
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                            </c:if>
                             <c:if test="${not empty startDate || not empty endDate}">
-                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&sort=${sort}&size=${pagination.size}&page=1">
+                                <a class="admin-filter-chip" href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&sort=${sort}&size=${pagination.size}&page=1">
                                     신청일: ${startDate} ~ ${endDate}
                                     <span aria-hidden="true">&times;</span>
                                 </a>
@@ -146,6 +205,8 @@
                         </div>
                     </c:if>
 
+                    <input type="hidden" name="user_id" value="${user_id}">
+                    <input type="hidden" name="seller_id" value="${seller_id}">
                     <input type="hidden" name="page" value="1">
                 </form>
             </div>
@@ -156,17 +217,18 @@
                         <table class="admin-table admin-seller-table">
                             <thead>
                                 <tr>
-                                    <th>신청번호</th>
+                                    <th>번호</th>
                                     <th>상점명</th>
                                     <th>대표자</th>
-                                    <th>사업자번호</th>
+                                    <th>상품 수</th>
+                                    <th>주문 수</th>
                                     <th>상태</th>
                                     <th>신청일</th>
                                     <th>관리</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach var="seller" items="${sellerList}">
+                                <c:forEach var="seller" items="${sellerList}" varStatus="loop">
                                     <tr class="admin-clickable-row" data-user-id="${seller.user_id}"
                                         data-seller-id="${seller.seller_id}"
                                         data-company-name="${seller.company_name}"
@@ -177,10 +239,11 @@
                                         data-status="${seller.status}"
                                         data-status-label="${seller.status eq 'PENDING' ? '승인대기' : seller.status eq 'APPROVED' ? '승인완료' : '반려'}"
                                         data-created-at="${seller.created_at}">
-                                        <td>${seller.user_id}</td>
+                                        <td>${pagination.offset + loop.index + 1}</td>
                                         <td class="left admin-highlight-target"><strong>${seller.company_name}</strong></td>
                                         <td class="admin-highlight-target">${seller.representative_name}</td>
-                                        <td class="admin-highlight-target">${seller.business_number}</td>
+                                        <td>${seller.product_count}</td>
+                                        <td>${seller.order_count}</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${seller.status eq 'PENDING'}">
@@ -213,22 +276,32 @@
                     <div class="admin-detail-panel-inner">
                         <div class="admin-detail-content">
                             <div class="admin-detail-head">
-                                <div>
-                                    <span class="admin-page-label">SELLER DETAIL</span>
-                                    <h2 id="sellerDetailTitle">판매자 상세</h2>
-                                </div>
-                                <button type="button" class="admin-detail-close"
-                                    aria-label="닫기">&times;</button>
-                            </div>
-                            <dl class="admin-detail-grid">
-                                <div>
-                                    <dt>신청번호</dt>
-                                    <dd id="sellerId">-</dd>
-                                </div>
-                                <div>
-                                    <dt>판매자번호</dt>
-                                    <dd id="userId">-</dd>
-                                </div>
+                                        <div class="admin-detail-head-main">
+                                            <div class="admin-detail-title-block">
+                                                <div class="admin-detail-title-line">
+                                                    <h2 id="sellerDetailTitle">판매자 상세</h2>
+                                                    <span class="admin-detail-status-badge" id="sellerDetailStatusBadge">-</span>
+                                                </div>
+                                                <p id="sellerDetailMeta">목록에서 판매자를 선택하세요.</p>
+                                            </div>
+                                            <div class="admin-detail-toolbar">
+                                                <button type="button" class="admin-detail-close"
+                                                    aria-label="닫기">&times;</button>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tabs">
+                                            <button type="button" class="admin-detail-tab active" data-detail-tab="info">
+                                                정보
+                                            </button>
+                                            <button type="button" class="admin-detail-tab" data-detail-tab="manage">
+                                                관리
+                                            </button>
+                                        </div>
+                                    </div>
+                            <div class="admin-detail-tab-body">
+                                        <div class="admin-detail-tab-panel active" data-detail-panel="info">
+                                            <div class="admin-detail-info-scroll">
+                                                <dl class="admin-detail-grid">
                                 <div>
                                     <dt>상점명</dt>
                                     <dd id="companyName" class="admin-highlight-target">-</dd>
@@ -257,7 +330,74 @@
                                     <dt>신청일</dt>
                                     <dd id="createdAt">-</dd>
                                 </div>
+                                <div>
+                                    <dt>상품 수</dt>
+                                    <dd id="productCount">-</dd>
+                                </div>
+                                <div>
+                                    <dt>주문 수</dt>
+                                    <dd id="orderCount">-</dd>
+                                </div>
+                                <div>
+                                    <dt>매출 합계</dt>
+                                    <dd id="salesAmount">-</dd>
+                                </div>
                             </dl>
+                                            </div>
+                                        </div>
+                                        <div class="admin-detail-tab-panel" data-detail-panel="manage">
+                                            <div class="admin-detail-manage">
+                                                <div class="admin-detail-manage-section admin-detail-status-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>상태 관리</h3>
+                                                    </div>
+                                                    <div class="admin-detail-setting-row">
+                                                        <label class="admin-detail-control">
+                                                            <span>판매자 상태</span>
+                                                            <select class="admin-filter-control admin-detail-status-control">
+                                                            <option value="PENDING">승인대기</option>
+                                                            <option value="APPROVED">승인완료</option>
+                                                            <option value="REJECTED">반려</option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">변경 취소</button>
+                                                        <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>관리 메모</h3>
+                                                    </div>
+                                                    <textarea class="admin-detail-memo" rows="5"
+                                                        placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
+                                                    <div class="admin-detail-section-actions">
+                                                        <button type="button" class="admin-btn light">메모 저장</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-detail-manage-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="sellerMemberLink">
+                                                            <span>회원 관리</span>
+                                                        </a>
+                                                        <a href="#" id="sellerProductLink">
+                                                            <span>상품 관리</span>
+                                                        </a>
+                                                        <a href="#" id="sellerShopLink">
+                                                            <span>판매자 페이지</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                         </div>
                     </div>
                 </aside>
@@ -267,7 +407,7 @@
                 <div class="admin-pagination-pages">
                     <c:if test="${pagination.totalPage > 0}">
                         <c:if test="${pagination.hasPrev}">
-                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.prevPage}">
                                 이전
                             </a>
                         </c:if>
@@ -276,14 +416,14 @@
                         </c:if>
 
                         <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
-                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${i}"
                                 class="${pagination.page == i ? 'active' : ''}">
                                 ${i}
                             </a>
                         </c:forEach>
 
                         <c:if test="${pagination.hasNext}">
-                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
+                            <a href="/admin/sellers?status=${status}&keyword=${keyword}&user_id=${user_id}&seller_id=${seller_id}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=${pagination.nextPage}">
                                 다음
                             </a>
                         </c:if>
@@ -293,6 +433,7 @@
                     </c:if>
                 </div>
                 <span class="admin-filter-count">전체 ${totalCount}건</span>
+            </div>
             </div>
         </main>
     </div>
