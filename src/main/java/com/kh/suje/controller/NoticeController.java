@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.kh.suje.dao.NoticeDAO;
 import com.kh.suje.vo.NoticeVO;
+import com.kh.suje.vo.UserVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -20,21 +22,37 @@ public class NoticeController {
 
     private final NoticeDAO noticeDAO;
 
+    private boolean isAdmin(HttpSession session) {
+        UserVO user = (UserVO)session.getAttribute("user");
+        return user != null && "ADMIN".equals(user.getRole());
+    }
+
     @GetMapping("/notice_form.do")
-    private String noticeForm() {
+    private String noticeForm(HttpSession session) {
+        if (!isAdmin(session)) {
+            return "redirect:/notice_list.do";
+        }
 
         return "/notice/notice_form";
     }
 
     @PostMapping("/notice_form.do")
-    private String noticeFormFin(NoticeVO notice) {
+    private String noticeFormFin(NoticeVO notice, HttpSession session) {
+        if (!isAdmin(session)) {
+            return "redirect:/notice_list.do";
+        }
+
         noticeDAO.addNotice(notice);
 
         return "redirect:/notice_list.do";
     }
 
     @GetMapping("/notice_update_form.do")
-    private String noticeUpdateForm(Model model, int notice_id) {
+    private String noticeUpdateForm(Model model, int notice_id, HttpSession session) {
+        if (!isAdmin(session)) {
+            return "redirect:/notice_detail.do?notice_id=" + notice_id;
+        }
+
         NoticeVO notice = noticeDAO.getNoticeById(notice_id);
 
         model.addAttribute("notice", notice);
@@ -43,7 +61,11 @@ public class NoticeController {
     }
 
     @PostMapping("/notice_update_form.do")
-    private String noticeUpdateFormFin(NoticeVO notice) {
+    private String noticeUpdateFormFin(NoticeVO notice, HttpSession session) {
+        if (!isAdmin(session)) {
+            return "redirect:/notice_detail.do?notice_id=" + notice.getNotice_id();
+        }
+
         noticeDAO.updateNotice(notice);
 
         return "redirect:/notice_detail.do?notice_id="+notice.getNotice_id();
@@ -68,7 +90,11 @@ public class NoticeController {
     }
 
     @GetMapping("/notice_delete.do")
-    private String noticeDelete(Model model, int notice_id) {
+    private String noticeDelete(Model model, int notice_id, HttpSession session) {
+        if (!isAdmin(session)) {
+            return "redirect:/notice_detail.do?notice_id=" + notice_id;
+        }
+
         noticeDAO.deleteNotice(notice_id);
         
         return "redirect:/notice_list.do";
