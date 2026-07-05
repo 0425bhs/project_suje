@@ -833,7 +833,6 @@ public class AdminController {
 
         category.setName(name);
         categoryDao.addCategory(category);
-        addActionLog("CATEGORY", category.getCategory_id(), "CREATE", null, name, "카테고리 등록");
 
         map.put("success", true);
         return map;
@@ -883,8 +882,6 @@ public class AdminController {
 
         category.setName(name);
         categoryDao.updateCategory(category);
-        addActionLog("CATEGORY", category.getCategory_id(), "UPDATE",
-                     beforeCategory.getName(), name, "카테고리 수정");
 
         map.put("success", true);
         return map;
@@ -916,7 +913,6 @@ public class AdminController {
         }
 
         categoryDao.deleteCategory(category_id);
-        addActionLog("CATEGORY", category_id, "DELETE", beforeCategory.getName(), null, "카테고리 삭제");
 
         map.put("success", true);
         return map;
