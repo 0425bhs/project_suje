@@ -48,8 +48,8 @@
                         };
                         const statusKey = String(report.status || "").toUpperCase();
                         const targetKey = String(report.target_type || "").toUpperCase();
-                        const statusLabel = statusLabels[statusKey] || report.status;
-                        const targetLabel = targetLabels[targetKey] || report.target_type;
+                        const statusLabel = statusLabels[statusKey] || "알 수 없음";
+                        const targetLabel = targetLabels[targetKey] || "알 수 없음";
 
                         setDetailTitleBlock(
                             "reportDetailTitle",
@@ -59,7 +59,7 @@
                         );
                         setDetailStatusBadge("reportDetailStatusBadge", report.status, statusLabel);
                         setText("targetType", targetLabel);
-                        setText("targetTitle", report.target_title || "-");
+                        setText("targetTitle", report.target_title);
                         setText("reason", report.reason);
                         setText("reporterName", report.reporter_name);
                         setText("status", statusLabel);
@@ -243,10 +243,14 @@
                             <th>신고자</th>
                             <th>상태</th>
                             <th>접수일</th>
-                            <th>관리</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <c:if test="${empty reportList}">
+                            <tr>
+                                <td colspan="7">신고 목록이 없습니다.</td>
+                            </tr>
+                        </c:if>
                         <c:forEach var="report" items="${reportList}" varStatus="loop">
                         <tr class="admin-clickable-row" data-report-id="${report.report_id}">
                             <td>${pagination.offset + loop.index + 1}</td>
@@ -276,9 +280,6 @@
                                 </c:choose>
                             </td>
                             <td>${report.created_at}</td>
-                            <td class="admin-table-actions">
-                                <button type="button" class="admin-btn light">상세</button>
-                            </td>
                         </tr>
                         </c:forEach>
                         
@@ -316,6 +317,22 @@
                         <div class="admin-detail-tab-body">
                                         <div class="admin-detail-tab-panel active" data-detail-panel="info">
                                             <div class="admin-detail-info-scroll">
+                                                <div class="admin-detail-manage-section admin-detail-quick-link-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="reportMemberLink">
+                                                            <span>회원 관리</span>
+                                                        </a>
+                                                        <a href="#" id="reportMemberReportsLink">
+                                                            <span>회원 신고</span>
+                                                        </a>
+                                                        <a href="#" id="reportTargetLink" hidden>
+                                                            <span>신고 대상</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                                 <dl class="admin-detail-grid">
                             <div>
                                 <dt>대상 유형</dt>
@@ -360,6 +377,8 @@
                                                             </select>
                                                         </label>
                                                     </div>
+                                                    <textarea class="admin-detail-memo admin-detail-status-reason"
+                                                        rows="3" placeholder="상태 변경 사유를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">변경 취소</button>
                                                         <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
@@ -374,23 +393,6 @@
                                                         placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">메모 저장</button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="admin-detail-manage-section">
-                                                    <div class="admin-detail-section-head">
-                                                        <h3>바로가기</h3>
-                                                    </div>
-                                                    <div class="admin-detail-link-list">
-                                                        <a href="#" id="reportMemberLink">
-                                                            <span>회원 관리</span>
-                                                        </a>
-                                                        <a href="#" id="reportMemberReportsLink">
-                                                            <span>회원 신고</span>
-                                                        </a>
-                                                        <a href="#" id="reportTargetLink" hidden>
-                                                            <span>신고 대상</span>
-                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

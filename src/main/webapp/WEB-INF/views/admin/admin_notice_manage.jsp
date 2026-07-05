@@ -146,19 +146,19 @@
                             <th>번호</th>
                             <th>제목</th>
                             <th>등록일</th>
-                            <th>관리</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <c:if test="${empty noticeList}">
+                            <tr>
+                                <td colspan="3">공지 목록이 없습니다.</td>
+                            </tr>
+                        </c:if>
                         <c:forEach var="notice" items="${noticeList}" varStatus="loop">
                         <tr class="admin-clickable-row" data-notice-id="${notice.notice_id}">
                             <td>${pagination.offset + loop.index + 1}</td>
                             <td class="left admin-highlight-target"><strong>${notice.title}</strong></td>
                             <td>${notice.created_at}</td>
-                            <td class="admin-table-actions">
-                                <a href="/notice_update_form.do?notice_id=${notice.notice_id}" class="admin-btn light">수정</a>
-                                <button type="button" class="admin-btn light">상세</button>
-                            </td>
                         </tr>
                         </c:forEach>
                         </tbody>
@@ -194,6 +194,16 @@
                         <div class="admin-detail-tab-body">
                                         <div class="admin-detail-tab-panel active" data-detail-panel="info">
                                             <div class="admin-detail-info-scroll">
+                                                <div class="admin-detail-manage-section admin-detail-quick-link-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="noticePublicDetailLink">
+                                                            <span>공지 상세</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                                 <dl class="admin-detail-grid">
                             <div>
                                 <dt>제목</dt>
@@ -224,17 +234,6 @@
                                                         placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">메모 저장</button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="admin-detail-manage-section">
-                                                    <div class="admin-detail-section-head">
-                                                        <h3>바로가기</h3>
-                                                    </div>
-                                                    <div class="admin-detail-link-list">
-                                                        <a href="#" id="noticePublicDetailLink">
-                                                            <span>공지 상세</span>
-                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

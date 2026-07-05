@@ -28,7 +28,7 @@ function setText(id, value) {
 
     const text = value == null ? "" : String(value);
 
-    target.textContent = text.trim() ? text : "-";
+    target.textContent = text.trim() ? text : "없음";
 }
 
 // 상세 패널 제목 영역에 제목과 보조 정보를 출력
@@ -77,11 +77,179 @@ function loadAdminDetailMemo(targetType, targetId, memoContent) {
         });
 }
 
+function getAdminActionLabel(actionType) {
+    switch (String(actionType || "").toUpperCase()) {
+        case "ANSWER":
+            return "답변 저장";
+        case "STATUS_CHANGE":
+            return "상태 변경";
+        default:
+            return "관리 작업";
+    }
+}
+
+const ADMIN_ACTION_LOG_PREVIEW_SIZE = 3;
+
+function createAdminActionStatusBadge(status, label) {
+    const badge = document.createElement("span");
+    const statusClass = String(status || "").toLowerCase();
+
+    badge.className = "admin-detail-action-log-status-badge";
+
+    if (statusClass) {
+        badge.classList.add(statusClass);
+    }
+
+    badge.textContent = label || "없음";
+
+    return badge;
+}
+
+function ensureAdminActionLogSection() {
+    const managePanel = document.querySelector(".admin-detail-manage");
+    const statusSection = document.querySelector(".admin-detail-status-section");
+
+    if (!managePanel || !statusSection) {
+        return null;
+    }
+
+    let section = managePanel.querySelector(".admin-detail-action-log-section");
+
+    if (!section) {
+        section = document.createElement("div");
+        section.className = "admin-detail-manage-section admin-detail-action-log-section";
+
+        const head = document.createElement("div");
+        head.className = "admin-detail-section-head";
+
+        const title = document.createElement("h3");
+        title.textContent = "최근 관리 내역";
+
+        const moreLink = document.createElement("a");
+        moreLink.className = "admin-detail-action-log-more";
+        moreLink.textContent = "더보기";
+        moreLink.hidden = true;
+
+        head.append(title, moreLink);
+
+        const list = document.createElement("div");
+        list.className = "admin-detail-action-log-list";
+
+        section.append(head, list);
+        statusSection.insertAdjacentElement("afterend", section);
+    }
+
+    return section.querySelector(".admin-detail-action-log-list");
+}
+
+function renderAdminActionLogList(logList) {
+    const list = ensureAdminActionLogSection();
+
+    if (!list) {
+        return;
+    }
+
+    const section = list.closest(".admin-detail-action-log-section");
+    const moreLink = section ? section.querySelector(".admin-detail-action-log-more") : null;
+    const targetType = list.dataset.targetType;
+    const targetId = list.dataset.targetId;
+
+    list.replaceChildren();
+
+    if (moreLink) {
+        moreLink.hidden = true;
+        moreLink.removeAttribute("href");
+    }
+
+    if (moreLink && targetType && targetId) {
+        moreLink.href = "/admin/action-logs?targetType=" + encodeURIComponent(targetType)
+            + "&targetId=" + encodeURIComponent(targetId)
+            + "&page=1";
+        moreLink.hidden = false;
+    }
+
+    if (!logList || !logList.length) {
+        const empty = document.createElement("p");
+        empty.className = "admin-detail-action-log-empty";
+        empty.textContent = "최근 관리 내역이 없습니다.";
+        list.appendChild(empty);
+        return;
+    }
+
+    logList.slice(0, ADMIN_ACTION_LOG_PREVIEW_SIZE).forEach((log) => {
+        const item = document.createElement("div");
+        item.className = "admin-detail-action-log-item";
+
+        const top = document.createElement("div");
+        top.className = "admin-detail-action-log-top";
+
+        const action = document.createElement("strong");
+        action.textContent = getAdminActionLabel(log.action_type);
+
+        const date = document.createElement("span");
+        date.className = "admin-detail-action-log-date";
+        date.textContent = log.created_at || "없음";
+
+        top.append(action, date);
+
+        const status = document.createElement("p");
+        status.className = "admin-detail-action-log-status";
+
+        const beforeStatus = createAdminActionStatusBadge(log.before_status, log.beforeStatusLabel);
+        const arrow = document.createElement("span");
+        arrow.className = "admin-detail-action-log-arrow";
+        arrow.textContent = "→";
+        const afterStatus = createAdminActionStatusBadge(log.after_status, log.afterStatusLabel);
+
+        status.append(beforeStatus, arrow, afterStatus);
+
+        const meta = document.createElement("p");
+        meta.className = "admin-detail-action-log-meta";
+        meta.textContent = (log.admin_name || "관리자") + " · " + (log.memo || "없음");
+
+        item.append(top, status, meta);
+        list.appendChild(item);
+    });
+}
+
+function loadAdminActionLogs(targetType, targetId) {
+    const list = ensureAdminActionLogSection();
+
+    if (!targetType || !targetId || !list) {
+        return;
+    }
+
+    list.dataset.targetType = targetType;
+    list.dataset.targetId = targetId;
+    const actionLogSection = list.closest(".admin-detail-action-log-section");
+    const moreLink = actionLogSection ? actionLogSection.querySelector(".admin-detail-action-log-more") : null;
+
+    if (moreLink) {
+        moreLink.hidden = true;
+        moreLink.removeAttribute("href");
+    }
+
+    list.textContent = "불러오는 중...";
+
+    fetch("/admin/action-logs/recent?target_type=" + encodeURIComponent(targetType)
+        + "&target_id=" + encodeURIComponent(targetId))
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                list.textContent = data.message || "관리 내역을 불러오지 못했습니다.";
+                return;
+            }
+
+            renderAdminActionLogList(data.actionLogList);
+        });
+}
+
 function initAdminDetailManage(options) {
     const statusControl = document.querySelector(".admin-detail-status-control");
     const statusChangeButton = document.querySelector(".admin-detail-status-change");
     const statusCancelButton = document.querySelector(".admin-detail-status-section .admin-btn.light");
-    const memoContent = document.querySelector(".admin-detail-memo:not([data-admin-memo-ignore='true'])");
+    const statusReason = document.querySelector(".admin-detail-status-reason");
+    const memoContent = document.querySelector(".admin-detail-memo:not([data-admin-memo-ignore='true']):not(.admin-detail-status-reason)");
     const memoSaveButton = memoContent
         ? memoContent.closest(".admin-detail-manage-section").querySelector(".admin-detail-section-actions .admin-btn")
         : null;
@@ -94,7 +262,7 @@ function initAdminDetailManage(options) {
 
     function statusLabel(status) {
         const key = String(status || "").toUpperCase();
-        return statusLabels[key] || status || "-";
+        return statusLabels[key] || (status ? "알 수 없음" : "없음");
     }
 
     function renderStatus(status) {
@@ -146,6 +314,7 @@ function initAdminDetailManage(options) {
                 },
                 body: encodeURIComponent(config.idParam) + "=" + encodeURIComponent(selectedId)
                     + "&status=" + encodeURIComponent(statusControl.value)
+                    + "&memo=" + encodeURIComponent(statusReason ? statusReason.value : "")
             })
             .then(res => res.json())
             .then(data => {
@@ -155,6 +324,11 @@ function initAdminDetailManage(options) {
                 }
 
                 renderStatus(data.status || statusControl.value);
+                loadAdminActionLogs(config.targetType, selectedId);
+
+                if (statusReason) {
+                    statusReason.value = "";
+                }
             });
         });
     }
@@ -165,6 +339,10 @@ function initAdminDetailManage(options) {
 
             if (statusChangeButton) {
                 statusChangeButton.disabled = true;
+            }
+
+            if (statusReason) {
+                statusReason.value = "";
             }
         });
     }
@@ -207,6 +385,14 @@ function initAdminDetailManage(options) {
 
             if (memoContent && config.targetType) {
                 loadAdminDetailMemo(config.targetType, id, memoContent);
+            }
+
+            if (config.targetType) {
+                loadAdminActionLogs(config.targetType, id);
+            }
+
+            if (statusReason) {
+                statusReason.value = "";
             }
         }
     };
@@ -375,6 +561,22 @@ document.addEventListener("DOMContentLoaded", () => {
 // html 호출 이후에 키워드 하이라이트 강조
 document.addEventListener("DOMContentLoaded", () => {
     highlightAdminKeyword();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".admin-clickable-row[data-href]").forEach((row) => {
+        row.addEventListener("click", (event) => {
+            if (event.target.closest("a, button, input, select, textarea")) {
+                return;
+            }
+
+            const href = row.dataset.href;
+
+            if (href) {
+                window.location.href = href;
+            }
+        });
+    });
 });
 
 // 페이지 수 변경 SELECT가 변경시 page를 1로 변경후 submit
