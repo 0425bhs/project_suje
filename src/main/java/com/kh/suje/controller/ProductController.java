@@ -342,7 +342,7 @@ public class ProductController {
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
-        return "product/product_new_list";
+        return "product/product_search_list";
     }
    
 
