@@ -938,7 +938,7 @@ public class ProductController {
             vo.setImage_l(filename_l);
         }
 
-        vo.setStatus("APPROVED");//테스트용 삭제 예정
+        // vo.setStatus("APPROVED");//테스트용 삭제 예정
 
         // 할인 설정값 정리
         applySaleSetting(vo);

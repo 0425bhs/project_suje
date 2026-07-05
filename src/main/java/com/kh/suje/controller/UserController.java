@@ -268,6 +268,8 @@ public class UserController {
 
         if (user == null || user.getLogin_id() == null) { // 아이디가 존재하지 않을 때
             param = "noLoginId";
+        } else if ("suspended".equals(user.getStatus())) { // 정지된 아이디
+            param = "suspendedId";    
         } else if ("withdrawn".equals(user.getStatus())) { // 탈퇴한 아이디
             param = "withdrawnId";    
         } else if (!isValid) { // 아이디는 있으나 비밀번호 불일치

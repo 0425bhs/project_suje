@@ -815,10 +815,11 @@ public class AdminController {
         order.setStatus(status);
         orderDao.updateOrderStatus(order);
 
-        Map<String, Object> itemStatusMap = new HashMap<>();
-        itemStatusMap.put("order_id", order_id);
-        itemStatusMap.put("status", status);
-        orderDao.updateOrderItemsStatusByOrderId(itemStatusMap);
+        // Map<String, Object> itemStatusMap = new HashMap<>();
+        // itemStatusMap.put("order_id", order_id);
+        // itemStatusMap.put("status", status);
+        // orderDao.updateOrderItemsStatusByOrderId(itemStatusMap);
+        
         addActionLog("ORDER", order_id, "STATUS_CHANGE", beforeStatus, status, cleanMemo(memo, "주문 상태 변경"));
 
         map.put("success", true);
