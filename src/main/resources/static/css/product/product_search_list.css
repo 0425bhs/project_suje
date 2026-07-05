@@ -1,0 +1,108 @@
+/* ===========================================
+   검색 결과 페이지
+=========================================== */
+
+.new-page{
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+}
+
+.new-page-title{
+    margin-bottom: 28px;
+}
+
+.new-page-title h2{
+    margin: 0;
+    font-size: 30px;
+    font-weight: 800;
+    color: #222;
+}
+
+.new-page-title p{
+    margin-top: 10px;
+    color: #777;
+    font-size: 15px;
+}
+
+/* ===========================================
+   정렬
+=========================================== */
+
+.search-sort-row{
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.search-sort-list{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-sort-list a{
+    color: #666666;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.search-sort-list a:hover{
+    color: #ff6b4a;
+}
+
+.search-sort-list a.active{
+    color: #ff6b4a;
+    font-weight: 700;
+}
+
+.search-sort-list span{
+    color: #cccccc;
+}
+
+/* ===========================================
+   검색 결과 없음
+=========================================== */
+
+.new-empty{
+    padding: 100px 20px;
+    text-align: center;
+    border: 1px solid #eeeeee;
+    background: #fafafa;
+    color: #777777;
+    font-size: 16px;
+}
+
+/* ===========================================
+   페이징
+=========================================== */
+
+.new-page-menu{
+    margin-top: 50px;
+    text-align: center;
+}
+
+.new-page-menu a{
+    display: inline-block;
+    min-width: 34px;
+    height: 34px;
+    line-height: 34px;
+
+    margin: 0 3px;
+
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+
+    color: #444444;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.new-page-menu a:hover{
+    background: #ff6b4a;
+    border-color: #ff6b4a;
+    color: white;
+}
