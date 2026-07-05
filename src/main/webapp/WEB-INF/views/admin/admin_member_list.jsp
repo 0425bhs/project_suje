@@ -114,7 +114,7 @@
                         const seller = data.seller;
 
                         if (sellerActions && sellerManageLink && sellerShopLink) {
-                            const hasSeller = user.role === "SELLER" && seller;
+                            const hasSeller = user.role === "SELLER" && seller && seller.seller_id;
 
                             sellerActions.hidden = !hasSeller;
                             sellerManageLink.href = "/admin/sellers?user_id=" + memberId;
@@ -122,6 +122,8 @@
                             if (hasSeller) {
                                 sellerShopLink.href = "/seller_shop_homepage.do?seller_id="
                                     + encodeURIComponent(seller.seller_id);
+                            } else {
+                                sellerShopLink.removeAttribute("href");
                             }
                         }
 
@@ -353,11 +355,11 @@
 
                             <div class="admin-filter-detail-row" id="memberAdvancedFilter">
                                 <label class="admin-filter-field">
-                                    <span>성별</span>
-                                    <select class="admin-filter-control" name="gender">
-                                        <option value="all" ${gender eq 'all' ? 'selected' : ''}>전체</option>
-                                        <option value="male" ${gender eq 'male' ? 'selected' : ''}>남성</option>
-                                        <option value="female" ${gender eq 'female' ? 'selected' : ''}>여성</option>
+                                    <span>유형</span>
+                                    <select class="admin-filter-control" name="role">
+                                        <option value="all" ${role eq 'all' ? 'selected' : ''}>전체</option>
+                                        <option value="user" ${role eq 'user' ? 'selected' : ''}>일반회원</option>
+                                        <option value="seller" ${role eq 'seller' ? 'selected' : ''}>판매자</option>
                                     </select>
                                 </label>
 
@@ -368,6 +370,15 @@
                                         <option value="active" ${status eq 'active' ? 'selected' : ''}>활성</option>
                                         <option value="suspended" ${status eq 'suspended' ? 'selected' : ''}>정지</option>
                                         <option value="withdrawn" ${status eq 'withdrawn' ? 'selected' : ''}>탈퇴</option>
+                                    </select>
+                                </label>
+
+                                <label class="admin-filter-field">
+                                    <span>성별</span>
+                                    <select class="admin-filter-control" name="gender">
+                                        <option value="all" ${gender eq 'all' ? 'selected' : ''}>전체</option>
+                                        <option value="male" ${gender eq 'male' ? 'selected' : ''}>남성</option>
+                                        <option value="female" ${gender eq 'female' ? 'selected' : ''}>여성</option>
                                     </select>
                                 </label>
 
@@ -466,7 +477,6 @@
                                 </div>
                             </c:if>
 
-                            <input type="hidden" name="role" value="${role}">
                             <input type="hidden" name="user_id" value="${user_id}">
                             <input type="hidden" name="page" value="1">
                         </form>
@@ -560,23 +570,36 @@
                                     <div class="admin-detail-tab-body">
                                         <div class="admin-detail-tab-panel active" data-detail-panel="info">
                                             <div class="admin-detail-info-scroll">
-                                                <div class="admin-detail-activity">
-                                                    <a href="#" id="memberOrderLink">
-                                                        <strong id="memberOrderCount">-</strong>
-                                                        <span>주문</span>
-                                                    </a>
-                                                    <a href="#" id="memberReviewLink">
-                                                        <strong id="memberReviewCount">-</strong>
-                                                        <span>후기</span>
-                                                    </a>
-                                                    <a href="#" id="memberInquiryLink">
-                                                        <strong id="memberInquiryCount">-</strong>
-                                                        <span>문의</span>
-                                                    </a>
-                                                    <a href="#" id="memberReportLink">
-                                                        <strong id="memberReportCount">-</strong>
-                                                        <span>신고</span>
-                                                    </a>
+                                                <div class="admin-detail-manage-section admin-detail-quick-link-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-activity">
+                                                        <a href="#" id="memberOrderLink">
+                                                            <strong id="memberOrderCount">-</strong>
+                                                            <span>주문</span>
+                                                        </a>
+                                                        <a href="#" id="memberReviewLink">
+                                                            <strong id="memberReviewCount">-</strong>
+                                                            <span>후기</span>
+                                                        </a>
+                                                        <a href="#" id="memberInquiryLink">
+                                                            <strong id="memberInquiryCount">-</strong>
+                                                            <span>문의</span>
+                                                        </a>
+                                                        <a href="#" id="memberReportLink">
+                                                            <strong id="memberReportCount">-</strong>
+                                                            <span>신고</span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="admin-detail-link-list admin-detail-seller-link-list" id="memberSellerActions" hidden>
+                                                        <a href="#" id="memberSellerManageLink">
+                                                            <span>판매자 관리</span>
+                                                        </a>
+                                                        <a href="#" id="memberSellerShopLink">
+                                                            <span>판매자 페이지</span>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                                 <dl class="admin-detail-grid">
                                                     <div>
@@ -660,20 +683,6 @@
 
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light" id="adminMemoSaveButton">메모 저장</button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="admin-detail-manage-section" id="memberSellerActions" hidden>
-                                                    <div class="admin-detail-section-head">
-                                                        <h3>바로가기</h3>
-                                                    </div>
-                                                    <div class="admin-detail-link-list">
-                                                        <a href="#" id="memberSellerManageLink">
-                                                            <span>판매자 관리</span>
-                                                        </a>
-                                                        <a href="#" id="memberSellerShopLink">
-                                                            <span>판매자 페이지</span>
-                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

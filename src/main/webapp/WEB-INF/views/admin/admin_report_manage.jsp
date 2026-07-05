@@ -317,6 +317,22 @@
                         <div class="admin-detail-tab-body">
                                         <div class="admin-detail-tab-panel active" data-detail-panel="info">
                                             <div class="admin-detail-info-scroll">
+                                                <div class="admin-detail-manage-section admin-detail-quick-link-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="reportMemberLink">
+                                                            <span>회원 관리</span>
+                                                        </a>
+                                                        <a href="#" id="reportMemberReportsLink">
+                                                            <span>회원 신고</span>
+                                                        </a>
+                                                        <a href="#" id="reportTargetLink" hidden>
+                                                            <span>신고 대상</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                                 <dl class="admin-detail-grid">
                             <div>
                                 <dt>대상 유형</dt>
@@ -377,23 +393,6 @@
                                                         placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">메모 저장</button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="admin-detail-manage-section">
-                                                    <div class="admin-detail-section-head">
-                                                        <h3>바로가기</h3>
-                                                    </div>
-                                                    <div class="admin-detail-link-list">
-                                                        <a href="#" id="reportMemberLink">
-                                                            <span>회원 관리</span>
-                                                        </a>
-                                                        <a href="#" id="reportMemberReportsLink">
-                                                            <span>회원 신고</span>
-                                                        </a>
-                                                        <a href="#" id="reportTargetLink" hidden>
-                                                            <span>신고 대상</span>
-                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

@@ -392,6 +392,28 @@
                             <div class="admin-detail-tab-body">
                                         <div class="admin-detail-tab-panel active" data-detail-panel="info">
                                             <div class="admin-detail-info-scroll">
+                                                <div class="admin-detail-manage-section admin-detail-quick-link-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="productSellerLink">
+                                                            <span>판매자 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productReviewLink">
+                                                            <span>후기 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productOrderLink">
+                                                            <span>주문 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productReportLink">
+                                                            <span>신고 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productPublicLink">
+                                                            <span>상품 페이지</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                                 <dl class="admin-detail-grid">
                                 <div>
                                     <dt>대표 이미지</dt>
@@ -520,29 +542,6 @@
                                                         placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">메모 저장</button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="admin-detail-manage-section">
-                                                    <div class="admin-detail-section-head">
-                                                        <h3>바로가기</h3>
-                                                    </div>
-                                                    <div class="admin-detail-link-list">
-                                                        <a href="#" id="productSellerLink">
-                                                            <span>판매자 관리</span>
-                                                        </a>
-                                                        <a href="#" id="productReviewLink">
-                                                            <span>후기 관리</span>
-                                                        </a>
-                                                        <a href="#" id="productOrderLink">
-                                                            <span>주문 관리</span>
-                                                        </a>
-                                                        <a href="#" id="productReportLink">
-                                                            <span>신고 관리</span>
-                                                        </a>
-                                                        <a href="#" id="productPublicLink">
-                                                            <span>상품 페이지</span>
-                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

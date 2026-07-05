@@ -789,12 +789,137 @@ public class AdminController {
     }
 
     @GetMapping("/admin/categories")
-    public String categories(Model model) {
+    public String categories(Model model, Integer size, Integer page) {
 
-        List<CategoryVO> categoryList = categoryDao.getCategoryHierarchy();
-        model.addAttribute("categoryList", categoryList);
+        int totalCount = categoryDao.countParentCategories();
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+        List<CategoryVO> parentCategoryList = categoryDao.getParentCategoryPageList(pagination.getSize(),
+                                                                                   pagination.getOffset());
+        List<CategoryVO> allParentCategoryList = categoryDao.big_category_list();
+        List<CategoryVO> childCategoryList = categoryDao.small_category_all_list();
+
+        model.addAttribute("parentCategoryList", parentCategoryList);
+        model.addAttribute("allParentCategoryList", allParentCategoryList);
+        model.addAttribute("childCategoryList", childCategoryList);
+        model.addAttribute("pagination", pagination);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("childTotalCount", childCategoryList.size());
 
         return "/admin/admin_category_manage";
+    }
+
+    @PostMapping("/admin/categories/create")
+    @ResponseBody
+    public Map<String, Object> createCategory(CategoryVO category) {
+
+        Map<String, Object> map = new HashMap<>();
+        String name = category.getName() == null ? null : category.getName().trim();
+
+        if (name == null || name.isEmpty()) {
+            map.put("success", false);
+            map.put("message", "카테고리명을 입력해주세요.");
+            return map;
+        }
+
+        if (category.getParent_id() != null) {
+            CategoryVO parentCategory = categoryDao.getCategoryById(category.getParent_id());
+
+            if (parentCategory == null || parentCategory.getParent_id() != null) {
+                map.put("success", false);
+                map.put("message", "상위 카테고리는 대분류만 선택할 수 있습니다.");
+                return map;
+            }
+        }
+
+        category.setName(name);
+        categoryDao.addCategory(category);
+        addActionLog("CATEGORY", category.getCategory_id(), "CREATE", null, name, "카테고리 등록");
+
+        map.put("success", true);
+        return map;
+    }
+
+    @PostMapping("/admin/categories/update")
+    @ResponseBody
+    public Map<String, Object> updateCategory(CategoryVO category) {
+
+        Map<String, Object> map = new HashMap<>();
+        CategoryVO beforeCategory = categoryDao.getCategoryById(category.getCategory_id());
+        String name = category.getName() == null ? null : category.getName().trim();
+
+        if (beforeCategory == null) {
+            map.put("success", false);
+            map.put("message", "카테고리를 찾을 수 없습니다.");
+            return map;
+        }
+
+        if (name == null || name.isEmpty()) {
+            map.put("success", false);
+            map.put("message", "카테고리명을 입력해주세요.");
+            return map;
+        }
+
+        if (category.getParent_id() != null) {
+            if (beforeCategory.getParent_id() == null && categoryDao.countChildCategories(category.getCategory_id()) > 0) {
+                map.put("success", false);
+                map.put("message", "하위 카테고리가 있는 대분류는 하위로 이동할 수 없습니다.");
+                return map;
+            }
+
+            if (category.getParent_id() == category.getCategory_id()) {
+                map.put("success", false);
+                map.put("message", "자기 자신을 상위 카테고리로 선택할 수 없습니다.");
+                return map;
+            }
+
+            CategoryVO parentCategory = categoryDao.getCategoryById(category.getParent_id());
+
+            if (parentCategory == null || parentCategory.getParent_id() != null) {
+                map.put("success", false);
+                map.put("message", "상위 카테고리는 대분류만 선택할 수 있습니다.");
+                return map;
+            }
+        }
+
+        category.setName(name);
+        categoryDao.updateCategory(category);
+        addActionLog("CATEGORY", category.getCategory_id(), "UPDATE",
+                     beforeCategory.getName(), name, "카테고리 수정");
+
+        map.put("success", true);
+        return map;
+    }
+
+    @PostMapping("/admin/categories/delete")
+    @ResponseBody
+    public Map<String, Object> deleteCategory(int category_id) {
+
+        Map<String, Object> map = new HashMap<>();
+        CategoryVO beforeCategory = categoryDao.getCategoryById(category_id);
+
+        if (beforeCategory == null) {
+            map.put("success", false);
+            map.put("message", "카테고리를 찾을 수 없습니다.");
+            return map;
+        }
+
+        if (categoryDao.countChildCategories(category_id) > 0) {
+            map.put("success", false);
+            map.put("message", "하위 카테고리가 있는 대분류는 삭제할 수 없습니다.");
+            return map;
+        }
+
+        if (categoryDao.countProductsByCategory(category_id) > 0) {
+            map.put("success", false);
+            map.put("message", "상품에 사용 중인 카테고리는 삭제할 수 없습니다.");
+            return map;
+        }
+
+        categoryDao.deleteCategory(category_id);
+        addActionLog("CATEGORY", category_id, "DELETE", beforeCategory.getName(), null, "카테고리 삭제");
+
+        map.put("success", true);
+        return map;
     }
 
     @GetMapping("/admin/notices")

@@ -52,7 +52,7 @@
                         <span class="admin-search-icon" aria-hidden="true"></span>
                     </div>
                     <button type="submit" class="admin-btn admin-search-submit">검색</button>
-                    <button type="button" class="admin-btn light admin-filter-toggle ${not empty startDate || not empty endDate ? 'is-open' : ''}">상세 검색</button>
+                    <button type="button" class="admin-btn light admin-filter-toggle ${targetType ne 'all' || not empty startDate || not empty endDate ? 'is-open' : ''}">상세 검색</button>
                     <select class="admin-filter-control admin-sort-control" id="sort" name="sort">
                         <option value="latest" ${sort eq 'latest' ? 'selected' : ''}>최신순</option>
                         <option value="oldest" ${sort eq 'oldest' ? 'selected' : ''}>오래된순</option>
@@ -66,7 +66,19 @@
                     </select>
                 </div>
 
-                <div class="admin-filter-detail-row ${not empty startDate || not empty endDate ? 'is-open' : ''}">
+                <div class="admin-filter-detail-row ${targetType ne 'all' || not empty startDate || not empty endDate ? 'is-open' : ''}">
+                    <label class="admin-filter-field">
+                        <span>대상</span>
+                        <select class="admin-filter-control" name="targetType">
+                            <option value="all" ${targetType eq 'all' ? 'selected' : ''}>전체</option>
+                            <option value="MEMBER" ${targetType eq 'MEMBER' ? 'selected' : ''}>회원</option>
+                            <option value="SELLER" ${targetType eq 'SELLER' ? 'selected' : ''}>판매자</option>
+                            <option value="PRODUCT" ${targetType eq 'PRODUCT' ? 'selected' : ''}>상품</option>
+                            <option value="INQUIRY" ${targetType eq 'INQUIRY' ? 'selected' : ''}>문의</option>
+                            <option value="REPORT" ${targetType eq 'REPORT' ? 'selected' : ''}>신고</option>
+                            <option value="ORDER" ${targetType eq 'ORDER' ? 'selected' : ''}>주문</option>
+                        </select>
+                    </label>
                     <label class="admin-filter-field admin-filter-date-range">
                         <span>처리일 범위</span>
                         <input type="date" class="admin-filter-control" name="startDate" value="${startDate}">
@@ -76,9 +88,8 @@
                     <button type="submit" class="admin-btn admin-filter-submit">적용</button>
                 </div>
 
-                <input type="hidden" name="targetType" value="${targetType}">
-                <input type="hidden" name="actionType" value="${actionType}">
                 <input type="hidden" name="status" value="${status}">
+                <input type="hidden" name="actionType" value="${actionType}">
                 <input type="hidden" name="targetId" value="${targetId}">
                 <c:if test="${targetType ne 'all' || actionType ne 'all' || status ne 'all' || not empty targetId || not empty keyword || not empty startDate || not empty endDate}">
                     <div class="admin-filter-applied">
