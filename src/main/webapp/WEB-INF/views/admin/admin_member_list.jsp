@@ -356,7 +356,7 @@
                             <div class="admin-filter-detail-row" id="memberAdvancedFilter">
                                 <label class="admin-filter-field">
                                     <span>유형</span>
-                                    <select class="admin-filter-control" name="role">
+                                    <select class="admin-filter-control admin-detail-status-control" name="role">
                                         <option value="all" ${role eq 'all' ? 'selected' : ''}>전체</option>
                                         <option value="user" ${role eq 'user' ? 'selected' : ''}>일반회원</option>
                                         <option value="seller" ${role eq 'seller' ? 'selected' : ''}>판매자</option>
