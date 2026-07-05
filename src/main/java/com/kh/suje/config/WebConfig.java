@@ -1,11 +1,24 @@
 package com.kh.suje.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
+
+    private final AdminAuthInterceptor adminAuthInterceptor;
+
+    //관리자 페이지 권한 없으면 들어가지 못하게 막기
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(adminAuthInterceptor)
+                .addPathPatterns("/admin/**");
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

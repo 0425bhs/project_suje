@@ -513,7 +513,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN orders o ON oi.order_id = o.order_id
         JOIN products p ON oi.product_id = p.product_id
         WHERE p.seller_id = #{seller_id}
-        AND oi.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CONFIRMED')
     </select>
 
     <!-- 판매자 최근 7일 매출 -->
@@ -527,7 +526,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN orders o ON oi.order_id = o.order_id
         JOIN products p ON oi.product_id = p.product_id
         WHERE p.seller_id = #{seller_id}
-        AND oi.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CONFIRMED')
         AND o.created_at >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
         GROUP BY DATE(o.created_at)
         ORDER BY DATE(o.created_at)
@@ -546,7 +544,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN orders o ON oi.order_id = o.order_id
         JOIN products p ON oi.product_id = p.product_id
         WHERE p.seller_id = #{seller_id}
-        AND oi.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CONFIRMED')
         GROUP BY p.product_id, p.name
         ORDER BY totalSales DESC
     </select>
@@ -563,7 +560,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN products p ON oi.product_id = p.product_id
         JOIN categories c ON p.category_id = c.category_id
         WHERE p.seller_id = #{seller_id}
-        AND oi.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CONFIRMED')
         GROUP BY c.category_id, c.name
         ORDER BY salesAmount DESC
     </select>

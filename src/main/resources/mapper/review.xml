@@ -7,8 +7,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             parameterType="review"
             useGeneratedKeys="true"
             keyProperty="review_id">
-        INSERT INTO reviews (user_id, product_id, order_item_id, rating, content)
-        VALUES (#{user_id}, #{product_id}, #{order_item_id}, #{rating}, #{content})
+        INSERT INTO reviews (user_id, product_id, order_item_id, rating, content, status)
+        VALUES (#{user_id}, #{product_id}, #{order_item_id}, #{rating}, #{content}, 'ACTIVE')
     </insert>
 
     <select id="getReviewById"
@@ -46,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN products p ON oi.product_id = p.product_id
         WHERE o.user_id = #{user_id}
         AND o.status = 'DELIVERED'
+        AND r.status = 'ACTIVE'
         ORDER BY r.created_at DESC
     </select>
 
@@ -77,6 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN reviews r ON oi.order_item_id = r.order_item_id
         WHERE o.user_id = #{user_id}
         AND o.status = 'DELIVERED'
+        AND r.status = 'ACTIVE'
     </select>
 
     <select id="getWritableReviewCount"
@@ -98,6 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM reviews r
         JOIN products p ON r.product_id = p.product_id
         WHERE r.user_id = #{id}
+        AND r.status = 'ACTIVE'
         ORDER BY created_at DESC
     </select>
 
@@ -108,6 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM reviews r
         JOIN users u ON r.user_id = u.user_id
         JOIN products p ON r.product_id = p.product_id
+        WHERE r.status = 'ACTIVE'
         ORDER BY created_at DESC
         LIMIT 10
     </select>
@@ -143,6 +147,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             <if test="rating != null">
                 AND r.rating = #{rating}
+            </if>
+
+            <if test="status != null and status != '' and status != 'all'">
+                AND r.status = UPPER(#{status})
             </if>
 
             <if test="keyword != null and keyword != ''">
@@ -201,6 +209,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND r.rating = #{rating}
             </if>
 
+            <if test="status != null and status != '' and status != 'all'">
+                AND r.status = UPPER(#{status})
+            </if>
+
             <if test="keyword != null and keyword != ''">
                 AND (
                     p.name LIKE CONCAT("%", #{keyword}, "%")
@@ -227,6 +239,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE review_id = #{review_id}
     </update>
 
+    <update id="updateReviewStatus">
+        UPDATE reviews
+        SET status = #{status}
+        WHERE review_id = #{review_id}
+    </update>
+
     <delete id="deleteReview"
             parameterType="int">
         DELETE FROM reviews
@@ -241,6 +259,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             r.order_item_id,
             r.rating,
             r.content,
+            r.status,
             r.created_at,
 
             DATE_FORMAT(r.created_at, '%Y.%m.%d') AS created_at_text,
@@ -267,6 +286,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ON oi.option_id = po.option_id
 
         WHERE r.product_id = #{value}
+        AND r.status = 'ACTIVE'
 
         ORDER BY r.created_at DESC
     </select>
@@ -279,6 +299,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             r.order_item_id,
             r.rating,
             r.content,
+            r.status,
             r.created_at,
 
             DATE_FORMAT(r.created_at, '%Y.%m.%d') AS created_at_text,
@@ -302,6 +323,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ON r.order_item_id = oi.order_item_id
 
         WHERE r.product_id = #{value}
+        AND r.status = 'ACTIVE'
 
         ORDER BY r.review_id DESC
     </select>
@@ -310,6 +332,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT count(*)
         FROM reviews
         WHERE user_id = #{user_id}
+        AND status = 'ACTIVE'
     </select>
 
     <select id="bestReview" parameterType="int" resultType="map">
@@ -319,6 +342,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             r.user_id,
             r.rating,
             r.content,
+            r.status,
             DATE_FORMAT(r.created_at, '%Y-%m-%d') AS created_at,
             u.nick_name,
             u.name,
@@ -342,6 +366,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ON r.review_id = ri.review_id
 
         WHERE r.product_id = #{product_id}
+        AND r.status = 'ACTIVE'
 
         ORDER BY
             r.rating DESC,
@@ -360,6 +385,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             r.order_item_id,
             r.rating,
             r.content,
+            r.status,
             r.created_at,
 
             DATE_FORMAT(r.created_at, '%Y.%m.%d') AS created_at_text,
@@ -386,6 +412,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ON r.order_item_id = oi.order_item_id
 
         WHERE p.seller_id = #{seller_id}
+        AND r.status = 'ACTIVE'
 
         ORDER BY r.created_at DESC
     </select>
@@ -399,6 +426,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN reviews r
             ON p.product_id = r.product_id
         WHERE p.seller_id = #{seller_id}
+        AND r.status = 'ACTIVE'
         ORDER BY p.name ASC
     </select>
 
@@ -417,6 +445,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT COUNT(*)
         FROM reviews
         WHERE user_id = #{user_id}
+        AND status = 'ACTIVE'
     </select>
 
 </mapper>

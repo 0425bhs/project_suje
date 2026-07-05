@@ -650,7 +650,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             oi.price,
             oi.quantity,
             (oi.price * oi.quantity) AS subtotal_amount,
-            oi.status,
             oi.confirmed_at,
             oi.updated_at
         FROM order_items oi
