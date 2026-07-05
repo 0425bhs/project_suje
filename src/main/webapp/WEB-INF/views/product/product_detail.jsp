@@ -129,52 +129,54 @@
 
                                 <c:forEach var="review" items="${bestReview}" varStatus="status">
 
-                                    <div class="review-preview-card">
+                                    <c:if test="${status.index < 2}">
 
-                                        <c:set var="reviewPreviewImage" value="${fn:trim(review.review_image)}" />
+                                        <div class="review-preview-card">
 
-                                        <c:choose>
-                                            <c:when test="${not empty reviewPreviewImage and reviewPreviewImage ne 'no_file'}">
-                                                <c:choose>
-                                                    <c:when test="${fn:startsWith(reviewPreviewImage, '/upload/')}">
-                                                        <img class="review-preview-img" src="${reviewPreviewImage}">
-                                                    </c:when>
+                                            <c:set var="reviewPreviewImage" value="${fn:trim(review.review_image)}" />
 
-                                                    <c:otherwise>
-                                                        <img class="review-preview-img" src="/upload/${reviewPreviewImage}">
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:when>
+                                            <c:choose>
+                                                <c:when test="${not empty reviewPreviewImage and reviewPreviewImage ne 'no_file'}">
+                                                    <c:choose>
+                                                        <c:when test="${fn:startsWith(reviewPreviewImage, '/upload/')}">
+                                                            <img class="review-preview-img" src="${reviewPreviewImage}">
+                                                        </c:when>
 
-                                            <c:otherwise>
-                                                <img class="review-preview-img" src="/images/no_image.png">
-                                            </c:otherwise>
-                                        </c:choose>
+                                                        <c:otherwise>
+                                                            <img class="review-preview-img" src="/upload/${reviewPreviewImage}">
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:when>
 
-                                        <div class="review-preview-content">
+                                                <c:otherwise>
+                                                    <img class="review-preview-img" src="/images/no_image.png">
+                                                </c:otherwise>
+                                            </c:choose>
 
-                                            <div class="review-preview-top">
-                                                <span class="review-star">★</span>
-                                                <span class="review-rating">${review.rating}</span>
+                                            <div class="review-preview-content">
 
-                                                <c:if test="${status.index == 0}">
+                                                <div class="review-preview-top">
+                                                    <span class="review-star">★</span>
+                                                    <span class="review-rating">${review.rating}</span>
                                                     <span class="review-badge">베스트글</span>
-                                                </c:if>
+                                                    
+                                                </div>
+
+                                                <p class="review-preview-text">
+                                                    ${review.content}
+                                                </p>
+
                                             </div>
 
-                                            <p class="review-preview-text">
-                                                ${review.content}
-                                            </p>
+                                            <c:if test="${vo.review_count > 2 and status.index == 1}">
+                                                <a class="review-more-btn" href="#reviewBox">
+                                                    더보기
+                                                </a>
+                                            </c:if>
 
                                         </div>
 
-                                        <c:if test="${status.index == 2}">
-                                            <a class="review-more-btn" href="#reviewBox">
-                                                더보기
-                                            </a>
-                                        </c:if>
-
-                                    </div>
+                                    </c:if>
 
                                 </c:forEach>
 
@@ -696,8 +698,16 @@
 
                                 <c:forEach var="review" items="${review_list}" varStatus="status">
 
-                                    <div class="detail-review-card review-card-item" data-review-index="${status.index}"
-                                        data-rating="${empty review.rating ? 0 : review.rating}" data-photo="${not empty review.imageList ? 'Y' : 'N'}">
+                                    <c:set var="reviewImageCount" value="${not empty review.imageList ? fn:length(review.imageList) : 0}" />
+                                    <c:set var="reviewContentText" value="${empty review.content ? '' : fn:trim(review.content)}" />
+                                    <c:set var="reviewContentLength" value="${fn:length(reviewContentText)}" />
+
+                                    <div class="detail-review-card review-card-item"
+                                        data-review-index="${status.index}"
+                                        data-rating="${empty review.rating ? 0 : review.rating}"
+                                        data-photo="${reviewImageCount > 0 ? 'Y' : 'N'}"
+                                        data-image-count="${reviewImageCount}"
+                                        data-content-length="${reviewContentLength}">
 
                                         <div class="detail-review-top">
 

@@ -316,40 +316,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
             r.review_id,
             r.product_id,
-            r.user_id,
             r.rating,
             r.content,
-            DATE_FORMAT(r.created_at, '%Y-%m-%d') AS created_at,
-            u.nick_name,
-            u.name,
+            r.created_at,
+
             IFNULL(ri.image_count, 0) AS image_count,
+
             ri.review_image
 
         FROM reviews r
 
-        JOIN users u
-            ON r.user_id = u.user_id
-
         LEFT JOIN (
             SELECT
-                target_id AS review_id,
+                target_id,
                 COUNT(*) AS image_count,
                 MIN(image_url) AS review_image
             FROM images
             WHERE target_type = 'REVIEW'
             GROUP BY target_id
         ) ri
-            ON r.review_id = ri.review_id
+        ON r.review_id = ri.target_id
 
-        WHERE r.product_id = #{product_id}
+        WHERE r.product_id = #{value}
 
         ORDER BY
-            r.rating DESC,
-            CHAR_LENGTH(r.content) DESC,
             IFNULL(ri.image_count, 0) DESC,
-            r.created_at DESC
 
-        LIMIT 3
+            CASE
+                WHEN IFNULL(ri.image_count, 0) = 0
+                THEN CHAR_LENGTH(IFNULL(r.content, ''))
+                ELSE 0
+            END DESC,
+
+            r.rating DESC,
+            r.created_at DESC
+        LIMIT 2
     </select>
 
     <select id="sellerReviewList" resultType="review">

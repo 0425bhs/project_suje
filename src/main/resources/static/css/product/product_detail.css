@@ -174,12 +174,15 @@
 
 /* =========================================================
    상품 이미지 밑 리뷰 미리보기
+   - 상단 베스트리뷰는 2개만 보이도록 정리
+   - 카드 밑 가로 스크롤바 제거
 ========================================================= */
 
 .detail-review-preview-wrap {
     width: 100%;
     margin-top: 38px;
     padding-bottom: 10px;
+    overflow: hidden;
 }
 
 .review-preview-title {
@@ -205,30 +208,28 @@
 
 .review-preview-list {
     width: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 2px 4px 12px;
-    scroll-snap-type: x mandatory;
+    overflow: visible;
+    padding: 2px 0 4px;
+    scroll-snap-type: none;
 }
 
 .review-preview-list::-webkit-scrollbar {
-    height: 6px;
+    display: none;
+    width: 0;
+    height: 0;
 }
 
-.review-preview-list::-webkit-scrollbar-thumb {
-    background: #dddddd;
-    border-radius: 999px;
-}
-
+.review-preview-list::-webkit-scrollbar-thumb,
 .review-preview-list::-webkit-scrollbar-track {
     background: transparent;
 }
 
 .review-preview-card {
     position: relative;
-    flex: 0 0 265px;
+    min-width: 0;
     min-height: 118px;
     padding: 14px;
     display: flex;
@@ -238,11 +239,15 @@
     border: 1px solid #eeeeee;
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
-    scroll-snap-align: start;
+    scroll-snap-align: none;
 }
 
-.review-preview-card:nth-child(3) {
+.review-preview-card:has(.review-more-btn) {
     padding-right: 64px;
+}
+
+.review-preview-card:not(:first-child) .review-badge {
+    display: none;
 }
 
 .review-preview-img {
@@ -1811,7 +1816,7 @@
     }
 
     .review-preview-card {
-        flex-basis: 280px;
+        min-height: 116px;
     }
 }
 
@@ -1905,11 +1910,11 @@
     }
 
     .review-preview-list {
+        grid-template-columns: 1fr;
         gap: 10px;
     }
 
     .review-preview-card {
-        flex: 0 0 86%;
         min-height: 116px;
     }
 
