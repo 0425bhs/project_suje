@@ -361,6 +361,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON r.review_id = ri.target_id
 
         WHERE r.product_id = #{value}
+        AND r.status = 'ACTIVE'
 
         ORDER BY
             IFNULL(ri.image_count, 0) DESC,
