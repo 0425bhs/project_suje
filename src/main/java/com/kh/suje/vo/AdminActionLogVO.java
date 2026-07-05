@@ -117,6 +117,17 @@ public class AdminActionLogVO {
             }
         }
 
+        if ("REVIEW".equals(targetType)) {
+            switch (statusKey) {
+                case "ACTIVE":
+                    return "활성화";
+                case "HIDDEN":
+                    return "숨김";
+                default:
+                    return "알 수 없음";
+            }
+        }
+
         return "알 수 없음";
     }
 }

@@ -25,6 +25,7 @@ public interface ReviewDAO {
                                           @Param("product_id") Integer product_id,
                                           @Param("review_id") Integer review_id,
                                           @Param("rating") Integer rating,
+                                          @Param("status") String status,
                                           @Param("size") Integer size,
                                           @Param("offset") int offset,
                                           @Param("startDate") String startDate,
@@ -35,6 +36,7 @@ public interface ReviewDAO {
                                     @Param("product_id") Integer product_id,
                                     @Param("review_id") Integer review_id,
                                     @Param("rating") Integer rating,
+                                    @Param("status") String status,
                                     @Param("startDate") String startDate,
                                     @Param("endDate") String endDate);
 
@@ -42,6 +44,7 @@ public interface ReviewDAO {
     List<ReviewVO> getProductReviewList(int product_id);
     
     int updateReview(ReviewVO review);
+    int updateReviewStatus(@Param("review_id") int review_id, @Param("status") String status);
     int deleteReview(int review_id);
 
     List<ReviewVO> productReviewList(int product_id);

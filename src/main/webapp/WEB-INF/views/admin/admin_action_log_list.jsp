@@ -38,6 +38,8 @@
                            class="${targetType eq 'SELLER' ? 'active' : ''}">판매자</a>
                         <a href="/admin/action-logs?targetType=PRODUCT&actionType=${actionType}&status=${status}&targetId=${targetId}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                            class="${targetType eq 'PRODUCT' ? 'active' : ''}">상품</a>
+                        <a href="/admin/action-logs?targetType=REVIEW&actionType=${actionType}&status=${status}&targetId=${targetId}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                           class="${targetType eq 'REVIEW' ? 'active' : ''}">후기</a>
                         <a href="/admin/action-logs?targetType=INQUIRY&actionType=${actionType}&status=${status}&targetId=${targetId}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                            class="${targetType eq 'INQUIRY' ? 'active' : ''}">문의</a>
                         <a href="/admin/action-logs?targetType=REPORT&actionType=${actionType}&status=${status}&targetId=${targetId}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
@@ -74,6 +76,7 @@
                             <option value="MEMBER" ${targetType eq 'MEMBER' ? 'selected' : ''}>회원</option>
                             <option value="SELLER" ${targetType eq 'SELLER' ? 'selected' : ''}>판매자</option>
                             <option value="PRODUCT" ${targetType eq 'PRODUCT' ? 'selected' : ''}>상품</option>
+                            <option value="REVIEW" ${targetType eq 'REVIEW' ? 'selected' : ''}>후기</option>
                             <option value="INQUIRY" ${targetType eq 'INQUIRY' ? 'selected' : ''}>문의</option>
                             <option value="REPORT" ${targetType eq 'REPORT' ? 'selected' : ''}>신고</option>
                             <option value="ORDER" ${targetType eq 'ORDER' ? 'selected' : ''}>주문</option>
@@ -101,6 +104,7 @@
                                     <c:when test="${targetType eq 'MEMBER'}">회원</c:when>
                                     <c:when test="${targetType eq 'SELLER'}">판매자</c:when>
                                     <c:when test="${targetType eq 'PRODUCT'}">상품</c:when>
+                                    <c:when test="${targetType eq 'REVIEW'}">후기</c:when>
                                     <c:when test="${targetType eq 'INQUIRY'}">문의</c:when>
                                     <c:when test="${targetType eq 'REPORT'}">신고</c:when>
                                     <c:when test="${targetType eq 'ORDER'}">주문</c:when>
@@ -196,6 +200,9 @@
                                     <c:when test="${log.target_type eq 'PRODUCT'}">
                                         <c:set var="targetHref" value="/admin/products?product_id=${log.target_id}&page=1" />
                                     </c:when>
+                                    <c:when test="${log.target_type eq 'REVIEW'}">
+                                        <c:set var="targetHref" value="/admin/reviews?review_id=${log.target_id}&page=1" />
+                                    </c:when>
                                     <c:when test="${log.target_type eq 'INQUIRY'}">
                                         <c:set var="targetHref" value="/admin/inquiries?status=all&page=1" />
                                     </c:when>
@@ -217,6 +224,7 @@
                                             <c:when test="${log.target_type eq 'MEMBER'}">회원 #${log.target_id}</c:when>
                                             <c:when test="${log.target_type eq 'SELLER'}">판매자 #${log.target_id}</c:when>
                                             <c:when test="${log.target_type eq 'PRODUCT'}">상품 #${log.target_id}</c:when>
+                                            <c:when test="${log.target_type eq 'REVIEW'}">후기 #${log.target_id}</c:when>
                                             <c:when test="${log.target_type eq 'INQUIRY'}">문의 #${log.target_id}</c:when>
                                             <c:when test="${log.target_type eq 'REPORT'}">신고 #${log.target_id}</c:when>
                                             <c:when test="${log.target_type eq 'ORDER'}">주문 #${log.target_id}</c:when>

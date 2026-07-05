@@ -619,9 +619,13 @@ public class AdminController {
     @GetMapping("/admin/reviews")
     public String reviews(Model model, String keyword,
                           Integer user_id, Integer product_id, Integer review_id,
-                          Integer rating,
+                          Integer rating, String status,
                           String startDate, String endDate,
                           String sort, Integer size, Integer page) {
+        if (!"active".equals(status) && !"hidden".equals(status)) {
+            status = "all";
+        }
+
         if (rating != null && (rating < 1 || rating > 5)) {
             rating = null;
         }
@@ -633,13 +637,15 @@ public class AdminController {
         UserVO filterUser = user_id == null ? null : userDao.selectUser(user_id);
         ProductVO filterProduct = product_id == null ? null : productDao.product_one(product_id);
         ReviewVO filterReview = review_id == null ? null : reviewDao.getReviewById(review_id);
-        int totalCount = reviewDao.getReviewListCountByKeyword(keyword, user_id, product_id, review_id, rating, startDate, endDate);
+        int totalCount = reviewDao.getReviewListCountByKeyword(keyword, user_id, product_id, review_id, rating, status,
+                                                               startDate, endDate);
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
         List<ReviewVO> reviewList = reviewDao.getReviewListByKeyword(keyword,
                                                                      user_id,
                                                                      product_id,
                                                                      review_id,
                                                                      rating,
+                                                                     status,
                                                                      pagination.getSize(),
                                                                      pagination.getOffset(),
                                                                      startDate, endDate,
@@ -650,6 +656,7 @@ public class AdminController {
         model.addAttribute("product_id", product_id);
         model.addAttribute("review_id", review_id);
         model.addAttribute("rating", rating);
+        model.addAttribute("status", status);
         model.addAttribute("filterUser", filterUser);
         model.addAttribute("filterProduct", filterProduct);
         model.addAttribute("filterReview", filterReview);
@@ -678,6 +685,38 @@ public class AdminController {
 
         map.put("success", true);
         map.put("review", review);
+        return map;
+    }
+
+    @PostMapping("/admin/reviews/status")
+    @ResponseBody
+    public Map<String, Object> updateReviewStatus(int review_id, String status, String memo) {
+
+        Map<String, Object> map = new HashMap<>();
+        String nextStatus = status == null ? "" : status.toUpperCase();
+
+        if (!"ACTIVE".equals(nextStatus) && !"HIDDEN".equals(nextStatus)) {
+            map.put("success", false);
+            map.put("message", "잘못된 상태입니다.");
+            return map;
+        }
+
+        ReviewVO review = reviewDao.getReviewById(review_id);
+
+        if (review == null) {
+            map.put("success", false);
+            map.put("message", "후기 정보를 찾을 수 없습니다.");
+            return map;
+        }
+
+        String beforeStatus = review.getStatus() == null ? "ACTIVE" : review.getStatus();
+        reviewDao.updateReviewStatus(review_id, nextStatus);
+        addActionLog("REVIEW", review_id, "STATUS_CHANGE", beforeStatus, nextStatus,
+                     cleanMemo(memo, "후기 상태 변경"));
+
+        map.put("success", true);
+        map.put("status", nextStatus);
+
         return map;
     }
 

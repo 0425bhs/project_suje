@@ -102,6 +102,9 @@
                                         <c:when test="${log.target_type eq 'PRODUCT'}">
                                             <c:set var="targetHref" value="/admin/products?product_id=${log.target_id}&page=1" />
                                         </c:when>
+                                        <c:when test="${log.target_type eq 'REVIEW'}">
+                                            <c:set var="targetHref" value="/admin/reviews?review_id=${log.target_id}&page=1" />
+                                        </c:when>
                                         <c:when test="${log.target_type eq 'INQUIRY'}">
                                             <c:set var="targetHref" value="/admin/inquiries?status=all&page=1" />
                                         </c:when>
@@ -122,6 +125,7 @@
                                                 <c:when test="${log.target_type eq 'MEMBER'}">회원 #${log.target_id}</c:when>
                                                 <c:when test="${log.target_type eq 'SELLER'}">판매자 #${log.target_id}</c:when>
                                                 <c:when test="${log.target_type eq 'PRODUCT'}">상품 #${log.target_id}</c:when>
+                                                <c:when test="${log.target_type eq 'REVIEW'}">후기 #${log.target_id}</c:when>
                                                 <c:when test="${log.target_type eq 'INQUIRY'}">문의 #${log.target_id}</c:when>
                                                 <c:when test="${log.target_type eq 'REPORT'}">신고 #${log.target_id}</c:when>
                                                 <c:when test="${log.target_type eq 'ORDER'}">주문 #${log.target_id}</c:when>
