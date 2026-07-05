@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/product/product_card.css">
+    <script src="/js/product_main.js"></script>
 </head>
 
 <body>

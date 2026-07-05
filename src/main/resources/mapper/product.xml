@@ -389,22 +389,56 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
             p.*,
             s.company_name,
+
+            IFNULL(fv.favorite_count, 0) AS favorite_count,
+            IFNULL(rv.review_count, 0) AS review_count,
+            IFNULL(sa.sales_count, 0) AS sales_count
             IFNULL(rv.review_avg, 0) AS review_avg,
             IFNULL(rv.review_count, 0) AS review_count
         FROM products p
+
         JOIN sellers s
         ON p.seller_id = s.seller_id
+
+        LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(*) AS favorite_count
+            FROM favorites
+            GROUP BY product_id
+        ) fv
+        ON p.product_id = fv.product_id
+
         LEFT JOIN (
             SELECT
                 product_id,
                 AVG(rating) AS review_avg,
                 COUNT(review_id) AS review_count
+
             FROM reviews
             GROUP BY product_id
         ) rv
         ON p.product_id = rv.product_id
+
+           
+        LEFT JOIN (
+            SELECT
+                oi.product_id,
+                SUM(oi.quantity) AS sales_count
+            FROM order_items oi
+
+            JOIN orders o
+            ON oi.order_id = o.order_id
+
+            WHERE o.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED')
+
+            GROUP BY oi.product_id
+        ) sa
+        ON p.product_id = sa.product_id
+           
         WHERE p.status = 'APPROVED'
         AND s.seller_status = 'APPROVED'
+
         AND (
             p.category_id = #{category_id}
             OR p.category_id IN (
@@ -415,6 +449,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )
 
         <choose>
+
             <!-- 최신순 -->
             <when test="sort == 'new'">
                 ORDER BY p.product_id DESC
@@ -424,8 +459,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="sort == 'discount'">
                 ORDER BY
                     CASE
-                        WHEN sale_price > 0 AND sale_price &lt; price
-                        THEN ((price - sale_price) / price)
+                        WHEN p.sale_price > 0
+                        AND p.sale_price &lt; p.price
+                        THEN ((p.price - p.sale_price) / p.price)
                         ELSE 0
                     END DESC,
                     p.product_id DESC
@@ -435,9 +471,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="sort == 'lowPrice'">
                 ORDER BY
                     CASE
-                        WHEN sale_price > 0 AND sale_price &lt; price
-                        THEN sale_price
-                        ELSE price
+                        WHEN p.sale_price > 0
+                        AND p.sale_price &lt; p.price
+                        THEN p.sale_price
+                        ELSE p.price
                     END ASC,
                     p.product_id DESC
             </when>
@@ -446,30 +483,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="sort == 'highPrice'">
                 ORDER BY
                     CASE
-                        WHEN sale_price > 0 AND sale_price &lt; price
-                        THEN sale_price
-                        ELSE price
+                        WHEN p.sale_price > 0
+                        AND p.sale_price &lt; p.price
+                        THEN p.sale_price
+                        ELSE p.price
                     END DESC,
                     p.product_id DESC
             </when>
 
-            <!-- 아직 실제 데이터 없는 정렬은 임시 최신순 -->
+            <!-- 찜 많은순 -->
             <when test="sort == 'likes'">
-                ORDER BY p.product_id DESC
+                ORDER BY
+                    IFNULL(fv.favorite_count, 0) DESC,
+                    p.product_id DESC
             </when>
 
+            <!-- 리뷰 많은순 -->
             <when test="sort == 'reviews'">
-                ORDER BY IFNULL(rv.review_count, 0) DESC, p.product_id DESC
+                ORDER BY
+                    IFNULL(rv.review_count, 0) DESC,
+                    p.product_id DESC
             </when>
 
+            <!-- 판매 많은순 -->
             <when test="sort == 'sales'">
-                ORDER BY p.product_id DESC
+                ORDER BY
+                    IFNULL(sa.sales_count, 0) DESC,
+                    p.product_id DESC
             </when>
 
-            <!-- 인기순 / 기본값 -->
+            <!-- 인기순 -->
             <otherwise>
-                ORDER BY p.product_id DESC
+                ORDER BY
+                    (
+                        IFNULL(fv.favorite_count, 0)
+                        + IFNULL(rv.review_count, 0)
+                        + IFNULL(sa.sales_count, 0)
+                    ) DESC,
+                    p.product_id DESC
             </otherwise>
+
         </choose>
 
         LIMIT #{start}, #{blockList}
@@ -495,11 +548,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
             p.*,
             s.company_name,
-            IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count
+
+            CASE
+                WHEN p.sale_price IS NOT NULL
+                AND p.sale_price > 0
+                AND p.sale_price < p.price
+                THEN FLOOR(((p.price - p.sale_price) / p.price) * 100)
+                ELSE 0
+            END AS sale_rate,
+
+            IFNULL(fv.favorite_count, 0) AS favorite_count,
+            IFNULL(rv.review_count, 0) AS review_count,
+            IFNULL(sa.sales_count, 0) AS sales_count,
+            IFNULL(rv.review_avg, 0) AS review_avg
+
         FROM products p
-        JOIN sellers s 
+
+        JOIN sellers s
         ON p.seller_id = s.seller_id
+
+        LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(*) AS favorite_count
+            FROM favorites
+            GROUP BY product_id
+        ) fv
+        ON p.product_id = fv.product_id
+
         LEFT JOIN (
             SELECT
                 product_id,
@@ -509,6 +585,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             GROUP BY product_id
         ) rv
         ON p.product_id = rv.product_id
+
+        LEFT JOIN (
+            SELECT
+                oi.product_id,
+                SUM(oi.quantity) AS sales_count
+            FROM order_items oi
+
+            JOIN orders o
+            ON oi.order_id = o.order_id
+
+            WHERE o.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED')
+
+            GROUP BY oi.product_id
+        ) sa
+        ON p.product_id = sa.product_id
+
         WHERE p.status = 'APPROVED'
         AND s.seller_status = 'APPROVED'
         AND (
@@ -516,7 +608,76 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             OR s.company_name LIKE CONCAT('%', #{keyword}, '%')
             OR p.description LIKE CONCAT('%', #{keyword}, '%')
         )
-        ORDER BY p.product_id DESC
+
+        <choose>
+
+            <when test="sort == 'new'">
+                ORDER BY p.product_id DESC
+            </when>
+
+            <when test="sort == 'discount'">
+                ORDER BY
+                    CASE
+                        WHEN p.sale_price > 0
+                        AND p.sale_price < p.price
+                        THEN ((p.price - p.sale_price) / p.price)
+                        ELSE 0
+                    END DESC,
+                    p.product_id DESC
+            </when>
+
+            <when test="sort == 'lowPrice'">
+                ORDER BY
+                    CASE
+                        WHEN p.sale_price > 0
+                        AND p.sale_price < p.price
+                        THEN p.sale_price
+                        ELSE p.price
+                    END ASC,
+                    p.product_id DESC
+            </when>
+
+            <when test="sort == 'highPrice'">
+                ORDER BY
+                    CASE
+                        WHEN p.sale_price > 0
+                        AND p.sale_price < p.price
+                        THEN p.sale_price
+                        ELSE p.price
+                    END DESC,
+                    p.product_id DESC
+            </when>
+
+            <when test="sort == 'likes'">
+                ORDER BY
+                    IFNULL(fv.favorite_count, 0) DESC,
+                    p.product_id DESC
+            </when>
+
+            <when test="sort == 'reviews'">
+                ORDER BY
+                    IFNULL(rv.review_count, 0) DESC,
+                    p.product_id DESC
+            </when>
+
+            <when test="sort == 'sales'">
+                ORDER BY
+                    IFNULL(sa.sales_count, 0) DESC,
+                    p.product_id DESC
+            </when>
+
+            <otherwise>
+                ORDER BY
+                    (
+                        IFNULL(fv.favorite_count, 0)
+                        + IFNULL(rv.review_count, 0)
+                        + IFNULL(sa.sales_count, 0)
+                    ) DESC,
+                    p.product_id DESC
+            </otherwise>
+
+        </choose>
+
         LIMIT #{start}, #{blockList}
     </select>
 
