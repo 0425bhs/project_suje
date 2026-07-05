@@ -856,21 +856,47 @@ function initProductDetailReviewFilter(){
 
         if(currentTab === "best"){
             filteredCards.sort(function(a,b){
+
+                const imageCountA = Number(a.dataset.imageCount || 0);
+                const imageCountB = Number(b.dataset.imageCount || 0);
+
+                const contentLengthA = Number(a.dataset.contentLength || 0);
+                const contentLengthB = Number(b.dataset.contentLength || 0);
+
                 const ratingA = Number(a.dataset.rating || 0);
                 const ratingB = Number(b.dataset.rating || 0);
+
+                const indexA = Number(a.dataset.reviewIndex || 0);
+                const indexB = Number(b.dataset.reviewIndex || 0);
+
+                const hasImageA = imageCountA > 0;
+                const hasImageB = imageCountB > 0;
+
+                if(hasImageA !== hasImageB){
+                    return hasImageB - hasImageA;
+                }
+
+                if(hasImageA && hasImageB){
+                    if(imageCountB !== imageCountA){
+                        return imageCountB - imageCountA;
+                    }
+
+                    if(ratingB !== ratingA){
+                        return ratingB - ratingA;
+                    }
+
+                    return indexA - indexB;
+                }
+
+                if(contentLengthB !== contentLengthA){
+                    return contentLengthB - contentLengthA;
+                }
 
                 if(ratingB !== ratingA){
                     return ratingB - ratingA;
                 }
 
-                const photoA = a.dataset.photo === "Y" ? 1 : 0;
-                const photoB = b.dataset.photo === "Y" ? 1 : 0;
-
-                if(photoB !== photoA){
-                    return photoB - photoA;
-                }
-
-                return Number(a.dataset.reviewIndex) - Number(b.dataset.reviewIndex);
+                return indexA - indexB;
             });
         } else {
             filteredCards.sort(function(a,b){
