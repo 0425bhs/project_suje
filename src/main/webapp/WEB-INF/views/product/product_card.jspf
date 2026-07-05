@@ -111,9 +111,13 @@
 
         <div class="common-review-line">
             <span class="review-star">&#9733;</span>
-            <span class="review-score">4.86</span>
+            <span class="review-score">
+                <fmt:formatNumber value="${vo.review_avg}" pattern="0.0" />
+            </span>
             <span class="review-dot">&middot;</span>
-            <span class="review-count">&#47532;&#48624; 215</span>
+            <span class="review-count">
+                &#47532;&#48624; <fmt:formatNumber value="${vo.review_count}" pattern="#,###" />
+            </span>
         </div>
 
     </div>
