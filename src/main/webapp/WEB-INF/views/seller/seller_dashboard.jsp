@@ -171,13 +171,13 @@
                     <c:otherwise>
                         <div class="notice-list">
                             <c:forEach var="notice" items="${noticeList}">
-                                <div class="notice-item">
+                                <a href="/notice_detail.do?notice_id=${notice.notice_id}" class="notice-item">
                                     <div class="notice-title-wrap">
                                         <span class="notice-badge">공지</span>
                                         <strong>${notice.title}</strong>
                                     </div>
                                     <small>${notice.created_at}</small>
-                                </div>
+                                </a>
                             </c:forEach>
                         </div>
                     </c:otherwise>

@@ -199,11 +199,11 @@ public class PaymentController {
 
                 orderDAO.updateOrderStatus(orderVO);
 
-                Map<String, Object> itemStatusMap = new HashMap<>();
-                itemStatusMap.put("order_id", order_id);
-                itemStatusMap.put("status", "PAID");
+                // Map<String, Object> itemStatusMap = new HashMap<>();
+                // itemStatusMap.put("order_id", order_id);
+                // itemStatusMap.put("status", "PAID");
 
-                orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
+                // orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
 
                 List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order_id);
 
@@ -362,11 +362,11 @@ public class PaymentController {
 
                 int orderResult = orderDAO.updateOrderCancelInfo(orderVO);
 
-                Map<String, Object> itemStatusMap = new HashMap<>();
-                itemStatusMap.put("order_id", order_id);
-                itemStatusMap.put("status", "CANCELLED");
+                // Map<String, Object> itemStatusMap = new HashMap<>();
+                // itemStatusMap.put("order_id", order_id);
+                // itemStatusMap.put("status", "CANCELLED");
 
-                orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
+                // orderDAO.updateOrderItemsStatusByOrderId(itemStatusMap);
 
                 if (paymentResult == 0 || orderResult == 0) {
                     model.addAttribute("order_id", order_id);

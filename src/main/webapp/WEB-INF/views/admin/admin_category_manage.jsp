@@ -203,7 +203,7 @@
                                     <span class="admin-category-arrow" aria-hidden="true"></span>
                                     <span class="admin-category-title">
                                         <strong>${parent.name}</strong>
-                                        <span>#${parent.category_id}</span>
+                                        <!-- <span>#${parent.category_id}</span> -->
                                     </span>
                                 </button>
                                 <div class="admin-category-actions">
@@ -239,7 +239,7 @@
                                         <div class="admin-category-child">
                                             <div class="admin-category-child-name">
                                                 <span>${child.name}</span>
-                                                <em>#${child.category_id}</em>
+                                                <!-- <em>#${child.category_id}</em> -->
                                             </div>
                                             <div class="admin-category-actions">
                                                 <button type="button"
