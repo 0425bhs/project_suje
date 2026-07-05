@@ -85,15 +85,28 @@
                     <div class="form-section">
 
                         <div class="form-row category-row">
-                            <label>카테고리</label>
+                            <label>대분류 카테고리</label>
 
-                            <select name="category_id" class="category-select">
-                                <option value="1" ${vo.category_id == 1 ? 'selected' : ''}>패션/주얼리</option>
-                                <option value="2" ${vo.category_id == 2 ? 'selected' : ''}>홈리빙</option>
-                                <option value="3" ${vo.category_id == 3 ? 'selected' : ''}>뷰티</option>
-                                <option value="4" ${vo.category_id == 4 ? 'selected' : ''}>식품</option>
-                                <option value="5" ${vo.category_id == 5 ? 'selected' : ''}>공예</option>
-                                <option value="6" ${vo.category_id == 6 ? 'selected' : ''}>반려동물</option>
+                            <select id="big_category_id" class="category-select">
+                                <option value="">대분류 선택</option>
+                                <c:forEach var="category" items="${bigCategoryList}">
+                                    <option value="${category.category_id}" ${selectedBigCategoryId == category.category_id ? 'selected' : ''}>
+                                        ${category.name}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+
+                        <div class="form-row category-row">
+                            <label>소분류 카테고리</label>
+
+                            <select name="category_id" id="category_id" class="category-select">
+                                <option value="">하위 카테고리 선택</option>
+                                <c:forEach var="category" items="${smallCategoryList}">
+                                    <option value="${category.category_id}" ${vo.category_id == category.category_id ? 'selected' : ''}>
+                                        ${category.name}
+                                    </option>
+                                </c:forEach>
                             </select>
                         </div>
 

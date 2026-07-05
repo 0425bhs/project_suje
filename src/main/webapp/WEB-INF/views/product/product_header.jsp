@@ -111,28 +111,42 @@
         <!-- 우측 메뉴 -->
         <div class="product-header-actions">
 
+            <!-- 판매자센터-->
+            <c:if test="${not empty sessionScope.user 
+                        and (sessionScope.user.role eq 'SELLER')}">
+                <a href="/seller_dashboard.do">판매자센터</a>
+            </c:if>
+
+            <!-- 관리자센터 -->
+            <c:if test="${not empty sessionScope.user 
+                        and (sessionScope.user.role eq 'ADMIN')}">
+                <a href="/admin">관리자센터</a>
+            </c:if>
+
             <!-- 로그인 후에만 주문내역 표시 -->
-            <c:if test="${not empty sessionScope.user}">
+            <c:if test="${not empty sessionScope.user
+                          and (sessionScope.user.role ne 'ADMIN')}">
                 <a href="/myshop">마이쇼핑</a>
             </c:if>
 
-            <!-- 판매자센터는 현재 그대로 노출 -->
-            <a href="/seller_dashboard.do">판매자센터</a>
-
             <!-- 장바구니 -->
-            <a href="/cart_list.do" class="header-cart-link">
+             <c:if test="${not empty sessionScope.user
+                           and (sessionScope.user.role ne 'ADMIN')}">
+                <a href="/cart_list.do" class="header-cart-link">
 
-                <span class="header-cart-icon-wrap">
-                    <span class="header-cart-icon">🛒</span>
+                    <span class="header-cart-icon-wrap">
+                        <span class="header-cart-icon">🛒</span>
 
-                    <c:if test="${not empty sessionScope.user and cartCount > 0}">
-                        <span class="header-cart-badge">${cartCount}</span>
-                    </c:if>
-                </span>
+                        <c:if test="${not empty sessionScope.user and cartCount > 0}">
+                            <span class="header-cart-badge">${cartCount}</span>
+                        </c:if>
+                    </span>
 
-                <span class="header-cart-text">장바구니</span>
+                    <span class="header-cart-text">장바구니</span>
 
-            </a>
+                </a>
+             </c:if>
+
         </div>
 
     </div>

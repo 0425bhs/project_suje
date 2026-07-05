@@ -58,8 +58,8 @@
                                     };
                                     const statusKey = String(inquiry.status || "").toUpperCase();
                                     const typeKey = String(inquiry.inquiry_type || "").toUpperCase();
-                                    const statusLabel = statusLabels[statusKey] || inquiry.status;
-                                    const typeLabel = typeLabels[typeKey] || inquiry.inquiry_type;
+                                    const statusLabel = statusLabels[statusKey] || "알 수 없음";
+                                    const typeLabel = typeLabels[typeKey] || "알 수 없음";
 
                                     setDetailTitleBlock(
                                         "inquiryDetailTitle",
@@ -74,8 +74,8 @@
                                     setText("content", inquiry.content);
                                     setText("status", statusLabel);
                                     setText("createdAt", inquiry.created_at);
-                                    setText("answer", inquiry.answer || "-");
-                                    setText("answeredAt", inquiry.answered_at || "-");
+                                    setText("answer", inquiry.answer);
+                                    setText("answeredAt", inquiry.answered_at);
                                     const answerInput = document.getElementById("inquiryAnswerInput");
                                     if (answerInput) {
                                         answerInput.value = inquiry.answer || "";
@@ -120,10 +120,10 @@
                                 }
 
                                 const inquiry = data.inquiry;
-                                const statusLabel = statusLabels[inquiry.status] || inquiry.status;
+                                const statusLabel = statusLabels[inquiry.status] || "알 수 없음";
 
-                                setText("answer", inquiry.answer || "-");
-                                setText("answeredAt", inquiry.answered_at || "-");
+                                setText("answer", inquiry.answer);
+                                setText("answeredAt", inquiry.answered_at);
                                 setText("status", statusLabel);
                                 setDetailStatusBadge("inquiryDetailStatusBadge", inquiry.status, statusLabel);
                                 managePanel.setTarget(inquiry.inquiry_id, inquiry.status, selectedInquiryRow);
@@ -289,10 +289,14 @@
                                             <th>작성자</th>
                                             <th>상태</th>
                                             <th>작성일</th>
-                                            <th>관리</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <c:if test="${empty inquiryList}">
+                                            <tr>
+                                                <td colspan="6">문의 목록이 없습니다.</td>
+                                            </tr>
+                                        </c:if>
                                         <c:forEach var="inquiry" items="${inquiryList}" varStatus="loop">
                                             <tr class="admin-clickable-row" data-inquiry-id="${inquiry.inquiry_id}">
                                                 <td>${pagination.offset + loop.index + 1}</td>
@@ -325,10 +329,6 @@
                                                     </c:choose>
                                                 </td>
                                                 <td>${inquiry.created_at}</td>
-                                                <td class="admin-table-actions">
-                                                    <button type="button" class="admin-btn">답변</button>
-                                                    <button type="button" class="admin-btn light">상세</button>
-                                                </td>
                                             </tr>
                                         </c:forEach>
 
@@ -366,6 +366,19 @@
                                     <div class="admin-detail-tab-body">
                                         <div class="admin-detail-tab-panel active" data-detail-panel="info">
                                             <div class="admin-detail-info-scroll">
+                                                <div class="admin-detail-manage-section admin-detail-quick-link-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="inquiryMemberLink">
+                                                            <span>회원 관리</span>
+                                                        </a>
+                                                        <a href="#" id="inquiryMemberInquiriesLink">
+                                                            <span>회원 문의</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                                 <dl class="admin-detail-grid">
                                         <div>
                                             <dt>작성자</dt>
@@ -417,6 +430,8 @@
                                                             </select>
                                                         </label>
                                                     </div>
+                                                    <textarea class="admin-detail-memo admin-detail-status-reason"
+                                                        rows="3" placeholder="상태 변경 사유를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">변경 취소</button>
                                                         <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
@@ -443,20 +458,6 @@
                                                         placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">메모 저장</button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="admin-detail-manage-section">
-                                                    <div class="admin-detail-section-head">
-                                                        <h3>바로가기</h3>
-                                                    </div>
-                                                    <div class="admin-detail-link-list">
-                                                        <a href="#" id="inquiryMemberLink">
-                                                            <span>회원 관리</span>
-                                                        </a>
-                                                        <a href="#" id="inquiryMemberInquiriesLink">
-                                                            <span>회원 문의</span>
-                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

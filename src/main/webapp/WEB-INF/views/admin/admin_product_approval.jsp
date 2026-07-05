@@ -36,7 +36,7 @@
                 }
 
                 if (!options || !options.length) {
-                    target.textContent = "-";
+                    target.textContent = "없음";
                     return;
                 }
 
@@ -46,7 +46,7 @@
                 options.forEach((option) => {
                     const row = document.createElement("div");
                     row.innerHTML =
-                        "<dt>" + (option.option_name || "-") + "</dt>" +
+                        "<dt>" + (option.option_name || "없음") + "</dt>" +
                         "<dd>추가금액 " + formatProductPrice(option.option_price) +
                         " · 재고 " + (option.option_stock || 0) + "</dd>";
                     list.appendChild(row);
@@ -78,7 +78,7 @@
                     .then(data => {
                         const product = data.product;
                         const statusKey = String(product.status || "").toUpperCase();
-                        const statusLabel = statusLabels[statusKey] || product.status;
+                        const statusLabel = statusLabels[statusKey] || "알 수 없음";
 
                         setDetailTitleBlock(
                             "productDetailTitle",
@@ -308,10 +308,14 @@
                                     <th>주문</th>
                                     <th>상태</th>
                                     <th>등록일</th>
-                                    <th>관리</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <c:if test="${empty productList}">
+                                    <tr>
+                                        <td colspan="10">상품 목록이 없습니다.</td>
+                                    </tr>
+                                </c:if>
                                 <c:forEach var="product" items="${productList}" varStatus="loop">
                                     <tr class="admin-clickable-row" data-product-id="${product.product_id}">
                                         <td>${pagination.offset + loop.index + 1}</td>
@@ -346,14 +350,11 @@
                                                 </c:when>
 
                                                 <c:otherwise>
-                                                    <span class="admin-status muted">${product.status}</span>
+                                                    <span class="admin-status muted">알 수 없음</span>
                                                 </c:otherwise>
                                             </c:choose>
                                         </td>
                                         <td>${product.created_at}</td>
-                                        <td class="admin-table-actions">
-                                            <button type="button" class="admin-btn light admin-detail-btn">상세</button>
-                                        </td>
                                     </tr>
                                 </c:forEach>
 
@@ -391,6 +392,28 @@
                             <div class="admin-detail-tab-body">
                                         <div class="admin-detail-tab-panel active" data-detail-panel="info">
                                             <div class="admin-detail-info-scroll">
+                                                <div class="admin-detail-manage-section admin-detail-quick-link-section">
+                                                    <div class="admin-detail-section-head">
+                                                        <h3>바로가기</h3>
+                                                    </div>
+                                                    <div class="admin-detail-link-list">
+                                                        <a href="#" id="productSellerLink">
+                                                            <span>판매자 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productReviewLink">
+                                                            <span>후기 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productOrderLink">
+                                                            <span>주문 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productReportLink">
+                                                            <span>신고 관리</span>
+                                                        </a>
+                                                        <a href="#" id="productPublicLink">
+                                                            <span>상품 페이지</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                                 <dl class="admin-detail-grid">
                                 <div>
                                     <dt>대표 이미지</dt>
@@ -503,6 +526,8 @@
                                                             </select>
                                                         </label>
                                                     </div>
+                                                    <textarea class="admin-detail-memo admin-detail-status-reason"
+                                                        rows="3" placeholder="상태 변경 사유를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">변경 취소</button>
                                                         <button type="button" class="admin-btn admin-detail-status-change">상태 변경</button>
@@ -517,29 +542,6 @@
                                                         placeholder="관리 중 필요한 메모를 입력하세요."></textarea>
                                                     <div class="admin-detail-section-actions">
                                                         <button type="button" class="admin-btn light">메모 저장</button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="admin-detail-manage-section">
-                                                    <div class="admin-detail-section-head">
-                                                        <h3>바로가기</h3>
-                                                    </div>
-                                                    <div class="admin-detail-link-list">
-                                                        <a href="#" id="productSellerLink">
-                                                            <span>판매자 관리</span>
-                                                        </a>
-                                                        <a href="#" id="productReviewLink">
-                                                            <span>후기 관리</span>
-                                                        </a>
-                                                        <a href="#" id="productOrderLink">
-                                                            <span>주문 관리</span>
-                                                        </a>
-                                                        <a href="#" id="productReportLink">
-                                                            <span>신고 관리</span>
-                                                        </a>
-                                                        <a href="#" id="productPublicLink">
-                                                            <span>상품 페이지</span>
-                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

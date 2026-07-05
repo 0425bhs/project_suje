@@ -24,7 +24,7 @@
     <body>
 
         <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-            <jsp:param name="activeMenu" value="new" />
+            <jsp:param name="activeMenu" value="" />
         </jsp:include>
 
         <div class="category-page-wrap">
