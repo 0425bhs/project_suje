@@ -12,6 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN sellers s 
         ON p.seller_id = s.seller_id
         WHERE p.status = 'APPROVED' 
+        AND s.seller_status = 'APPROVED'
         ORDER BY p.product_id DESC 
         LIMIT #{start}, #{blockList}
     </select>
@@ -56,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="status != null and status != 'all'">
                 p.status = #{status}
+                AND s.seller_status = 'APPROVED'
             </if>
 
             <if test="seller_id != null">
@@ -131,6 +133,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="status != null and status != 'all'">
                 p.status = #{status}
+                AND s.seller_status = 'APPROVED'
             </if>
 
             <if test="seller_id != null">
@@ -447,12 +450,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM products p
         JOIN sellers s 
         ON p.seller_id = s.seller_id
-        WHERE status = 'APPROVED'
+        WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
         AND (
-            name LIKE CONCAT('%', #{keyword}, '%')
-            OR description LIKE CONCAT('%', #{keyword}, '%')
+            p.name LIKE CONCAT('%', #{keyword}, '%')
+            OR s.company_name LIKE CONCAT('%', #{keyword}, '%')
+            OR p.description LIKE CONCAT('%', #{keyword}, '%')
         )
-        ORDER BY product_id DESC
+        ORDER BY p.product_id DESC
         LIMIT #{start}, #{blockList}
     </select>
 
@@ -487,6 +492,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.seller_id = s.seller_id
 
         WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
 
 
         <!-- 상황/대상 선택으로 넘어온 여러 카테고리 조건 -->
@@ -612,6 +618,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN sellers s
         ON p.seller_id = s.seller_id
         WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
         AND p.category_id IN (
             SELECT DISTINCT bp.category_id
             FROM orders o
@@ -646,6 +653,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.seller_id = s.seller_id
 
         WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
 
         <!-- 카테고리 조건 -->
         <if test="categoryIds != null and categoryIds.size() > 0">
@@ -791,6 +799,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.product_id = sa.product_id
 
         WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
         AND p.sale_price IS NOT NULL
         AND p.sale_price &gt; 0
         AND p.sale_price &lt; p.price
@@ -894,7 +903,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="product_sale_cnt" parameterType="map" resultType="int">
         SELECT COUNT(*)
         FROM products p
+        JOIN sellers s ON s.seller_id = p.seller_id
         WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
         AND p.sale_price IS NOT NULL
         AND p.sale_price &gt; 0
         AND p.sale_price &lt; p.price
@@ -1002,6 +1013,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.product_id = sa.product_id
 
         WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
 
         ORDER BY
             (
@@ -1182,6 +1194,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.seller_id = s.seller_id
 
         WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
         AND p.stock &gt; 0
 
         AND p.category_id IN
@@ -1322,6 +1335,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.seller_id = s.seller_id
 
         WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
         AND p.stock &gt; 0
 
         ORDER BY p.product_id DESC
@@ -1361,6 +1375,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN sellers s
         ON p.seller_id = s.seller_id
         WHERE p.status = 'APPROVED'
+        AND s.seller_status = 'APPROVED'
         ORDER BY t.viewed_at DESC
     </select>
 </mapper>
