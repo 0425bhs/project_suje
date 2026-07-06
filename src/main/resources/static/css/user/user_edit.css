@@ -1,13 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-    background-color: #FAFAFA;
-    font-family: 'Noto Sans KR', sans-serif;
-    color: #333;
-}
-
+/* =========================================================
+   1. 컨테이너 및 내부 레이아웃 고립 (헤더 간섭 차단)
+   ========================================================= */
 .join-container {
     background: #fff;
     width: 100%;
@@ -16,15 +11,16 @@ body {
     padding: 40px;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    box-sizing: border-box;
 }
 
-table {
+.join-container table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 8px;
 }
 
-caption {
+.join-container caption {
     font-size: 18px;
     font-weight: 700;
     text-align: left;
@@ -34,17 +30,19 @@ caption {
     display: table-caption;
 }
 
-.sellertable caption {
+.join-container .sellertable caption {
     margin-top: 24px;
 }
 
-th, td {
+/* ⚠️ 순수 th, td 대신 반드시 앞에 .join-container를 붙여 헤더 침범 방지 */
+.join-container th,
+.join-container td {
     padding: 10px 0;
     vertical-align: middle;
     text-align: left;
 }
 
-th {
+.join-container th {
     width: 30%;
     font-size: 13px;
     font-weight: 500;
@@ -52,23 +50,26 @@ th {
     white-space: nowrap;
 }
 
-#usertable tr:nth-child(1) th::after,
-#usertable tr:nth-child(3) th::after,
-#usertable tr:nth-child(7) th::after,
-#usertable tr:nth-child(8) th::after,
-#sellertable th::after {
+.join-container #usertable tr:nth-child(1) th::after,
+.join-container #usertable tr:nth-child(3) th::after,
+.join-container #usertable tr:nth-child(8) th::after,
+.join-container #usertable tr:nth-child(9) th::after,
+.join-container #sellertable th::after {
     content: " *";
     color: #FF3B30;
     font-size: 12px;
     font-weight: 700;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="number"],
-input[type="date"],
-input[type="email"],
-input:not([type]) {
+/* =========================================================
+   2. 입력 폼 (Input) 고립
+   ========================================================= */
+.join-container input[type="text"],
+.join-container input[type="password"],
+.join-container input[type="number"],
+.join-container input[type="date"],
+.join-container input[type="email"],
+.join-container input:not([type]) {
     width: 100%;
     height: 44px;
     padding: 0 12px;
@@ -82,30 +83,30 @@ input:not([type]) {
     outline: none;
 }
 
-input:focus {
+.join-container input:focus {
     border-color: #FF7E36;
     background: #fff;
     box-shadow: 0 0 0 3px rgba(255,126,54,0.1);
 }
 
-input::placeholder { color: #BBB; }
+.join-container input::placeholder { color: #BBB; }
 
-input:disabled {
+.join-container input:disabled {
     background: #F5F5F5 !important;
     color: #AAA !important;
     border-color: #E8E8E8 !important;
     cursor: not-allowed;
 }
 
-.input-row {
+.join-container .input-row {
     display: flex;
     gap: 8px;
     align-items: center;
 }
 
-.input-row input:first-child { flex: 1; }
+.join-container .input-row input:first-child { flex: 1; }
 
-.input-wrapper {
+.join-container .input-wrapper {
     display: flex;
     align-items: center;
     border: 1px solid #DDD;
@@ -115,13 +116,13 @@ input:disabled {
     width: 100%;
 }
 
-.input-wrapper:focus-within {
+.join-container .input-wrapper:focus-within {
     border-color: #FF7E36;
     background: #fff;
     box-shadow: 0 0 0 3px rgba(255,126,54,0.1);
 }
 
-.input-wrapper input {
+.join-container .input-wrapper input {
     border: none !important;
     background: transparent !important;
     box-shadow: none !important;
@@ -132,7 +133,10 @@ input:disabled {
     padding: 0 12px;
 }
 
-.eye-btn {
+/* =========================================================
+   3. 버튼 및 기타 요소
+   ========================================================= */
+.join-container .eye-btn {
     background: none;
     border: none;
     padding: 0 12px;
@@ -142,9 +146,9 @@ input:disabled {
     display: flex;
     align-items: center;
 }
-.eye-btn:hover { color: #777; }
+.join-container .eye-btn:hover { color: #777; }
 
-.btn-secondary {
+.join-container .btn-secondary {
     height: 44px;
     padding: 0 14px;
     border: 1px solid #FF7E36;
@@ -159,18 +163,18 @@ input:disabled {
     transition: background 0.15s, color 0.15s;
 }
 
-.btn-secondary:hover:not(:disabled) {
+.join-container .btn-secondary:hover:not(:disabled) {
     background: #FF7E36;
     color: #fff;
 }
 
-.btn-secondary:disabled {
+.join-container .btn-secondary:disabled {
     border-color: #DDD;
     color: #BBB;
     cursor: not-allowed;
 }
 
-input[type="radio"] {
+.join-container input[type="radio"] {
     width: auto;
     height: auto;
     border: none;
@@ -180,7 +184,7 @@ input[type="radio"] {
     vertical-align: middle;
 }
 
-label {
+.join-container label {
     font-size: 14px;
     color: #444;
     margin-right: 20px;
@@ -188,20 +192,20 @@ label {
     vertical-align: middle;
 }
 
-#photo_div {
+.join-container #photo_div {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 8px;
 }
 
-#photo_div img {
+.join-container #photo_div img {
     border-radius: 50%;
     border: 2px solid #EEE;
     object-fit: cover;
 }
 
-#photo_div input[type="button"] {
+.join-container #photo_div input[type="button"] {
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -212,7 +216,7 @@ label {
     font-size: 12px;
 }
 
-input[type="file"] {
+.join-container input[type="file"] {
     font-size: 13px;
     color: #888;
     border: none;
@@ -221,20 +225,23 @@ input[type="file"] {
     padding: 6px 0;
 }
 
-#pwd-rules, #pwd-match {
+.join-container #pwd-rules,
+.join-container #pwd-match {
     font-size: 12px;
     margin-top: 5px;
     line-height: 1.6;
 }
 
-.btn-area {
+.join-container .btn-area {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 30px;
 }
 
-.btn-main {
+.join-container .btn-main,
+.join-container .btn-seller,
+.join-container .btn-cancel {
     height: 50px;
     padding: 0 32px;
     background: #FF7E36;
@@ -249,44 +256,25 @@ input[type="file"] {
     flex: 1;
 }
 
-.btn-main:hover { background: #E66A23; }
+.join-container .btn-cancel { font-weight: 500; }
+.join-container .btn-main:hover,
+.join-container .btn-seller:hover,
+.join-container .btn-cancel:hover { background: #E66A23; }
 
-.btn-seller {
-    height: 50px;
-    padding: 0 32px;
-    background: #FF7E36;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 700;
-    font-family: 'Noto Sans KR', sans-serif;
-    cursor: pointer;
-    transition: background 0.15s;
-    flex: 1;
-}
-
-.btn-seller:hover { background: #E66A23; }
-
-.btn-cancel {
-    height: 50px;
-    padding: 0 32px;
-    background: #FF7E36;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    font-family: 'Noto Sans KR', sans-serif;
-    cursor: pointer;
-    transition: background 0.15s;
-    flex: 1;
-}
-
-.btn-cancel:hover { background: #E66A23; }
-
-#toggle-pwd-btn {
+.join-container #toggle-pwd-btn {
     width: 100%;
     height: 44px;
 }
 
+
+.product-brand {
+    justify-self: start;
+
+    color: #111;
+    font-size: 30px;
+    font-weight: 1150;
+    letter-spacing: -1.5px;
+    
+    /* 폰트가 다른 걸로 덮어써지지 않도록 팀의 기본 폰트를 강제 지정 */
+    font-family: "Pretendard", sans-serif !important; 
+}

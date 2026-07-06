@@ -45,6 +45,23 @@
     <c:if test="${contentPage eq '/myshop/point_history'}">
         <link rel="stylesheet" href="/css/myshop/point_history.css?v=1">
     </c:if>
+
+    <c:if test="${contentPage eq '/user/user_edit'}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/css/user/user_edit.css?v=1">
+    </c:if>
+
+    
+<c:if test="${contentPage eq '/myshop/address_list'}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/css/myshop/address_list.css">
+</c:if>
+
+
+<c:if test="${contentPage eq '/myshop/address_form' or contentPage eq '/myshop/insertAddress' or contentPage eq '/myshop/modifyAddress'}">
+    <link rel="stylesheet" href="/css/myshop/address_form.css">
+</c:if>
+
     
     <script src="/js/product_main.js" defer></script>
 
@@ -56,6 +73,13 @@
     <c:if test="${contentPage eq '/myshop/coupon_history'}">
         <link rel="stylesheet" href="/css/myshop/coupon_history.css?v=1">
     </c:if>
+
+    <c:if test="${contentPage eq '/myshop/exchange_return'}">
+    <link rel="stylesheet" href="/css/myshop/order.css?v=1">
+</c:if>
+
+
+
 </head>
 
 <body>
