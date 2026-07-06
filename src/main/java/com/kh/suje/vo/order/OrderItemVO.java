@@ -33,4 +33,7 @@ public class OrderItemVO {
     private String option_name;
     private int option_price;
 
+    private String claim_status;
+
+    private OrderItemClaimVO claim;
 }
