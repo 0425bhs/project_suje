@@ -359,13 +359,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             IFNULL(fv.favorite_count, 0) AS favorite_count,
             IFNULL(rv.review_count, 0) AS review_count,
-<<<<<<< HEAD
-            IFNULL(sa.sales_count, 0) AS sales_count
-
-=======
             IFNULL(sa.sales_count, 0) AS sales_count,
             IFNULL(rv.review_avg, 0) AS review_avg
->>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
         FROM products p
 
         JOIN sellers s
