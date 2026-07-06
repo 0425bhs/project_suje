@@ -57,10 +57,10 @@ function send(f) {
         return;
     }
 
-    if (!pwdReg.test(password)) {
-            alert("비밀번호는 영문과 숫자를 포함하여 8자 이상이어야 합니다.");
-            return;
-        }
+    // if (!pwdReg.test(password)) {
+    //         alert("비밀번호는 영문과 숫자를 포함하여 8자 이상이어야 합니다.");
+    //         return;
+    //     }
 
 
     let formData = new URLSearchParams(new FormData(f));
@@ -74,7 +74,9 @@ console.log(data);
 
         if (data.param == 'noLoginId') {
             alert("아이디를 확인하세요");
-        }else if (data.param == 'withdrawnId') {
+        } else if (data.param == 'suspendedId') {
+            alert("정지된 아이디입니다");   
+        } else if (data.param == 'withdrawnId') {
             alert("탈퇴한 아이디입니다");                
         } else if (data.param == 'noPassword') {
             alert("비밀번호가 일치하지 않습니다");

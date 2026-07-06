@@ -1,140 +1,411 @@
-/* 대시보드 그리드 레이아웃 */
+.seller-main {
+    background: #f6f7f9;
+    min-height: 100vh;
+    padding: 34px 42px 70px;
+}
+
+.dashboard-header {
+    margin-bottom: 24px;
+}
+
+.page-label {
+    display: inline-block;
+    margin-bottom: 10px;
+
+    color: #ff6f4f;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.seller-main-header h1 {
+    margin: 0;
+
+    color: #111;
+    font-size: 34px;
+    font-weight: 950;
+    letter-spacing: -0.05em;
+}
+
+.seller-main-header p {
+    margin: 10px 0 0;
+
+    color: #777;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.dashboard-summary-row {
+    margin-bottom: 24px;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.summary-card {
+    min-height: 116px;
+    padding: 22px 24px;
+
+    border: 1px solid #eeeeee;
+    border-radius: 20px;
+    background: #ffffff;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.04);
+    transition: 0.18s ease;
+}
+
+.summary-card span {
+    color: #777;
+    font-size: 14px;
+    font-weight: 850;
+}
+
+.summary-card strong {
+    color: #111;
+    font-size: 30px;
+    font-weight: 950;
+}
+
+.summary-card small {
+    margin-left: 3px;
+
+    color: #666;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.summary-card.clickable:hover {
+    transform: translateY(-4px);
+    border-color: #ff6f4f;
+    background: #fff7f3;
+    cursor: pointer;
+}
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
-    margin-top: 20px;
 }
 
-/* 2칸을 차지하는 카드 */
+.dash-card {
+    padding: 24px;
+
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+    background: #ffffff;
+
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.04);
+}
+
 .dash-card.span-3 {
     grid-column: span 3;
-}
-
-/* 대시보드 카드 공통 스타일 */
-.dash-card {
-    background: #fff;
-    border: 1px solid #e5e8eb;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 12px;
+
+    padding-bottom: 16px;
+    margin-bottom: 18px;
+
+    border-bottom: 1px solid #eeeeee;
 }
 
 .card-header h3 {
     margin: 0;
-    font-size: 16px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+
+    color: #111;
+    font-size: 18px;
+    font-weight: 950;
+    letter-spacing: -0.03em;
 }
 
-.card-header .update-time {
-    font-size: 12px;
+.icon.orange {
+    color: #ff6f4f;
+}
+
+.card-more {
+    color: #ff6f4f;
+    font-size: 13px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.card-more:hover {
+    text-decoration: underline;
+}
+
+.card-state {
     color: #999;
+    font-size: 12px;
+    font-weight: 850;
 }
 
-/* 아이콘 색상 */
-.icon.green { color: #00c73c; }
-.icon.blue { color: #0084ff; }
-.icon.red { color: #ff4a4a; }
-.icon.teal { color: #00aeb5; }
-.icon.orange { color: #ff8a00; }
+.sales-card {
+    border-top: 4px solid #ff6f4f;
+}
 
-/* 판매 관리 (퍼널 형태) */
 .sales-funnel {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr;
     align-items: center;
-    padding: 10px 0;
+    gap: 10px;
 }
 
 .funnel-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    padding: 22px 18px;
+
+    border-radius: 16px;
+    background: #fafafa;
+
+    transition: 0.18s ease;
 }
 
-.funnel-step .label {
-    font-size: 14px;
-    color: #555;
-    font-weight: 700;
-}
-
-.funnel-step .count {
-    font-size: 28px;
-    font-weight: 900;
-    color: #222;
-}
-
-.funnel-step .count small {
-    font-size: 14px;
-    font-weight: 600;
-    margin-left: 2px;
-}
-
-.funnel-arrow {
-    color: #ddd;
-    font-size: 20px;
-    font-weight: 900;
-}
-
-/* 리스트형 데이터 (정산, 상품관리 등) */
-.list-group {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.list-item .label {
-    font-size: 14px;
-    color: #555;
-}
-
-.list-item .value {
-    font-size: 18px;
-    font-weight: 800;
-    color: #222;
-}
-
-.list-item .value small {
-    font-size: 13px;
-    margin-left: 2px;
-    font-weight: 600;
-}
-
-/* 데이터가 0일 때 스타일 */
-.list-item .value.zero {
-    color: #cc2525;
-}
-
-/* 강조 데이터 스타일 */
-.list-item .value.highlight {
-    color: #00aeb5;
-}
-
-/* 클릭 가능한 대시보드 항목에 마우스를 올렸을 때 손가락 표시 */
-.clickable {
+.funnel-step.clickable:hover,
+.list-item.clickable:hover {
+    background: #fff3ee;
     cursor: pointer;
 }
 
-/* 클릭 가능한 항목에 마우스를 올렸을 때 살짝 반응이 보이도록 처리 */
-.clickable:hover {
-    opacity: 0.85;
+.funnel-step .label {
+    display: block;
+    margin-bottom: 10px;
+
+    color: #555;
+    font-size: 14px;
+    font-weight: 850;
+}
+
+.funnel-step .count {
+    color: #111;
+    font-size: 30px;
+    font-weight: 950;
+}
+
+.funnel-step .count small {
+    margin-left: 3px;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.funnel-arrow {
+    color: #cccccc;
+    font-size: 34px;
+    text-align: center;
+}
+
+.list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.list-item {
+    min-height: 46px;
+    padding: 0 10px;
+
+    border-radius: 12px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    transition: 0.18s ease;
+}
+
+.list-item .label {
+    color: #444;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.list-item .value {
+    color: #ff6f4f;
+    font-size: 20px;
+    font-weight: 950;
+}
+
+.list-item .value.highlight {
+    color: #00a8b5;
+}
+
+.list-item .value.zero {
+    color: #e60023;
+}
+
+.list-item.disabled {
+    opacity: 0.75;
+}
+
+.notice-card {
+    grid-column: span 2;
+}
+
+.notice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notice-item {
+    min-height: 46px;
+    padding: 0 12px;
+
+    border-radius: 12px;
+    background: #fafafa;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    text-decoration: none;
+}
+
+.notice-item div {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notice-badge {
+    flex-shrink: 0;
+
+    height: 24px;
+    padding: 0 9px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+    background: #fff1eb;
+
+    color: #ff6f4f;
+    font-size: 12px;
+    font-weight: 950;
+}
+
+.notice-item strong {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    color: #333;
+    font-size: 14px;
+    font-weight: 850;
+}
+
+.notice-item small {
+    flex-shrink: 0;
+
+    color: #999;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.notice-empty {
+    min-height: 120px;
+
+    border-radius: 14px;
+    background: #fafafa;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #999;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.sales-placeholder-card {
+    grid-column: span 1;
+}
+
+.placeholder-box {
+    min-height: 160px;
+    padding: 26px;
+
+    border-radius: 16px;
+    background: linear-gradient(135deg, #fff7f3 0%, #ffffff 100%);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.placeholder-box strong {
+    color: #111;
+    font-size: 18px;
+    font-weight: 950;
+}
+
+.placeholder-box p {
+    margin: 10px 0 0;
+
+    color: #777;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+@media (max-width: 1200px) {
+    .dashboard-summary-row,
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dash-card.span-3,
+    .notice-card,
+    .sales-placeholder-card {
+        grid-column: span 1;
+    }
+
+    .sales-funnel {
+        grid-template-columns: 1fr;
+    }
+
+    .funnel-arrow {
+        display: none;
+    }
+}
+
+.dashboard-sales-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dashboard-sales-item {
+    min-height: 44px;
+    padding: 0 14px;
+
+    border-radius: 12px;
+    background: #fff7f3;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dashboard-sales-item span {
+    color: #555;
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.dashboard-sales-item strong {
+    color: #ff6f4f;
+    font-size: 15px;
+    font-weight: 950;
 }

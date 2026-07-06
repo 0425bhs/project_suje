@@ -353,12 +353,61 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 카테고리별 목록 -->
     <select id="product_category_list" parameterType="map" resultType="product">
-        SELECT *
-        FROM products
-        WHERE status = 'APPROVED'
+        SELECT
+            p.*,
+            s.company_name,
+
+            IFNULL(fv.favorite_count, 0) AS favorite_count,
+            IFNULL(rv.review_count, 0) AS review_count,
+<<<<<<< HEAD
+            IFNULL(sa.sales_count, 0) AS sales_count
+
+=======
+            IFNULL(sa.sales_count, 0) AS sales_count,
+            IFNULL(rv.review_avg, 0) AS review_avg
+>>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
+        FROM products p
+
+        JOIN sellers s
+        ON p.seller_id = s.seller_id
+
+        LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(*) AS favorite_count
+            FROM favorites
+            GROUP BY product_id
+        ) fv
+        ON p.product_id = fv.product_id
+
+        LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(*) AS review_count
+            FROM reviews
+            GROUP BY product_id
+        ) rv
+        ON p.product_id = rv.product_id
+
+        LEFT JOIN (
+            SELECT
+                oi.product_id,
+                SUM(oi.quantity) AS sales_count
+            FROM order_items oi
+
+            JOIN orders o
+            ON oi.order_id = o.order_id
+
+            WHERE o.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED')
+
+            GROUP BY oi.product_id
+        ) sa
+        ON p.product_id = sa.product_id
+
+        WHERE p.status = 'APPROVED'
         AND (
-            category_id = #{category_id}
-            OR category_id IN (
+            p.category_id = #{category_id}
+            OR p.category_id IN (
                 SELECT category_id
                 FROM categories
                 WHERE parent_id = #{category_id}
@@ -366,61 +415,80 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )
 
         <choose>
+
             <!-- 최신순 -->
             <when test="sort == 'new'">
-                ORDER BY product_id DESC
+                ORDER BY p.product_id DESC
             </when>
 
             <!-- 할인율 높은순 -->
             <when test="sort == 'discount'">
                 ORDER BY
                     CASE
-                        WHEN sale_price > 0 AND sale_price &lt; price
-                        THEN ((price - sale_price) / price)
+                        WHEN p.sale_price > 0
+                        AND p.sale_price &lt; p.price
+                        THEN ((p.price - p.sale_price) / p.price)
                         ELSE 0
                     END DESC,
-                    product_id DESC
+                    p.product_id DESC
             </when>
 
             <!-- 낮은 가격순 -->
             <when test="sort == 'lowPrice'">
                 ORDER BY
                     CASE
-                        WHEN sale_price > 0 AND sale_price &lt; price
-                        THEN sale_price
-                        ELSE price
+                        WHEN p.sale_price > 0
+                        AND p.sale_price &lt; p.price
+                        THEN p.sale_price
+                        ELSE p.price
                     END ASC,
-                    product_id DESC
+                    p.product_id DESC
             </when>
 
             <!-- 높은 가격순 -->
             <when test="sort == 'highPrice'">
                 ORDER BY
                     CASE
-                        WHEN sale_price > 0 AND sale_price &lt; price
-                        THEN sale_price
-                        ELSE price
+                        WHEN p.sale_price > 0
+                        AND p.sale_price &lt; p.price
+                        THEN p.sale_price
+                        ELSE p.price
                     END DESC,
-                    product_id DESC
+                    p.product_id DESC
             </when>
 
-            <!-- 아직 실제 데이터 없는 정렬은 임시 최신순 -->
+            <!-- 찜 많은순 -->
             <when test="sort == 'likes'">
-                ORDER BY product_id DESC
+                ORDER BY
+                    IFNULL(fv.favorite_count, 0) DESC,
+                    p.product_id DESC
             </when>
 
+            <!-- 리뷰 많은순 -->
             <when test="sort == 'reviews'">
-                ORDER BY product_id DESC
+                ORDER BY
+                    IFNULL(rv.review_count, 0) DESC,
+                    p.product_id DESC
             </when>
 
+            <!-- 판매 많은순 -->
             <when test="sort == 'sales'">
-                ORDER BY product_id DESC
+                ORDER BY
+                    IFNULL(sa.sales_count, 0) DESC,
+                    p.product_id DESC
             </when>
 
-            <!-- 인기순 / 기본값 -->
+            <!-- 인기순 -->
             <otherwise>
-                ORDER BY product_id DESC
+                ORDER BY
+                    (
+                        IFNULL(fv.favorite_count, 0)
+                        + IFNULL(rv.review_count, 0)
+                        + IFNULL(sa.sales_count, 0)
+                    ) DESC,
+                    p.product_id DESC
             </otherwise>
+
         </choose>
 
         LIMIT #{start}, #{blockList}
@@ -443,16 +511,160 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 상품 검색 목록 -->
     <select id="product_search_list" parameterType="map" resultType="product">
-        SELECT p.*, s.company_name 
+        SELECT
+            p.*,
+            s.company_name,
+
+            CASE
+                WHEN p.sale_price IS NOT NULL
+<<<<<<< HEAD
+                AND p.sale_price &gt; 0
+=======
+                AND p.sale_price > 0
+>>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
+                AND p.sale_price &lt; p.price
+                THEN FLOOR(((p.price - p.sale_price) / p.price) * 100)
+                ELSE 0
+            END AS sale_rate,
+
+            IFNULL(fv.favorite_count, 0) AS favorite_count,
+            IFNULL(rv.review_count, 0) AS review_count,
+            IFNULL(sa.sales_count, 0) AS sales_count
+
         FROM products p
-        JOIN sellers s 
+
+        JOIN sellers s
         ON p.seller_id = s.seller_id
-        WHERE status = 'APPROVED'
+
+        LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(*) AS favorite_count
+            FROM favorites
+            GROUP BY product_id
+        ) fv
+        ON p.product_id = fv.product_id
+
+        LEFT JOIN (
+            SELECT
+                product_id,
+                COUNT(*) AS review_count
+            FROM reviews
+            GROUP BY product_id
+        ) rv
+        ON p.product_id = rv.product_id
+
+        LEFT JOIN (
+            SELECT
+                oi.product_id,
+                SUM(oi.quantity) AS sales_count
+            FROM order_items oi
+
+            JOIN orders o
+            ON oi.order_id = o.order_id
+
+            WHERE o.status IN ('PAID', 'PREPARING', 'SHIPPING', 'DELIVERED')
+
+            GROUP BY oi.product_id
+        ) sa
+        ON p.product_id = sa.product_id
+
+        WHERE p.status = 'APPROVED'
+
         AND (
-            name LIKE CONCAT('%', #{keyword}, '%')
-            OR description LIKE CONCAT('%', #{keyword}, '%')
+            p.name LIKE CONCAT('%', #{keyword}, '%')
+            OR p.description LIKE CONCAT('%', #{keyword}, '%')
         )
-        ORDER BY product_id DESC
+
+        <choose>
+
+            <!-- 최신순 -->
+            <when test="sort == 'new'">
+                ORDER BY p.product_id DESC
+            </when>
+
+            <!-- 할인율 높은순 -->
+            <when test="sort == 'discount'">
+                ORDER BY
+                    CASE
+<<<<<<< HEAD
+                        WHEN p.sale_price &gt; 0
+=======
+                        WHEN p.sale_price > 0
+>>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
+                        AND p.sale_price &lt; p.price
+                        THEN ((p.price - p.sale_price) / p.price)
+                        ELSE 0
+                    END DESC,
+                    p.product_id DESC
+            </when>
+
+            <!-- 낮은 가격순 -->
+            <when test="sort == 'lowPrice'">
+                ORDER BY
+                    CASE
+<<<<<<< HEAD
+                        WHEN p.sale_price &gt; 0
+=======
+                        WHEN p.sale_price > 0
+>>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
+                        AND p.sale_price &lt; p.price
+                        THEN p.sale_price
+                        ELSE p.price
+                    END ASC,
+                    p.product_id DESC
+            </when>
+
+            <!-- 높은 가격순 -->
+            <when test="sort == 'highPrice'">
+                ORDER BY
+                    CASE
+<<<<<<< HEAD
+                        WHEN p.sale_price &gt; 0
+=======
+                        WHEN p.sale_price > 0
+>>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
+                        AND p.sale_price &lt; p.price
+                        THEN p.sale_price
+                        ELSE p.price
+                    END DESC,
+                    p.product_id DESC
+            </when>
+
+            <!-- 찜 많은순 -->
+            <when test="sort == 'likes'">
+                ORDER BY
+                    IFNULL(fv.favorite_count, 0) DESC,
+                    p.product_id DESC
+            </when>
+
+            <!-- 리뷰 많은순 -->
+            <when test="sort == 'reviews'">
+                ORDER BY
+                    IFNULL(rv.review_count, 0) DESC,
+                    p.product_id DESC
+            </when>
+
+            <!-- 판매 많은순 -->
+            <when test="sort == 'sales'">
+                ORDER BY
+                    IFNULL(sa.sales_count, 0) DESC,
+                    p.product_id DESC
+            </when>
+
+            <!-- 기본 인기순 -->
+            <otherwise>
+                ORDER BY
+                    (
+                        IFNULL(fv.favorite_count, 0)
+                        + IFNULL(rv.review_count, 0)
+                        + IFNULL(sa.sales_count, 0)
+                    ) DESC,
+                    p.product_id DESC
+            </otherwise>
+
+        </choose>
+
         LIMIT #{start}, #{blockList}
     </select>
 

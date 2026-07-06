@@ -24,7 +24,7 @@
     <body>
 
         <jsp:include page="/WEB-INF/views/product/product_header.jsp">
-            <jsp:param name="activeMenu" value="new" />
+            <jsp:param name="activeMenu" value="" />
         </jsp:include>
 
         <div class="category-page-wrap">
@@ -71,6 +71,69 @@
             <main class="category-product-area">
 
                 <h2>${category_name}</h2>
+
+                <!-- 정렬 -->
+                <div class="search-sort-row">
+
+                    <div class="search-sort-list">
+
+                        <a href="/category_list.do?category_id=${category_id}&sort=popular"
+                        class="${currentSort == 'popular' ? 'active' : ''}">
+                            인기순
+                        </a>
+
+                        <span>|</span>
+
+                        <a href="/category_list.do?category_id=${category_id}&sort=new"
+                        class="${currentSort == 'new' ? 'active' : ''}">
+                            최신순
+                        </a>
+
+                        <span>|</span>
+
+                        <a href="/category_list.do?category_id=${category_id}&sort=likes"
+                        class="${currentSort == 'likes' ? 'active' : ''}">
+                            찜 많은순
+                        </a>
+
+                        <span>|</span>
+
+                        <a href="/category_list.do?category_id=${category_id}&sort=reviews"
+                        class="${currentSort == 'reviews' ? 'active' : ''}">
+                            리뷰 많은순
+                        </a>
+
+                        <span>|</span>
+
+                        <a href="/category_list.do?category_id=${category_id}&sort=sales"
+                        class="${currentSort == 'sales' ? 'active' : ''}">
+                            판매 많은순
+                        </a>
+
+                        <span>|</span>
+
+                        <a href="/category_list.do?category_id=${category_id}&sort=discount"
+                        class="${currentSort == 'discount' ? 'active' : ''}">
+                            할인율순
+                        </a>
+
+                        <span>|</span>
+
+                        <a href="/category_list.do?category_id=${category_id}&sort=lowPrice"
+                        class="${currentSort == 'lowPrice' ? 'active' : ''}">
+                            낮은 가격순
+                        </a>
+
+                        <span>|</span>
+
+                        <a href="/category_list.do?category_id=${category_id}&sort=highPrice"
+                        class="${currentSort == 'highPrice' ? 'active' : ''}">
+                            높은 가격순
+                        </a>
+
+                    </div>
+
+                </div>
 
                 <div class="common-product-wrap">
 

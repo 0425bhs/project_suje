@@ -48,7 +48,7 @@ public interface OrderDAO {
     Map<String, Object> selectOrderStatusCounts(int userId);
 
     // 주문상품 상태 일괄 변경
-    int updateOrderItemsStatusByOrderId(Map<String, Object> map);
+    // int updateOrderItemsStatusByOrderId(Map<String, Object> map);
 
     // 주문상품 구매확정 처리
     int confirmOrderItem(Map<String, Object> map);

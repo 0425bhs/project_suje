@@ -1,206 +1,175 @@
-.live-nav-active {
+.product-nav-inner a.nav-active {
     color: #ff6f4f !important;
 }
 
-.product-nav-inner a.live-nav-active::after {
+.product-nav-inner a.nav-active::after {
     width: 100% !important;
 }
 
 .live-review-page {
     max-width: 1440px;
     margin: 0 auto;
-    padding: 44px;
+    padding: 32px 44px 80px;
 }
 
-.live-review-page-title {
-    margin-bottom: 30px;
+.live-review-section {
+    margin-top: 0;
 }
 
-.live-review-page-title h2 {
+.live-review-section-title {
+    margin-bottom: 14px;
+}
+
+.live-review-section-title h2 {
     margin: 0;
-    font-size: 32px;
+    color: #222;
+    font-size: 26px;
     font-weight: 900;
-    letter-spacing: -1px;
+    letter-spacing: -0.8px;
 }
 
-.live-review-page-title p {
-    margin: 10px 0 0;
+.live-review-section-title p {
+    margin: 8px 0 0;
     color: #777;
     font-size: 14px;
+    font-weight: 700;
 }
 
-.live-review-top {
+.live-review-toolbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 26px;
-    color: #666;
-    font-size: 14px;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 18px;
 }
 
-.live-review-top button {
-    border: 0;
-    background: transparent;
+.live-review-toolbar span {
     color: #555;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.live-review-toolbar button {
+    min-width: 78px;
+    height: 32px;
+    padding: 0 13px;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    background: #fff;
+    color: #444;
+    font-family: inherit;
+    font-size: 13px;
     font-weight: 800;
     cursor: pointer;
 }
 
-.live-review-top button:hover {
-    color: #ff654f;
-}
-
-.live-review-wrap {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 38px 20px;
+.live-review-toolbar button:hover {
+    border-color: #ff6f4f;
+    color: #ff6f4f;
 }
 
 .live-review-card {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #eee3da;
-    border-radius: 10px;
-    background: #fff;
-    box-sizing: border-box;
-    transition: 0.2s;
-}
-
-.live-review-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-.live-review-time {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    height: 26px;
-    margin-bottom: 10px;
-    overflow: hidden;
-}
-
-.live-review-time span {
-    display: inline-flex;
-    align-items: center;
-    height: 20px;
-    padding: 0 6px;
-    border-radius: 4px;
-    background: #f3e7dc;
-    color: #9a6b42;
-    font-size: 11px;
-    font-weight: 900;
-}
-
-.live-review-time em {
-    color: #777;
-    font-size: 12px;
-    font-style: normal;
-    white-space: nowrap;
+    min-width: 0;
 }
 
 .live-review-image-link {
-    display: block;
-    width: 100%;
-    height: 240px;
-    overflow: hidden;
-    border-radius: 8px;
     background: #f5f5f5;
 }
 
-.live-review-image-link img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    transition: 0.2s;
-}
-
-.live-review-card:hover .live-review-image-link img {
-    transform: scale(1.04);
+.live-review-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    height: 24px;
+    padding: 0 9px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: rgba(255, 111, 79, 0.94);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 950;
+    line-height: 1;
 }
 
 .live-review-info {
     padding-top: 10px;
 }
 
-.live-review-user {
+.live-review-meta {
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    gap: 7px;
+    min-width: 0;
+    margin-bottom: 6px;
+    color: #777;
+    font-size: 12px;
+    font-weight: 700;
 }
 
-.live-review-profile {
-    width: 28px;
-    height: 28px;
-    margin-right: 8px;
-    border-radius: 50%;
-    background: #eee;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
+.live-review-user {
+    max-width: 52%;
+    overflow: hidden;
+    color: #111;
     font-size: 13px;
+    font-weight: 900;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.live-review-name {
-    color: #555;
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.live-review-like {
-    margin-left: auto;
-    color: #333;
-    font-size: 20px;
-    line-height: 1;
+.live-review-date {
+    min-width: 0;
+    overflow: hidden;
+    color: #999;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .live-review-rating {
-    margin-bottom: 8px;
-    color: #b17a3a;
-    font-size: 15px;
-    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    height: 18px;
+    margin-bottom: 5px;
+    color: #d5d5d5;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.live-review-rating span {
+    display: inline-flex;
+}
+
+.live-review-rating span.filled {
+    color: #ff3b30;
 }
 
 .live-review-product-name {
-    height: 42px;
-    margin-bottom: 8px;
-    font-size: 15px;
-    font-weight: 900;
-    line-height: 1.4;
-    overflow: hidden;
-}
-
-.live-review-product-name a {
-    color: #222;
-    text-decoration: none;
-}
-
-.live-review-product-name a:hover {
-    color: #ff654f;
+    margin-bottom: 6px;
+    font-weight: 700;
 }
 
 .live-review-content {
-    min-height: 64px;
+    min-height: 60px;
     margin: 0;
     color: #555;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 500;
     line-height: 1.55;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
     overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
 }
 
 .live-review-empty {
     padding: 80px 20px;
     border: 1px solid #eee;
-    border-radius: 10px;
+    border-radius: 12px;
     background: #fafafa;
-    text-align: center;
     color: #777;
+    text-align: center;
     font-size: 15px;
     font-weight: 800;
 }
@@ -212,16 +181,13 @@
 
 .live-review-page-menu a {
     display: inline-flex;
-    justify-content: center;
     align-items: center;
-
+    justify-content: center;
     min-width: 32px;
     height: 32px;
     margin: 0 3px;
-
     border: 1px solid #ddd;
     border-radius: 6px;
-
     color: #333;
     font-size: 14px;
     font-weight: 800;
@@ -229,37 +195,19 @@
 }
 
 .live-review-page-menu a:hover {
-    background: #ff654f;
     border-color: #ff654f;
+    background: #ff654f;
     color: #fff;
-}
-
-@media (max-width: 1200px) {
-    .live-review-wrap {
-        grid-template-columns: repeat(4, 1fr);
-    }
 }
 
 @media (max-width: 900px) {
     .live-review-page {
-        padding: 24px;
+        padding: 24px 20px 60px;
     }
 
-    .live-review-wrap {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 520px) {
-    .live-review-wrap {
-        grid-template-columns: 1fr;
-    }
-
-    .live-review-top {
-        display: block;
-    }
-
-    .live-review-top button {
-        margin-top: 10px;
+    .live-review-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
     }
 }

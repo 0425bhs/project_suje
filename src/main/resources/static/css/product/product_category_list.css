@@ -502,3 +502,44 @@
         height: 180px;
     }
 }
+
+/* =========================================================
+   검색 / 카테고리 정렬
+========================================================= */
+
+.search-sort-row{
+    display:flex;
+    align-items:center;
+    margin:14px 0 24px;
+    padding-bottom:14px;
+    border-bottom:1px solid #eeeeee;
+}
+
+.search-sort-list{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.search-sort-list a{
+    color:#666666;
+    font-size:14px;
+    font-weight:600;
+    text-decoration:none;
+    transition:0.2s;
+}
+
+.search-sort-list a:hover{
+    color:#ff6f4f;
+}
+
+.search-sort-list a.active{
+    color:#111111;
+    font-weight:800;
+}
+
+.search-sort-list span{
+    color:#d9d9d9;
+    font-size:12px;
+}

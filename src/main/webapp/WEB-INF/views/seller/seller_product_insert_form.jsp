@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -43,12 +44,9 @@
 
                                 <select id="big_category_id" class="category-select">
                                     <option value="">대분류 선택</option>
-                                    <option value="1">패션/주얼리</option>
-                                    <option value="2">홈리빙</option>
-                                    <option value="3">뷰티</option>
-                                    <option value="4">식품</option>
-                                    <option value="5">공예</option>
-                                    <option value="6">반려동물</option>
+                                    <c:forEach var="category" items="${bigCategoryList}">
+                                        <option value="${category.category_id}">${category.name}</option>
+                                    </c:forEach>
                                 </select>
                             </div>
 

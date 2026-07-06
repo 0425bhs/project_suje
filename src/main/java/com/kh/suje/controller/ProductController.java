@@ -282,53 +282,53 @@ public class ProductController {
     }
 
     @GetMapping("/product_search.do")
-    public String productSearch(Model model,String keyword,Integer page,HttpSession session){
+    public String productSearch(Model model,
+                                String keyword,
+                                Integer page,
+                                String sort,
+                                HttpSession session){
 
-        // ✅ 검색 기능: 공백 키워드 방지
+        // 검색어 없으면 전체상품으로 이동
         if(keyword == null || keyword.trim().isEmpty()){
             return "redirect:/all_list.do";
         }
 
         keyword = keyword.trim();
 
+        // 정렬 기본값
+        if(sort == null || sort.trim().equals("")){
+            sort = "popular";
+        }
+
         int nowPage = 1;
-        
+
         if(page != null){
             nowPage = page;
         }
 
-        // ========== 페이징 처리 관련 변수 ==========
-        // blockList: 한 페이지에 보여줄 상품 개수 (10개씩 표시)
+        // ========== 페이징 처리 ==========
         int blockList = 10;
-        
-        // blockPage: 페이지 네비게이션에서 보여줄 페이지 버튼 개수
-        // 예) 1,2,3,4,5 / 6,7,8,9,10 (각 그룹당 5개씩)
         int blockPage = 5;
 
-        // start: 데이터베이스 쿼리의 시작 위치 계산
-        // ⚠️ 중요: LIMIT의 첫 번째 값
-        // 예) 1페이지(nowPage=1): start = 0       → LIMIT 0, 10 (0~9번째 상품)
-        //     2페이지(nowPage=2): start = 10      → LIMIT 10, 10 (10~19번째 상품)
-        //     3페이지(nowPage=3): start = 20      → LIMIT 20, 10 (20~29번째 상품)
         int start = (nowPage - 1) * blockList;
 
         Map<String, Object> map = new HashMap<>();
         map.put("keyword", keyword);
         map.put("start", start);
         map.put("blockList", blockList);
+        map.put("sort", sort);
 
-        // ⚠️ 주의: keyword 한글 인코딩 이슈 - URL 파라미터로 전달될 때 깨질 수 있음
         int rowTotaL = productdao.product_search_cnt(map);
         List<ProductVO> list = productdao.product_search_list(map);
 
         String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
 
         String pageMenu = Paging.getPaging(
-            "/product_search.do?keyword=" + encodedKeyword,
-            nowPage,
-            rowTotaL,
-            blockList,
-            blockPage
+                "/product_search.do?keyword=" + encodedKeyword + "&sort=" + sort,
+                nowPage,
+                rowTotaL,
+                blockList,
+                blockPage
         );
 
         addFavoriteProductMap(model, session, list);
@@ -338,11 +338,12 @@ public class ProductController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("isSearch", true);
         model.addAttribute("rowTotal", rowTotaL);
+        model.addAttribute("currentSort", sort);
 
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         model.addAttribute("smallCategoryList", categorydao.small_category_all_list());
 
-        return "product/product_new_list";
+        return "product/product_search_list";
     }
    
 
@@ -938,7 +939,7 @@ public class ProductController {
             vo.setImage_l(filename_l);
         }
 
-        vo.setStatus("APPROVED");//테스트용 삭제 예정
+        // vo.setStatus("APPROVED");//테스트용 삭제 예정
 
         // 할인 설정값 정리
         applySaleSetting(vo);
