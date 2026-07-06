@@ -381,6 +381,14 @@
     font-size: 14px;
 }
 
+.store-seller-link-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-width: 0;
+}
+
 .store-seller-line a {
     color: #222;
     font-size: 17px;
@@ -390,6 +398,28 @@
 
 .store-seller-line a:hover {
     color: #ff6f4f;
+}
+
+.store-seller-line .store-admin-manage-btn {
+    height: 34px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #111827;
+    border-radius: 4px;
+    background: #111827;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.store-seller-line .store-admin-manage-btn:hover {
+    background: #374151;
+    border-color: #374151;
+    color: #fff;
 }
 
 .store-product-title {
@@ -1850,6 +1880,20 @@
 @media (max-width: 700px) {
     .store-detail-page {
         padding: 28px 20px 60px;
+    }
+
+    .store-seller-line {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .store-seller-link-group {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .store-seller-line .wish-shop-btn {
+        width: 100%;
     }
 
     .store-main-image-box {

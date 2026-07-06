@@ -28,11 +28,6 @@
             <p>방금 도착한 고객들의 생생한 작품 후기를 만나보세요.</p>
         </div>
 
-        <div class="live-review-toolbar">
-            <span>최신순으로 보여드려요</span>
-            <button type="button" onclick="location.reload()">새로고침</button>
-        </div>
-
         <c:choose>
             <c:when test="${empty list}">
                 <div class="live-review-empty">

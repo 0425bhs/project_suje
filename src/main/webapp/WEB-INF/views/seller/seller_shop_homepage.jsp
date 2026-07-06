@@ -83,14 +83,22 @@
                     </div>
                 </div>
 
-                <button type="button" class="wish-shop-btn ${favorite ? 'active' : ''}" id="sellerWishBtn" data-seller-id="${seller_id}">
-                    <span class="wish-shop-heart">
-                        ${favorite ? '♥' : '♡'}
-                    </span>
-                    <span class="wish-shop-text">
-                        ${favorite ? '찜 취소' : '작가샵 찜하기'}
-                    </span>
-                </button>
+                <div class="buyer-shop-actions">
+                    <c:if test="${not empty sessionScope.user and sessionScope.user.role eq 'ADMIN'}">
+                        <a href="/admin/sellers?seller_id=${seller_id}&page=1" class="shop-admin-manage-btn">
+                            판매자 관리
+                        </a>
+                    </c:if>
+
+                    <button type="button" class="wish-shop-btn ${favorite ? 'active' : ''}" id="sellerWishBtn" data-seller-id="${seller_id}">
+                        <span class="wish-shop-heart">
+                            ${favorite ? '♥' : '♡'}
+                        </span>
+                        <span class="wish-shop-text">
+                            ${favorite ? '찜 취소' : '작가샵 찜하기'}
+                        </span>
+                    </button>
+                </div>
 
             </section>
 
