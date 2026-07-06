@@ -551,7 +551,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             CASE
                 WHEN p.sale_price IS NOT NULL
                 AND p.sale_price > 0
-                AND p.sale_price < p.price
+                AND p.sale_price &lt; p.price
                 THEN FLOOR(((p.price - p.sale_price) / p.price) * 100)
                 ELSE 0
             END AS sale_rate,
@@ -618,7 +618,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 ORDER BY
                     CASE
                         WHEN p.sale_price > 0
-                        AND p.sale_price < p.price
+                        AND p.sale_price &lt; p.price
                         THEN ((p.price - p.sale_price) / p.price)
                         ELSE 0
                     END DESC,
@@ -629,7 +629,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 ORDER BY
                     CASE
                         WHEN p.sale_price > 0
-                        AND p.sale_price < p.price
+                        AND p.sale_price &lt; p.price
                         THEN p.sale_price
                         ELSE p.price
                     END ASC,
@@ -640,7 +640,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 ORDER BY
                     CASE
                         WHEN p.sale_price > 0
-                        AND p.sale_price < p.price
+                        AND p.sale_price &lt; p.price
                         THEN p.sale_price
                         ELSE p.price
                     END DESC,
