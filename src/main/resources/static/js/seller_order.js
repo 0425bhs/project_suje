@@ -5,7 +5,7 @@ window.addEventListener("load", function (){
 });
 
 /*
-    카드형 / 심플형 전환
+    리스트 형태 전환
 */
 function initSellerOrderViewSwitch(){
     const buttons = document.querySelectorAll(".view-icon-btn");
@@ -17,17 +17,19 @@ function initSellerOrderViewSwitch(){
 
     let savedView = localStorage.getItem("sellerOrderView");
 
-    if (savedView == null || savedView === ""){
-        savedView = "card";
+    if (savedView !== "simple" && savedView !== "card"){
+        savedView = "simple";
     }
 
     changeSellerOrderView(savedView);
 
-    buttons.forEach(function (button){
-        button.addEventListener("click", function (){
-            const view = button.dataset.view;
+    buttons.forEach(function(button){
+        button.addEventListener("click", function(event){
+            event.preventDefault();
 
-            if (view == null || view === ""){
+            const view = button.getAttribute("data-view");
+
+            if (view !== "simple" && view !== "card"){
                 return;
             }
 
@@ -44,12 +46,24 @@ function changeSellerOrderView(view){
     const buttons = document.querySelectorAll(".view-icon-btn");
     const panels = document.querySelectorAll("[data-view-panel]");
 
-    buttons.forEach(function (button){
-        button.classList.toggle("active", button.dataset.view === view);
+    buttons.forEach(function(button){
+        const buttonView = button.getAttribute("data-view");
+
+        if (buttonView === view){
+            button.classList.add("active");
+        } else {
+            button.classList.remove("active");
+        }
     });
 
-    panels.forEach(function (panel){
-        panel.classList.toggle("active", panel.dataset.viewPanel === view);
+    panels.forEach(function(panel){
+        const panelView = panel.getAttribute("data-view-panel");
+
+        if (panelView === view){
+            panel.classList.add("active");
+        } else {
+            panel.classList.remove("active");
+        }
     });
 }
 
@@ -76,8 +90,10 @@ function initSellerOrderStatusAutoSubmit(){
 /*
     주문 상품 모달
 */
+/*
+    주문 상품 모달
+*/
 function initSellerOrderModal(){
-    const openButtons = document.querySelectorAll("[data-modal-target]");
     const modal = document.getElementById("sellerOrderModal");
     const modalContent = document.getElementById("sellerOrderModalContent");
     const closeButtons = document.querySelectorAll("[data-modal-close]");
@@ -86,28 +102,46 @@ function initSellerOrderModal(){
         return;
     }
 
-    openButtons.forEach(function (button){
-        button.addEventListener("click", function (){
-            const targetId = button.dataset.modalTarget;
-            const template = document.getElementById(targetId);
+    document.addEventListener("click", function(event){
+        const modalTargetElement = event.target.closest("[data-modal-target]");
 
-            if (template == null){
-                return;
-            }
+        if (modalTargetElement == null){
+            return;
+        }
 
-            modalContent.innerHTML = template.innerHTML;
-            modal.classList.add("active");
-            document.body.classList.add("modal-open");
-        });
+        /*
+            select, form, 환불/반품 버튼 같은 실제 조작 요소를 누를 때는
+            행/카드 모달이 열리지 않게 막음
+        */
+        const blockedElement = event.target.closest(
+            "select, option, form, a, input, textarea, label, .simple-receipt-btn, .card-receipt-btn, .view-icon-btn, [data-modal-close]"
+        );
+
+        if (blockedElement != null){
+            return;
+        }
+
+        event.preventDefault();
+
+        const targetId = modalTargetElement.getAttribute("data-modal-target");
+        const template = document.getElementById(targetId);
+
+        if (template == null){
+            return;
+        }
+
+        modalContent.innerHTML = template.innerHTML;
+        modal.classList.add("active");
+        document.body.classList.add("modal-open");
     });
 
-    closeButtons.forEach(function (button){
-        button.addEventListener("click", function (){
+    closeButtons.forEach(function(button){
+        button.addEventListener("click", function(){
             closeSellerOrderModal();
         });
     });
 
-    window.addEventListener("keydown", function (event){
+    window.addEventListener("keydown", function(event){
         if (event.key === "Escape"){
             closeSellerOrderModal();
         }
