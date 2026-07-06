@@ -359,13 +359,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             IFNULL(fv.favorite_count, 0) AS favorite_count,
             IFNULL(rv.review_count, 0) AS review_count,
-<<<<<<< HEAD
-            IFNULL(sa.sales_count, 0) AS sales_count
-
-=======
             IFNULL(sa.sales_count, 0) AS sales_count,
             IFNULL(rv.review_avg, 0) AS review_avg
->>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
         FROM products p
 
         JOIN sellers s
@@ -517,11 +512,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             CASE
                 WHEN p.sale_price IS NOT NULL
-<<<<<<< HEAD
                 AND p.sale_price &gt; 0
-=======
-                AND p.sale_price > 0
->>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
                 AND p.sale_price &lt; p.price
                 THEN FLOOR(((p.price - p.sale_price) / p.price) * 100)
                 ELSE 0
@@ -587,11 +578,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="sort == 'discount'">
                 ORDER BY
                     CASE
-<<<<<<< HEAD
                         WHEN p.sale_price &gt; 0
-=======
-                        WHEN p.sale_price > 0
->>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
                         AND p.sale_price &lt; p.price
                         THEN ((p.price - p.sale_price) / p.price)
                         ELSE 0
@@ -603,11 +590,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="sort == 'lowPrice'">
                 ORDER BY
                     CASE
-<<<<<<< HEAD
                         WHEN p.sale_price &gt; 0
-=======
-                        WHEN p.sale_price > 0
->>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
                         AND p.sale_price &lt; p.price
                         THEN p.sale_price
                         ELSE p.price
@@ -619,11 +602,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="sort == 'highPrice'">
                 ORDER BY
                     CASE
-<<<<<<< HEAD
                         WHEN p.sale_price &gt; 0
-=======
-                        WHEN p.sale_price > 0
->>>>>>> 04b49185a611378bcc2d6a9df1d67e0a51a39acc
                         AND p.sale_price &lt; p.price
                         THEN p.sale_price
                         ELSE p.price
