@@ -7,25 +7,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
     <!-- 상품 목록 조회 -->
     <select id="product_list" parameterType="map" resultType="product">
-        SELECT
-            p.*,
-            s.company_name,
-            IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count
+        SELECT p.*, s.company_name 
         FROM products p 
         JOIN sellers s 
         ON p.seller_id = s.seller_id
-        LEFT JOIN (
-            SELECT
-                product_id,
-                AVG(rating) AS review_avg,
-                COUNT(review_id) AS review_count
-            FROM reviews
-            GROUP BY product_id
-        ) rv
-        ON p.product_id = rv.product_id
         WHERE p.status = 'APPROVED' 
-        AND s.seller_status = 'APPROVED'
         ORDER BY p.product_id DESC 
         LIMIT #{start}, #{blockList}
     </select>
@@ -35,7 +21,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p.*,
             s.company_name,
             c.name category_name,
-            COALESCE(rv.review_avg, 0) AS review_avg,
             COALESCE(rv.review_count, 0) AS review_count,
             COALESCE(oc.order_count, 0) AS order_count,
             COALESCE(oc.sales_quantity, 0) AS sales_quantity,
@@ -45,10 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN sellers s ON p.seller_id = s.seller_id
         JOIN categories c ON p.category_id = c.category_id
         LEFT JOIN (
-            SELECT
-                product_id,
-                AVG(rating) AS review_avg,
-                COUNT(*) AS review_count
+            SELECT product_id, COUNT(*) AS review_count
             FROM reviews
             GROUP BY product_id
         ) rv ON rv.product_id = p.product_id
@@ -74,7 +56,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="status != null and status != 'all'">
                 p.status = #{status}
-                AND s.seller_status = 'APPROVED'
             </if>
 
             <if test="seller_id != null">
@@ -150,7 +131,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="status != null and status != 'all'">
                 p.status = #{status}
-                AND s.seller_status = 'APPROVED'
             </if>
 
             <if test="seller_id != null">
@@ -362,23 +342,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 신제품 목록 -->
     <select id="new_product_list" parameterType="map" resultType="product">
-        SELECT
-            p.*,
-            s.company_name,
-            IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count
+        SELECT p.*, s.company_name 
         FROM products p 
         JOIN sellers s 
         ON p.seller_id = s.seller_id
-        LEFT JOIN (
-            SELECT
-                product_id,
-                AVG(rating) AS review_avg,
-                COUNT(review_id) AS review_count
-            FROM reviews
-            GROUP BY product_id
-        ) rv
-        ON p.product_id = rv.product_id
         WHERE p.status = 'APPROVED' 
         ORDER BY p.product_id DESC 
         LIMIT #{start}, #{blockList}
@@ -393,8 +360,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             IFNULL(fv.favorite_count, 0) AS favorite_count,
             IFNULL(rv.review_count, 0) AS review_count,
             IFNULL(sa.sales_count, 0) AS sales_count
-            IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count
+
         FROM products p
 
         JOIN sellers s
@@ -412,15 +378,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN (
             SELECT
                 product_id,
-                AVG(rating) AS review_avg,
-                COUNT(review_id) AS review_count
-
+                COUNT(*) AS review_count
             FROM reviews
             GROUP BY product_id
         ) rv
         ON p.product_id = rv.product_id
 
-           
         LEFT JOIN (
             SELECT
                 oi.product_id,
@@ -435,10 +398,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             GROUP BY oi.product_id
         ) sa
         ON p.product_id = sa.product_id
-           
-        WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
 
+        WHERE p.status = 'APPROVED'
         AND (
             p.category_id = #{category_id}
             OR p.category_id IN (
@@ -551,16 +512,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             CASE
                 WHEN p.sale_price IS NOT NULL
-                AND p.sale_price > 0
-                AND p.sale_price < p.price
+                AND p.sale_price &gt; 0
+                AND p.sale_price &lt; p.price
                 THEN FLOOR(((p.price - p.sale_price) / p.price) * 100)
                 ELSE 0
             END AS sale_rate,
 
             IFNULL(fv.favorite_count, 0) AS favorite_count,
             IFNULL(rv.review_count, 0) AS review_count,
-            IFNULL(sa.sales_count, 0) AS sales_count,
-            IFNULL(rv.review_avg, 0) AS review_avg
+            IFNULL(sa.sales_count, 0) AS sales_count
 
         FROM products p
 
@@ -579,8 +539,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN (
             SELECT
                 product_id,
-                AVG(rating) AS review_avg,
-                COUNT(review_id) AS review_count
+                COUNT(*) AS review_count
             FROM reviews
             GROUP BY product_id
         ) rv
@@ -602,70 +561,77 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.product_id = sa.product_id
 
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
+
         AND (
             p.name LIKE CONCAT('%', #{keyword}, '%')
-            OR s.company_name LIKE CONCAT('%', #{keyword}, '%')
             OR p.description LIKE CONCAT('%', #{keyword}, '%')
         )
 
         <choose>
 
+            <!-- 최신순 -->
             <when test="sort == 'new'">
                 ORDER BY p.product_id DESC
             </when>
 
+            <!-- 할인율 높은순 -->
             <when test="sort == 'discount'">
                 ORDER BY
                     CASE
-                        WHEN p.sale_price > 0
-                        AND p.sale_price < p.price
+                        WHEN p.sale_price &gt; 0
+                        AND p.sale_price &lt; p.price
                         THEN ((p.price - p.sale_price) / p.price)
                         ELSE 0
                     END DESC,
                     p.product_id DESC
             </when>
 
+            <!-- 낮은 가격순 -->
             <when test="sort == 'lowPrice'">
                 ORDER BY
                     CASE
-                        WHEN p.sale_price > 0
-                        AND p.sale_price < p.price
+                        WHEN p.sale_price &gt; 0
+                        AND p.sale_price &lt; p.price
                         THEN p.sale_price
                         ELSE p.price
                     END ASC,
                     p.product_id DESC
             </when>
 
+            <!-- 높은 가격순 -->
             <when test="sort == 'highPrice'">
                 ORDER BY
                     CASE
-                        WHEN p.sale_price > 0
-                        AND p.sale_price < p.price
+                        WHEN p.sale_price &gt; 0
+                        AND p.sale_price &lt; p.price
                         THEN p.sale_price
                         ELSE p.price
                     END DESC,
                     p.product_id DESC
             </when>
 
+            <!-- 찜 많은순 -->
             <when test="sort == 'likes'">
                 ORDER BY
                     IFNULL(fv.favorite_count, 0) DESC,
                     p.product_id DESC
             </when>
 
+            <!-- 리뷰 많은순 -->
             <when test="sort == 'reviews'">
                 ORDER BY
                     IFNULL(rv.review_count, 0) DESC,
                     p.product_id DESC
             </when>
 
+            <!-- 판매 많은순 -->
             <when test="sort == 'sales'">
                 ORDER BY
                     IFNULL(sa.sales_count, 0) DESC,
                     p.product_id DESC
             </when>
 
+            <!-- 기본 인기순 -->
             <otherwise>
                 ORDER BY
                     (
@@ -697,8 +663,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT 
             p.*,
             s.company_name,
-            IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count,
 
             CASE
                 WHEN p.sale_price IS NOT NULL
@@ -713,18 +677,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN sellers s
         ON p.seller_id = s.seller_id
 
-        LEFT JOIN (
-            SELECT
-                product_id,
-                AVG(rating) AS review_avg,
-                COUNT(review_id) AS review_count
-            FROM reviews
-            GROUP BY product_id
-        ) rv
-        ON p.product_id = rv.product_id
-
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
 
 
         <!-- 상황/대상 선택으로 넘어온 여러 카테고리 조건 -->
@@ -845,23 +798,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="product_gift_personal_list" parameterType="map" resultType="product">
         SELECT DISTINCT 
             p.*,
-            s.company_name,
-            IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count
+            s.company_name
         FROM products p
         JOIN sellers s
         ON p.seller_id = s.seller_id
-        LEFT JOIN (
-            SELECT
-                product_id,
-                AVG(rating) AS review_avg,
-                COUNT(review_id) AS review_count
-            FROM reviews
-            GROUP BY product_id
-        ) rv
-        ON p.product_id = rv.product_id
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
         AND p.category_id IN (
             SELECT DISTINCT bp.category_id
             FROM orders o
@@ -881,8 +822,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT 
             p.*,
             s.company_name,
-            IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count,
 
             CASE
                 WHEN p.sale_price IS NOT NULL
@@ -897,18 +836,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN sellers s
         ON p.seller_id = s.seller_id
 
-        LEFT JOIN (
-            SELECT
-                product_id,
-                AVG(rating) AS review_avg,
-                COUNT(review_id) AS review_count
-            FROM reviews
-            GROUP BY product_id
-        ) rv
-        ON p.product_id = rv.product_id
-
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
 
         <!-- 카테고리 조건 -->
         <if test="categoryIds != null and categoryIds.size() > 0">
@@ -1019,7 +947,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FLOOR(((p.price - p.sale_price) / p.price) * 100) AS sale_rate,
 
             IFNULL(fv.favorite_count, 0) AS favorite_count,
-            IFNULL(rv.review_avg, 0) AS review_avg,
             IFNULL(rv.review_count, 0) AS review_count,
             IFNULL(sa.sales_count, 0) AS sales_count
 
@@ -1036,10 +963,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.product_id = fv.product_id
 
         LEFT JOIN (
-            SELECT
-                product_id,
-                AVG(rating) AS review_avg,
-                COUNT(*) AS review_count
+            SELECT product_id, COUNT(*) AS review_count
             FROM reviews
             GROUP BY product_id
         ) rv
@@ -1058,7 +982,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.product_id = sa.product_id
 
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
         AND p.sale_price IS NOT NULL
         AND p.sale_price &gt; 0
         AND p.sale_price &lt; p.price
@@ -1162,9 +1085,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="product_sale_cnt" parameterType="map" resultType="int">
         SELECT COUNT(*)
         FROM products p
-        JOIN sellers s ON s.seller_id = p.seller_id
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
         AND p.sale_price IS NOT NULL
         AND p.sale_price &gt; 0
         AND p.sale_price &lt; p.price
@@ -1224,7 +1145,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             END AS sale_rate,
 
             IFNULL(fv.favorite_count, 0) AS favorite_count,
-            IFNULL(rv.review_avg, 0) AS review_avg,
             IFNULL(rv.review_count, 0) AS review_count,
             IFNULL(sa.sales_count, 0) AS sales_count,
 
@@ -1251,7 +1171,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN (
             SELECT 
                 product_id, 
-                AVG(rating) AS review_avg,
                 COUNT(*) AS review_count
             FROM reviews
             GROUP BY product_id
@@ -1274,7 +1193,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ON p.product_id = sa.product_id
 
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
 
         ORDER BY
             (
@@ -1440,8 +1358,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
             p.*,
             s.company_name,
-            IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count,
 
             CASE
                 WHEN p.sale_price IS NOT NULL
@@ -1456,18 +1372,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN sellers s
         ON p.seller_id = s.seller_id
 
-        LEFT JOIN (
-            SELECT
-                product_id,
-                AVG(rating) AS review_avg,
-                COUNT(review_id) AS review_count
-            FROM reviews
-            GROUP BY product_id
-        ) rv
-        ON p.product_id = rv.product_id
-
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
         AND p.stock &gt; 0
 
         AND p.category_id IN
@@ -1593,8 +1498,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
             p.*,
             s.company_name,
-            IFNULL(rv.review_avg, 0) AS review_avg,
-            IFNULL(rv.review_count, 0) AS review_count,
 
             CASE
                 WHEN p.sale_price IS NOT NULL
@@ -1609,18 +1512,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         JOIN sellers s
         ON p.seller_id = s.seller_id
 
-        LEFT JOIN (
-            SELECT
-                product_id,
-                AVG(rating) AS review_avg,
-                COUNT(review_id) AS review_count
-            FROM reviews
-            GROUP BY product_id
-        ) rv
-        ON p.product_id = rv.product_id
-
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
         AND p.stock &gt; 0
 
         ORDER BY p.product_id DESC
@@ -1660,7 +1552,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN sellers s
         ON p.seller_id = s.seller_id
         WHERE p.status = 'APPROVED'
-        AND s.seller_status = 'APPROVED'
         ORDER BY t.viewed_at DESC
     </select>
 </mapper>
