@@ -428,4 +428,58 @@ public class SellerController {
         return result;
     }
 
+    @PostMapping("/seller_direct_claim_done.do")
+    public String sellerDirectClaimDone(
+            @RequestParam("order_item_id") int order_item_id,
+            @RequestParam("status") String status,
+            @RequestParam("reason") String reason,
+            @RequestParam(value = "detail_reason", required = false) String detail_reason,
+            @RequestParam(value = "seller_answer", required = false) String seller_answer,
+            @RequestParam(value = "selectedStatus", required = false) String selectedStatus) {
+
+        sellerdao.insertSellerDirectClaimDone(
+                order_item_id,
+                status,
+                reason,
+                detail_reason,
+                seller_answer
+        );
+
+        if (selectedStatus != null && !selectedStatus.isBlank()) {
+            return "redirect:/seller_order_list.do?status=" + selectedStatus;
+        }
+
+        return "redirect:/seller_order_list.do";
+    }
+
+    @PostMapping("/seller_buyer_claim_done.do")
+    public String sellerBuyerClaimDone(
+            @RequestParam("claim_id") int claim_id,
+            @RequestParam("status") String status,
+            @RequestParam("seller_answer") String seller_answer,
+            @RequestParam(value = "claimTab", required = false) String claimTab) {
+
+        Integer seller_id = getLoginSellerId();
+
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
+
+        if (!"RETURN_DONE".equals(status) && !"EXCHANGE_DONE".equals(status)) {
+            return "redirect:/seller_order_list.do?status=RETURN_EXCHANGE";
+        }
+
+        sellerdao.updateBuyerRequestClaimDone(
+                claim_id,
+                status,
+                seller_answer
+        );
+
+        if (claimTab == null || claimTab.isBlank()) {
+            claimTab = "ALL";
+        }
+
+        return "redirect:/seller_order_list.do?status=RETURN_EXCHANGE&claimTab=" + claimTab;
+    }
+
 }

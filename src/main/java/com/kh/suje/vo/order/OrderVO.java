@@ -42,4 +42,8 @@ public class OrderVO {
     private String claim_status;
     private String claim_reason;
     private String claim_requested_at;
+
+    private String claim_detail_reason;
+    private String claim_seller_answer;
+    private String claim_completed_at;
 }

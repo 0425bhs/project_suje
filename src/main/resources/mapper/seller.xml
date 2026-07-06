@@ -337,7 +337,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 c.claim_id AS claim_id,
                 c.status AS claim_status,
                 c.reason AS claim_reason,
+                c.detail_reason AS claim_detail_reason,
+                c.seller_answer AS claim_seller_answer,
                 DATE_FORMAT(c.requested_at, '%Y-%m-%d %H:%i') AS claim_requested_at,
+                DATE_FORMAT(c.completed_at, '%Y-%m-%d %H:%i') AS claim_completed_at,
             </if>
 
             a.recipient_name AS receiver_name,
@@ -567,5 +570,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         GROUP BY c.category_id, c.name
         ORDER BY salesAmount DESC
     </select>
+
+    <update id="updateBuyerRequestClaimDone">
+        UPDATE order_item_claims
+        SET status = #{status},
+            seller_answer = #{seller_answer},
+            completed_at = NOW(),
+            updated_at = NOW()
+        WHERE claim_id = #{claim_id}
+        AND status IN ('RETURN_REQUEST', 'EXCHANGE_REQUEST')
+    </update>
+
+    <insert id="insertSellerDirectClaimDone">
+        INSERT INTO order_item_claims (
+            order_item_id,
+            status,
+            reason,
+            detail_reason,
+            seller_answer,
+            requested_at,
+            completed_at,
+            created_at,
+            updated_at
+        )
+        VALUES (
+            #{order_item_id},
+            #{status},
+            #{reason},
+            #{detail_reason},
+            #{seller_answer},
+            NOW(),
+            NOW(),
+            NOW(),
+            NOW()
+        )
+    </insert>
     
 </mapper>
