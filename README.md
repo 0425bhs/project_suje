@@ -224,7 +224,7 @@ RETURN_REJECTED   : 반품 반려
 
 ### 5. 문의 기능
 
-사용ㅋ자는 상품 상세 페이지에서 문의를 작성할 수 있고, 판매자는 판매자 페이지에서 문의를 확인하고 답변할 수 있도록 구성했습니다.
+사용자는 상품 상세 페이지에서 문의를 작성할 수 있고, 판매자는 판매자 페이지에서 문의를 확인하고 답변할 수 있도록 구성했습니다.
 
 주요 구현 내용은 다음과 같습니다.
 
@@ -301,47 +301,6 @@ RETURN_REJECTED   : 반품 반려
 * 카테고리 관리 페이지
 * 공지사항 관리 페이지
 
-## 실행 방법
-
-### 1. 프로젝트 클론
-
-```bash
-git clone https://github.com/깃허브아이디/레포지토리명.git
-```
-
-### 2. 프로젝트 폴더 이동
-
-```bash
-cd 레포지토리명
-```
-
-### 3. DB 생성
-
-MySQL에서 프로젝트용 데이터베이스를 생성합니다.
-
-```sql
-CREATE DATABASE suje;
-```
-
-### 4. application.properties 설정
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/suje
-spring.datasource.username=DB아이디
-spring.datasource.password=DB비밀번호
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-
-server.port=9090
-```
-
-### 5. 서버 실행
-
-Spring Boot 프로젝트를 실행한 뒤 아래 주소로 접속합니다.
-
-```text
-http://localhost:9090
-```
-
 ## 프로젝트에서 고민한 부분
 
 ### 주문 상태와 상품별 교환/반품 상태 분리
@@ -396,15 +355,6 @@ JSP에서 상태값 조건을 다시 정리하고, `PENDING`, `PAID`, `PREPARING
 * 세션 기반 로그인 처리
 * 상태값에 따른 화면 분기 처리
 * 실제 쇼핑몰에 가까운 데이터 흐름 설계
-
-## 향후 개선 사항
-
-* 관리자 페이지 기능 강화
-* 배송 조회 API 연동
-* 알림 기능 추가
-* 검색 조건 고도화
-* 상품 추천 기능 추가
-* 반응형 UI 개선
 
 ## 개발 기간
 
