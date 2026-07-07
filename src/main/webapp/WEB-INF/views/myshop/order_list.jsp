@@ -36,13 +36,6 @@
         <strong>${paidCount}</strong>
     </button>
 
-    <!-- <button type="button"
-            class="${selectedStatus eq 'PREPARING' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=PREPARING'">
-        <span>제작준비</span>
-        <strong>${preparingCount}</strong>
-    </button> -->
-
     <button type="button"
             class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
             onclick="location.href='/myshop/orders?status=SHIPPING'">
@@ -216,23 +209,72 @@
                                     </a>
                                 </c:if>
 
+                                <!-- 단건 주문: 반품/교환 상태별 버튼 -->
                                 <c:if test="${itemCount eq 1 and order.status eq 'DELIVERED' and empty mainItem.confirmed_at}">
 
-                                    <button type="button"
-                                            class="refund"
-                                            onclick="openCsModal('${mainItem.order_item_id}', '${mainItem.subtotalAmount}')">
-                                    반품/교환
-                                    </button>
+                                    <c:choose>
 
-                                    <form action="/order_confirm.do" method="post" class="inline-form">
-                                        <input type="hidden" name="order_item_id" value="${mainItem.order_item_id}">
+                                        <c:when test="${empty mainItem.claim_status}">
+                                            <button type="button"
+                                                    class="refund"
+                                                    onclick="openCsModal('${mainItem.order_item_id}', '${mainItem.subtotalAmount}')">
+                                                반품/교환
+                                            </button>
 
-                                        <button type="submit"
-                                                class="primary"
-                                                onclick="return confirm('구매확정 처리하시겠습니까?');">
-                                            구매확정
-                                        </button>
-                                    </form>
+                                            <form action="/order_confirm.do" method="post" class="inline-form">
+                                                <input type="hidden" name="order_item_id" value="${mainItem.order_item_id}">
+
+                                                <button type="submit"
+                                                        class="primary"
+                                                        onclick="return confirm('구매확정 처리하시겠습니까?');">
+                                                    구매확정
+                                                </button>
+                                            </form>
+                                        </c:when>
+
+                                        <c:when test="${mainItem.claim_status eq 'RETURN_REQUEST'}">
+                                            <button type="button" class="refund" disabled>
+                                                반품 처리중
+                                            </button>
+                                        </c:when>
+
+                                        <c:when test="${mainItem.claim_status eq 'EXCHANGE_REQUEST'}">
+                                            <button type="button" class="refund" disabled>
+                                                교환 처리중
+                                            </button>
+                                        </c:when>
+
+                                        <c:when test="${mainItem.claim_status eq 'RETURN_DONE'}">
+                                            <button type="button" class="refund done" disabled>
+                                                반품 완료
+                                            </button>
+                                        </c:when>
+
+                                        <c:when test="${mainItem.claim_status eq 'EXCHANGE_DONE'}">
+                                            <button type="button" class="refund done" disabled>
+                                                교환 완료
+                                            </button>
+                                        </c:when>
+
+                                        <c:when test="${mainItem.claim_status eq 'RETURN_REJECTED'}">
+                                            <button type="button" class="refund rejected" disabled>
+                                                반품 반려
+                                            </button>
+                                        </c:when>
+
+                                        <c:when test="${mainItem.claim_status eq 'EXCHANGE_REJECTED'}">
+                                            <button type="button" class="refund rejected" disabled>
+                                                교환 반려
+                                            </button>
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <button type="button" class="refund" disabled>
+                                                처리 상태 확인중
+                                            </button>
+                                        </c:otherwise>
+
+                                    </c:choose>
 
                                 </c:if>
 
@@ -337,21 +379,84 @@
                                                     </c:otherwise>
                                                 </c:choose>
 
-                                                <button type="button"
-                                                        class="myshop-order-action-btn refund"
-                                                        onclick="openCsModal('${item.order_item_id}', '${item.subtotalAmount}')">
-                                                반품/교환
-                                                </button>
+                                                <!-- 여러 상품 주문: 상품별 반품/교환 상태 버튼 -->
+                                                <c:choose>
 
-                                                <form action="/order_confirm.do" method="post" class="inline-form">
-                                                    <input type="hidden" name="order_item_id" value="${item.order_item_id}">
+                                                    <c:when test="${empty item.claim_status}">
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn refund"
+                                                                onclick="openCsModal('${item.order_item_id}', '${item.subtotalAmount}')">
+                                                            반품/교환
+                                                        </button>
 
-                                                    <button type="submit"
-                                                            class="myshop-order-action-btn confirm"
-                                                            onclick="return confirm('구매확정 처리하시겠습니까?');">
-                                                        구매확정
-                                                    </button>
-                                                </form>
+                                                        <form action="/order_confirm.do" method="post" class="inline-form">
+                                                            <input type="hidden" name="order_item_id" value="${item.order_item_id}">
+
+                                                            <button type="submit"
+                                                                    class="myshop-order-action-btn confirm"
+                                                                    onclick="return confirm('구매확정 처리하시겠습니까?');">
+                                                                구매확정
+                                                            </button>
+                                                        </form>
+                                                    </c:when>
+
+                                                    <c:when test="${item.claim_status eq 'RETURN_REQUEST'}">
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn refund"
+                                                                disabled>
+                                                            반품 처리중
+                                                        </button>
+                                                    </c:when>
+
+                                                    <c:when test="${item.claim_status eq 'EXCHANGE_REQUEST'}">
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn refund"
+                                                                disabled>
+                                                            교환 처리중
+                                                        </button>
+                                                    </c:when>
+
+                                                    <c:when test="${item.claim_status eq 'RETURN_DONE'}">
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn refund done"
+                                                                disabled>
+                                                            반품 완료
+                                                        </button>
+                                                    </c:when>
+
+                                                    <c:when test="${item.claim_status eq 'EXCHANGE_DONE'}">
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn refund done"
+                                                                disabled>
+                                                            교환 완료
+                                                        </button>
+                                                    </c:when>
+
+                                                    <c:when test="${item.claim_status eq 'RETURN_REJECTED'}">
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn refund rejected"
+                                                                disabled>
+                                                            반품 반려
+                                                        </button>
+                                                    </c:when>
+
+                                                    <c:when test="${item.claim_status eq 'EXCHANGE_REJECTED'}">
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn refund rejected"
+                                                                disabled>
+                                                            교환 반려
+                                                        </button>
+                                                    </c:when>
+
+                                                    <c:otherwise>
+                                                        <button type="button"
+                                                                class="myshop-order-action-btn refund"
+                                                                disabled>
+                                                            처리 상태 확인중
+                                                        </button>
+                                                    </c:otherwise>
+
+                                                </c:choose>
 
                                             </c:if>
 
@@ -623,7 +728,7 @@
 
                     <label class="return-agree">
                         <input type="checkbox" id="returnAgree">
-                    반품신청 안내사항을 확인했습니다.
+                        반품신청 안내사항을 확인했습니다.
                     </label>
 
                     <div class="return-modal-actions">
