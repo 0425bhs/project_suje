@@ -23,59 +23,16 @@
 
     <div class="seller-board">
 
-        <aside class="seller-sidebar">
-
-            <div class="sidebar-logo">
-                HAND<span>MADE</span>
-            </div>
-
-            <div class="sidebar-title">
-                판매자 관리보드
-            </div>
-
-            <nav class="sidebar-menu">
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 대시보드
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 홈페이지
-                </a>
-                
-                <a href="/seller_product_list.do" class="menu-active">
-                    내 상품 관리
-                </a>
-
-                <a href="/seller_product_insert.do">
-                    상품 등록
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 주문 관리
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    상품 문의 답변 관리
-                </a>
-
-                <a href="#" class="menu-disabled" onclick="return false;">
-                    판매자 매출 통계
-                </a>
-
-            </nav>
-
-            <div class="sidebar-bottom">
-                <a href="/product/main.do">쇼핑몰로 이동</a>
-            </div>
-
-        </aside>
+        <jsp:include page="seller_sidebar.jsp">
+            <jsp:param name="activeMenu" value="productList" />
+            <jsp:param name="sidebarTitle" value="내 상품 관리" />
+        </jsp:include>
 
         <main class="seller-main">
 
             <section class="product-modify-box">
 
-                <form class="product-modify-form" method="post" enctype="multipart/form-data">
+                <form class="product-modify-form" action="/seller_product_modify.do" method="post" enctype="multipart/form-data">
 
                     <input type="hidden" name="product_id" value="${vo.product_id}">
                     <input type="hidden" name="seller_id" value="${vo.seller_id}">
@@ -200,7 +157,7 @@
 
                             <div class="form-row">
                                 <label>재고</label>
-                                <input type="number" name="stock" value="${vo.stock}" placeholder="재고 수량">
+                                <input type="number" id="stock" name="stock" value="${vo.stock}" placeholder="재고 수량">
                             </div>
 
                             <div class="form-row shipping-section">
