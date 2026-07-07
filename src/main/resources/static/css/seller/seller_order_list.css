@@ -633,28 +633,46 @@
 }
 
 /* =========================================================
-   심플형 작업 버튼
+   심플형 접수 버튼
 ========================================================= */
+
+/* 주문관리 테이블의 접수 칸만 버튼 2개가 한 줄로 들어가게 넓힘 */
+.simple-order-table:not(.claim-order-table) th:last-child,
+.simple-order-table:not(.claim-order-table) td:last-child {
+    width: 150px;
+    min-width: 150px;
+}
 
 .simple-action-buttons {
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
+    flex-wrap: nowrap;
 }
 
 .simple-receipt-btn {
-    height: 28px;
-    padding: 0 9px;
+    min-width: 62px;
+    height: 34px;
+    padding: 0 10px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
     border: 1px solid #d9d9d9;
-    border-radius: 5px;
+    border-radius: 6px;
     background: #fff;
 
     color: #444;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     font-family: inherit;
+    line-height: 1.15;
+    text-align: center;
+    white-space: nowrap;
 
+    box-sizing: border-box;
     cursor: pointer;
     transition: 0.15s;
 }
@@ -1225,10 +1243,6 @@
 .order-modal-product-info p span {
     color: #bbb;
     margin: 0 4px;
-}
-
-body.modal-open {
-    overflow: hidden;
 }
 
 /* =========================================================
