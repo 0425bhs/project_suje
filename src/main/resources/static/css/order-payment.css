@@ -1429,4 +1429,27 @@ select {
     margin-bottom: 2px;
 }
 
+.order-option-line {
+    margin: 6px 0 8px;
+    font-size: 14px;
+    color: #777;
+}
+
+.order-option-line span {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #fff4ef;
+    color: #ff6f4f;
+    font-weight: 700;
+}
+
+.order-option-line em {
+    margin-left: 5px;
+    font-style: normal;
+    color: #999;
+    font-weight: 600;
+}
+
 
