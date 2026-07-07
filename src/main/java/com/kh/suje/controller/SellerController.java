@@ -465,7 +465,10 @@ public class SellerController {
             return "redirect:/login.do";
         }
 
-        if (!"RETURN_DONE".equals(status) && !"EXCHANGE_DONE".equals(status)) {
+        if (!"RETURN_DONE".equals(status)
+                && !"EXCHANGE_DONE".equals(status)
+                && !"RETURN_REJECTED".equals(status)
+                && !"EXCHANGE_REJECTED".equals(status)) {
             return "redirect:/seller_order_list.do?status=RETURN_EXCHANGE";
         }
 
