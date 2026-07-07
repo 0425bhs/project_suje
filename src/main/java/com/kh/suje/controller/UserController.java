@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import com.kh.suje.dto.UserDTO;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -37,6 +38,9 @@ public class UserController {
     private final OrderDAO orderDao;
     private final PwdSecurity pwdSecurity;
     private final MailSendService mss;
+
+    @Value("${file.upload.path}")
+    private String uploadPath;
 
     // 첫페이지
     @GetMapping("/login.do")
@@ -168,7 +172,7 @@ public class UserController {
             session.removeAttribute("naver_photo");
         }
 
-        String savePath = "c:" + File.separator + "upload" + File.separator;
+        String savePath = uploadPath + File.separator;
 
         // 저장경로가 없다면 생성
         File dir = new File(savePath);
@@ -209,7 +213,7 @@ public class UserController {
 
         String securePwd = pwdSecurity.pwdEncoding(vo.getPassword());
         vo.setPassword(securePwd);
-        String savePath = "c:" + File.separator + "upload" + File.separator;
+        String savePath = uploadPath + File.separator;
 
         // 저장경로가 없다면 생성
         File dir = new File(savePath);
@@ -473,7 +477,7 @@ public class UserController {
         }
 
         // 이미지 저장 폴더
-        String savePath = "c:" + File.separator + "upload" + File.separator;
+        String savePath = uploadPath + File.separator;
 
         File dir = new File(savePath);
         if (!dir.exists()) {

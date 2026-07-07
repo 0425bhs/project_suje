@@ -40,15 +40,27 @@
                                         <c:when test="${claim.status eq 'EXCHANGE_REQUEST'}">
                                             <c:set var="statusText" value="교환 접수" />
                                         </c:when>
+
                                         <c:when test="${claim.status eq 'EXCHANGE_DONE'}">
                                             <c:set var="statusText" value="교환 완료" />
                                         </c:when>
+
                                         <c:when test="${claim.status eq 'RETURN_REQUEST'}">
                                             <c:set var="statusText" value="환불 접수" />
                                         </c:when>
+
                                         <c:when test="${claim.status eq 'RETURN_DONE'}">
                                             <c:set var="statusText" value="환불 완료" />
                                         </c:when>
+
+                                        <c:when test="${claim.status eq 'EXCHANGE_REJECTED'}">
+                                            <c:set var="statusText" value="교환 반려" />
+                                        </c:when>
+
+                                        <c:when test="${claim.status eq 'RETURN_REJECTED'}">
+                                            <c:set var="statusText" value="환불 반려" />
+                                        </c:when>
+                                        
                                         <c:otherwise>
                                             <c:set var="statusText" value="${claim.status}" />
                                         </c:otherwise>

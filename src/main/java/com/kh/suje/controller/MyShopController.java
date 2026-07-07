@@ -273,6 +273,9 @@ public class MyShopController {
 
         List<OrderItemClaimVO> claimList = orderitemclaimdao.selectClaimListByUserId(user_id);
 
+        System.out.println("현재 로그인 user_id = " + user_id);
+    System.out.println("claimList size = " + claimList.size());
+
 
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("claimList", claimList);

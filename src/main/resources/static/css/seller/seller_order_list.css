@@ -633,28 +633,46 @@
 }
 
 /* =========================================================
-   심플형 작업 버튼
+   심플형 접수 버튼
 ========================================================= */
+
+/* 주문관리 테이블의 접수 칸만 버튼 2개가 한 줄로 들어가게 넓힘 */
+.simple-order-table:not(.claim-order-table) th:last-child,
+.simple-order-table:not(.claim-order-table) td:last-child {
+    width: 150px;
+    min-width: 150px;
+}
 
 .simple-action-buttons {
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
+    flex-wrap: nowrap;
 }
 
 .simple-receipt-btn {
-    height: 28px;
-    padding: 0 9px;
+    min-width: 62px;
+    height: 34px;
+    padding: 0 10px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
     border: 1px solid #d9d9d9;
-    border-radius: 5px;
+    border-radius: 6px;
     background: #fff;
 
     color: #444;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     font-family: inherit;
+    line-height: 1.15;
+    text-align: center;
+    white-space: nowrap;
 
+    box-sizing: border-box;
     cursor: pointer;
     transition: 0.15s;
 }
@@ -1227,10 +1245,6 @@
     margin: 0 4px;
 }
 
-body.modal-open {
-    overflow: hidden;
-}
-
 /* =========================================================
    반응형
 ========================================================= */
@@ -1434,4 +1448,255 @@ body.modal-open {
     color: #777;
     font-size: 12px;
     font-weight: 900;
+}
+
+/* =========================================================
+   판매자 반품/교환 처리 모달
+========================================================= */
+
+.seller-claim-modal.cs-modal-wrap {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.seller-claim-modal.cs-modal-wrap.open {
+    display: flex;
+}
+
+.seller-claim-modal .cs-modal-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.45);
+}
+
+.seller-claim-modal .cs-modal-box {
+    position: relative;
+    width: 560px;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 50px);
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+    z-index: 1;
+}
+
+.seller-claim-modal .cs-modal-head {
+    padding: 26px 30px 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid #f0e5dc;
+}
+
+.seller-claim-modal .cs-modal-head span {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #ff6f4f;
+}
+
+.seller-claim-modal .cs-modal-head h3 {
+    margin: 0;
+    font-size: 22px;
+    color: #2f2520;
+}
+
+.seller-claim-modal .cs-modal-head p {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #8a7a70;
+}
+
+.seller-claim-modal .cs-modal-close {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    background: #fff4ef;
+    border-radius: 50%;
+    font-size: 24px;
+    line-height: 1;
+    color: #6f5145;
+    cursor: pointer;
+}
+
+.seller-claim-modal .cs-modal-body {
+    padding: 26px 30px 30px;
+}
+
+.seller-claim-modal .cs-modal-body > h3 {
+    margin: 0 0 14px;
+    font-size: 18px;
+    color: #2f2520;
+}
+
+.seller-claim-modal .cs-type-select {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.seller-claim-modal .cs-type-select input {
+    display: none;
+}
+
+.seller-claim-modal .cs-type-select label {
+    height: 46px;
+    border: 1px solid #ead8cf;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #7a6257;
+    background: #fffaf7;
+    cursor: pointer;
+}
+
+.seller-claim-modal .cs-type-select input:checked + label {
+    border-color: #ff6f4f;
+    background: #ff6f4f;
+    color: #fff;
+}
+
+.seller-claim-modal .cs-info-row,
+.seller-claim-modal .cs-form-row {
+    margin-bottom: 16px;
+}
+
+.seller-claim-modal .cs-info-row span,
+.seller-claim-modal .cs-form-row label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #4a3730;
+}
+
+.seller-claim-modal .cs-info-row input,
+.seller-claim-modal .cs-form-row select,
+.seller-claim-modal .cs-form-row textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ead8cf;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #3d302a;
+    background: #fff;
+    outline: none;
+}
+
+.seller-claim-modal .cs-info-row input[readonly] {
+    background: #f8f4f1;
+    color: #6b5a52;
+}
+
+.seller-claim-modal .cs-form-row textarea {
+    min-height: 110px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.seller-claim-guide-box {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 16px;
+    background: #fff7f3;
+    border: 1px solid #f2d8cc;
+}
+
+.seller-claim-guide-box strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #3d302a;
+    font-size: 14px;
+}
+
+.seller-claim-guide-box ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.seller-claim-guide-box li {
+    margin: 5px 0;
+    font-size: 13px;
+    color: #7a6257;
+    line-height: 1.5;
+}
+
+.seller-claim-agree {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #4a3730;
+    cursor: pointer;
+}
+
+.seller-claim-modal .cs-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.seller-claim-modal .cs-close-btn,
+.seller-claim-modal .cs-submit-btn {
+    min-width: 104px;
+    height: 44px;
+    border-radius: 12px;
+    border: 0;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.seller-claim-modal .cs-close-btn {
+    background: #f3eee9;
+    color: #6f5a50;
+}
+
+.seller-claim-modal .cs-submit-btn {
+    background: #ff6f4f;
+    color: #fff;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.cs-reject-btn {
+    height: 42px;
+    padding: 0 18px;
+
+    border: 1px solid #e03131;
+    border-radius: 10px;
+    background: #fff5f5;
+
+    color: #e03131;
+    font-size: 14px;
+    font-weight: 900;
+    font-family: inherit;
+
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.cs-reject-btn:hover {
+    background: #e03131;
+    color: #fff;
+}
+
+.seller-claim-status-badge.RETURN_REJECTED,
+.seller-claim-status-badge.EXCHANGE_REJECTED {
+    background: #fff5f5;
+    color: #e03131;
 }
