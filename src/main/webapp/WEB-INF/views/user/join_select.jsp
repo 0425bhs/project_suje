@@ -9,7 +9,10 @@
 <body>
 <div class="join-select-container">
     <div class="logo">HAND<span>MADE</span>에 오신 것을<br>환영해요</div>
-    <p class="subtitle">지금 회원 가입 하신 후</span>HANDMADE의<span></span> 다양한 서비스를 만나보세요!</p>
+    <p class="subtitle">
+    <span>지금 회원 가입 하신 후 HANDMADE의</span>
+    <span>다양한 서비스를 만나보세요!</span>
+</p>
 
     <form method="get" action="joinForm.do">
 
