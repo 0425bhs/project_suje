@@ -1390,19 +1390,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </choose>
     </select>
 
-    <!-- 결제 성공 시 상품 재고 차감 -->
+    <!-- 결제 성공 시 재고 차감 -->
     <update id="decreaseStock" parameterType="orderItem">
-        UPDATE products 
-        SET stock = stock - #{quantity} 
-        WHERE product_id = #{product_id} 
-        AND stock >= #{quantity}
+        <choose>
+            <!-- 옵션 상품이면 옵션 재고 차감 -->
+            <when test="option_id != null and option_id != 0">
+                UPDATE product_options
+                SET option_stock = option_stock - #{quantity}
+                WHERE option_id = #{option_id}
+                AND option_stock >= #{quantity}
+            </when>
+
+            <!-- 옵션 없는 일반 상품이면 상품 재고 차감 -->
+            <otherwise>
+                UPDATE products
+                SET stock = stock - #{quantity}
+                WHERE product_id = #{product_id}
+                AND stock >= #{quantity}
+            </otherwise>
+        </choose>
     </update>
 
-    <!-- 결제 취소 시 상품 재고 복구 -->
+    <!-- 결제 취소 시 재고 복구 -->
     <update id="increaseStock" parameterType="orderItem">
-        UPDATE products 
-        SET stock = stock + #{quantity} 
-        WHERE product_id = #{product_id}
+        <choose>
+            <!-- 옵션 상품이면 옵션 재고 복구 -->
+            <when test="option_id != null and option_id != 0">
+                UPDATE product_options
+                SET option_stock = option_stock + #{quantity}
+                WHERE option_id = #{option_id}
+            </when>
+
+            <!-- 옵션 없는 일반 상품이면 상품 재고 복구 -->
+            <otherwise>
+                UPDATE products
+                SET stock = stock + #{quantity}
+                WHERE product_id = #{product_id}
+            </otherwise>
+        </choose>
     </update>
 
     <!-- 상품 상세 조회 시 사용자가 본 상품 기록 저장 -->

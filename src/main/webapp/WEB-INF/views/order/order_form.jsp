@@ -84,6 +84,10 @@
                                                 <c:otherwise>
                                                     <input type="hidden" name="product_id" value="${vo.product_id}">
                                                     <input type="hidden" name="quantity" value="${vo.quantity}">
+
+                                                    <c:if test="${not empty vo.option_id}">
+                                                        <input type="hidden" name="option_id" value="${vo.option_id}">
+                                                    </c:if>
                                                 </c:otherwise>
                                             </c:choose>
 
@@ -114,7 +118,21 @@
 
                                                 <div class="item-info">
                                                     <div class="creator-line">작가 상품</div>
-                                                    <strong>${vo.name}</strong>
+                                                    <strong><c:out value="${vo.name}" /></strong>
+
+                                                        <c:if test="${not empty vo.option_name}">
+                                                            <p class="order-option-line">
+                                                                옵션
+                                                                <span><c:out value="${vo.option_name}" /></span>
+
+                                                                <c:if test="${vo.option_price > 0}">
+                                                                    <em>
+                                                                        +
+                                                                        <fmt:formatNumber value="${vo.option_price}" pattern="#,###" />원
+                                                                    </em>
+                                                                </c:if>
+                                                            </p>
+                                                        </c:if>
 
                                                     <c:choose>
                                                         <c:when
