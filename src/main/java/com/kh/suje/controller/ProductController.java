@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -50,6 +51,9 @@ public class ProductController {
     private final FavoriteDAO favoritedao;
     private final OptionDAO optiondao;
     private final QnaDAO qnadao;
+
+    @Value("${file.upload.path}")
+    private String uploadPath;
 
     // 할인 설정값 정리
     private void applySaleSetting(ProductVO vo){
@@ -871,7 +875,7 @@ public class ProductController {
     public Map<String,Object> seller_product_insert(ProductVO vo,@RequestParam(value = "option_name",required = false)List<String> optionNameList,@RequestParam(value = "option_price",required = false) List<String> optionPriceList,
         @RequestParam(value = "option_stock", required = false) List<String> optionStockList) throws Exception{
 
-        String savePath="c:/upload/";
+        String savePath = uploadPath + File.separator;
         File dir= new File(savePath);
 
         if(!dir.exists()){
@@ -930,9 +934,7 @@ public class ProductController {
             }
         }
 
-        // ✅ DB에 저장할 이미지 경로 설정 (/upload/ + 파일명)
-        // ⚠️ 중요: 실제 파일은 c:/upload/에 있지만
-        //         DB에는 /upload/파일명 저장 (WebConfig에서 매핑됨)
+        // ✅ DB에는 파일명만 저장하고, 조회는 WebConfig의 /upload/** 매핑으로 처리
         if (filename_l.equals("no_file")){
             vo.setImage_l("no_file");
         } else {
@@ -1054,7 +1056,7 @@ public class ProductController {
         
         // ✅ 파일 업로드 경로 설정
         // ⚠️ 주의: seller_product_insert와 동일한 경로 필수
-        String savePath = "c:/upload/";
+        String savePath = uploadPath + File.separator;
         File dir = new File(savePath);
 
         if (!dir.exists()){
@@ -1292,7 +1294,7 @@ public class ProductController {
 
         Map<String, Object> map = new HashMap<>();
 
-        String savePath = "c:/upload/editor/";
+        String savePath = uploadPath + File.separator + "editor" + File.separator;
 
         File dir = new File(savePath);
 
