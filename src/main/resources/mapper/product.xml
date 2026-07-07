@@ -315,7 +315,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{stock},
             #{delivery_fee},
             #{free_shipping},
-            'APPROVED',
+            #{status},
             #{image_l},
             CASE 
                 WHEN #{sale_price} > 0 THEN CURRENT_TIMESTAMP 
