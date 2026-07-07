@@ -92,6 +92,7 @@
 src/main/java/com/kh/suje
 ├── controller
 ├── dao
+├── dto
 ├── service
 ├── vo
 └── config
@@ -151,12 +152,13 @@ CANCELLED   : 주문취소
 ## 교환/반품 상태 구조
 
 ```text
-NORMAL           : 일반 상태
-EXCHANGE_REQUEST : 교환 요청
-EXCHANGE_DONE    : 교환 완료
-RETURN_REQUEST   : 반품 요청
-RETURN_DONE      : 반품 완료
-REJECTED         : 요청 반려
+NORMAL            : 일반 상태
+EXCHANGE_REQUEST  : 교환 요청
+EXCHANGE_DONE     : 교환 완료
+EXCHANGE_REJECTED : 교환 반려
+RETURN_REQUEST    : 반품 요청
+RETURN_DONE       : 반품 완료
+RETURN_REJECTED   : 반품 반려
 ```
 
 ## 핵심 구현 내용
@@ -456,7 +458,7 @@ JSP에서 상태값 조건을 다시 정리하고, `PENDING`, `PAID`, `PREPARING
 - 주문서 작성
 - 주문 완료
 - 주문 상세
--  주문 내역
+- 주문 내역
 - 배송 상태 확인
 - 결제 대기 / 성공 / 실패
 - 포인트 / 쿠폰 적용 및 사용
