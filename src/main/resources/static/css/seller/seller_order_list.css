@@ -1672,3 +1672,31 @@
 body.modal-open {
     overflow: hidden;
 }
+
+.cs-reject-btn {
+    height: 42px;
+    padding: 0 18px;
+
+    border: 1px solid #e03131;
+    border-radius: 10px;
+    background: #fff5f5;
+
+    color: #e03131;
+    font-size: 14px;
+    font-weight: 900;
+    font-family: inherit;
+
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.cs-reject-btn:hover {
+    background: #e03131;
+    color: #fff;
+}
+
+.seller-claim-status-badge.RETURN_REJECTED,
+.seller-claim-status-badge.EXCHANGE_REJECTED {
+    background: #fff5f5;
+    color: #e03131;
+}

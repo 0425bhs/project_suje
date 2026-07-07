@@ -306,12 +306,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                             'RETURN_REQUEST',
                             'EXCHANGE_REQUEST',
                             'RETURN_DONE',
-                            'EXCHANGE_DONE'
-                        )
+                            'EXCHANGE_DONE',
+                            'RETURN_REJECTED',
+                            'EXCHANGE_REJECTED'
+                                                )
                     </when>
 
                     <otherwise>
-                        AND c.status = #{claimTab}
+                        <choose>
+                            <when test="claimTab == 'RETURN_DONE'">
+                                AND c.status IN ('RETURN_DONE', 'RETURN_REJECTED')
+                            </when>
+
+                            <when test="claimTab == 'EXCHANGE_DONE'">
+                                AND c.status IN ('EXCHANGE_DONE', 'EXCHANGE_REJECTED')
+                            </when>
+
+                            <otherwise>
+                                AND c.status = #{claimTab}
+                            </otherwise>
+                        </choose>
                     </otherwise>
                 </choose>
             </when>
@@ -371,12 +385,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                             'RETURN_REQUEST',
                             'EXCHANGE_REQUEST',
                             'RETURN_DONE',
-                            'EXCHANGE_DONE'
+                            'EXCHANGE_DONE',
+                            'RETURN_REJECTED',
+                            'EXCHANGE_REJECTED'
                         )
                     </when>
 
                     <otherwise>
-                        AND c.status = #{claimTab}
+                        <choose>
+                            <when test="claimTab == 'RETURN_DONE'">
+                                AND c.status IN ('RETURN_DONE', 'RETURN_REJECTED')
+                            </when>
+
+                            <when test="claimTab == 'EXCHANGE_DONE'">
+                                AND c.status IN ('EXCHANGE_DONE', 'EXCHANGE_REJECTED')
+                            </when>
+
+                            <otherwise>
+                                AND c.status = #{claimTab}
+                            </otherwise>
+                        </choose>
                     </otherwise>
                 </choose>
             </when>

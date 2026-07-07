@@ -304,6 +304,8 @@
                                                                 <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">교환요청</c:when>
                                                                 <c:when test="${order.claim_status eq 'RETURN_DONE'}">반품완료</c:when>
                                                                 <c:when test="${order.claim_status eq 'EXCHANGE_DONE'}">교환완료</c:when>
+                                                                <c:when test="${order.claim_status eq 'RETURN_REJECTED'}">반품반려</c:when>
+                                                                <c:when test="${order.claim_status eq 'EXCHANGE_REJECTED'}">교환반려</c:when>
                                                                 <c:otherwise>${order.claim_status}</c:otherwise>
                                                             </c:choose>
                                                         </span>
@@ -510,6 +512,8 @@
                                                                 <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">교환요청</c:when>
                                                                 <c:when test="${order.claim_status eq 'RETURN_DONE'}">반품완료</c:when>
                                                                 <c:when test="${order.claim_status eq 'EXCHANGE_DONE'}">교환완료</c:when>
+                                                                <c:when test="${order.claim_status eq 'RETURN_REJECTED'}">반품반려</c:when>
+                                                                <c:when test="${order.claim_status eq 'EXCHANGE_REJECTED'}">교환반려</c:when>
                                                                 <c:otherwise>${order.claim_status}</c:otherwise>
                                                             </c:choose>
                                                         </span>
@@ -1064,6 +1068,7 @@
                 <input type="hidden" id="buyerRequestClaimStatus" name="status">
                 <input type="hidden" name="selectedStatus" value="${selectedStatus}">
                 <input type="hidden" name="claimTab" value="${currentClaimTab}">
+                <input type="hidden" id="buyerRequestClaimType">
 
                 <div class="cs-info-row">
                     <span>주문상품번호</span>
@@ -1111,8 +1116,8 @@
                 </label>
 
                 <div class="cs-modal-actions">
-                    <button type="button" class="cs-close-btn" onclick="closeBuyerRequestClaimModal()">
-                        닫기
+                    <button type="button" class="cs-reject-btn" onclick="rejectBuyerRequestClaim()">
+                        반려하기
                     </button>
 
                     <button type="submit" class="cs-submit-btn" id="buyerRequestSubmitBtn">

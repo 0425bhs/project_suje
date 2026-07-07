@@ -417,6 +417,7 @@ function openBuyerRequestClaimModal(event, button){
     document.getElementById("buyerRequestDetail").value = requestDetail == null ? "" : requestDetail;
     document.getElementById("buyerRequestSellerAnswer").value = "";
     document.getElementById("buyerRequestAgree").checked = false;
+    document.getElementById("buyerRequestClaimType").value = claimType;
 
     if(claimType === "RETURN"){
         document.getElementById("buyerRequestClaimStatus").value = "RETURN_DONE";
@@ -507,4 +508,48 @@ function formatSellerClaimPrice(price){
     }
 
     return numberPrice.toLocaleString("ko-KR") + "원";
+}
+
+function rejectBuyerRequestClaim() {
+    const claimTypeInput = document.getElementById("buyerRequestClaimType");
+    const statusInput = document.getElementById("buyerRequestClaimStatus");
+    const sellerAnswer = document.getElementById("buyerRequestSellerAnswer");
+    const agree = document.getElementById("buyerRequestAgree");
+    const form = document.getElementById("buyerRequestClaimForm");
+
+    if (claimTypeInput == null || statusInput == null || sellerAnswer == null || agree == null || form == null) {
+        alert("반려 처리 정보를 찾을 수 없습니다.");
+        return;
+    }
+
+    const claimType = claimTypeInput.value;
+    let rejectStatus = "";
+
+    if (claimType === "RETURN") {
+        rejectStatus = "RETURN_REJECTED";
+    } else if (claimType === "EXCHANGE") {
+        rejectStatus = "EXCHANGE_REJECTED";
+    } else {
+        alert("요청 유형을 확인할 수 없습니다.");
+        return;
+    }
+
+    if (sellerAnswer.value.trim() === "") {
+        alert("반려 사유를 입력해주세요.");
+        sellerAnswer.focus();
+        return;
+    }
+
+    if (agree.checked === false) {
+        alert("처리 내용을 확인해주세요.");
+        agree.focus();
+        return;
+    }
+
+    if (!confirm("해당 반품/교환 요청을 반려하시겠습니까?")) {
+        return;
+    }
+
+    statusInput.value = rejectStatus;
+    form.submit();
 }
