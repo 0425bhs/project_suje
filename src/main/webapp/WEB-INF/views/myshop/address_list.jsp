@@ -24,7 +24,6 @@
 
 <body>
 
-<jsp:include page="/WEB-INF/views/product/product_header.jsp" /> 
 
 
 <div class="address-list-page-wrap">
