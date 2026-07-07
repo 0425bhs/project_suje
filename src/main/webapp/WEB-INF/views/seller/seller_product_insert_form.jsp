@@ -33,9 +33,7 @@
 
                     <form class="product-insert-form" action="/seller_product_insert.do" method="post" enctype="multipart/form-data">
 
-                        <!-- 테스트용 판매자 번호, 삭제 예정 -->
-                        <input type="hidden" name="seller_id" value="1">
-                        <input type="hidden" name="status" value="APPROVED">
+                        <input type="hidden" name="status" value="PENDING">
 
                         <div class="form-section">
 
@@ -53,7 +51,7 @@
                             <div class="form-row category-row">
                                 <label>소분류 카테고리</label>
 
-                                <select name="category_id" id="category_id" class="category-select">
+                                <select name="category_id" id="category_id" class="category-select" required>
                                     <option value="">하위 카테고리 선택</option>
                                 </select>
                             </div>
@@ -123,7 +121,7 @@
 
                                 <div class="form-row">
                                     <label>재고</label>
-                                    <input type="number" name="stock" placeholder="재고 수량">
+                                    <input type="number" id="stock" name="stock" placeholder="재고 수량">
                                 </div>
 
                                 <div class="form-row shipping-section">

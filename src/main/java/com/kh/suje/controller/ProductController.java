@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.PaginationVO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.vo.QnaVO;
@@ -28,6 +29,7 @@ import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.dao.OptionDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.ReviewDAO;
+import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ImageVO;
@@ -51,6 +53,7 @@ public class ProductController {
     private final FavoriteDAO favoritedao;
     private final OptionDAO optiondao;
     private final QnaDAO qnadao;
+    private final SellerDAO sellerdao;
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -872,8 +875,34 @@ public class ProductController {
     @PostMapping("/seller_product_insert.do")
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public Map<String,Object> seller_product_insert(ProductVO vo,@RequestParam(value = "option_name",required = false)List<String> optionNameList,@RequestParam(value = "option_price",required = false) List<String> optionPriceList,
-        @RequestParam(value = "option_stock", required = false) List<String> optionStockList) throws Exception{
+    public Map<String,Object> seller_product_insert(
+                                                ProductVO vo,
+                                                @RequestParam(value = "option_name", required = false) List<String> optionNameList,
+                                                @RequestParam(value = "option_price", required = false) List<String> optionPriceList,
+                                                @RequestParam(value = "option_stock", required = false) List<String> optionStockList,
+                                                HttpSession session
+                                            ) throws Exception{
+
+        Map<String, Object> map = new HashMap<>();
+
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            map.put("result", 0);
+            map.put("message", "로그인이 필요합니다.");
+            return map;
+        }
+
+        SellerVO seller = sellerdao.selectSeller(loginUser.getUser_id());
+
+        if (seller == null) {
+            map.put("result", 0);
+            map.put("message", "판매자 정보가 없습니다.");
+            return map;
+        }
+
+        vo.setSeller_id(seller.getSeller_id());
+        vo.setStatus("PENDING");
 
         String savePath = uploadPath + File.separator;
         File dir= new File(savePath);
@@ -1008,7 +1037,6 @@ public class ProductController {
             }
         }
 
-        Map<String,Object> map=new HashMap<>();
         map.put("result", res);
         map.put("product_id", product_id);
 
