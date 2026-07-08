@@ -61,7 +61,7 @@ public class AdminController {
         model.addAttribute("pendingSellerCount",
                            sellerDao.getSellerListCountByKeyword("pending", null, null, null, null, null));
         model.addAttribute("pendingProductCount",
-                           productDao.getProductListCountByKeyword("pending", null, null, null, null,
+                           productDao.getProductListCountByKeyword("PENDING", null, null, null, null,
                                                                    null, null, null, null));
         model.addAttribute("pendingReportCount",
                            reportDao.getReportListCountByKeyword("pending", null, null, "all", null, null, null));
@@ -72,7 +72,7 @@ public class AdminController {
         model.addAttribute("totalSellerCount",
                            sellerDao.getSellerListCountByKeyword("all", null, null, null, null, null));
         model.addAttribute("approvedProductCount",
-                           productDao.getProductListCountByKeyword("approved", null, null, null, null,
+                           productDao.getProductListCountByKeyword("APPROVED", null, null, null, null,
                                                                    null, null, null, null));
         model.addAttribute("recentActionLogList", adminActionLogDao.getRecentAdminActionLogList(5));
 
@@ -169,8 +169,12 @@ public class AdminController {
                            Integer category_id, Integer minPrice, Integer maxPrice,
                            String startDate, String endDate,
                            String sort, Integer size, Integer page) {
-        if (!"pending".equals(status) && !"approved".equals(status) &&
-            !"rejected".equals(status) && !"hidden".equals(status)) {
+        if (status != null && !"all".equals(status)) {
+            status = status.toUpperCase();
+        }
+
+        if (!"PENDING".equals(status) && !"APPROVED".equals(status) &&
+            !"REJECTED".equals(status) && !"HIDDEN".equals(status)) {
             status = "all";
         }
 
