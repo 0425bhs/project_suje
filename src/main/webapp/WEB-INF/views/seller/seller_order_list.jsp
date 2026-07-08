@@ -163,7 +163,6 @@
 
                     <div class="seller-order-view-wrap">
 
-                        <!-- 리스트형 화면 -->
                         <section class="seller-order-simple-view" data-view-panel="simple">
 
                             <div class="simple-order-table-wrap">
@@ -290,17 +289,14 @@
                                             <c:choose>
                                                 <c:when test="${isClaimMode}">
 
-                                                    <!-- 주문일 -->
                                                     <td class="simple-date">
                                                         ${order.created_at}
                                                     </td>
 
-                                                    <!-- 접수일 -->
                                                     <td class="simple-date">
                                                         ${order.claim_requested_at}
                                                     </td>
 
-                                                    <!-- 배송상태 자리에 반품/교환 상태 표시 -->
                                                     <td>
                                                         <span class="seller-claim-status-badge ${order.claim_status}">
                                                             <c:choose>
@@ -308,22 +304,41 @@
                                                                 <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">교환요청</c:when>
                                                                 <c:when test="${order.claim_status eq 'RETURN_DONE'}">반품완료</c:when>
                                                                 <c:when test="${order.claim_status eq 'EXCHANGE_DONE'}">교환완료</c:when>
+                                                                <c:when test="${order.claim_status eq 'RETURN_REJECTED'}">반품반려</c:when>
+                                                                <c:when test="${order.claim_status eq 'EXCHANGE_REJECTED'}">교환반려</c:when>
                                                                 <c:otherwise>${order.claim_status}</c:otherwise>
                                                             </c:choose>
                                                         </span>
                                                     </td>
 
-                                                    <!-- 접수 -->
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${order.claim_status eq 'RETURN_REQUEST'}">
-                                                                <button type="button" class="simple-receipt-btn return">
+                                                                <button type="button"
+                                                                        class="simple-receipt-btn return buyer-claim-open-btn"
+                                                                        data-claim-type="RETURN"
+                                                                        data-claim-id="${order.claim_id}"
+                                                                        data-order-item-id="${mainItem.order_item_id}"
+                                                                        data-price="${mainItem.subtotalAmount}"
+                                                                        data-request-reason="${fn:escapeXml(order.claim_reason)}"
+                                                                        data-request-detail="${fn:escapeXml(order.claim_detail_reason)}"
+                                                                        data-requested-at="${fn:escapeXml(order.claim_requested_at)}"
+                                                                        onclick="openBuyerRequestClaimModal(event, this)">
                                                                     반품처리
                                                                 </button>
                                                             </c:when>
 
                                                             <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">
-                                                                <button type="button" class="simple-receipt-btn refund">
+                                                                <button type="button"
+                                                                        class="simple-receipt-btn refund buyer-claim-open-btn"
+                                                                        data-claim-type="EXCHANGE"
+                                                                        data-claim-id="${order.claim_id}"
+                                                                        data-order-item-id="${mainItem.order_item_id}"
+                                                                        data-price="${mainItem.subtotalAmount}"
+                                                                        data-request-reason="${fn:escapeXml(order.claim_reason)}"
+                                                                        data-request-detail="${fn:escapeXml(order.claim_detail_reason)}"
+                                                                        data-requested-at="${fn:escapeXml(order.claim_requested_at)}"
+                                                                        onclick="openBuyerRequestClaimModal(event, this)">
                                                                     교환처리
                                                                 </button>
                                                             </c:when>
@@ -340,12 +355,10 @@
 
                                                 <c:otherwise>
 
-                                                    <!-- 주문일 -->
                                                     <td class="simple-date">
                                                         ${order.created_at}
                                                     </td>
 
-                                                    <!-- 배송상태 -->
                                                     <td>
                                                         <form action="/seller_order_status_update.do"
                                                               method="post"
@@ -383,17 +396,26 @@
                                                         </form>
                                                     </td>
 
-                                                    <!-- 접수 -->
                                                     <td>
                                                         <c:if test="${order.status eq 'DELIVERED'}">
                                                             <div class="simple-action-buttons">
 
-                                                                <button type="button" class="simple-receipt-btn refund">
-                                                                    환불 접수
+                                                                <button type="button"
+                                                                        class="simple-receipt-btn refund seller-direct-claim-open-btn"
+                                                                        data-claim-type="EXCHANGE"
+                                                                        data-order-id="${order.order_id}"
+                                                                        data-item-template-id="direct-claim-items-${order.order_id}"
+                                                                        onclick="openSellerDirectClaimModal(event, this)">
+                                                                    교환처리
                                                                 </button>
 
-                                                                <button type="button" class="simple-receipt-btn return">
-                                                                    반품 접수
+                                                                <button type="button"
+                                                                        class="simple-receipt-btn return seller-direct-claim-open-btn"
+                                                                        data-claim-type="RETURN"
+                                                                        data-order-id="${order.order_id}"
+                                                                        data-item-template-id="direct-claim-items-${order.order_id}"
+                                                                        onclick="openSellerDirectClaimModal(event, this)">
+                                                                    반품처리
                                                                 </button>
 
                                                             </div>
@@ -415,7 +437,6 @@
 
                         </section>
 
-                        <!-- 카드형 화면 -->
                         <section class="seller-order-card-view" data-view-panel="card">
 
                             <div class="seller-order-list">
@@ -491,6 +512,8 @@
                                                                 <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">교환요청</c:when>
                                                                 <c:when test="${order.claim_status eq 'RETURN_DONE'}">반품완료</c:when>
                                                                 <c:when test="${order.claim_status eq 'EXCHANGE_DONE'}">교환완료</c:when>
+                                                                <c:when test="${order.claim_status eq 'RETURN_REJECTED'}">반품반려</c:when>
+                                                                <c:when test="${order.claim_status eq 'EXCHANGE_REJECTED'}">교환반려</c:when>
                                                                 <c:otherwise>${order.claim_status}</c:otherwise>
                                                             </c:choose>
                                                         </span>
@@ -616,13 +639,31 @@
 
                                                         <c:choose>
                                                             <c:when test="${order.claim_status eq 'RETURN_REQUEST'}">
-                                                                <button type="button" class="card-receipt-btn return">
+                                                                <button type="button"
+                                                                        class="card-receipt-btn return buyer-claim-open-btn"
+                                                                        data-claim-type="RETURN"
+                                                                        data-claim-id="${order.claim_id}"
+                                                                        data-order-item-id="${mainItem.order_item_id}"
+                                                                        data-price="${mainItem.subtotalAmount}"
+                                                                        data-request-reason="${fn:escapeXml(order.claim_reason)}"
+                                                                        data-request-detail="${fn:escapeXml(order.claim_detail_reason)}"
+                                                                        data-requested-at="${fn:escapeXml(order.claim_requested_at)}"
+                                                                        onclick="openBuyerRequestClaimModal(event, this)">
                                                                     반품처리
                                                                 </button>
                                                             </c:when>
 
                                                             <c:when test="${order.claim_status eq 'EXCHANGE_REQUEST'}">
-                                                                <button type="button" class="card-receipt-btn refund">
+                                                                <button type="button"
+                                                                        class="card-receipt-btn refund buyer-claim-open-btn"
+                                                                        data-claim-type="EXCHANGE"
+                                                                        data-claim-id="${order.claim_id}"
+                                                                        data-order-item-id="${mainItem.order_item_id}"
+                                                                        data-price="${mainItem.subtotalAmount}"
+                                                                        data-request-reason="${fn:escapeXml(order.claim_reason)}"
+                                                                        data-request-detail="${fn:escapeXml(order.claim_detail_reason)}"
+                                                                        data-requested-at="${fn:escapeXml(order.claim_requested_at)}"
+                                                                        onclick="openBuyerRequestClaimModal(event, this)">
                                                                     교환처리
                                                                 </button>
                                                             </c:when>
@@ -641,12 +682,22 @@
                                                     <c:if test="${order.status eq 'DELIVERED'}">
                                                         <div class="seller-order-card-actions">
 
-                                                            <button type="button" class="card-receipt-btn refund">
-                                                                환불 접수
+                                                            <button type="button"
+                                                                    class="card-receipt-btn refund seller-direct-claim-open-btn"
+                                                                    data-claim-type="EXCHANGE"
+                                                                    data-order-id="${order.order_id}"
+                                                                    data-item-template-id="direct-claim-items-${order.order_id}"
+                                                                    onclick="openSellerDirectClaimModal(event, this)">
+                                                                교환처리
                                                             </button>
 
-                                                            <button type="button" class="card-receipt-btn return">
-                                                                반품 접수
+                                                            <button type="button"
+                                                                    class="card-receipt-btn return seller-direct-claim-open-btn"
+                                                                    data-claim-type="RETURN"
+                                                                    data-order-id="${order.order_id}"
+                                                                    data-item-template-id="direct-claim-items-${order.order_id}"
+                                                                    onclick="openSellerDirectClaimModal(event, this)">
+                                                                반품처리
                                                             </button>
 
                                                         </div>
@@ -664,7 +715,6 @@
 
                         </section>
 
-                        <!-- 페이지네이션 -->
                         <c:if test="${pagination.totalPage > 1}">
 
                             <div class="seller-page-menu">
@@ -807,7 +857,40 @@
 
                         </div>
 
-                        <!-- 실제 모달 -->
+                        <!-- 상품관리 탭 직접 처리 상품 선택 템플릿 -->
+                        <div class="seller-direct-claim-item-templates" style="display:none;">
+
+                            <c:forEach var="order" items="${orderList}">
+
+                                <c:set var="itemList" value="${orderItemMap[order.order_id]}" />
+
+                                <select id="direct-claim-items-${order.order_id}">
+                                    <c:forEach var="item" items="${itemList}">
+                                        <option value="${item.order_item_id}"
+                                                data-price="${item.subtotalAmount}">
+                                            <c:out value="${item.productName}" />
+                                            /
+                                            <c:choose>
+                                                <c:when test="${not empty item.option_name}">
+                                                    옵션: <c:out value="${item.option_name}" />
+                                                </c:when>
+                                                <c:otherwise>
+                                                    옵션 없음
+                                                </c:otherwise>
+                                            </c:choose>
+                                            /
+                                            수량 ${item.quantity}개
+                                            /
+                                            <fmt:formatNumber value="${item.subtotalAmount}" pattern="#,###" />원
+                                        </option>
+                                    </c:forEach>
+                                </select>
+
+                            </c:forEach>
+
+                        </div>
+
+                        <!-- 실제 주문 상품 모달 -->
                         <div class="seller-order-modal" id="sellerOrderModal">
 
                             <div class="seller-order-modal-dim" data-modal-close></div>
@@ -834,6 +917,219 @@
 
     </main>
 
+</div>
+
+<!-- 상품관리 탭: 판매자 직접 반품/교환 처리 모달 -->
+<div class="cs-modal-wrap seller-claim-modal" id="sellerDirectClaimModal">
+
+    <div class="cs-modal-bg" onclick="closeSellerDirectClaimModal()"></div>
+
+    <div class="cs-modal-box">
+
+        <div class="cs-modal-head">
+            <div>
+                <span>SELLER DIRECT PROCESS</span>
+                <h3 id="sellerDirectClaimModalTitle">반품/교환 직접 처리</h3>
+                <p>판매자가 상품과 사유를 선택해서 바로 반품 또는 교환 완료 처리합니다.</p>
+            </div>
+
+            <button type="button" class="cs-modal-close" onclick="closeSellerDirectClaimModal()">
+                ×
+            </button>
+        </div>
+
+        <div class="cs-modal-body">
+
+            <h3>처리 유형</h3>
+
+            <div class="cs-type-select">
+                <input type="radio"
+                       name="sellerDirectClaimType"
+                       id="sellerDirectClaimReturn"
+                       value="RETURN"
+                       onchange="changeSellerDirectClaimType('RETURN')">
+
+                <label for="sellerDirectClaimReturn">반품</label>
+
+                <input type="radio"
+                       name="sellerDirectClaimType"
+                       id="sellerDirectClaimExchange"
+                       value="EXCHANGE"
+                       onchange="changeSellerDirectClaimType('EXCHANGE')">
+
+                <label for="sellerDirectClaimExchange">교환</label>
+            </div>
+
+            <form id="sellerDirectClaimForm"
+                  action="/seller_direct_claim_done.do"
+                  method="post"
+                  onsubmit="return submitSellerDirectClaimForm()">
+
+                <input type="hidden" id="sellerDirectClaimStatus" name="status">
+                <input type="hidden" id="sellerDirectOrderId" name="order_id">
+                <input type="hidden" name="selectedStatus" value="${selectedStatus}">
+
+                <div class="cs-form-row">
+                    <label for="sellerDirectOrderItemSelect">처리 상품</label>
+                    <select id="sellerDirectOrderItemSelect"
+                            name="order_item_id"
+                            onchange="changeSellerDirectItemPrice(this)">
+                        <option value="">처리할 상품을 선택해주세요</option>
+                    </select>
+                </div>
+
+                <div class="cs-info-row">
+                    <span>결제금액</span>
+                    <input id="sellerDirectPrice" readonly="readonly">
+                </div>
+
+                <div class="cs-form-row">
+                    <label for="sellerDirectReason" id="sellerDirectReasonLabel">처리 사유</label>
+
+                    <select id="sellerDirectReason" name="reason">
+                        <option value="">처리 사유를 선택해주세요</option>
+                    </select>
+                </div>
+
+                <div class="cs-form-row">
+                    <label for="sellerDirectDetailReason">판매자 상세 사유</label>
+
+                    <textarea id="sellerDirectDetailReason"
+                            name="detail_reason"
+                            placeholder="판매자가 직접 처리하는 상세 사유를 입력해주세요."></textarea>
+                </div>
+
+                <div class="cs-form-row">
+                    <label for="sellerDirectSellerAnswer">판매자 처리 안내</label>
+
+                    <textarea id="sellerDirectSellerAnswer"
+                            name="seller_answer"
+                            placeholder="구매자에게 보여줄 처리 안내를 입력해주세요."></textarea>
+                </div>
+
+                <div class="seller-claim-guide-box">
+                    <strong id="sellerDirectGuideTitle">처리 안내</strong>
+
+                    <ul id="sellerDirectGuideList">
+                        <li>저장하면 바로 완료 상태로 변경됩니다.</li>
+                        <li>판매자가 직접 처리한 건으로 저장됩니다.</li>
+                    </ul>
+                </div>
+
+                <label class="seller-claim-agree">
+                    <input type="checkbox" id="sellerDirectAgree">
+                    처리 안내사항을 확인했습니다.
+                </label>
+
+                <div class="cs-modal-actions">
+                    <button type="button" class="cs-close-btn" onclick="closeSellerDirectClaimModal()">
+                        닫기
+                    </button>
+
+                    <button type="submit" class="cs-submit-btn" id="sellerDirectSubmitBtn">
+                        처리하기
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- 반품/교환 탭: 구매자 요청 처리 모달 -->
+<div class="cs-modal-wrap seller-claim-modal" id="buyerRequestClaimModal">
+
+    <div class="cs-modal-bg" onclick="closeBuyerRequestClaimModal()"></div>
+
+    <div class="cs-modal-box">
+
+        <div class="cs-modal-head">
+            <div>
+                <span>BUYER CLAIM REQUEST</span>
+                <h3 id="buyerRequestClaimTitle">구매자 요청 처리</h3>
+                <p>구매자가 신청한 반품/교환 요청을 확인하고 처리 안내를 입력합니다.</p>
+            </div>
+
+            <button type="button" class="cs-modal-close" onclick="closeBuyerRequestClaimModal()">
+                ×
+            </button>
+        </div>
+
+        <div class="cs-modal-body">
+
+            <form id="buyerRequestClaimForm"
+                  action="/seller_buyer_claim_done.do"
+                  method="post"
+                  onsubmit="return submitBuyerRequestClaimForm()">
+
+                <input type="hidden" id="buyerRequestClaimId" name="claim_id">
+                <input type="hidden" id="buyerRequestClaimStatus" name="status">
+                <input type="hidden" name="selectedStatus" value="${selectedStatus}">
+                <input type="hidden" name="claimTab" value="${currentClaimTab}">
+                <input type="hidden" id="buyerRequestClaimType">
+
+                <div class="cs-info-row">
+                    <span>주문상품번호</span>
+                    <input id="buyerRequestOrderItemIdText" readonly="readonly">
+                </div>
+
+                <div class="cs-info-row">
+                    <span>결제금액</span>
+                    <input id="buyerRequestPrice" readonly="readonly">
+                </div>
+
+                <div class="cs-info-row">
+                    <span>요청일</span>
+                    <input id="buyerRequestRequestedAt" readonly="readonly">
+                </div>
+
+                <div class="cs-info-row">
+                    <span id="buyerRequestReasonLabel">구매자 요청 사유</span>
+                    <input id="buyerRequestReason" readonly="readonly">
+                </div>
+
+                <div class="cs-form-row">
+                    <label for="buyerRequestDetail">구매자 상세 사유</label>
+                    <textarea id="buyerRequestDetail" readonly="readonly"></textarea>
+                </div>
+
+                <div class="cs-form-row">
+                    <label for="buyerRequestSellerAnswer">판매자 처리 안내</label>
+                    <textarea id="buyerRequestSellerAnswer"
+                              name="seller_answer"
+                              placeholder="구매자에게 보여줄 처리 안내를 입력해주세요."></textarea>
+                </div>
+
+                <div class="seller-claim-guide-box">
+                    <strong id="buyerRequestGuideTitle">처리 안내</strong>
+                    <ul id="buyerRequestGuideList">
+                        <li>처리하면 요청 상태가 완료 상태로 변경됩니다.</li>
+                        <li>구매자가 작성한 요청 사유는 수정하지 않습니다.</li>
+                    </ul>
+                </div>
+
+                <label class="seller-claim-agree">
+                    <input type="checkbox" id="buyerRequestAgree">
+                    처리 내용을 확인했습니다.
+                </label>
+
+                <div class="cs-modal-actions">
+                    <button type="button" class="cs-reject-btn" onclick="rejectBuyerRequestClaim()">
+                        반려하기
+                    </button>
+
+                    <button type="submit" class="cs-submit-btn" id="buyerRequestSubmitBtn">
+                        처리하기
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
 </div>
 
 </body>

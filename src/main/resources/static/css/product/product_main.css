@@ -131,16 +131,23 @@ button {
 }
 
 .product-brand {
-    justify-self: start;
-
-    color: #111;
-    font-size: 30px;
-    font-weight: 950;
-    letter-spacing: -1.5px;
+    justify-self: start !important;
+    color: #111 !important;
+    
+    /* 폰트 크기와 굵기를 브라우저가 강제로 고정하도록 !important를 전부 붙입니다 */
+    font-size: 30px !important;
+    font-weight: 950 !important;
+    letter-spacing: -1.5px !important;
+    font-family: "Pretendard", "Noto Sans KR", sans-serif !important;
+    
+    /* 혹시 모를 상위 축소 변형 방지 */
+    transform: none !important;
+    zoom: 1 !important;
 }
-
 .product-brand span {
-    color: #ff654f;
+    color: #ff654f !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
 }
 
 /* 전체 카테고리 */

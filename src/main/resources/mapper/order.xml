@@ -132,7 +132,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{option_id},
             #{price},
             #{quantity},
-            'PENDING',
             CASE
                 WHEN #{option_id} IS NULL THEN NULL
                 ELSE (

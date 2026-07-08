@@ -65,4 +65,14 @@ public interface SellerDAO {
     
     List<Map<String, Object>> getSellerCategorySales(int seller_id);
 
+    int updateBuyerRequestClaimDone(@Param("claim_id") int claim_id,
+                                    @Param("status") String status,
+                                    @Param("seller_answer") String seller_answer);
+
+    int insertSellerDirectClaimDone(@Param("order_item_id") int order_item_id,
+                                    @Param("status") String status,
+                                    @Param("reason") String reason,
+                                    @Param("detail_reason") String detail_reason,
+                                    @Param("seller_answer") String seller_answer);
+                                    
 }

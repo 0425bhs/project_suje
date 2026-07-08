@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.suje.vo.SellerVO;
 import com.kh.suje.vo.PaginationVO;
 import com.kh.suje.dao.QnaDAO;
 import com.kh.suje.vo.QnaVO;
@@ -27,6 +29,7 @@ import com.kh.suje.dao.ImageDAO;
 import com.kh.suje.dao.OptionDAO;
 import com.kh.suje.dao.ProductDAO;
 import com.kh.suje.dao.ReviewDAO;
+import com.kh.suje.dao.SellerDAO;
 import com.kh.suje.dao.FavoriteDAO;
 import com.kh.suje.util.Paging;
 import com.kh.suje.vo.ImageVO;
@@ -50,6 +53,10 @@ public class ProductController {
     private final FavoriteDAO favoritedao;
     private final OptionDAO optiondao;
     private final QnaDAO qnadao;
+    private final SellerDAO sellerdao;
+
+    @Value("${file.upload.path}")
+    private String uploadPath;
 
     // 할인 설정값 정리
     private void applySaleSetting(ProductVO vo){
@@ -868,10 +875,36 @@ public class ProductController {
     @PostMapping("/seller_product_insert.do")
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public Map<String,Object> seller_product_insert(ProductVO vo,@RequestParam(value = "option_name",required = false)List<String> optionNameList,@RequestParam(value = "option_price",required = false) List<String> optionPriceList,
-        @RequestParam(value = "option_stock", required = false) List<String> optionStockList) throws Exception{
+    public Map<String,Object> seller_product_insert(
+                                                ProductVO vo,
+                                                @RequestParam(value = "option_name", required = false) List<String> optionNameList,
+                                                @RequestParam(value = "option_price", required = false) List<String> optionPriceList,
+                                                @RequestParam(value = "option_stock", required = false) List<String> optionStockList,
+                                                HttpSession session
+                                            ) throws Exception{
 
-        String savePath="c:/upload/";
+        Map<String, Object> map = new HashMap<>();
+
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            map.put("result", 0);
+            map.put("message", "로그인이 필요합니다.");
+            return map;
+        }
+
+        SellerVO seller = sellerdao.selectSeller(loginUser.getUser_id());
+
+        if (seller == null) {
+            map.put("result", 0);
+            map.put("message", "판매자 정보가 없습니다.");
+            return map;
+        }
+
+        vo.setSeller_id(seller.getSeller_id());
+        vo.setStatus("PENDING");
+
+        String savePath = uploadPath + File.separator;
         File dir= new File(savePath);
 
         if(!dir.exists()){
@@ -930,9 +963,7 @@ public class ProductController {
             }
         }
 
-        // ✅ DB에 저장할 이미지 경로 설정 (/upload/ + 파일명)
-        // ⚠️ 중요: 실제 파일은 c:/upload/에 있지만
-        //         DB에는 /upload/파일명 저장 (WebConfig에서 매핑됨)
+        // ✅ DB에는 파일명만 저장하고, 조회는 WebConfig의 /upload/** 매핑으로 처리
         if (filename_l.equals("no_file")){
             vo.setImage_l("no_file");
         } else {
@@ -1006,7 +1037,6 @@ public class ProductController {
             }
         }
 
-        Map<String,Object> map=new HashMap<>();
         map.put("result", res);
         map.put("product_id", product_id);
 
@@ -1054,7 +1084,7 @@ public class ProductController {
         
         // ✅ 파일 업로드 경로 설정
         // ⚠️ 주의: seller_product_insert와 동일한 경로 필수
-        String savePath = "c:/upload/";
+        String savePath = uploadPath + File.separator;
         File dir = new File(savePath);
 
         if (!dir.exists()){
@@ -1292,7 +1322,7 @@ public class ProductController {
 
         Map<String, Object> map = new HashMap<>();
 
-        String savePath = "c:/upload/editor/";
+        String savePath = uploadPath + File.separator + "editor" + File.separator;
 
         File dir = new File(savePath);
 

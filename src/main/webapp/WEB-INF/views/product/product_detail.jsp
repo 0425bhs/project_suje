@@ -189,9 +189,17 @@
                 <section class="store-detail-right">
 
                     <div class="store-seller-line">
-                        <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
-                            ${vo.company_name} 샵 보기 >
-                        </a>
+                        <div class="store-seller-link-group">
+                            <a href="/seller_shop_homepage.do?seller_id=${vo.seller_id}">
+                                ${vo.company_name} 샵 보기 >
+                            </a>
+
+                            <c:if test="${not empty sessionScope.user and sessionScope.user.role eq 'ADMIN'}">
+                                <a href="/admin/products?product_id=${vo.product_id}&page=1" class="store-admin-manage-btn">
+                                    상품 관리
+                                </a>
+                            </c:if>
+                        </div>
 
                         <button type="button"
                                 class="wish-shop-btn ${favorite ? 'active' : ''}"

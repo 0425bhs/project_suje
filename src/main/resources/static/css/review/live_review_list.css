@@ -35,39 +35,6 @@
     font-weight: 700;
 }
 
-.live-review-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin: 0 0 18px;
-}
-
-.live-review-toolbar span {
-    color: #555;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.live-review-toolbar button {
-    min-width: 78px;
-    height: 32px;
-    padding: 0 13px;
-    border: 1px solid #ddd;
-    border-radius: 999px;
-    background: #fff;
-    color: #444;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.live-review-toolbar button:hover {
-    border-color: #ff6f4f;
-    color: #ff6f4f;
-}
-
 .live-review-card {
     min-width: 0;
 }
@@ -203,11 +170,5 @@
 @media (max-width: 900px) {
     .live-review-page {
         padding: 24px 20px 60px;
-    }
-
-    .live-review-toolbar {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 10px;
     }
 }

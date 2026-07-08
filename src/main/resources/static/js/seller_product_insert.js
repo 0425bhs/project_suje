@@ -155,6 +155,21 @@ function validateStockOptionRule(f) {
 
 function send(f){
 
+    const bigCategory = document.getElementById("big_category_id");
+    const smallCategory = document.getElementById("category_id");
+
+    if(bigCategory == null || bigCategory.value == ""){
+        alert("대분류 카테고리를 선택해주세요.");
+        bigCategory.focus();
+        return;
+    }
+
+    if(smallCategory == null || smallCategory.value == ""){
+        alert("소분류 카테고리를 선택해주세요.");
+        smallCategory.focus();
+        return;
+    }
+
     const name = f.name;
 
     if(name.value == ""){
@@ -162,7 +177,7 @@ function send(f){
         name.focus();
         return;
     }
-
+    
     if (window.productDescriptionEditor != null) {
         const editorContent = window.productDescriptionEditor.getHTML().trim();
 
