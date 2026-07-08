@@ -170,14 +170,14 @@
                                             <div class="admin-filter-tabs">
                                                 <a href="/admin/products?status=all&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
                                                     class="${status eq 'all' ? 'active' : ''}">전체</a>
-                                                <a href="/admin/products?status=pending&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
-                                                    class="${status eq 'pending' ? 'active' : ''}">승인대기</a>
-                                                <a href="/admin/products?status=approved&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
-                                                    class="${status eq 'approved' ? 'active' : ''}">판매중</a>
-                                                <a href="/admin/products?status=rejected&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
-                                                    class="${status eq 'rejected' ? 'active' : ''}">반려</a>
-                                                <a href="/admin/products?status=hidden&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
-                                                    class="${status eq 'hidden' ? 'active' : ''}">숨김</a>
+                                                <a href="/admin/products?status=PENDING&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                                    class="${status eq 'PENDING' ? 'active' : ''}">승인대기</a>
+                                                <a href="/admin/products?status=APPROVED&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                                    class="${status eq 'APPROVED' ? 'active' : ''}">판매중</a>
+                                                <a href="/admin/products?status=REJECTED&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                                    class="${status eq 'REJECTED' ? 'active' : ''}">반려</a>
+                                                <a href="/admin/products?status=HIDDEN&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1"
+                                                    class="${status eq 'HIDDEN' ? 'active' : ''}">숨김</a>
                                             </div>
 
                                             <div class="admin-search-wrap">
@@ -219,13 +219,13 @@
                                                 <select class="admin-filter-control" name="status">
                                                     <option value="all" ${status eq 'all' ? 'selected' : '' }>전체
                                                     </option>
-                                                    <option value="pending" ${status eq 'pending' ? 'selected' : '' }>
+                                                    <option value="PENDING" ${status eq 'PENDING' ? 'selected' : '' }>
                                                         승인대기</option>
-                                                    <option value="approved" ${status eq 'approved' ? 'selected' : '' }>
+                                                    <option value="APPROVED" ${status eq 'APPROVED' ? 'selected' : '' }>
                                                         판매중</option>
-                                                    <option value="rejected" ${status eq 'rejected' ? 'selected' : '' }>
+                                                    <option value="REJECTED" ${status eq 'REJECTED' ? 'selected' : '' }>
                                                         반려</option>
-                                                    <option value="hidden" ${status eq 'hidden' ? 'selected' : '' }>숨김
+                                                    <option value="HIDDEN" ${status eq 'HIDDEN' ? 'selected' : '' }>숨김
                                                     </option>
                                                 </select>
                                             </label>
@@ -268,8 +268,8 @@
                                                     <a class="admin-filter-chip"
                                                         href="/admin/products?status=all&keyword=${keyword}&seller_id=${seller_id}&product_id=${product_id}&category_id=${category_id}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}&sort=${sort}&size=${pagination.size}&page=1">
                                                         상태:
-                                                        ${status eq 'pending' ? '승인대기' : status eq 'approved' ? '판매중' :
-                                                        status eq 'rejected' ? '반려' : '숨김'}
+                                                        ${status eq 'PENDING' ? '승인대기' : status eq 'APPROVED' ? '판매중' :
+                                                        status eq 'REJECTED' ? '반려' : '숨김'}
                                                         <span aria-hidden="true">&times;</span>
                                                     </a>
                                                 </c:if>

@@ -34,7 +34,7 @@
                 <strong class="admin-stat-value">${totalSellerCount}<small>곳</small></strong>
                 <span class="admin-stat-note">판매자 신청/승인 전체</span>
             </a>
-            <a href="/admin/products?status=approved&page=1" class="admin-card admin-stat-card admin-stat-link">
+            <a href="/admin/products?status=APPROVED&page=1" class="admin-card admin-stat-card admin-stat-link">
                 <span class="admin-stat-label">판매중 상품</span>
                 <strong class="admin-stat-value">${approvedProductCount}<small>개</small></strong>
                 <span class="admin-stat-note">현재 구매 가능한 상품</span>
@@ -51,7 +51,7 @@
                 <span class="admin-stat-label">판매자 승인 대기</span>
                 <strong class="admin-stat-value">${pendingSellerCount}<small>건</small></strong>
             </a>
-            <a href="/admin/products?status=pending&page=1" class="admin-card admin-stat-card admin-stat-link">
+            <a href="/admin/products?status=PENDING&page=1" class="admin-card admin-stat-card admin-stat-link">
                 <span class="admin-stat-label">상품 승인 대기</span>
                 <strong class="admin-stat-value">${pendingProductCount}<small>건</small></strong>
             </a>

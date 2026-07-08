@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="/css/admin/admin_common.css">
     <link rel="stylesheet" href="/css/admin/admin_detail_panel.css">
     <script src="/js/admin_detail_common.js"></script>
+    <style>
+        .admin-report-reason-text {
+            display: block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const master = document.getElementById("adminMasterDetail");
@@ -264,7 +273,9 @@
                                     </strong>
                             </td>
                             <td class="admin-highlight-target">${report.target_title}</td>
-                            <td class="admin-highlight-target">${report.reason}</td>
+                            <td class="admin-highlight-target">
+                                <span class="admin-report-reason-text" title="${report.reason}">${report.reason}</span>
+                            </td>
                             <td class="admin-highlight-target">${report.reporter_name}</td>
                             <td>
                                 <c:choose>
