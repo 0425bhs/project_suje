@@ -36,4 +36,6 @@ public class OrderItemVO {
     private String claim_status;
 
     private OrderItemClaimVO claim;
+
+    private Integer review_id;
 }
