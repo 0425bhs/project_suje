@@ -1053,7 +1053,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="saleType == 'today'">
                 AND p.sale_start_at IS NOT NULL
                 AND p.sale_end_at IS NOT NULL
-                AND DATE(p.sale_start_at) = CURDATE()
                 AND DATE(p.sale_end_at) = CURDATE()
             </when>
 
@@ -1159,7 +1158,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <when test="saleType == 'today'">
                 AND p.sale_start_at IS NOT NULL
                 AND p.sale_end_at IS NOT NULL
-                AND DATE(p.sale_start_at) = CURDATE()
                 AND DATE(p.sale_end_at) = CURDATE()
             </when>
 
@@ -1271,36 +1269,58 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <!-- 판매자 내 상품 목록 -->
-    <select id="seller_product_list" parameterType="map" resultType="product">
-        SELECT * FROM products
+    <select id="seller_product_list"
+            parameterType="map"
+            resultType="product">
+
+        SELECT p.*,
+            CASE
+                WHEN p.status = 'REJECTED' THEN (
+                    SELECT aal.memo
+                    FROM admin_action_logs aal
+                    WHERE aal.target_type = 'PRODUCT'
+                    AND aal.target_id = p.product_id
+                    AND aal.action_type = 'STATUS_CHANGE'
+                    AND aal.after_status = 'REJECTED'
+                    AND aal.memo IS NOT NULL
+                    AND TRIM(aal.memo) != ''
+                    ORDER BY aal.created_at DESC, aal.log_id DESC
+                    LIMIT 1
+                )
+                ELSE NULL
+            END AS reject_reason
+
+        FROM products p
 
         <where>
+            p.seller_id = #{seller_id} 
             <if test="status != null and status != ''">
-                status = #{status}
+                AND p.status = #{status}
             </if>
 
             <if test="keyword != null and keyword != ''">
                 AND (
-                    name LIKE CONCAT('%', #{keyword}, '%') OR CAST(product_id AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+                    p.name LIKE CONCAT('%', #{keyword}, '%') OR CAST(p.product_id AS CHAR)
+                        LIKE CONCAT('%', #{keyword}, '%')
                 )
             </if>
         </where>
 
         <choose>
             <when test="sort == 'lowPrice'">
-                ORDER BY price ASC
+                ORDER BY p.price ASC
             </when>
 
             <when test="sort == 'highPrice'">
-                ORDER BY price DESC
+                ORDER BY p.price DESC
             </when>
 
             <when test="sort == 'lowStock'">
-                ORDER BY stock ASC
+                ORDER BY p.stock ASC
             </when>
 
             <otherwise>
-                ORDER BY product_id DESC
+                ORDER BY p.product_id DESC
             </otherwise>
         </choose>
 
@@ -1309,18 +1329,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 판매자 내 상품 개수 -->
     <select id="seller_product_count" parameterType="map" resultType="int">
-        SELECT COUNT(*)
-        FROM products
 
+        SELECT COUNT(*) FROM products p 
         <where>
+            p.seller_id = #{seller_id}
+
             <if test="status != null and status != ''">
-                status = #{status}
+                AND p.status = #{status}
             </if>
 
             <if test="keyword != null and keyword != ''">
                 AND (
-                    name LIKE CONCAT('%', #{keyword}, '%')
-                    OR CAST(product_id AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+                    p.name LIKE CONCAT('%', #{keyword}, '%')
+                    OR CAST(p.product_id AS CHAR)
+                        LIKE CONCAT('%', #{keyword}, '%')
                 )
             </if>
         </where>
