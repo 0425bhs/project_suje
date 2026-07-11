@@ -1294,7 +1294,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         <where>
             p.seller_id = #{seller_id} 
-            <if test="status != null and status != ''">
+            <if test="status != null and status != '' and status != 'all'">
                 AND p.status = #{status}
             </if>
 
@@ -1334,7 +1334,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             p.seller_id = #{seller_id}
 
-            <if test="status != null and status != ''">
+            <if test="status != null and status != '' and status != 'all'">
                 AND p.status = #{status}
             </if>
 

@@ -27,7 +27,7 @@
         <!-- 메인 배너 -->
         <div class="home-main-slider">
             <a href="/product_discovery.do" class="home-main-banner hero-slide"
-               style="background-image: url('/upload/main_author.jpg');">
+               style="background-image: url('/upload/main_handmade.jpg');">
                 <div class="hero-slide-content">
                     <span class="banner-label">HANDMADE MARKET</span>
                     <h1>
@@ -52,7 +52,7 @@
                 </strong>
             </a>
 
-            <a href="/all_list.do?sort=new" class="side-banner yellow" style="background-image: url('/upload/main_handmade.jpg');">
+            <a href="/all_list.do?sort=new" class="side-banner yellow" style="background-image: url('/upload/main_author.jpg');">
                 <span>NEW</span>
                 <strong>
                     새롭게 등록된<br>
