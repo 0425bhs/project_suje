@@ -217,15 +217,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 마이쇼핑 상태별 개수 조회 -->
     <select id="selectOrderStatusCounts" resultType="java.util.Map" parameterType="int">
-        SELECT 
+        SELECT
             COUNT(CASE WHEN o.status != 'CANCELLED' THEN 1 END) AS totalCount,
             COUNT(CASE WHEN o.status = 'PENDING' THEN 1 END) AS pendingCount,
             COUNT(CASE WHEN o.status = 'PAID' THEN 1 END) AS paidCount,
             COUNT(CASE WHEN o.status = 'PREPARING' THEN 1 END) AS preparingCount,
             COUNT(CASE WHEN o.status = 'SHIPPING' THEN 1 END) AS shippingCount,
             COUNT(CASE WHEN o.status = 'DELIVERED' THEN 1 END) AS deliveredCount,
-            COUNT(CASE WHEN o.status = 'CONFIRMED' THEN 1 END) AS confirmedCount,
+
+            COUNT(
+                CASE
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM order_items oi
+                        WHERE oi.order_id = o.order_id
+                        AND oi.confirmed_at IS NOT NULL
+                    )
+                    THEN 1
+                END
+            ) AS confirmedCount,
+
             COUNT(CASE WHEN o.status = 'CANCELLED' THEN 1 END) AS cancelCount
+
         FROM orders o
         WHERE o.user_id = #{value}
     </select>
@@ -268,18 +281,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 주문상품 구매확정 처리 -->
     <update id="confirmOrderItem" parameterType="map">
-        UPDATE order_items
+        UPDATE order_items oi
+        JOIN orders o
+            ON oi.order_id = o.order_id
         SET
-            status = 'CONFIRMED',
-            confirmed_at = CURRENT_TIMESTAMP,
-            updated_at = CURRENT_TIMESTAMP
-        WHERE order_item_id = #{order_item_id}
-        AND status = 'DELIVERED'
-        AND order_id IN (
-            SELECT order_id
-            FROM orders
-            WHERE user_id = #{user_id}
-        )
+            oi.confirmed_at = CURRENT_TIMESTAMP,
+            oi.updated_at = CURRENT_TIMESTAMP
+        WHERE oi.order_item_id = #{order_item_id}
+        AND o.user_id = #{user_id}
+        AND o.status = 'DELIVERED'
+        AND oi.confirmed_at IS NULL
     </update>
 
     <!-- 구매확정 포인트 적립 여부 확인 -->
