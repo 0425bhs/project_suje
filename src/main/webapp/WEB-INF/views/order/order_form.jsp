@@ -74,8 +74,7 @@
                                 <input type="hidden" id="totalDeliveryFee" value="${totalDeliveryFee}">
                                 <input type="hidden" id="pointBalance" value="${empty pointBalance ? 0 : pointBalance}">
 
-                                <input type="hidden" name="address_id" id="selectedAddressId"
-                                    value="${defaultAddr.address_id}" />
+                                <input type="hidden" name="address_id" id="selectedAddressId" value="${defaultAddr.address_id}" />
 
                                 <div class="order-layout">
 
@@ -204,15 +203,23 @@
                                             <div class="artist-note"
                                                 style="display:flex; justify-content:space-between; align-items:center;">
                                                 <div>
-                                                    <strong
-                                                        style="font-size:16px; font-weight:900; color:#171717;">배송지</strong>
+                                                    <strong style="font-size:16px; font-weight:900; color:#171717;">배송지</strong>
                                                     <p id="selectedAddressText">
-                                                        ${defaultAddr.address_name} | ${defaultAddr.address}
-                                                        ${defaultAddr.detail_address}
+                                                        <c:choose>
+                                                            <c:when test="${not empty defaultAddr}">
+                                                                <c:out value="${defaultAddr.address_name}" />
+                                                                |
+                                                                <c:out value="${defaultAddr.address}" />
+                                                                <c:out value="${defaultAddr.detail_address}" />
+                                                            </c:when>
+
+                                                            <c:otherwise>
+                                                                등록된 기본 배송지가 없습니다. 배송지를 선택해 주세요.
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </p>
                                                 </div>
-                                                <button type="button" class="btn light"
-                                                    onclick="openAddressModal()">변경</button>
+                                                <button type="button" class="btn light" onclick="openAddressModal()">선택</button>
                                             </div>
                                         </div>
                                     </div>

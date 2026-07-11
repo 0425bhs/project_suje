@@ -131,7 +131,6 @@
 
                             </div>
 
-                            <!-- 할인 설정 -->
                             <div class="form-row discount-setting-box">
                                 <label>할인 설정</label>
 
@@ -191,27 +190,46 @@
                             <div class="image-upload-area">
 
                                 <div class="image-upload-box">
-                                    <label>대표 이미지</label>
+                                    <div class="image-upload-title">대표 이미지</div>
 
-                                    <div class="file-input-box">
-                                        <input type="file" name="image_l_file">
-                                    </div>
+                                    <label for="image_l_file" class="image-select-zone">
 
-                                    <p class="form-help">
-                                        JPG, PNG 파일을 등록할 수 있습니다.
-                                    </p>
+                                        <input type="file" id="image_l_file" name="image_l_file" accept="image/*">
+
+                                        <div id="image_l_preview" class="image-preview-area single-preview">
+
+                                            <div class="image-upload-placeholder">
+                                                <span class="image-upload-symbol">+</span>
+                                                <strong>대표 이미지 선택</strong>
+                                                <span>영역 어디든 클릭하세요.</span>
+                                            </div>
+
+                                        </div>
+
+                                    </label>
+
                                 </div>
 
                                 <div class="image-upload-box">
-                                    <label>상세 이미지</label>
+                                    <div class="image-upload-title">상세 이미지</div>
 
-                                    <div class="file-input-box">
-                                        <input type="file" name="image_s_file" multiple accept="image/*">
-                                    </div>
+                                    <label for="image_s_file" class="image-select-zone">
 
-                                    <p class="form-help">
-                                        JPG, PNG 파일을 등록할 수 있습니다.
-                                    </p>
+                                        <input type="file" id="image_s_file" name="image_s_file" multiple accept="image/*">
+
+                                        <div id="image_s_preview"
+                                            class="image-preview-area multiple-preview">
+
+                                            <div class="image-upload-placeholder">
+                                                <span class="image-upload-symbol">+</span>
+                                                <strong>상세 이미지 선택</strong>
+                                                <span>여러 장을 선택할 수 있습니다.</span>
+                                            </div>
+
+                                        </div>
+
+                                    </label>
+
                                 </div>
 
                             </div>

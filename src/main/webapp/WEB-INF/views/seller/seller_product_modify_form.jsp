@@ -167,7 +167,6 @@
 
                         </div>
 
-                         <!--할인 설정-->
                         <div class="form-row discount-setting-box">
                             <label>할인 설정</label>
 
@@ -233,33 +232,77 @@
                         <div class="image-upload-area">
 
                             <div class="image-upload-box">
-                                <label>대표 이미지</label>
+                                <div class="image-upload-title">대표 이미지</div>
 
-                                <c:if test="${vo.image_l ne 'no_file'}">
-                                    <div class="image-preview" id="image_l_div">
-                                        <img src="/upload/${vo.image_l}" alt="대표 이미지">
+                                <label for="image_l_file" class="image-select-zone">
+
+                                    <input type="file" id="image_l_file" name="image_l_file" accept="image/*">
+
+                                    <div id="image_l_preview" class="image-preview-area single-preview">
+
+                                        <c:choose>
+                                            <c:when test="${not empty vo.image_l and vo.image_l ne 'no_file'}">
+
+                                                <img src="/upload/${vo.image_l}" alt="현재 대표 이미지">
+
+                                            </c:when>
+
+                                            <c:otherwise>
+
+                                                <div class="image-upload-placeholder">
+                                                    <span class="image-upload-symbol">+</span>
+                                                    <strong>대표 이미지 선택</strong>
+                                                    <span>영역 어디든 클릭하세요.</span>
+                                                </div>
+
+                                            </c:otherwise>
+                                        </c:choose>
+
                                     </div>
-                                </c:if>
 
-                                <div class="file-input-box">
-                                    <input type="file" name="image_l_file">
-                                </div>
+                                </label>
+
+                                <p class="form-help">
+                                    이미지를 새로 선택하면 기존 대표 이미지가 변경됩니다.
+                                </p>
                             </div>
 
                             <div class="image-upload-box">
-                                <label>상세 이미지</label>
+                                <div class="image-upload-title">상세 이미지</div>
 
-                                <c:if test="${not empty vo.imageList}">
-                                    <div class="image-preview" id="image_s_div">
-                                        <c:forEach var="img" items="${vo.imageList}">
-                                            <img src="/upload/${img.image_url}" alt="상세 이미지">
-                                        </c:forEach>
+                                <label for="image_s_file" class="image-select-zone">
+
+                                    <input type="file" id="image_s_file" name="image_s_file" multiple accept="image/*">
+
+                                    <div id="image_s_preview" class="image-preview-area multiple-preview">
+
+                                        <c:choose>
+                                            <c:when test="${not empty vo.imageList}">
+
+                                                <c:forEach var="img" items="${vo.imageList}">
+                                                    <img src="/upload/${img.image_url}" alt="현재 상세 이미지">
+                                                </c:forEach>
+
+                                            </c:when>
+
+                                            <c:otherwise>
+
+                                                <div class="image-upload-placeholder">
+                                                    <span class="image-upload-symbol">+</span>
+                                                    <strong>상세 이미지 선택</strong>
+                                                    <span>여러 장을 선택할 수 있습니다.</span>
+                                                </div>
+
+                                            </c:otherwise>
+                                        </c:choose>
+
                                     </div>
-                                </c:if>
 
-                                <div class="file-input-box">
-                                    <input type="file" name="image_s_file" multiple accept="image/*">
-                                </div>
+                                </label>
+
+                                <p class="form-help">
+                                    이미지를 새로 선택하면 선택한 상세 이미지를 미리 볼 수 있습니다.
+                                </p>
                             </div>
 
                         </div>
