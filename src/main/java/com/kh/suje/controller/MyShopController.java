@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.suje.dao.AddressDAO;
 import com.kh.suje.dao.FavoriteDAO;
@@ -42,10 +43,10 @@ public class MyShopController {
     private final OrderItemClaimDAO orderitemclaimdao;
 
     @GetMapping("/myshop")
-    public String MyShop(HttpSession session, Model model) {
+    public String MyShop(HttpSession session, Model model){
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
-        if (loginUser == null) {
+        if (loginUser == null){
             return "redirect:/login.do";
         }
 
@@ -85,7 +86,7 @@ public class MyShopController {
         // 주문별 주문상품 목록
         Map<Integer, List<OrderItemVO>> orderItemMap = new HashMap<>();
 
-        for (OrderVO order : orderList) {
+        for (OrderVO order : orderList){
             List<OrderItemVO> itemList = orderDAO.selectOrderItemList(order.getOrder_id());
 
             orderItemMap.put(order.getOrder_id(), itemList);
@@ -110,9 +111,12 @@ public class MyShopController {
 
     // 배송지 추가폼으로
     @GetMapping("/insertAddress.do")
-    private String insertAddress(Model model, String returnUrl) {
-
+    public String insertAddressForm(Model model,@RequestParam(value = "returnUrl", required = false) String returnUrl){
         UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+        if (sessionUser == null){
+            return "redirect:/login.do";
+        }
 
         model.addAttribute("user", sessionUser);
         model.addAttribute("returnUrl", returnUrl);
@@ -124,39 +128,56 @@ public class MyShopController {
 
     // 배송지 추가
     @PostMapping("/insertAddress.do")
-    private String insertAddress(AddressVO vo, String returnUrl) {
-
+    public String insertAddress(AddressVO vo,@RequestParam(value = "returnUrl", required = false) String returnUrl){
         UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-        // 안전장치
-        if (sessionUser == null) {
+        if (sessionUser == null){
             return "redirect:/login.do";
         }
 
         int user_id = sessionUser.getUser_id();
         vo.setUser_id(user_id);
 
-        if (vo.getIs_default() == null) {
+        List<AddressVO> addressList = addressDao.selectList(user_id);
+
+        /*
+        * 현재 등록된 배송지가 하나도 없으면 처음 등록하는 배송지를 자동으로 기본 배송지로 설정
+        */
+        if (addressList == null || addressList.isEmpty()){
+            vo.setIs_default("true");
+        } else if (vo.getIs_default() == null){
             vo.setIs_default("false");
         }
 
-        if ("true".equals(vo.getIs_default())) {
-            // 기존에 설정되어 있는 기본 배송지 삭제
+        /*
+        * 기본 배송지로 등록하는 경우 기존 기본 배송지 설정 해제
+        */
+        if ("true".equals(vo.getIs_default())){
             addressDao.deleteDefault(user_id);
         }
 
-        int res = addressDao.insertAddress(vo);
+        addressDao.insertAddress(vo);
 
-        if (returnUrl != null && !returnUrl.isEmpty()) { // 원래있던곳으로 리턴
+        /*
+        * 주문서에서 배송지 추가 화면으로 들어온 경우 배송지 등록 후 원래 주문서로 이동
+        */
+        if (returnUrl != null
+                && !returnUrl.isBlank()
+                && returnUrl.startsWith("/")
+                && !returnUrl.startsWith("//")){
+
             return "redirect:" + returnUrl;
         }
 
+        /*
+        * 마이페이지 배송지 관리에서 들어온 경우 배송지 목록으로 이동
+        */
         return "redirect:/addressList.do";
     }
 
     // 배송지 조회
     @GetMapping("/addressList.do")
-    private String addressList(Model model) {
+    private String addressList(Model model){
 
         UserVO sessionUser = (UserVO) session.getAttribute("user");
 
@@ -172,7 +193,7 @@ public class MyShopController {
 
     // 배송지 삭제
     @PostMapping("/deleteAddress.do")
-    private String deleteAddress(int address_id) {
+    private String deleteAddress(int address_id){
 
         int res = addressDao.deleteAddress(address_id);
 
@@ -181,7 +202,7 @@ public class MyShopController {
 
     // 배송지 수정폼으로
     @GetMapping("/modifyAddress.do")
-    private String modifyAddress(Model model, int address_id) {
+    private String modifyAddress(Model model, int address_id){
 
         AddressVO vo = addressDao.selectOne(address_id);
 
@@ -194,21 +215,21 @@ public class MyShopController {
 
     // 배송지 수정
     @PostMapping("/modifyAddress.do")
-    private String modifyAddress(AddressVO vo) {
+    private String modifyAddress(AddressVO vo){
 
         UserVO sessionUser = (UserVO) session.getAttribute("user");
-        if (sessionUser == null) {
+        if (sessionUser == null){
             return "redirect:/login.do";
         }
 
         int user_id = sessionUser.getUser_id();
         vo.setUser_id(user_id);
 
-        if (vo.getIs_default() == null) {
+        if (vo.getIs_default() == null){
             vo.setIs_default("false");
         }
 
-        if ("true".equals(vo.getIs_default())) {
+        if ("true".equals(vo.getIs_default())){
 
             // 기존에 설정되어 있는 기본 배송지 삭제
             addressDao.deleteDefault(user_id);
@@ -221,9 +242,9 @@ public class MyShopController {
 
     // 최근 본 상품 상세
     @GetMapping("/myshop/recent")
-    public String recentViewedProducts(HttpSession session, Model model) {
+    public String recentViewedProducts(HttpSession session, Model model){
         UserVO loginUser = (UserVO) session.getAttribute("user");
-        if (loginUser == null) {
+        if (loginUser == null){
             return "redirect:/login.do";
         }
         int user_id = loginUser.getUser_id();
@@ -239,10 +260,10 @@ public class MyShopController {
 
     // 포인트 내역
     @GetMapping("/myshop/points")
-    public String pointHistory(HttpSession session, Model model) {
+    public String pointHistory(HttpSession session, Model model){
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
-        if (loginUser == null) {
+        if (loginUser == null){
             return "redirect:/login.do";
         }
 
@@ -262,10 +283,10 @@ public class MyShopController {
 
     // 교환/환불내역 화면
     @GetMapping("/myshop/claim")
-    public String cancelDetail(Model model, HttpSession session) {
+    public String cancelDetail(Model model, HttpSession session){
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
-        if (loginUser == null) {
+        if (loginUser == null){
             return "redirect:/login.do";
         }
 
@@ -288,10 +309,10 @@ public class MyShopController {
 
     // 쿠폰 내역
     @GetMapping("/myshop/coupons")
-    public String couponHistory(HttpSession session, Model model) {
+    public String couponHistory(HttpSession session, Model model){
         UserVO loginUser = (UserVO) session.getAttribute("user");
 
-        if (loginUser == null) {
+        if (loginUser == null){
             return "redirect:/login.do";
         }
 
