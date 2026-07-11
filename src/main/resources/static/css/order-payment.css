@@ -8,8 +8,10 @@
 
 body {
     margin: 0;
+
     font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", Arial, sans-serif;
-    background: #ffffff;
+
+    background: #fff;
     color: #2b2b2b;
 }
 
@@ -40,15 +42,15 @@ select {
     padding: 0 32px;
 
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 }
 
 .brand {
+    color: #2b2b2b;
     font-size: 24px;
     font-weight: 900;
     letter-spacing: -0.04em;
-    color: #2b2b2b;
 }
 
 .brand span {
@@ -59,9 +61,9 @@ select {
     display: flex;
     gap: 28px;
 
+    color: #4b4b4b;
     font-size: 15px;
     font-weight: 800;
-    color: #4b4b4b;
 }
 
 .main-nav a:hover,
@@ -83,16 +85,17 @@ select {
 ========================================================= */
 
 .hero-order {
-    background: linear-gradient(90deg, #fffaf7 0%, #ffffff 55%, #fff5ef 100%);
-    border-bottom: 1px solid #f5e3d7;
     padding: 46px 0;
+
+    background: linear-gradient(90deg, #fffaf7 0%, #fff 55%, #fff5ef 100%);
+    border-bottom: 1px solid #f5e3d7;
 }
 
 .hero-inner {
     display: flex;
     justify-content: space-between;
-    gap: 42px;
     align-items: center;
+    gap: 42px;
 }
 
 .hero-copy {
@@ -101,6 +104,7 @@ select {
 
 .hero-label {
     display: block;
+
     margin-bottom: 10px;
 
     color: #ff6f4f;
@@ -114,8 +118,8 @@ select {
 
     color: #2b2b2b;
     font-size: 32px;
-    line-height: 1.28;
     font-weight: 900;
+    line-height: 1.28;
     letter-spacing: -0.045em;
 }
 
@@ -144,10 +148,10 @@ select {
     align-items: center;
 
     border: 1px solid #f0d6c7;
-    background: #fff;
-    color: #8a5a44;
     border-radius: 999px;
+    background: #fff;
 
+    color: #8a5a44;
     font-size: 13px;
     font-weight: 800;
 }
@@ -162,6 +166,7 @@ select {
 
 .hero-card strong {
     display: block;
+
     margin-bottom: 18px;
 
     font-size: 17px;
@@ -195,10 +200,10 @@ select {
     justify-content: center;
     align-items: center;
 
-    background: #fff3eb;
-    color: #ff6f4f;
     border-radius: 50%;
+    background: #fff3eb;
 
+    color: #ff6f4f;
     font-size: 12px;
     font-weight: 900;
 }
@@ -220,9 +225,11 @@ select {
 }
 
 .page-block.soft {
-    background: #ffffff;
-    border-top: 1px solid #eeeeee;
-    border-bottom: 1px solid #eeeeee;
+    padding: 46px 0 58px;
+
+    background: #fff;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
 }
 
 .block-inner {
@@ -231,8 +238,15 @@ select {
     padding: 0 32px;
 }
 
+/*
+   장바구니 페이지의 1440px 기준과 동일하게 설정
+   단계 표시가 두 페이지에서 같은 위치에 표시됨
+*/
 .page-block.soft .block-inner {
-    max-width: 1180px;
+    width: 94%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0;
 }
 
 .page-title-row {
@@ -244,8 +258,9 @@ select {
     margin-bottom: 30px;
 }
 
-.page-title-row span {
+.page-title-row > div:first-child > span {
     display: block;
+
     margin-bottom: 8px;
 
     color: #ff6f4f;
@@ -271,14 +286,68 @@ select {
 }
 
 /* =========================================================
+   장바구니 → 주문/결제 → 주문완료 단계 공통 위치
+========================================================= */
+
+.checkout-head {
+    position: relative;
+
+    width: 100%;
+    min-height: 52px;
+    margin-bottom: 72px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.checkout-head .cart-step {
+    position: absolute;
+    top: 8px;
+    right: 0;
+
+    width: auto;
+    margin: 0;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+
+    transform: none;
+
+    color: #aaa;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.checkout-head .cart-step span {
+    display: inline;
+    margin: 0;
+
+    color: #aaa;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: normal;
+}
+
+.checkout-head .cart-step .active {
+    color: #111;
+    font-weight: 900;
+}
+
+/* =========================================================
    Panel / 2단 레이아웃
 ========================================================= */
 
 .panel {
     padding: 30px;
 
-    background: #ffffff;
-    border: 1px solid #eeeeee;
+    background: #fff;
+    border: 1px solid #eee;
     border-radius: 16px;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.035);
 }
@@ -292,6 +361,10 @@ select {
 }
 
 .order-layout {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+
     display: grid;
     grid-template-columns: minmax(0, 1fr) 380px;
     gap: 36px;
@@ -314,7 +387,7 @@ select {
     align-items: center;
 
     padding: 20px 0;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid #eee;
 }
 
 .order-item:first-of-type {
@@ -328,8 +401,25 @@ select {
     object-fit: cover;
 
     background: #fafafa;
-    border: 1px solid #eeeeee;
+    border: 1px solid #eee;
     border-radius: 12px;
+}
+
+.order-no-image {
+    width: 112px;
+    height: 112px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+
+    border: 1px solid #eee;
+    border-radius: 12px;
+    background: #f7f7f7;
+
+    color: #999;
+    font-size: 12px;
 }
 
 .item-info {
@@ -338,6 +428,7 @@ select {
 
 .item-info strong {
     display: block;
+
     margin-bottom: 8px;
 
     color: #171717;
@@ -405,6 +496,7 @@ select {
     font-size: 16px;
     font-weight: 950;
     line-height: 1;
+
     transform: translateY(2px);
 }
 
@@ -416,8 +508,8 @@ select {
     min-width: 120px;
 
     display: flex;
-    align-items: center;
     justify-content: flex-end;
+    align-items: center;
 
     color: #171717;
     text-align: right;
@@ -428,6 +520,38 @@ select {
     font-size: 20px;
     font-weight: 950;
     white-space: nowrap;
+}
+
+/* =========================================================
+   주문 상품 옵션
+========================================================= */
+
+.order-option-line {
+    margin: 6px 0 8px;
+
+    color: #777;
+    font-size: 14px;
+}
+
+.order-option-line span {
+    display: inline-block;
+
+    margin-left: 4px;
+    padding: 3px 8px;
+
+    border-radius: 999px;
+    background: #fff4ef;
+
+    color: #ff6f4f;
+    font-weight: 700;
+}
+
+.order-option-line em {
+    margin-left: 5px;
+
+    color: #999;
+    font-style: normal;
+    font-weight: 600;
 }
 
 /* =========================================================
@@ -442,7 +566,7 @@ select {
 
     margin: 15px 0;
 
-    color: #666666;
+    color: #666;
 }
 
 .summary-line strong {
@@ -462,7 +586,8 @@ select {
 
     margin-top: 24px;
     padding-top: 24px;
-    border-top: 1px solid #eeeeee;
+
+    border-top: 1px solid #eee;
 }
 
 .summary-total span {
@@ -473,6 +598,79 @@ select {
     color: #ff6f4f;
     font-size: 27px;
     font-weight: 900;
+}
+
+/* =========================================================
+   쿠폰 / 포인트 입력
+========================================================= */
+
+#userCouponId {
+    width: 160px;
+    height: 36px;
+    padding: 0 12px;
+
+    border: 1px solid #ead2c4;
+    border-radius: 8px;
+    background: #fff;
+
+    color: #4b4b4b;
+    font-size: 13px;
+    font-weight: 800;
+
+    outline: none;
+    cursor: pointer;
+}
+
+#userCouponId:focus {
+    border-color: #ff6f4f;
+    box-shadow: 0 0 0 3px rgba(255, 111, 79, 0.12);
+}
+
+#usePointInput {
+    width: 90px;
+    height: 36px;
+    padding: 0 10px;
+
+    border: 1px solid #ead2c4;
+    border-radius: 8px;
+    background: #fff;
+
+    color: #171717;
+    font-size: 13px;
+    font-weight: 800;
+
+    outline: none;
+}
+
+#usePointInput:focus {
+    border-color: #ff6f4f;
+    box-shadow: 0 0 0 3px rgba(255, 111, 79, 0.12);
+}
+
+#useAllPointBtn {
+    height: 36px;
+    margin-left: 6px;
+    padding: 0 12px;
+
+    border: 1px solid #ffb49f;
+    border-radius: 8px;
+    background: #fff7f3;
+
+    color: #ff6f4f;
+    font-size: 13px;
+    font-weight: 900;
+
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+#useAllPointBtn:hover {
+    background: #ff6f4f;
+    color: #fff;
+}
+
+#pointPriceText {
+    color: #d31c0c;
 }
 
 /* =========================================================
@@ -510,7 +708,7 @@ select {
 
 .btn.primary {
     background: #ff6f4f;
-    color: #ffffff;
+    color: #fff;
     box-shadow: 0 8px 16px rgba(255, 111, 79, 0.18);
 }
 
@@ -529,9 +727,10 @@ select {
 }
 
 .btn.light {
-    background: #ffffff;
-    color: #9b4b33;
+    background: #fff;
     border: 1px solid #ead2c4;
+
+    color: #9b4b33;
 }
 
 .btn.light:hover {
@@ -610,13 +809,14 @@ select {
 .info-box div {
     padding: 18px;
 
-    background: #ffffff;
-    border: 1px solid #eeeeee;
+    background: #fff;
+    border: 1px solid #eee;
     border-radius: 12px;
 }
 
 .info-box span {
     display: block;
+
     margin-bottom: 8px;
 
     color: #777;
@@ -646,7 +846,7 @@ select {
 .order-table td {
     padding: 16px 14px;
 
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid #eee;
 
     text-align: center;
     font-size: 14px;
@@ -654,6 +854,7 @@ select {
 
 .order-table th {
     background: #fafafa;
+
     color: #4b4b4b;
     font-weight: 900;
 }
@@ -695,6 +896,7 @@ select {
 .order-filter {
     display: flex;
     gap: 8px;
+
     margin-bottom: 18px;
 }
 
@@ -704,16 +906,17 @@ select {
 
     border: 1px solid #ead2c4;
     background: #fff;
-    color: #8a5a44;
 
+    color: #8a5a44;
     font-weight: 900;
+
     cursor: pointer;
 }
 
 .order-filter button.active {
+    border-color: #ff6f4f;
     background: #ff6f4f;
     color: #fff;
-    border-color: #ff6f4f;
 }
 
 /* =========================================================
@@ -725,11 +928,11 @@ select {
     margin: 0 auto;
     padding: 54px 40px;
 
-    text-align: center;
-
     background: #fff;
-    border: 1px solid #eeeeee;
+    border: 1px solid #eee;
     border-radius: 16px;
+
+    text-align: center;
 }
 
 .complete-icon {
@@ -738,13 +941,13 @@ select {
     margin: 0 auto 24px;
 
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 
-    background: #ff6f4f;
-    color: #fff;
     border-radius: 50%;
+    background: #ff6f4f;
 
+    color: #fff;
     font-size: 38px;
     font-weight: 900;
 }
@@ -764,7 +967,8 @@ select {
 
 .complete-detail {
     border-top: 1px solid #2b2b2b;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid #eee;
+
     text-align: left;
 }
 
@@ -775,7 +979,7 @@ select {
     justify-content: space-between;
     align-items: center;
 
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid #eee;
 }
 
 .complete-detail div:last-child {
@@ -790,10 +994,11 @@ select {
     margin-top: 22px;
     padding: 20px;
 
-    background: #ffffff;
-    border: 1px solid #eeeeee;
+    background: #fff;
+    border: 1px solid #eee;
     border-radius: 12px;
-    color: #555555;
+
+    color: #555;
 }
 
 /* =========================================================
@@ -805,15 +1010,17 @@ select {
     margin-top: 22px;
     padding: 20px;
 
-    background: #ffffff;
-    border: 1px solid #eeeeee;
+    background: #fff;
+    border: 1px solid #eee;
     border-radius: 12px;
-    color: #555555;
+
+    color: #555;
 }
 
 .artist-note strong,
 .delivery-info-card h4 {
     display: block;
+
     margin: 0 0 8px;
 
     font-size: 16px;
@@ -826,9 +1033,21 @@ select {
 
 .delivery-info-card strong {
     display: inline-block;
+
     width: 90px;
 
-    color: #333333;
+    color: #333;
+}
+
+/* 기본배송지 배지 */
+.default-badge {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #ff7e36;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 /* =========================================================
@@ -839,7 +1058,7 @@ select {
     padding: 34px;
 
     background: #fff;
-    border: 1px solid #eeeeee;
+    border: 1px solid #eee;
     border-radius: 16px;
 }
 
@@ -852,10 +1071,11 @@ select {
 .delivery-step {
     padding: 24px 12px;
 
-    border: 1px solid #eeeeee;
+    border: 1px solid #eee;
     border-radius: 12px;
+    background: #fff;
+
     text-align: center;
-    background: #ffffff;
 }
 
 .delivery-step .num {
@@ -864,18 +1084,19 @@ select {
     margin: 0 auto 12px;
 
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 
-    background: #f1f1f1;
-    color: #777;
     border-radius: 50%;
+    background: #f1f1f1;
 
+    color: #777;
     font-weight: 900;
 }
 
 .delivery-step strong {
     display: block;
+
     margin-bottom: 6px;
 }
 
@@ -900,10 +1121,11 @@ select {
     margin-top: 24px;
     padding: 20px;
 
-    background: #ffffff;
-    border: 1px solid #eeeeee;
+    background: #fff;
+    border: 1px solid #eee;
     border-radius: 12px;
-    color: #555555;
+
+    color: #555;
 }
 
 /* =========================================================
@@ -932,13 +1154,14 @@ select {
     min-height: 96px;
     padding: 18px;
 
-    background: #ffffff;
-    border: 1px solid #eeeeee;
+    background: #fff;
+    border: 1px solid #eee;
     border-radius: 12px;
 }
 
 .order-status-card > span {
     display: block;
+
     margin-bottom: 8px;
 
     color: #777;
@@ -961,8 +1184,8 @@ select {
 .site-footer {
     padding: 34px 0;
 
-    background: #ffffff;
-    border-top: 1px solid #eeeeee;
+    background: #fff;
+    border-top: 1px solid #eee;
 }
 
 .footer-inner {
@@ -983,10 +1206,9 @@ select {
 }
 
 /* =========================================================
-   결제취소 모달
+   결제취소 / 배송지 모달
 ========================================================= */
 
-/* 모달 열고 닫기 */
 .cancel-modal-wrap,
 .address-modal-wrap {
     display: none !important;
@@ -997,47 +1219,48 @@ select {
     display: block !important;
 }
 
-/* 모달 배경 어두워지는 부분 */
 .cancel-modal-bg,
 .address-modal-bg {
     position: fixed;
     inset: 0;
     z-index: 500;
+
     background: rgba(0, 0, 0, 0.45);
 }
 
-/* 모달 본체 박스 */
 .cancel-modal-box,
 .address-modal-box {
     position: fixed;
-    left: 50%;
     top: 50%;
+    left: 50%;
     z-index: 501;
 
     width: 500px;
     max-width: calc(100% - 40px);
+
+    overflow: hidden;
 
     transform: translate(-50%, -50%);
 
     background: #fff;
     border-radius: 18px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
-    overflow: hidden;
 }
 
-/* 모달 헤더 */
 .cancel-modal-head,
 .address-modal-head {
+    padding: 26px 28px 20px;
+
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 
-    padding: 26px 28px 20px;
     border-bottom: 1px solid #eee;
 }
 
 .cancel-modal-head span {
     display: block;
+
     margin-bottom: 6px;
 
     color: #ff654f;
@@ -1063,15 +1286,15 @@ select {
     font-size: 14px;
 }
 
-/* 모달 닫기 버튼 (X) */
 .cancel-modal-close,
 .address-modal-close {
     border: none;
     background: transparent;
-    color: #777;
 
+    color: #777;
     font-size: 30px;
     line-height: 1;
+
     cursor: pointer;
 }
 
@@ -1080,18 +1303,18 @@ select {
     color: #222;
 }
 
-/* 모달 바디 */
 .cancel-modal-body,
 .address-modal-body {
     padding: 24px 28px;
 }
 
 .cancel-info-row {
+    padding: 14px 0;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    padding: 14px 0;
     border-bottom: 1px solid #f0f0f0;
 }
 
@@ -1113,6 +1336,7 @@ select {
 
 .cancel-form-row label {
     display: block;
+
     margin-bottom: 8px;
 
     color: #222;
@@ -1130,6 +1354,7 @@ select {
 
     font-family: inherit;
     font-size: 14px;
+
     outline: none;
 }
 
@@ -1141,6 +1366,7 @@ select {
 .cancel-form-row textarea {
     height: 86px;
     padding: 12px;
+
     resize: none;
     line-height: 1.6;
 }
@@ -1162,6 +1388,7 @@ select {
 
 .cancel-guide-box strong {
     display: block;
+
     margin-bottom: 8px;
 
     color: #222;
@@ -1199,11 +1426,12 @@ select {
 }
 
 .cancel-modal-actions {
+    padding: 18px 28px 26px;
+
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 
-    padding: 18px 28px 26px;
     border-top: 1px solid #eee;
 }
 
@@ -1241,10 +1469,10 @@ select {
 }
 
 /* =========================================================
-    반응형
+   반응형
 ========================================================= */
 
-@media (max-width: 1100px) {
+@media screen and (max-width: 1100px) {
     .order-layout,
     .order-detail-grid {
         grid-template-columns: 1fr;
@@ -1263,10 +1491,41 @@ select {
     }
 }
 
-@media (max-width: 720px) {
+@media screen and (max-width: 760px) {
+    .page-block.soft .block-inner {
+        width: calc(100% - 36px);
+    }
+
+    .checkout-head {
+        min-height: auto;
+        margin-bottom: 24px;
+
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .checkout-head .cart-step {
+        position: static;
+
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        font-size: 12px;
+        white-space: normal;
+    }
+
+    .checkout-head .cart-step span {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 720px) {
     .header-inner {
         height: auto;
         padding: 18px;
+
         display: grid;
         gap: 14px;
     }
@@ -1285,20 +1544,28 @@ select {
         display: block;
     }
 
+    .page-title-row.checkout-head {
+        display: flex;
+    }
+
     .order-item {
         grid-template-columns: 88px minmax(0, 1fr);
     }
 
-    .order-item img {
+    .order-item img,
+    .order-no-image {
         width: 88px;
         height: 88px;
     }
 
     .item-price {
         grid-column: 1 / -1;
+
         justify-content: flex-start;
-        text-align: left;
+
         margin-left: 108px;
+
+        text-align: left;
     }
 
     .btn-row {
@@ -1309,17 +1576,18 @@ select {
         grid-template-columns: 1fr;
     }
 
-    /* 💡 반응형 조건에서도 배송지 모달이 정상 축소되도록 클래스 추가 완료 */
     .cancel-modal-box,
     .address-modal-box {
         width: calc(100% - 28px);
     }
 
-    .cancel-modal-head, .address-modal-head,
-    .cancel-modal-body, .address-modal-body,
+    .cancel-modal-head,
+    .address-modal-head,
+    .cancel-modal-body,
+    .address-modal-body,
     .cancel-modal-actions {
-        padding-left: 20px;
         padding-right: 20px;
+        padding-left: 20px;
     }
 
     .cancel-modal-actions {
@@ -1330,126 +1598,12 @@ select {
     .cancel-submit-btn {
         width: 100%;
     }
+
+    #userCouponId {
+        width: 140px;
+    }
+
+    #usePointInput {
+        width: 78px;
+    }
 }
-
-/* 주문서 작성 페이지 상품 이미지가 없을 때 표시 */
-.order-no-image {
-    width: 110px;
-    height: 110px;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    background: #f7f7f7;
-    color: #999;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-/* =========================================================
-    주문서 쿠폰 / 포인트 입력 영역 보정
-========================================================= */
-
-#userCouponId {
-    width: 160px;
-    height: 36px;
-    padding: 0 12px;
-
-    border: 1px solid #ead2c4;
-    border-radius: 8px;
-    background: #fff;
-
-    color: #4b4b4b;
-    font-size: 13px;
-    font-weight: 800;
-
-    outline: none;
-    cursor: pointer;
-}
-
-#userCouponId:focus {
-    border-color: #ff6f4f;
-    box-shadow: 0 0 0 3px rgba(255, 111, 79, 0.12);
-}
-
-#usePointInput {
-    width: 90px;
-    height: 36px;
-    padding: 0 10px;
-
-    border: 1px solid #ead2c4;
-    border-radius: 8px;
-    background: #fff;
-
-    color: #171717;
-    font-size: 13px;
-    font-weight: 800;
-
-    outline: none;
-}
-
-#usePointInput:focus {
-    border-color: #ff6f4f;
-    box-shadow: 0 0 0 3px rgba(255, 111, 79, 0.12);
-}
-
-#useAllPointBtn {
-    height: 36px;
-    margin-left: 6px;
-    padding: 0 12px;
-
-    border: 1px solid #ffb49f;
-    border-radius: 8px;
-    background: #fff7f3;
-    color: #ff6f4f;
-
-    font-size: 13px;
-    font-weight: 900;
-
-    cursor: pointer;
-    transition: 0.15s ease;
-}
-
-#useAllPointBtn:hover {
-    background: #ff6f4f;
-    color: #fff;
-}
-
-#pointPriceText {
-    color: #d31c0c;
-}
-
-/* 기본배송지 뱃지 */
-.default-badge {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    color: #FF7E36;
-    margin-bottom: 2px;
-}
-
-.order-option-line {
-    margin: 6px 0 8px;
-    font-size: 14px;
-    color: #777;
-}
-
-.order-option-line span {
-    display: inline-block;
-    margin-left: 4px;
-    padding: 3px 8px;
-    border-radius: 999px;
-    background: #fff4ef;
-    color: #ff6f4f;
-    font-weight: 700;
-}
-
-.order-option-line em {
-    margin-left: 5px;
-    font-style: normal;
-    color: #999;
-    font-weight: 600;
-}
-
-

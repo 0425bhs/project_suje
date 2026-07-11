@@ -1041,52 +1041,9 @@
 
 /* =========================================================
    페이지네이션
+   - 상품관리와 동일하게 seller_form_common.css의 공통 스타일 사용
+   - 이 파일에서는 .seller-page-menu를 별도로 덮어쓰지 않음
 ========================================================= */
-
-.seller-page-menu {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-
-    margin-top: 22px;
-}
-
-.seller-page-menu a,
-.seller-page-menu span {
-    min-width: 32px;
-    height: 32px;
-    padding: 0 8px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 1px solid #dfe3e8;
-    border-radius: 5px;
-    background: #fff;
-
-    color: #555;
-    font-size: 13px;
-    font-weight: 800;
-    text-decoration: none;
-}
-
-.seller-page-menu a:hover {
-    border-color: #ff654f;
-    color: #ff654f;
-}
-
-.seller-page-menu .page-current {
-    border-color: #ff654f;
-    background: #ff654f;
-    color: #fff;
-}
-
-.seller-page-menu .page-disabled {
-    color: #bbb;
-    cursor: default;
-}
 
 /* =========================================================
    주문 상품 모달

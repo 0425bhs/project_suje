@@ -27,7 +27,7 @@
         <!-- 메인 배너 -->
         <div class="home-main-slider">
             <a href="/product_discovery.do" class="home-main-banner hero-slide"
-               style="background-image: url('/images/banner/main_banner_01.jpg');">
+               style="background-image: url('/upload/main_handmade.jpg');">
                 <div class="hero-slide-content">
                     <span class="banner-label">HANDMADE MARKET</span>
                     <h1>
@@ -44,7 +44,7 @@
 
         <!-- 오른쪽 작은 배너 -->
         <div class="home-side-banners">
-            <a href="/product_gift.do" class="side-banner peach">
+            <a href="/product_gift.do" class="side-banner peach" style="background-image: url('/upload/main_gift.jpg');">
                 <span>오늘의 추천</span>
                 <strong>
                     소중한 사람에게<br>
@@ -52,7 +52,7 @@
                 </strong>
             </a>
 
-            <a href="/all_list.do?sort=new" class="side-banner yellow">
+            <a href="/all_list.do?sort=new" class="side-banner yellow" style="background-image: url('/upload/main_author.jpg');">
                 <span>NEW</span>
                 <strong>
                     새롭게 등록된<br>
@@ -110,50 +110,6 @@
                         <c:if test="${st.index < 10}">
                             <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
                         </c:if>
-                    </c:forEach>
-                </div>
-            </c:otherwise>
-        </c:choose>
-    </section>
-
-    <!-- 카테고리 베스트 -->
-    <section class="home-section">
-        <div class="section-title-row">
-            <div>
-                <span>CATEGORY BEST</span>
-                <h2>카테고리 베스트</h2>
-            </div>
-        </div>
-
-        <div class="rank-tabs">
-            <button type="button" class="active"
-                    onclick="location.href='/category_list.do?category_id=23&sort=popular'">비누</button>
-
-            <button type="button"
-                    onclick="location.href='/category_list.do?category_id=7&sort=popular'">주얼리</button>
-
-            <button type="button"
-                    onclick="location.href='/category_list.do?category_id=26&sort=popular'">키링</button>
-
-            <button type="button"
-                    onclick="location.href='/category_list.do?category_id=12&sort=popular'">생활용품</button>
-
-            <button type="button"
-                    onclick="location.href='/category_list.do?category_id=22&sort=popular'">베이커리</button>
-
-            <button type="button"
-                    onclick="location.href='/category_list.do?category_id=24&sort=popular'">향수</button>
-        </div>
-
-        <c:choose>
-            <c:when test="${empty categoryBestList}">
-                <p>카테고리 베스트 상품이 없습니다.</p>
-            </c:when>
-
-            <c:otherwise>
-                <div class="common-product-wrap">
-                    <c:forEach var="vo" items="${categoryBestList}">
-                        <%@ include file="/WEB-INF/views/product/product_card.jspf" %>
                     </c:forEach>
                 </div>
             </c:otherwise>

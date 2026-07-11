@@ -15,44 +15,32 @@
 <!-- 주문 상태 요약 -->
 <section class="myshop-status-card">
 
-    <button type="button"
-            class="${empty selectedStatus ? 'active' : ''}"
-            onclick="location.href='/myshop/orders'">
+    <button type="button" class="${empty selectedStatus ? 'active' : ''}" onclick="location.href='/myshop/orders'">
         <span>전체</span>
         <strong>${totalCount}</strong>
     </button>
 
-    <button type="button"
-            class="${selectedStatus eq 'PENDING' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=PENDING'">
+    <button type="button" class="${selectedStatus eq 'PENDING' ? 'active' : ''}" onclick="location.href='/myshop/orders?status=PENDING'">
         <span>결제대기</span>
         <strong>${pendingCount}</strong>
     </button>
 
-    <button type="button"
-            class="${selectedStatus eq 'PAID' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=PAID'">
+    <button type="button" class="${selectedStatus eq 'PAID' ? 'active' : ''}" onclick="location.href='/myshop/orders?status=PAID'">
         <span>결제완료</span>
         <strong>${paidCount}</strong>
     </button>
 
-    <button type="button"
-            class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=SHIPPING'">
+    <button type="button" class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}" onclick="location.href='/myshop/orders?status=SHIPPING'">
         <span>배송중</span>
         <strong>${shippingCount}</strong>
     </button>
 
-    <button type="button"
-            class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=DELIVERED'">
+    <button type="button" class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}" onclick="location.href='/myshop/orders?status=DELIVERED'">
         <span>배송완료</span>
         <strong>${deliveredCount}</strong>
     </button>
 
-    <button type="button"
-            class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}"
-            onclick="location.href='/myshop/orders?status=CANCELLED'">
+    <button type="button" class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}" onclick="location.href='/myshop/orders?status=CANCELLED'">
         <span>주문취소</span>
         <strong>${cancelCount}</strong>
     </button>
@@ -116,8 +104,7 @@
                             <div class="myshop-product-thumb">
                                 <c:choose>
                                     <c:when test="${not empty mainItem and not empty mainItem.imageL and mainItem.imageL ne 'no_file'}">
-                                        <img src="/upload/${mainItem.imageL}"
-                                             alt="${mainItem.productName}">
+                                        <img src="/upload/${mainItem.imageL}" alt="${mainItem.productName}">
                                     </c:when>
 
                                     <c:otherwise>
@@ -189,16 +176,14 @@
                                     <form action="/order/cancel" method="post" class="inline-form">
                                         <input type="hidden" name="order_id" value="${order.order_id}">
 
-                                        <button type="submit"
-                                                onclick="return confirm('주문을 취소하시겠습니까?');">
+                                        <button type="submit" onclick="return confirm('주문을 취소하시겠습니까?');">
                                             주문취소
                                         </button>
                                     </form>
                                 </c:if>
 
                                 <c:if test="${order.status eq 'PAID'}">
-                                    <button type="button"
-                                            onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
+                                    <button type="button" onclick="openCancelModal('${order.order_id}', '${order.total_amount}')">
                                         결제취소
                                     </button>
                                 </c:if>
@@ -224,9 +209,7 @@
                                             <form action="/order_confirm.do" method="post" class="inline-form">
                                                 <input type="hidden" name="order_item_id" value="${mainItem.order_item_id}">
 
-                                                <button type="submit"
-                                                        class="primary"
-                                                        onclick="return confirm('구매확정 처리하시겠습니까?');">
+                                                <button type="submit" class="primary" onclick="return confirm('구매확정 처리하시겠습니까?');">
                                                     구매확정
                                                 </button>
                                             </form>
@@ -278,18 +261,14 @@
 
                                 </c:if>
 
-                                <c:if test="${itemCount eq 1 and not empty mainItem.confirmed_at}">
-                                    <button type="button"
-                                            class="review"
-                                            onclick="location.href='/review_form.do?order_item_id=${mainItem.order_item_id}'">
+                                <c:if test="${itemCount eq 1 and not empty mainItem.confirmed_at and empty mainItem.review_id}">
+                                    <button type="button" class="review" onclick="location.href='/review_form.do?order_item_id=${mainItem.order_item_id}'">
                                         리뷰쓰기
                                     </button>
                                 </c:if>
 
                                 <c:if test="${itemCount eq 1}">
-                                    <button type="button"
-                                            class="qna"
-                                            onclick="location.href='/qna_form.do?product_id=${mainItem.product_id}'">
+                                    <button type="button" class="qna" onclick="location.href='/qna_form.do?product_id=${mainItem.product_id}'">
                                         문의하기
                                     </button>
                                 </c:if>
@@ -300,10 +279,7 @@
 
                         <c:if test="${itemCount ne 1}">
 
-                            <button type="button"
-                                    class="myshop-order-toggle"
-                                    data-count="${itemCount}"
-                                    onclick="toggleOrderItems(this)">
+                            <button type="button" class="myshop-order-toggle" data-count="${itemCount}" onclick="toggleOrderItems(this)">
                                 <span class="toggle-text">총 ${itemCount}건 주문 펼쳐보기</span>
                                 <span class="toggle-arrow"></span>
                             </button>
@@ -314,12 +290,10 @@
 
                                     <div class="myshop-order-item-row">
 
-                                        <a class="myshop-order-item-thumb"
-                                           href="/product_detail.do?product_id=${item.product_id}">
+                                        <a class="myshop-order-item-thumb" href="/product_detail.do?product_id=${item.product_id}">
                                             <c:choose>
                                                 <c:when test="${not empty item.imageL and item.imageL ne 'no_file'}">
-                                                    <img src="/upload/${item.imageL}"
-                                                         alt="${item.productName}">
+                                                    <img src="/upload/${item.imageL}" alt="${item.productName}">
                                                 </c:when>
 
                                                 <c:otherwise>
@@ -355,16 +329,13 @@
 
                                             <c:if test="${order.status eq 'DELIVERED' and empty item.confirmed_at}">
 
-                                                <button type="button"
-                                                        class="myshop-order-action-btn cart"
-                                                        onclick="cartInsert('${item.product_id}', 1, '${item.option_id}')">
+                                                <button type="button" class="myshop-order-action-btn cart" onclick="cartInsert('${item.product_id}', 1, '${item.option_id}')">
                                                     장바구니 담기
                                                 </button>
 
                                                 <c:choose>
                                                     <c:when test="${not empty item.option_id}">
-                                                        <button type="button"
-                                                                class="myshop-order-action-btn buy"
+                                                        <button type="button" class="myshop-order-action-btn buy"
                                                                 onclick="location.href='/order/form?product_id=${item.product_id}&quantity=1&option_id=${item.option_id}'">
                                                             바로 구매하기
                                                         </button>
@@ -460,16 +431,14 @@
 
                                             </c:if>
 
-                                            <c:if test="${not empty item.confirmed_at}">
-                                                <button type="button"
-                                                        class="myshop-order-action-btn review"
+                                            <c:if test="${not empty item.confirmed_at and empty item.review_id}">
+                                                <button type="button" class="myshop-order-action-btn review"
                                                         onclick="location.href='/review_form.do?order_item_id=${item.order_item_id}'">
                                                     리뷰쓰기
                                                 </button>
                                             </c:if>
 
-                                            <button type="button"
-                                                    class="myshop-order-action-btn qna"
+                                            <button type="button" class="myshop-order-action-btn qna"
                                                     onclick="location.href='/qna_form.do?product_id=${item.product_id}'">
                                                 문의하기
                                             </button>
@@ -541,7 +510,7 @@
             <div class="cancel-form-row">
                 <label for="cancelDetail">상세 사유</label>
 
-                <textarea id="cancelDetail" placeholder="상세 사유를 입력해주세요. 선택 입력입니다."></textarea>
+                <textarea id="cancelDetail" placeholder="상세 사유를 입력해주세요."></textarea>
             </div>
 
             <div class="cancel-guide-box">
@@ -621,9 +590,7 @@
 
                     <div class="cs-info-row">
                         <span>주문상품번호</span>
-                        <input id="exchangeOrderIdText"
-                               name="order_item_id"
-                               readonly="readonly"/>
+                        <input id="exchangeOrderIdText" name="order_item_id" readonly="readonly"/>
                     </div>
 
                     <div class="exchange-info-row">
@@ -645,9 +612,7 @@
                     <div class="exchange-form-row">
                         <label for="exchangeDetail">상세 사유</label>
 
-                        <textarea id="exchangeDetail"
-                                  name="detail_reason"
-                                  placeholder="상세 사유를 입력해주세요. 선택 입력입니다."></textarea>
+                        <textarea id="exchangeDetail" name="detail_reason" placeholder="상세 사유를 입력해주세요."></textarea>
                     </div>
 
                     <div class="exchange-guide-box">
@@ -686,9 +651,7 @@
 
                     <div class="cs-info-row">
                         <span>주문상품번호</span>
-                        <input id="returnOrderIdText"
-                               name="order_item_id"
-                               readonly="readonly"/>
+                        <input id="returnOrderIdText" name="order_item_id" readonly="readonly"/>
                     </div>
 
                     <div class="return-info-row">
@@ -711,9 +674,7 @@
                     <div class="cs-form-row">
                         <label for="returnDetail">상세 사유</label>
 
-                        <textarea id="returnDetail"
-                                  name="detail_reason"
-                                  placeholder="상세 사유를 입력해주세요. 선택 입력입니다."></textarea>
+                        <textarea id="returnDetail" name="detail_reason" placeholder="상세 사유를 입력해주세요."></textarea>
                     </div>
 
                     <div class="return-guide-box">
