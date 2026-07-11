@@ -1,0 +1,24 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/project_suje
+            git pull origin master
+            ./gradlew clean build -x test
+            pkill -f 'suje-0.0.1-SNAPSHOT.war' || true
+            nohup java -jar build/libs/suje-0.0.1-SNAPSHOT.war > nohup.out 2>&1 &
