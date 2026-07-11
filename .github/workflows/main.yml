@@ -14,45 +14,119 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy
+      - name: Deploy Spring Boot to EC2
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
+          command_timeout: 10m
+
           script: |
             set -e
 
-            cd /home/ubuntu/project_suje
+            PROJECT_DIR="/home/ubuntu/project_suje"
+            APP_NAME="suje-0.0.1-SNAPSHOT.war"
+            APP_FILE="$PROJECT_DIR/build/libs/$APP_NAME"
+            LOG_FILE="$PROJECT_DIR/nohup.out"
 
-            echo "최신 코드 가져오기"
+            cd "$PROJECT_DIR"
+
+            echo "======================================"
+            echo "배포 시작: $(date)"
+            echo "======================================"
+
+            echo "[1/5] 최신 master 코드 가져오기"
+
             git fetch origin master
             git reset --hard origin/master
 
-            echo "빌드"
+            echo "[2/5] 프로젝트 빌드"
+
             chmod +x gradlew
             ./gradlew clean build -x test
 
-            echo "기존 서버 종료"
-            OLD_PID=$(ps -ef | grep '[j]ava -jar build/libs/suje-0.0.1-SNAPSHOT.war' | awk '{print $2}')
-
-            if [ -n "$OLD_PID" ]; then
-              kill "$OLD_PID"
-              sleep 5
-            fi
-
-            echo "새 서버 실행"
-            nohup java -jar build/libs/suje-0.0.1-SNAPSHOT.war \
-              > nohup.out 2>&1 < /dev/null &
-
-            sleep 15
-
-            echo "서버 실행 확인"
-            if ! pgrep -f '[j]ava -jar build/libs/suje-0.0.1-SNAPSHOT.war' > /dev/null; then
-              echo "서버 실행 실패"
-              tail -n 100 nohup.out
+            if [ ! -f "$APP_FILE" ]; then
+              echo "빌드 파일을 찾을 수 없습니다."
+              echo "경로: $APP_FILE"
               exit 1
             fi
 
-            echo "배포 성공"
+            echo "[3/5] 기존 Spring Boot 서버 종료"
+
+            OLD_PIDS=$(pgrep -f '[j]ava -jar build/libs/suje-0.0.1-SNAPSHOT.war' || true)
+
+            if [ -n "$OLD_PIDS" ]; then
+              echo "종료할 PID:"
+              echo "$OLD_PIDS"
+
+              echo "$OLD_PIDS" | xargs -r kill
+
+              for i in $(seq 1 20); do
+                REMAINING_PIDS=$(pgrep -f '[j]ava -jar build/libs/suje-0.0.1-SNAPSHOT.war' || true)
+
+                if [ -z "$REMAINING_PIDS" ]; then
+                  echo "기존 서버가 정상 종료되었습니다."
+                  break
+                fi
+
+                sleep 1
+              done
+
+              REMAINING_PIDS=$(pgrep -f '[j]ava -jar build/libs/suje-0.0.1-SNAPSHOT.war' || true)
+
+              if [ -n "$REMAINING_PIDS" ]; then
+                echo "정상 종료되지 않은 프로세스를 강제 종료합니다."
+                echo "$REMAINING_PIDS" | xargs -r kill -9
+                sleep 2
+              fi
+            else
+              echo "현재 실행 중인 기존 서버가 없습니다."
+            fi
+
+            echo "[4/5] 새로운 Spring Boot 서버 실행"
+
+            nohup java -jar build/libs/"$APP_NAME" \
+              > "$LOG_FILE" 2>&1 < /dev/null &
+
+            NEW_PID=$!
+
+            echo "새 프로세스 PID: $NEW_PID"
+            echo "서버 시작을 기다리는 중..."
+
+            SERVER_STARTED=false
+
+            for i in $(seq 1 30); do
+              if ! kill -0 "$NEW_PID" 2>/dev/null; then
+                echo "Spring Boot 프로세스가 실행 중 종료되었습니다."
+                break
+              fi
+
+              if ss -lnt | grep -q ':9090 '; then
+                SERVER_STARTED=true
+                break
+              fi
+
+              sleep 1
+            done
+
+            echo "[5/5] 서버 실행 상태 확인"
+
+            if [ "$SERVER_STARTED" = true ]; then
+              echo "======================================"
+              echo "배포 성공"
+              echo "PID: $NEW_PID"
+              echo "PORT: 9090"
+              echo "배포 완료: $(date)"
+              echo "======================================"
+            else
+              echo "======================================"
+              echo "배포 실패"
+              echo "======================================"
+
+              echo "최근 서버 로그:"
+              tail -n 100 "$LOG_FILE" || true
+
+              exit 1
+            fi
