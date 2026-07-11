@@ -74,7 +74,7 @@
                                 <input type="hidden" id="totalDeliveryFee" value="${totalDeliveryFee}">
                                 <input type="hidden" id="pointBalance" value="${empty pointBalance ? 0 : pointBalance}">
 
-                                <input type="hidden" name="address_id" id="selectedAddressId" value="${defaultAddr.address_id}" />
+                                <input type="hidden" name="address_id" id="selectedAddressId" value="${empty defaultAddr ? '' : defaultAddr.address_id}" />
 
                                 <div class="order-layout">
 
@@ -178,19 +178,7 @@
                                                         <fmt:formatNumber value="${vo.item_total}" pattern="#,###" />원
                                                     </strong>
                                                 </div>
-                                                <div class="cancel-modal-body">
-                                                    <c:choose>
-                                                        <c:when test="${not empty param.product_id}">
-                                                            <c:set var="currentUrl"
-                                                                value="${pageContext.request.requestURL}${not empty pageContext.request.queryString ? '?'.concat(pageContext.request.queryString) : ''}" />
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <c:set var="currentUrl"
-                                                                value="${pageContext.request.contextPath}/order_cart_form.do" />
-                                                        </c:otherwise>
-                                                    </c:choose>
-
-                                                </div>
+                                                
                                             </div>
                                         </c:forEach>
 
@@ -349,16 +337,19 @@
                                     onclick="closeAddressModal()">×</button>
                             </div>
                             <div class="address-modal-body">
-                                <c:choose>
-                                    <c:when test="${not empty param.product_id}">
-                                        <c:set var="currentUrl"
-                                            value="${pageContext.request.requestURL}${not empty pageContext.request.queryString ? '?'.concat(pageContext.request.queryString) : ''}" />
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:set var="currentUrl"
-                                            value="${pageContext.request.contextPath}/order_cart_form.do" />
-                                    </c:otherwise>
-                                </c:choose>
+                                <c:set var="currentUrl" value="${requestScope['jakarta.servlet.forward.request_uri']}" />
+
+                                <c:set var="currentQuery" value="${requestScope['jakarta.servlet.forward.query_string']}" />
+
+                                <c:if test="${empty currentUrl}">
+                                    <c:set var="currentUrl" value="${pageContext.request.requestURI}" />
+
+                                    <c:set var="currentQuery" value="${pageContext.request.queryString}" />
+                                </c:if>
+
+                                <c:if test="${not empty currentQuery}">
+                                    <c:set var="currentUrl" value="${currentUrl}?${currentQuery}" />
+                                </c:if>
 
                                 <c:url value="/insertAddress.do" var="addAddressUrl">
                                     <c:param name="returnUrl" value="${currentUrl}" />
@@ -370,8 +361,7 @@
 
                                 <div>
                                     <c:forEach var="addr" items="${list}">
-                                        <div
-                                            style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #eee;">
+                                        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #eee;">
                                             <div>
                                                 <c:if test="${addr.is_default == 'true'}">
                                                     <span class="default-badge">기본배송지</span>
