@@ -191,3 +191,61 @@ window.addEventListener("load", function () {
         });
     });
 });
+
+/*
+    상품 승인 거절 사유 모달 열기
+*/
+function openRejectReasonModal(button) {
+    const modal = document.getElementById("rejectReasonModal");
+    const productNameElement =
+        document.getElementById("rejectReasonProductName");
+    const reasonElement =
+        document.getElementById("rejectReasonText");
+
+    if (
+        modal == null ||
+        productNameElement == null ||
+        reasonElement == null
+    ) {
+        return;
+    }
+
+    const productName =
+        button.getAttribute("data-product-name") || "-";
+
+    const rejectReason =
+        button.getAttribute("data-reason") || "";
+
+    productNameElement.textContent = productName;
+
+    reasonElement.textContent =
+        rejectReason.trim() === ""
+            ? "등록된 승인 거절 사유가 없습니다."
+            : rejectReason;
+
+    modal.hidden = false;
+    document.body.classList.add("reject-modal-open");
+}
+
+/*
+    상품 승인 거절 사유 모달 닫기
+*/
+function closeRejectReasonModal() {
+    const modal = document.getElementById("rejectReasonModal");
+
+    if (modal == null) {
+        return;
+    }
+
+    modal.hidden = true;
+    document.body.classList.remove("reject-modal-open");
+}
+
+/*
+    ESC 키로 모달 닫기
+*/
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closeRejectReasonModal();
+    }
+});

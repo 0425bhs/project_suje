@@ -1242,7 +1242,21 @@ public class ProductController {
     }
     
     @GetMapping("/seller_product_list.do")
-    public String seller_product_list(Model model,String status,String sort,String keyword,Integer size,Integer page) {
+    public String seller_product_list(Model model,String status,String sort,String keyword,Integer size,Integer page,HttpSession session) {
+
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
+        SellerVO seller = sellerdao.selectSeller(loginUser.getUser_id());
+
+        if (seller == null) {
+            return "redirect:/login.do";
+        }
+
+        int seller_id = seller.getSeller_id();
 
         // 기본 정렬값 설정
         if (sort == null || sort.equals("")) {
@@ -1254,6 +1268,7 @@ public class ProductController {
         }
 
         Map<String, Object> countMap = new HashMap<>();
+        countMap.put("seller_id", seller_id); 
         countMap.put("status", status);
         countMap.put("keyword", keyword);
 
@@ -1262,6 +1277,7 @@ public class ProductController {
         PaginationVO pagination = new PaginationVO(page, size, totalCount);
 
         Map<String, Object> map = new HashMap<>();
+        map.put("seller_id", seller_id);
         map.put("status", status);
         map.put("sort", sort);
         map.put("keyword", keyword);
