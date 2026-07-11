@@ -50,8 +50,7 @@
                             상품관리
                         </a>
 
-                        <a href="/seller_order_list.do?status=RETURN_EXCHANGE"
-                           class="${isClaimMode ? 'active' : ''}">
+                        <a href="/seller_order_list.do?status=RETURN_EXCHANGE" class="${isClaimMode ? 'active' : ''}">
                             반품/교환
                         </a>
 
@@ -114,33 +113,27 @@
 
                     <div class="seller-order-filter-buttons">
 
-                        <a href="/seller_order_list.do"
-                           class="${empty selectedStatus ? 'active' : ''}">
+                        <a href="/seller_order_list.do" class="${empty selectedStatus ? 'active' : ''}">
                             전체
                         </a>
 
-                        <a href="/seller_order_list.do?status=PAID"
-                           class="${selectedStatus eq 'PAID' ? 'active' : ''}">
+                        <a href="/seller_order_list.do?status=PAID" class="${selectedStatus eq 'PAID' ? 'active' : ''}">
                             신규주문
                         </a>
 
-                        <a href="/seller_order_list.do?status=PREPARING"
-                           class="${selectedStatus eq 'PREPARING' ? 'active' : ''}">
+                        <a href="/seller_order_list.do?status=PREPARING" class="${selectedStatus eq 'PREPARING' ? 'active' : ''}">
                             제작준비
                         </a>
 
-                        <a href="/seller_order_list.do?status=SHIPPING"
-                           class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}">
+                        <a href="/seller_order_list.do?status=SHIPPING" class="${selectedStatus eq 'SHIPPING' ? 'active' : ''}">
                             배송중
                         </a>
 
-                        <a href="/seller_order_list.do?status=DELIVERED"
-                           class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}">
+                        <a href="/seller_order_list.do?status=DELIVERED" class="${selectedStatus eq 'DELIVERED' ? 'active' : ''}">
                             배송완료
                         </a>
 
-                        <a href="/seller_order_list.do?status=CANCELLED"
-                           class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}">
+                        <a href="/seller_order_list.do?status=CANCELLED" class="${selectedStatus eq 'CANCELLED' ? 'active' : ''}">
                             취소
                         </a>
 
@@ -243,9 +236,7 @@
 
                                             <td class="simple-product-cell">
 
-                                                <button type="button"
-                                                        class="simple-product-name-btn"
-                                                        data-modal-target="order-modal-${order.order_id}">
+                                                <button type="button" class="simple-product-name-btn" data-modal-target="order-modal-${order.order_id}">
                                                     ${mainItem.productName}
                                                 </button>
 
@@ -360,9 +351,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <form action="/seller_order_status_update.do"
-                                                              method="post"
-                                                              class="order-status-form">
+                                                        <form action="/seller_order_status_update.do" method="post" class="order-status-form">
 
                                                             <input type="hidden" name="order_id" value="${order.order_id}">
                                                             <input type="hidden" name="selectedStatus" value="${selectedStatus}">
@@ -524,9 +513,7 @@
 
                                                         <span class="status-title">배송상태</span>
 
-                                                        <form action="/seller_order_status_update.do"
-                                                              method="post"
-                                                              class="order-status-form">
+                                                        <form action="/seller_order_status_update.do" method="post" class="order-status-form">
 
                                                             <input type="hidden" name="order_id" value="${order.order_id}">
                                                             <input type="hidden" name="selectedStatus" value="${selectedStatus}">
@@ -570,9 +557,7 @@
 
                                             <div class="seller-order-main-item">
 
-                                                <button type="button"
-                                                        class="seller-order-thumb"
-                                                        data-modal-target="order-modal-${order.order_id}">
+                                                <button type="button" class="seller-order-thumb" data-modal-target="order-modal-${order.order_id}">
 
                                                     <c:choose>
                                                         <c:when test="${empty mainItem or empty mainItem.imageL or fn:trim(mainItem.imageL) eq 'no_file'}">
@@ -994,17 +979,13 @@
                 <div class="cs-form-row">
                     <label for="sellerDirectDetailReason">판매자 상세 사유</label>
 
-                    <textarea id="sellerDirectDetailReason"
-                            name="detail_reason"
-                            placeholder="판매자가 직접 처리하는 상세 사유를 입력해주세요."></textarea>
+                    <textarea id="sellerDirectDetailReason" name="detail_reason" placeholder="판매자가 직접 처리하는 상세 사유를 입력해주세요."></textarea>
                 </div>
 
                 <div class="cs-form-row">
                     <label for="sellerDirectSellerAnswer">판매자 처리 안내</label>
 
-                    <textarea id="sellerDirectSellerAnswer"
-                            name="seller_answer"
-                            placeholder="구매자에게 보여줄 처리 안내를 입력해주세요."></textarea>
+                    <textarea id="sellerDirectSellerAnswer" name="seller_answer" placeholder="구매자에게 보여줄 처리 안내를 입력해주세요."></textarea>
                 </div>
 
                 <div class="seller-claim-guide-box">

@@ -270,7 +270,7 @@
                                 onclick="location.href='/review_form.do?order_item_id=${review.order_item_id}'">
                             리뷰쓰기
                         </button>
-                        <a href="/mypage/review/write" class="action">리뷰 쓰고 100원 받기</a>
+                        <!-- <div>리뷰 쓰고 100원 받기</div> -->
                     </div>
                 </li>
                 </c:forEach>

@@ -500,39 +500,73 @@
 
 /* =========================================================
    페이징
+   - 상품관리 페이지와 동일한 심플 디자인
 ========================================================= */
 
 .sale-page-menu {
+    width: 100%;
     margin-top: 48px;
 
-    text-align: center;
-    color: #333333;
-    font-size: 15px;
-    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+
+    color: #777;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
 }
 
-.sale-page-menu a {
-    min-width: 34px;
-    height: 34px;
-    margin: 0 3px;
+.sale-page-menu a,
+.sale-page-menu span,
+.sale-page-menu strong {
+    min-width: auto;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
 
     display: inline-flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
-    border: 1px solid #e5e5e5;
-    border-radius: 999px;
-    background: #ffffff;
-    color: #333333;
+    border: none;
+    border-radius: 0;
+    background: transparent;
 
+    color: #777;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
     text-decoration: none;
-    transition: 0.15s ease;
+
+    box-shadow: none;
+    box-sizing: border-box;
 }
 
 .sale-page-menu a:hover {
-    color: #ffffff;
-    background: #ff6f4f;
-    border-color: #ff6f4f;
+    border: none;
+    background: transparent;
+    color: #ff654f;
+}
+
+.sale-page-menu .page-current,
+.sale-page-menu .active,
+.sale-page-menu strong {
+    border: none;
+    background: transparent;
+    color: #ff654f;
+    font-weight: 900;
+}
+
+.sale-page-menu .page-disabled {
+    border: none;
+    background: transparent;
+    color: #c9ced4;
+    cursor: default;
 }
 
 /* =========================================================

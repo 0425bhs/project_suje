@@ -16,6 +16,7 @@
     <script src="/js/seller_review.js" defer></script>
 </head>
 
+
 <body>
     <div class="seller-board">
 

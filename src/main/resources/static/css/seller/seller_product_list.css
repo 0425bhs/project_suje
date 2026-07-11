@@ -1042,3 +1042,120 @@ button.status-badge {
         min-width: 1280px;
     }
 }
+
+.reject-modal-open {
+    overflow: hidden;
+}
+
+.reject-reason-button {
+    border: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+.reject-reason-button:hover {
+    opacity: 0.8;
+}
+
+.reject-reason-modal[hidden] {
+    display: none;
+}
+
+.reject-reason-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.reject-reason-modal-dim {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+}
+
+.reject-reason-modal-box {
+    position: relative;
+    z-index: 1;
+    width: min(470px, 100%);
+    padding: 30px;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
+}
+
+.reject-reason-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    border: 0;
+    background: transparent;
+    color: #64748b;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.reject-reason-modal-head span {
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.reject-reason-modal-head h3 {
+    margin: 8px 0;
+    color: #111827;
+    font-size: 22px;
+}
+
+.reject-reason-modal-head p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.reject-reason-content {
+    margin-top: 24px;
+    padding: 18px;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    background: #fff7f7;
+}
+
+.reject-reason-content strong {
+    display: block;
+    margin-bottom: 9px;
+    color: #991b1b;
+    font-size: 13px;
+}
+
+.reject-reason-content p {
+    margin: 0;
+    color: #374151;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.reject-reason-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.reject-reason-modal-actions button {
+    min-width: 90px;
+    height: 42px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 9px;
+    background: #111827;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+}
