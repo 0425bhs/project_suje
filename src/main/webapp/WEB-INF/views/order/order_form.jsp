@@ -53,12 +53,19 @@
                     <section class="page-block soft">
                         <div class="block-inner">
 
-                            <div class="page-title-row">
-                                <div>
+                            <div class="page-title-row checkout-head">
+                                <div class="page-title-copy">
                                     <span>ORDER FORM</span>
                                     <h2>주문서 작성</h2>
                                 </div>
-                                <p>주문 상품과 결제 금액을 확인합니다.</p>
+
+                                <div class="cart-step">
+                                    <span>01 장바구니</span>
+                                    <span>〉</span>
+                                    <span class="active">02 주문/결제</span>
+                                    <span>〉</span>
+                                    <span>03 주문완료</span>
+                                </div>
                             </div>
 
                             <form action="/order/create" method="post">

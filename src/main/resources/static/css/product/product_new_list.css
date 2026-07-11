@@ -358,34 +358,72 @@
 ========================================================= */
 
 .new-page-menu {
+    width: 100%;
     margin-top: 42px;
-    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+
+    color: #777;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
 }
 
-.new-page-menu a {
+.new-page-menu a,
+.new-page-menu span,
+.new-page-menu strong {
+    width: auto;
+    min-width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+
     display: inline-flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
-    min-width: 32px;
-    height: 32px;
-    margin: 0 3px;
+    border: none;
+    border-radius: 0;
+    background: transparent;
 
-    border: 1px solid #ddd;
-    border-radius: 6px;
-
-    color: #333;
+    color: #777;
+    font-family: inherit;
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 700;
+    line-height: 1;
     text-decoration: none;
+
+    box-shadow: none;
+    box-sizing: border-box;
 }
 
 .new-page-menu a:hover {
-    background: #ff654f;
-    border-color: #ff654f;
-    color: #fff;
+    border: none;
+    background: transparent;
+    color: #ff654f;
 }
 
+/* 현재 페이지 */
+.new-page-menu .page-current,
+.new-page-menu .active,
+.new-page-menu strong {
+    border: none;
+    background: transparent;
+    color: #ff654f;
+    font-weight: 900;
+}
+
+/* 비활성 이전/다음 */
+.new-page-menu .page-disabled {
+    border: none;
+    background: transparent;
+    color: #c9ced4;
+    cursor: default;
+}
 /* =========================================================
    반응형
 @media (max-width: 900px) {

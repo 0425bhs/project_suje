@@ -24,17 +24,15 @@
 
 <div class="cart-wrap">
 
-    <div class="cart-top">
+    <div class="cart-top checkout-head">
         <div class="cart-title">장바구니</div>
 
         <div class="cart-step">
-            <span>01 옵션선택</span>
+            <span class="active">01 장바구니</span>
             <span>〉</span>
-            <span class="active">02 장바구니</span>
+            <span>02 주문/결제</span>
             <span>〉</span>
-            <span>03 주문/결제</span>
-            <span>〉</span>
-            <span>04 주문완료</span>
+            <span>03 주문완료</span>
         </div>
     </div>
 

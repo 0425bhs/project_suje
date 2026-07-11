@@ -11,7 +11,7 @@
 
 <div class="login-container">
  <form onkeydown="if(event.key === 'Enter') send(event.currentTarget)">
-    <div class="logo">HAND<span>MADE</span></div>
+    <a href="/" class="logo">HAND<span>MADE</span></a>
 
 <div class="login-title">아이디로 로그인</div>
 

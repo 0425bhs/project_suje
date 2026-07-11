@@ -13,13 +13,13 @@
 }
 
 /* =========================================================
-   상단 제목 / 단계
+   상단 제목 / 주문 단계
 ========================================================= */
 
 .cart-top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 24px;
 
     margin-bottom: 72px;
@@ -27,14 +27,66 @@
 
 .cart-title {
     margin: 0;
-    line-height: 1;
 
     color: #111;
     font-size: 34px;
     font-weight: 900;
+    line-height: 1;
     letter-spacing: -0.06em;
 }
 
+/* 장바구니 / 주문서 / 주문완료 공통 위치 */
+.checkout-head {
+    position: relative;
+
+    width: 100%;
+    min-height: 52px;
+    margin-bottom: 72px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.checkout-head .cart-step {
+    position: absolute;
+    top: 8px;
+    right: 0;
+
+    width: auto;
+    margin: 0;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+
+    transform: none;
+
+    color: #aaa;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.checkout-head .cart-step span {
+    display: inline;
+    margin: 0;
+
+    color: #aaa;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: normal;
+}
+
+.checkout-head .cart-step .active {
+    color: #111;
+    font-weight: 900;
+}
+
+/* checkout-head 클래스를 넣지 않았을 때 기본 스타일 */
 .cart-step {
     width: auto;
 
@@ -43,8 +95,6 @@
     align-items: center;
     gap: 10px;
     flex-wrap: nowrap;
-
-    transform: translateY(5px);
 
     color: #aaa;
     font-size: 13px;
@@ -95,6 +145,7 @@
 input[type="checkbox"] {
     width: 18px;
     height: 18px;
+
     accent-color: #111;
     cursor: pointer;
 }
@@ -109,6 +160,7 @@ input[type="checkbox"] {
     color: #111;
     font-size: 15px;
     font-weight: 900;
+
     cursor: pointer;
 }
 
@@ -129,9 +181,9 @@ input[type="checkbox"] {
     height: 40px;
     padding: 0 22px;
 
-    border: 1px solid #cccccc;
+    border: 1px solid #ccc;
     border-radius: 2px;
-    background: #ffffff;
+    background: #fff;
 
     color: #111;
     font-size: 14px;
@@ -171,13 +223,12 @@ input[type="checkbox"] {
     color: #111;
     font-size: 15px;
     font-weight: 900;
+
     cursor: pointer;
 }
 
 /* =========================================================
    기존 상품 한 줄 구조
-   - 예전 구조 남겨둠
-   - 현재 옵션 묶음 구조에서는 cart-product-group 사용
 ========================================================= */
 
 .cart-item-row {
@@ -208,9 +259,26 @@ input[type="checkbox"] {
     height: 110px;
 
     object-fit: cover;
+
     border: 1px solid #eee;
     border-radius: 8px;
     background: #fafafa;
+}
+
+.cart-no-image {
+    width: 110px;
+    height: 110px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #f7f7f7;
+
+    color: #999;
+    font-size: 12px;
 }
 
 .cart-item-info {
@@ -296,23 +364,6 @@ input[type="checkbox"] {
     letter-spacing: -0.04em;
 }
 
-/* 장바구니 상품 이미지가 없을 때 표시 */
-.cart-no-image {
-    width: 110px;
-    height: 110px;
-
-    border: 1px solid #eee;
-    border-radius: 8px;
-    background: #f7f7f7;
-
-    color: #999;
-    font-size: 12px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 /* =========================================================
    같은 상품 옵션 묶음 디자인
 ========================================================= */
@@ -336,10 +387,10 @@ input[type="checkbox"] {
     padding-top: 2px;
 }
 
-/* 옵션 박스는 상품명/가격 영역과 같은 시작점에 맞춤 */
+/* 상품명과 가격이 시작하는 위치에 옵션 목록 정렬 */
 .cart-option-list {
-    margin-left: 188px;
     margin-top: 14px;
+    margin-left: 188px;
 }
 
 .cart-option-row {
@@ -363,7 +414,7 @@ input[type="checkbox"] {
     margin-bottom: 0;
 }
 
-/* 실제 주문/계산용 체크박스는 숨김 */
+/* 실제 주문 및 계산용 옵션 체크박스 숨김 */
 .cart-option-check {
     display: none;
 }
@@ -382,18 +433,17 @@ input[type="checkbox"] {
 }
 
 .cart-option-price {
-    text-align: right;
-
     color: #111;
     font-size: 15px;
     font-weight: 900;
+    text-align: right;
     letter-spacing: -0.03em;
 }
 
 .cart-option-delete {
     position: absolute;
-    right: 14px;
     top: 12px;
+    right: 14px;
 
     width: 24px;
     height: 24px;
@@ -419,6 +469,7 @@ input[type="checkbox"] {
     justify-self: start;
 
     height: 32px;
+
     border: 1px solid #d9dfe7;
     background: #fff;
 }
@@ -426,6 +477,7 @@ input[type="checkbox"] {
 .cart-option-row .cart-qty-btn {
     width: 36px;
     height: 30px;
+
     font-size: 18px;
 }
 
@@ -439,10 +491,11 @@ input[type="checkbox"] {
 ========================================================= */
 
 .cart-quantity-box {
+    height: 36px;
+
     display: inline-flex;
     align-items: center;
 
-    height: 36px;
     border: 1px solid #ddd;
     background: #fff;
 }
@@ -469,6 +522,7 @@ input[type="checkbox"] {
 .cart-qty-btn:disabled {
     color: #bbb;
     background: #f7f7f7;
+
     cursor: default;
 }
 
@@ -477,8 +531,8 @@ input[type="checkbox"] {
     height: 34px;
 
     border: none;
-    border-left: 1px solid #eee;
     border-right: 1px solid #eee;
+    border-left: 1px solid #eee;
 
     color: #111;
     font-size: 14px;
@@ -497,7 +551,7 @@ input[type="checkbox"] {
 }
 
 /* =========================================================
-   왼쪽 상품박스 하단 예상 주문금액 접기 / 펼치기
+   왼쪽 상품박스 하단 예상 주문금액
 ========================================================= */
 
 .seller-delivery-row {
@@ -564,12 +618,12 @@ input[type="checkbox"] {
 }
 
 .seller-order-arrow {
+    width: 16px;
+    height: 16px;
+
     display: inline-flex;
     justify-content: center;
     align-items: center;
-
-    width: 16px;
-    height: 16px;
 
     border: 1px solid #d0d0d0;
     border-radius: 50%;
@@ -678,8 +732,8 @@ input[type="checkbox"] {
     display: none;
 
     position: absolute;
-    left: 0;
     top: 24px;
+    left: 0;
     z-index: 50;
 
     width: 260px;
@@ -699,6 +753,7 @@ input[type="checkbox"] {
 
 .delivery-tip-box strong {
     display: block;
+
     margin-bottom: 10px;
 
     color: #111;
@@ -717,10 +772,11 @@ input[type="checkbox"] {
 
 .delivery-tip-close {
     position: absolute;
-    right: 10px;
     top: 8px;
+    right: 10px;
 
     padding: 0;
+
     border: none;
     background: transparent;
 
@@ -739,6 +795,7 @@ input[type="checkbox"] {
 .cart-order-side {
     position: sticky;
     top: 170px;
+
     margin-top: 54px;
 }
 
@@ -832,14 +889,14 @@ input[type="checkbox"] {
 }
 
 #orderCountBadge {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
     min-width: 17px;
     height: 17px;
     margin-left: 4px;
     padding: 0 5px;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 
     border-radius: 50%;
     background: #111;
@@ -897,38 +954,45 @@ input[type="checkbox"] {
         margin-top: 34px;
     }
 
-    .cart-top {
+    .cart-top,
+    .checkout-head {
+        min-height: auto;
+        margin-bottom: 24px;
+
         flex-direction: column;
         align-items: flex-start;
         gap: 14px;
-
-        margin-bottom: 24px;
     }
 
     .cart-title {
         font-size: 30px;
     }
 
-    .cart-step {
+    .checkout-head .cart-step {
+        position: static;
+
         justify-content: flex-start;
         flex-wrap: wrap;
         gap: 8px;
-
-        transform: none;
 
         font-size: 12px;
         white-space: normal;
     }
 
+    .checkout-head .cart-step span {
+        font-size: 12px;
+    }
+
     .cart-control-row {
+        margin-bottom: 16px;
+
         flex-direction: column;
         gap: 12px;
-
-        margin-bottom: 16px;
     }
 
     .cart-btns {
         width: 100%;
+
         justify-content: flex-end;
         transform: none;
     }
@@ -936,6 +1000,7 @@ input[type="checkbox"] {
     .cart-btn {
         height: 40px;
         padding: 0 16px;
+
         font-size: 13px;
     }
 
@@ -966,16 +1031,16 @@ input[type="checkbox"] {
     }
 
     .cart-option-list {
-        margin-left: 0;
         margin-top: 14px;
+        margin-left: 0;
     }
 
     .cart-option-row {
-        grid-template-columns: 1fr;
-        gap: 10px;
-
         min-height: auto;
         padding: 14px 42px 14px 14px;
+
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
     .cart-option-price {
@@ -986,72 +1051,3 @@ input[type="checkbox"] {
         width: 230px;
     }
 }
-
-.cart-item-check,
-.cart-quantity-box,
-.cart-qty-btn,
-.cart-qty-input {
-    cursor: default;
-}
-
-/* =========================================================
-   장바구니 상품 가격
-========================================================= */
-
-.cart-price-box {
-    margin-bottom: 12px;
-}
-
-.cart-origin-price {
-    margin: 0 0 4px;
-
-    color: #999;
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: line-through;
-}
-
-.cart-sale-price {
-    margin: 0;
-
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.cart-sale-price span {
-    color: #f45b3f;
-    font-size: 15px;
-    font-weight: 950;
-}
-
-.cart-sale-price strong {
-    color: #111;
-    font-size: 16px;
-    font-weight: 950;
-    letter-spacing: -0.04em;
-}
-
-.cart-normal-price {
-    margin: 0 0 12px;
-
-    color: #111;
-    font-size: 16px;
-    font-weight: 950;
-    letter-spacing: -0.04em;
-}
-
-/* 장바구니 상품 이미지가 없을 때 표시 */
-.cart-no-image {
-    width: 100px;
-    height: 100px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    background: #f7f7f7;
-    color: #999;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-

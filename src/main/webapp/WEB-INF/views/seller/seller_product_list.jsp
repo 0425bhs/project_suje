@@ -268,9 +268,13 @@
                                         </c:if>
 
                                         <c:if test="${vo.status eq 'REJECTED'}">
-                                            <span class="status-badge status-rejected">
+                                            <button type="button"
+                                                    class="status-badge status-rejected reject-reason-button"
+                                                    data-product-name="${fn:escapeXml(vo.name)}"
+                                                    data-reason="${fn:escapeXml(vo.reject_reason)}"
+                                                    onclick="openRejectReasonModal(this)">
                                                 승인 거절
-                                            </span>
+                                            </button>
                                         </c:if>
                                     </td>
 
@@ -348,9 +352,13 @@
                                         </c:if>
 
                                         <c:if test="${vo.status eq 'REJECTED'}">
-                                            <span class="status-badge status-rejected">
+                                            <button type="button"
+                                                    class="status-badge status-rejected reject-reason-button"
+                                                    data-product-name="${fn:escapeXml(vo.name)}"
+                                                    data-reason="${fn:escapeXml(vo.reject_reason)}"
+                                                    onclick="openRejectReasonModal(this)">
                                                 승인 거절
-                                            </span>
+                                            </button>
                                         </c:if>
                                     </div>
 
@@ -506,6 +514,52 @@
         </section>
 
     </main>
+
+</div>
+
+<div id="rejectReasonModal" class="reject-reason-modal" hidden>
+
+    <div class="reject-reason-modal-dim" onclick="closeRejectReasonModal()"></div>
+
+    <div class="reject-reason-modal-box"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="rejectReasonModalTitle">
+
+        <button type="button"
+                class="reject-reason-modal-close"
+                onclick="closeRejectReasonModal()"
+                aria-label="닫기">
+            &times;
+        </button>
+
+        <div class="reject-reason-modal-head">
+            <span>PRODUCT REJECTION</span>
+
+            <h3 id="rejectReasonModalTitle">
+                상품 승인 거절 사유
+            </h3>
+
+            <p id="rejectReasonProductName">
+                -
+            </p>
+        </div>
+
+        <div class="reject-reason-content">
+            <strong>관리자 전달 내용</strong>
+
+            <p id="rejectReasonText">
+                등록된 사유가 없습니다.
+            </p>
+        </div>
+
+        <div class="reject-reason-modal-actions">
+            <button type="button" onclick="closeRejectReasonModal()">
+                확인
+            </button>
+        </div>
+
+    </div>
 
 </div>
 
