@@ -377,7 +377,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LIMIT 2
     </select>
 
-    <select id="sellerReviewList" resultType="review">
+    <!-- 판매자 리뷰 목록 -->
+    <select id="sellerReviewList" parameterType="map" resultType="review">
+
         SELECT
             r.review_id,
             r.user_id,
@@ -392,7 +394,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             r.reply_content,
             r.reply_created_at,
-            DATE_FORMAT(r.reply_created_at, '%Y.%m.%d') AS reply_created_at_text,
+
+            DATE_FORMAT(r.reply_created_at,'%Y.%m.%d') AS reply_created_at_text,
 
             p.name AS product_name,
             p.image_l,
@@ -404,19 +407,161 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             oi.option_name AS option_name
 
         FROM reviews r
-        JOIN products p
-            ON r.product_id = p.product_id
-        JOIN users u
-            ON r.user_id = u.user_id
-        LEFT JOIN order_items oi
-            ON r.order_item_id = oi.order_item_id
+
+        JOIN products p ON r.product_id = p.product_id
+
+        JOIN users u ON r.user_id = u.user_id
+
+        LEFT JOIN order_items oi ON r.order_item_id = oi.order_item_id
 
         WHERE p.seller_id = #{seller_id}
         AND r.status = 'ACTIVE'
 
-        ORDER BY r.created_at DESC
+        <if test="product_id != null">
+            AND r.product_id = #{product_id}
+        </if>
+
+        <choose>
+            <when test="tab == 'waiting'">
+                AND (r.reply_content IS NULL OR TRIM(r.reply_content) = '')
+            </when>
+
+            <when test="tab == 'completed'">
+                AND r.reply_content IS NOT NULL AND TRIM(r.reply_content) != ''
+            </when>
+
+            <when test="tab == 'photo'">
+                AND EXISTS (
+                    SELECT 1
+                    FROM images i
+                    WHERE i.target_type = 'REVIEW'
+                    AND i.target_id = r.review_id
+                )
+            </when>
+        </choose>
+
+        ORDER BY r.created_at DESC,r.review_id DESC
+
+        LIMIT #{size}
+        OFFSET #{offset}
     </select>
 
+
+    <!-- 현재 필터에 해당하는 리뷰 개수 -->
+    <select id="sellerReviewCount" parameterType="map" resultType="int">
+
+        SELECT COUNT(*) FROM reviews r
+
+        JOIN products p ON r.product_id = p.product_id
+
+        WHERE p.seller_id = #{seller_id}
+        AND r.status = 'ACTIVE'
+
+        <!-- 특정 상품 필터 -->
+        <if test="product_id != null">
+            AND r.product_id = #{product_id}
+        </if>
+
+        <!-- 답글 상태 및 사진 리뷰 필터 -->
+        <choose>
+            <when test="tab == 'waiting'">
+                AND (r.reply_content IS NULL OR TRIM(r.reply_content) = '')
+            </when>
+
+            <when test="tab == 'completed'">
+                AND r.reply_content IS NOT NULL AND TRIM(r.reply_content) != ''
+            </when>
+
+            <when test="tab == 'photo'">
+                AND EXISTS (
+                    SELECT 1
+                    FROM images i
+                    WHERE i.target_type = 'REVIEW'
+                    AND i.target_id = r.review_id
+                )
+            </when>
+        </choose>
+    </select>
+
+
+    <!-- 상단 전체 리뷰 개수 -->
+    <select id="sellerReviewTotalCount" parameterType="map" resultType="int">
+
+        SELECT COUNT(*) FROM reviews r
+
+        JOIN products p ON r.product_id = p.product_id
+
+        WHERE p.seller_id = #{seller_id}
+        AND r.status = 'ACTIVE'
+
+        <!-- 특정 상품을 선택했다면 해당 상품 기준 -->
+        <if test="product_id != null">
+            AND r.product_id = #{product_id}
+        </if>
+    </select>
+
+
+    <!-- 상단 답글 대기 개수 -->
+    <select id="sellerReviewWaitingCount" parameterType="map" resultType="int">
+
+        SELECT COUNT(*) FROM reviews r
+
+        JOIN products p ON r.product_id = p.product_id
+
+        WHERE p.seller_id = #{seller_id}
+        AND r.status = 'ACTIVE'
+
+        <if test="product_id != null">
+            AND r.product_id = #{product_id}
+        </if>
+
+        AND (
+            r.reply_content IS NULL
+            OR TRIM(r.reply_content) = ''
+        )
+    </select>
+
+
+    <!-- 상단 답글 완료 개수 -->
+    <select id="sellerReviewCompletedCount" parameterType="map" resultType="int">
+
+        SELECT COUNT(*) FROM reviews r
+
+        JOIN products p ON r.product_id = p.product_id
+
+        WHERE p.seller_id = #{seller_id}
+        AND r.status = 'ACTIVE'
+
+        <if test="product_id != null">
+            AND r.product_id = #{product_id}
+        </if>
+
+        AND r.reply_content IS NOT NULL
+        AND TRIM(r.reply_content) != ''
+    </select>
+
+
+    <!-- 상단 사진 리뷰 개수 -->
+    <select id="sellerReviewPhotoCount" parameterType="map" resultType="int">
+
+        SELECT COUNT(*) FROM reviews r
+
+        JOIN products p ON r.product_id = p.product_id
+
+        WHERE p.seller_id = #{seller_id}
+        AND r.status = 'ACTIVE'
+
+        <if test="product_id != null">
+            AND r.product_id = #{product_id}
+        </if>
+
+        AND EXISTS (
+            SELECT 1
+            FROM images i
+            WHERE i.target_type = 'REVIEW'
+            AND i.target_id = r.review_id
+        )
+    </select>
 
     <select id="sellerReviewProductList" resultType="review">
         SELECT DISTINCT

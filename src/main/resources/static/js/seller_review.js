@@ -2,110 +2,64 @@ document.addEventListener("DOMContentLoaded", function(){
 
     const productFilter = document.getElementById("productFilter");
     const tabs = document.querySelectorAll(".review-tab");
-    const reviewCards = document.querySelectorAll(".seller-review-card");
 
     const reportModal = document.getElementById("reviewReportModal");
     const reportReviewId = document.getElementById("reportReviewId");
     const reportType = document.getElementById("reviewReportType");
     const reportReason = document.getElementById("reviewReportReason");
 
-    let currentTab = "all";
-
-    updateReviewCounts();
-    applyFilter();
+    bindServerReviewFilter();
     bindReplyButtons();
 
     initReviewContentToggle();
     initReviewImageModal();
     bindReviewReportModal();
 
-    if(productFilter != null){
-        productFilter.addEventListener("change", function(){
-            applyFilter();
-        });
-    }
+    function bindServerReviewFilter(){
 
-    tabs.forEach(function(tab){
-        tab.addEventListener("click", function(){
-            tabs.forEach(function(item){
-                item.classList.remove("active");
+        if(productFilter != null){
+
+            productFilter.addEventListener("change", function(){
+
+                const params =
+                    new URLSearchParams(window.location.search);
+
+                const productId = this.value;
+
+                if(productId === ""){
+                    params.delete("product_id");
+                } else {
+                    params.set("product_id", productId);
+                }
+
+                params.set("page", "1");
+
+                if(!params.has("tab")){
+                    params.set("tab", "all");
+                }
+
+                window.location.href =
+                    "/seller_review_list.do?" + params.toString();
             });
-
-            this.classList.add("active");
-            currentTab = this.dataset.tab;
-
-            applyFilter();
-        });
-    });
-
-    function applyFilter(){
-        const selectedProductId = productFilter == null ? "all" : productFilter.value;
-
-        reviewCards.forEach(function(card){
-            const cardProductId = card.dataset.productId;
-            const isReplied = card.dataset.replied === "true";
-            const hasPhoto = card.dataset.hasPhoto === "true";
-
-            let productMatched = selectedProductId === "all" || selectedProductId === cardProductId;
-            let tabMatched = true;
-
-            if(currentTab === "waiting"){
-                tabMatched = !isReplied;
-            }
-
-            if(currentTab === "completed"){
-                tabMatched = isReplied;
-            }
-
-            if(currentTab === "photo"){
-                tabMatched = hasPhoto;
-            }
-
-            if(productMatched && tabMatched){
-                card.style.display = "block";
-            } else {
-                card.style.display = "none";
-            }
-        });
-    }
-
-    function updateReviewCounts(){
-        let totalCount = reviewCards.length;
-        let waitingCount = 0;
-        let completedCount = 0;
-        let photoCount = 0;
-
-        reviewCards.forEach(function(card){
-            const isReplied = card.dataset.replied === "true";
-            const hasPhoto = card.dataset.hasPhoto === "true";
-
-            if(isReplied){
-                completedCount++;
-            } else {
-                waitingCount++;
-            }
-
-            if(hasPhoto){
-                photoCount++;
-            }
-        });
-
-        setText("totalReviewCount", totalCount + "개");
-        setText("waitingReviewCount", waitingCount);
-        setText("completedReviewCount", completedCount);
-        setText("photoReviewCount", photoCount);
-
-        setText("waitingTabCount", "(" + waitingCount + ")");
-        setText("completedTabCount", "(" + completedCount + ")");
-        setText("photoTabCount", "(" + photoCount + ")");
-    }
-
-    function setText(id, value){
-        const target = document.getElementById(id);
-
-        if(target != null){
-            target.textContent = value;
         }
+
+
+        // 전체 / 답글 대기 / 답글 완료 / 사진 리뷰 탭
+        tabs.forEach(function(tab){
+
+            tab.addEventListener("click", function(){
+
+                const params =
+                    new URLSearchParams(window.location.search);
+
+                params.set("tab", this.dataset.tab);
+
+                params.set("page", "1");
+
+                window.location.href =
+                    "/seller_review_list.do?" + params.toString();
+            });
+        });
     }
 
     function bindReplyButtons(){

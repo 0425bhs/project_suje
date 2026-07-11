@@ -193,38 +193,80 @@ public class SellerController {
     }
 
     @GetMapping("/seller_review_list.do")
-    public String sellerReviewList(Model model){
+    public String sellerReviewList(Model model,String tab,Integer product_id,Integer size,Integer page) {
 
         Integer seller_id = getLoginSellerId();
 
-        if (seller_id == null){
+        if (seller_id == null) {
             return "redirect:/login.do";
         }
 
-        List<ReviewVO> reviewList = reviewdao.sellerReviewList(seller_id);
-        List<ReviewVO> productList = reviewdao.sellerReviewProductList(seller_id);
+        if (tab == null || tab.trim().isEmpty()) {
+            tab = "all";
+        }
 
-        if (reviewList != null && !reviewList.isEmpty()){
-            List<Integer> reviewIds = reviewList.stream()
-                    .map(ReviewVO::getReview_id)
-                    .collect(Collectors.toList());
+        if (product_id != null && product_id <= 0) {
+            product_id = null;
+        }
 
-            List<ImageVO> images = imagedao.getImagesByReviewIds(reviewIds);
+        Map<String, Object> countMap = new HashMap<>();
+        countMap.put("seller_id", seller_id);
+        countMap.put("tab", tab);
+        countMap.put("product_id", product_id);
 
-            if (images != null && !images.isEmpty()){
-                Map<Integer, List<ImageVO>> imageMap = images.stream()
-                        .collect(Collectors.groupingBy(ImageVO::getTarget_id));
+        int totalCount = reviewdao.sellerReviewCount(countMap);
 
-                for (ReviewVO review : reviewList){
-                    review.setImageList(
-                            imageMap.getOrDefault(review.getReview_id(), new ArrayList<>())
-                    );
+        PaginationVO pagination = new PaginationVO(page, size, totalCount);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("seller_id", seller_id);
+        map.put("tab", tab);
+        map.put("product_id", product_id);
+        map.put("size", pagination.getSize());
+        map.put("offset", pagination.getOffset());
+
+        List<ReviewVO> reviewList = reviewdao.sellerReviewList(map);
+
+        if (reviewList != null && !reviewList.isEmpty()) {
+
+            List<Integer> reviewIds = reviewList.stream().map(ReviewVO::getReview_id).collect(Collectors.toList());
+
+            List<ImageVO> imageList =imagedao.getImagesByReviewIds(reviewIds);
+
+            if (imageList != null && !imageList.isEmpty()) {
+
+                Map<Integer, List<ImageVO>> imageMap = imageList.stream().collect(Collectors.groupingBy(ImageVO::getTarget_id));
+
+                for (ReviewVO review : reviewList) {
+                    review.setImageList(imageMap.getOrDefault(review.getReview_id(),new ArrayList<>()));
                 }
             }
         }
 
+        List<ReviewVO> productList = reviewdao.sellerReviewProductList(seller_id);
+
+        Map<String, Object> summaryMap = new HashMap<>();
+        summaryMap.put("seller_id", seller_id);
+        summaryMap.put("product_id", product_id);
+
+        int totalReviewCount = reviewdao.sellerReviewTotalCount(summaryMap);
+        int waitingReviewCount = reviewdao.sellerReviewWaitingCount(summaryMap);
+        int completedReviewCount = reviewdao.sellerReviewCompletedCount(summaryMap);
+        int photoReviewCount = reviewdao.sellerReviewPhotoCount(summaryMap);
+
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("productList", productList);
+
+        model.addAttribute("selectedTab", tab);
+        model.addAttribute("selectedProductId", product_id);
+
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pagination", pagination);
+
+        model.addAttribute("totalReviewCount", totalReviewCount);
+        model.addAttribute("waitingReviewCount", waitingReviewCount);
+        model.addAttribute("completedReviewCount", completedReviewCount);
+        model.addAttribute("photoReviewCount", photoReviewCount);
 
         return "/seller/seller_review_list";
     }
