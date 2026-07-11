@@ -93,22 +93,22 @@
             <div class="dash-card">
                 <div class="card-header">
                     <h3><span class="icon orange">⚠️</span> 취소·반품·교환</h3>
-                    <span class="card-state">미구현 항목</span>
+                    <!-- <span class="card-state">미구현 항목</span> -->
                 </div>
 
                 <div class="list-group">
                     <div class="list-item disabled">
-                        <span class="label">취소요청(미구현)</span>
+                        <span class="label">취소요청</span>
                         <span class="value zero">${empty cancelledCount ? 0 : cancelledCount}</span>
                     </div>
 
                     <div class="list-item disabled">
-                        <span class="label">반품요청(미구현)</span>
+                        <span class="label">반품요청</span>
                         <span class="value zero">${empty returnExchangeCount ? 0 : returnExchangeCount}</span>
                     </div>
 
                     <div class="list-item disabled">
-                        <span class="label">교환요청(미구현)</span>
+                        <span class="label">교환요청</span>
                         <span class="value zero">${empty returnExchangeCount ? 0 : returnExchangeCount}</span>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
                     </div>
 
                     <div class="list-item disabled">
-                        <span class="label">수정요청 상품(미구현)</span>
+                        <span class="label">수정요청 상품</span>
                         <span class="value zero">0</span>
                     </div>
                 </div>
