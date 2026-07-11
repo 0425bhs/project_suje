@@ -74,7 +74,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="status != null and status != 'all'">
                 p.status = #{status}
-                AND s.seller_status = 'APPROVED'
             </if>
 
             <if test="seller_id != null">
@@ -150,7 +149,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="status != null and status != 'all'">
                 p.status = #{status}
-                AND s.seller_status = 'APPROVED'
             </if>
 
             <if test="seller_id != null">
