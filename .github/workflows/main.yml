@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+concurrency:
+  group: suje-production-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,9 +20,39 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
           script: |
+            set -e
+
             cd /home/ubuntu/project_suje
-            git pull origin master
+
+            echo "최신 코드 가져오기"
+            git fetch origin master
+            git reset --hard origin/master
+
+            echo "빌드"
+            chmod +x gradlew
             ./gradlew clean build -x test
-            pkill -f 'suje-0.0.1-SNAPSHOT.war' || true
-            nohup java -jar build/libs/suje-0.0.1-SNAPSHOT.war > nohup.out 2>&1 &
+
+            echo "기존 서버 종료"
+            OLD_PID=$(ps -ef | grep '[j]ava -jar build/libs/suje-0.0.1-SNAPSHOT.war' | awk '{print $2}')
+
+            if [ -n "$OLD_PID" ]; then
+              kill "$OLD_PID"
+              sleep 5
+            fi
+
+            echo "새 서버 실행"
+            nohup java -jar build/libs/suje-0.0.1-SNAPSHOT.war \
+              > nohup.out 2>&1 < /dev/null &
+
+            sleep 15
+
+            echo "서버 실행 확인"
+            if ! pgrep -f '[j]ava -jar build/libs/suje-0.0.1-SNAPSHOT.war' > /dev/null; then
+              echo "서버 실행 실패"
+              tail -n 100 nohup.out
+              exit 1
+            fi
+
+            echo "배포 성공"
