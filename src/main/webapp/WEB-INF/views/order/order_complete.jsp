@@ -20,6 +20,24 @@
 
         <section class="page-block soft">
             <div class="block-inner">
+
+                <div class="page-title-row checkout-head">
+
+                    <div>
+                        <span>ORDER COMPLETE</span>
+                        <h2>주문 완료</h2>
+                    </div>
+
+                    <div class="cart-step">
+                        <span>01 장바구니</span>
+                        <span>〉</span>
+                        <span>02 주문/결제</span>
+                        <span>〉</span>
+                        <span class="active">03 주문완료</span>
+                    </div>
+
+                </div>
+
                 <div class="complete-box">
                     <div class="complete-icon">✓</div>
 
