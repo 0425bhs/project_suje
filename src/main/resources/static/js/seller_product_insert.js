@@ -1,6 +1,7 @@
 window.onload = function(){
 
     initProductDescriptionEditor();
+    initProductImagePreview();
     
     const bigCategory = document.getElementById("big_category_id");
     const smallCategory = document.getElementById("category_id");
@@ -115,6 +116,87 @@ window.onload = function(){
 
         // 수정 페이지는 기존 DB 값이 들어와 있으니까 처음 열릴 때도 체크
         checkDeliveryFeeInput();
+    }
+
+    function initProductImagePreview() {
+
+        const mainImageInput = document.getElementById("image_l_file");
+        const mainImagePreview = document.getElementById("image_l_preview");
+
+        const detailImageInput = document.getElementById("image_s_file");
+        const detailImagePreview = document.getElementById("image_s_preview");
+
+        if (mainImageInput != null && mainImagePreview != null) {
+
+            mainImageInput.addEventListener("change", function () {
+
+                const file = this.files[0];
+
+                if (file == null) {
+                    return;
+                }
+
+                if (!file.type.startsWith("image/")) {
+                    alert("이미지 파일만 선택할 수 있습니다.");
+                    this.value = "";
+                    return;
+                }
+
+                const imageUrl = URL.createObjectURL(file);
+
+                mainImagePreview.innerHTML = "";
+
+                const previewImage = document.createElement("img");
+
+                previewImage.src = imageUrl;
+                previewImage.alt = "대표 이미지 미리보기";
+
+                previewImage.addEventListener("load", function () {
+                    URL.revokeObjectURL(imageUrl);
+                });
+
+                mainImagePreview.appendChild(previewImage);
+            });
+        }
+
+        if (detailImageInput != null && detailImagePreview != null) {
+
+            detailImageInput.addEventListener("change", function () {
+
+                const files = Array.from(this.files);
+
+                if (files.length === 0) {
+                    return;
+                }
+
+                const hasNotImage = files.some(function (file) {
+                    return !file.type.startsWith("image/");
+                });
+
+                if (hasNotImage) {
+                    alert("이미지 파일만 선택할 수 있습니다.");
+                    this.value = "";
+                    return;
+                }
+
+                detailImagePreview.innerHTML = "";
+
+                files.forEach(function (file) {
+
+                    const imageUrl = URL.createObjectURL(file);
+                    const previewImage = document.createElement("img");
+
+                    previewImage.src = imageUrl;
+                    previewImage.alt = "상세 이미지 미리보기";
+
+                    previewImage.addEventListener("load", function () {
+                        URL.revokeObjectURL(imageUrl);
+                    });
+
+                    detailImagePreview.appendChild(previewImage);
+                });
+            });
+        }
     }
 };
 

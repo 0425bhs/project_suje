@@ -385,10 +385,9 @@ body {
 }
 
 .form-row label,
-.image-upload-box label {
+.image-upload-title {
     display: block;
     margin-bottom: 9px;
-
     color: #2f3542;
     font-size: 14px;
     font-weight: 900;
@@ -460,48 +459,6 @@ body {
 .form-help span {
     color: #ff654f;
     font-weight: 900;
-}
-
-.image-upload-area {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
-}
-
-.image-upload-box {
-    min-height: 210px;
-    padding: 26px;
-
-    border: 2px dashed #cfd6df;
-    border-radius: 16px;
-    background: #fafbfc;
-    transition: 0.15s;
-}
-
-.image-upload-box:hover {
-    border-color: #ff654f;
-    background: #fff8f6;
-}
-
-.image-upload-box::after {
-    content: "JPG, PNG 파일을 등록할 수 있습니다.";
-    display: block;
-    margin-top: 12px;
-
-    color: #8b95a1;
-    font-size: 12px;
-}
-
-.file-input-box {
-    padding: 22px;
-    border-radius: 12px;
-    background: #fff;
-    border: 1px solid #e5e8eb;
-}
-
-.file-input-box input[type="file"] {
-    width: 100%;
-    font-size: 14px;
 }
 
 .form-actions {
