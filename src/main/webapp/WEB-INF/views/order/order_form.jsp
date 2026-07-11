@@ -179,16 +179,19 @@
                                                     </strong>
                                                 </div>
                                                 <div class="cancel-modal-body">
-                                                    <c:choose>
-                                                        <c:when test="${not empty param.product_id}">
-                                                            <c:set var="currentUrl"
-                                                                value="${pageContext.request.requestURL}${not empty pageContext.request.queryString ? '?'.concat(pageContext.request.queryString) : ''}" />
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <c:set var="currentUrl"
-                                                                value="${pageContext.request.contextPath}/order_cart_form.do" />
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                    <c:set var="currentUrl" value="${requestScope['jakarta.servlet.forward.request_uri']}" />
+
+                                                    <c:set var="currentQuery" value="${requestScope['jakarta.servlet.forward.query_string']}" />
+
+                                                    <c:if test="${empty currentUrl}">
+                                                        <c:set var="currentUrl" value="${pageContext.request.requestURI}" />
+
+                                                        <c:set var="currentQuery" value="${pageContext.request.queryString}" />
+                                                    </c:if>
+
+                                                    <c:if test="${not empty currentQuery}">
+                                                        <c:set var="currentUrl" value="${currentUrl}?${currentQuery}" />
+                                                    </c:if>
 
                                                 </div>
                                             </div>
