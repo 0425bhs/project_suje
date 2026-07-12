@@ -224,7 +224,7 @@ public class ReviewController {
         return "redirect:/myshop/reviews";
     }
 
-    @GetMapping("/review_delete.do")
+    @PostMapping("/review_delete.do")
     public String reviewDelete(int review_id) {
         reviewDAO.deleteReview(review_id);
 

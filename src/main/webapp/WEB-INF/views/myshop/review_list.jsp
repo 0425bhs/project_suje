@@ -138,10 +138,11 @@
                                             수정
                                         </a>
 
-                                        <button type="button"
-                                                onclick="if (confirm('삭제하시겠습니까?')) location.href='/review_delete.do?review_id=${review.review_id}';">
-                                            삭제
-                                        </button>
+                                        <form action="/review_delete.do" method="post" style="display: contents;"
+                                              onsubmit="return confirm('삭제하시겠습니까?');">
+                                            <input type="hidden" name="review_id" value="${review.review_id}">
+                                            <button type="submit">삭제</button>
+                                        </form>
                                     </c:otherwise>
                                 </c:choose>
                             </div>

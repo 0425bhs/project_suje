@@ -8,7 +8,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>문의 작성</title>
+    <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/order-payment.css">
+    <script src="/js/product_main.js" defer></script>
 
     <link rel="stylesheet" href="/css/qna/qna_form.css">
 
@@ -81,23 +83,7 @@
 </head>
 
 <body>
-<header class="site-header">
-    <div class="header-inner">
-        <a class="brand" href="/main.do">HAND<span>MADE</span></a>
-
-        <nav class="main-nav">
-            <a href="/product/main.do">상품보기</a>
-            <a href="/live_review_list.do">후기</a>
-            <a href="/mypage/qna">문의</a>
-            <a href="/notice_list.do">공지사항</a>
-        </nav>
-
-        <div class="header-actions">
-            <a href="/mypage/qna">내 문의</a>
-            <a href="/myshop/orders">주문내역</a>
-        </div>
-    </div>
-</header>
+<jsp:include page="/WEB-INF/views/product/product_header.jsp" />
 
 <main class="page-block soft community-page">
     <div class="block-inner">

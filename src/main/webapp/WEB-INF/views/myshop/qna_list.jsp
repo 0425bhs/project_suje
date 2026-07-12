@@ -129,10 +129,11 @@
                                 수정
                             </a>
 
-                            <button type="button"
-                                    onclick="if (confirm('삭제하시겠습니까?')) location.href='/qna_delete.do?qna_id=${qna.qna_id}';">
-                                삭제
-                            </button>
+                            <form action="/qna_delete.do" method="post" style="display: contents;"
+                                  onsubmit="return confirm('삭제하시겠습니까?');">
+                                <input type="hidden" name="qna_id" value="${qna.qna_id}">
+                                <button type="submit">삭제</button>
+                            </form>
                         </div>
 
                     </article>

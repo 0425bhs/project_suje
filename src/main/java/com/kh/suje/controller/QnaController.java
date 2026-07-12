@@ -78,7 +78,7 @@ public class QnaController {
     return "redirect:/qna_detail.do?qna_id=" + qna.getQna_id();
 }
 
-    @GetMapping("qna_delete.do")
+    @PostMapping("qna_delete.do")
     public String qnaDelete(int qna_id) {
         qnaDAO.deleteQna(qna_id);
 
