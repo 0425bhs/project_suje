@@ -173,7 +173,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         UPDATE qnas
         SET answer = #{answer},
             answered_at = NOW(),
-            status = "answered"
+            status = "ANSWERED"
         WHERE qna_id = #{qna_id}
         AND product_id IN (
             SELECT product_id
