@@ -466,6 +466,16 @@ public class UserController {
     public Map<String, Integer> user_modify(UserVO vo, String ori_photo_name, String del_photo_name, SellerVO svo)
             throws Exception {
 
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
+        if (sessionUser == null) {
+            Map<String, Integer> map = new HashMap<>();
+            map.put("result", 0);
+            return map;
+        }
+
+        vo.setUser_id(sessionUser.getUser_id());
+        vo.setRole(sessionUser.getRole());
+
         if (vo.getPassword() != null && !vo.getPassword().trim().isEmpty()) {
             // 수정에 사용한 비밀번호 암호화
             String securePwd = pwdSecurity.pwdEncoding(vo.getPassword());
@@ -507,9 +517,14 @@ public class UserController {
         vo.setPhoto_name(photo_name);
 
         int res = userDao.userModify(vo);
-        if (vo.getRole().equalsIgnoreCase("SELLER")) {
+        if (sessionUser.getRole().equalsIgnoreCase("SELLER")) {
             svo.setUser_id(vo.getUser_id());
             int sres = sellerDao.sellerModify(svo);
+        }
+
+        if (res == 1) {
+            UserVO updatedUser = userDao.selectUser(sessionUser.getUser_id());
+            session.setAttribute("user", updatedUser);
         }
 
         // 업데이트 후 필요없어진 이미지가 있다면 삭제

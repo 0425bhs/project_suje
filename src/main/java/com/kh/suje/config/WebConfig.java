@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class WebConfig implements WebMvcConfigurer {
 
     private final AdminAuthInterceptor adminAuthInterceptor;
+    private final MyShopAuthInterceptor myShopAuthInterceptor;
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -22,6 +23,19 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(adminAuthInterceptor)
                 .addPathPatterns("/admin/**");
+
+        registry.addInterceptor(myShopAuthInterceptor)
+                .addPathPatterns(
+                        "/myshop",
+                        "/myshop/**",
+                        "/user_modify.do",
+                        "/addressList.do",
+                        "/insertAddress.do",
+                        "/modifyAddress.do",
+                        "/deleteAddress.do",
+                        "/update_seller.do",
+                        "/withdraw.do"
+                );
     }
 
     @Override
