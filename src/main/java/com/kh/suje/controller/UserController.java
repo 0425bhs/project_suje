@@ -454,7 +454,7 @@ public class UserController {
 
         // JSP 화면
         model.addAttribute("dto", dto); // "user" 대신 "dto"로 변경
-        model.addAttribute("activeMenu", "myinfo");
+        model.addAttribute("activeMenu", "user_modify.do");
         model.addAttribute("contentPage", "/user/user_edit");
 
         return "myshop/myshop_main"; // myshop_main을 통해서 열기

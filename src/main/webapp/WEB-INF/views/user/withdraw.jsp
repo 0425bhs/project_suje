@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/user/withdraw.css" />
 <div class="withdraw-container">
     <h2>회원 탈퇴 안내</h2>
     <p class="warning-title">정말 탈퇴하시겠습니까? 탈퇴 전 아래 내용을 반드시 확인해 주세요.</p>

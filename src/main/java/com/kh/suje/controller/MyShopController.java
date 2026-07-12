@@ -120,7 +120,7 @@ public class MyShopController {
 
         model.addAttribute("user", sessionUser);
         model.addAttribute("returnUrl", returnUrl);
-        model.addAttribute("activeMenu", "myshop");
+        model.addAttribute("activeMenu", "addressList.do");
         model.addAttribute("contentPage", "/myshop/address_form");
 
         return "myshop/myshop_main";
@@ -185,7 +185,7 @@ public class MyShopController {
 
         model.addAttribute("user", sessionUser);
         model.addAttribute("list", list);
-        model.addAttribute("activeMenu", "myshop");
+        model.addAttribute("activeMenu", "addressList.do");
         model.addAttribute("contentPage", "/myshop/address_list");
 
         return "myshop/myshop_main";
@@ -207,7 +207,7 @@ public class MyShopController {
         AddressVO vo = addressDao.selectOne(address_id);
 
         model.addAttribute("vo", vo);
-        model.addAttribute("activeMenu", "myshop");
+        model.addAttribute("activeMenu", "addressList.do");
         model.addAttribute("contentPage", "/myshop/address_modiForm");
 
         return "myshop/myshop_main";

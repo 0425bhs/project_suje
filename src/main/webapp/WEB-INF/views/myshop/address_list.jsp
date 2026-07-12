@@ -1,13 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>배송지 관리</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/myshop/address_list.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-    <script>
+<script>
         function modify(f){
             f.action = "/modifyAddress.do";
             f.method = "get";
@@ -20,9 +13,6 @@
             f.submit();
         }
     </script>
-</head>
-
-<body>
 
 
 
@@ -64,6 +54,3 @@
     </div>
 
 </div>
-
-</body>
-</html>

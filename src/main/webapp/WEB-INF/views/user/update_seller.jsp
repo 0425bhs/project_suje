@@ -46,8 +46,6 @@
 </div>
 
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/user/update_seller.css" />
- <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user/user_edit.css" />
 <script src="${pageContext.request.contextPath}/js/user_edit.js"></script>
 
 <script>
@@ -57,4 +55,3 @@
         f.submit();
     }
 </script>
- 
