@@ -328,7 +328,12 @@
                                 <a href="/qna_detail.do?qna_id=${qna.qna_id}">
                                     ${qna.title}
                                 </a>
-                                <span class="status">${qna.status}</span>
+                                <span class="status">
+                                    <c:choose>
+                                        <c:when test="${empty qna.answer}">답변 대기</c:when>
+                                        <c:otherwise>답변 완료</c:otherwise>
+                                    </c:choose>
+                                </span>
                                 <span class="type">${qna.created_at}</span>
                             </p>
                         </c:forEach>
