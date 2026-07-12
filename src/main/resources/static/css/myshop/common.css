@@ -19,7 +19,6 @@ html {
 
 .myshop-sidebar {
     min-width: 0;
-    font-family: "Pretendard", "Malgun Gothic", Arial, sans-serif;
 }
 
 .myshop-side-card {
@@ -37,7 +36,7 @@ html {
     padding: 26px 22px 18px;
     color: #ff6f4f;
     font-size: 21px;
-    font-weight: 900;
+    font-weight: 950;
     text-decoration: none;
 }
 
@@ -131,7 +130,7 @@ html {
     margin-bottom: 14px;
     color: #111;
     font-size: 16px;
-    font-weight: 900;
+    font-weight: 950;
 }
 
 .myshop-side-group a,
@@ -144,7 +143,7 @@ html {
     background: transparent;
     color: #555;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 750;
     text-align: left;
     text-decoration: none;
     cursor: pointer;

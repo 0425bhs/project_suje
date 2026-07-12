@@ -11,7 +11,7 @@
     <title>마이쇼핑 - HANDMADE</title>
 
     <link rel="stylesheet" href="/css/product/product_main.css">
-    <link rel="stylesheet" href="/css/myshop/common.css?v=7">
+    <link rel="stylesheet" href="/css/myshop/common.css?v=8">
     <link rel="stylesheet" href="/css/myshop/card.css?v=1">
 
     <c:if test="${contentPage eq '/myshop/dashboard'}">
