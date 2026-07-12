@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.kh.suje.dao.CartDAO;
 import com.kh.suje.dao.CategoryDAO;
+import com.kh.suje.dao.UserDAO;
 import com.kh.suje.vo.UserVO;
 
 import jakarta.servlet.http.HttpSession;
@@ -17,6 +18,7 @@ public class HeaderControllerAdvice {
 
     private final CategoryDAO categorydao;
     private final CartDAO cartdao;
+    private final UserDAO userDao;
 
     @ModelAttribute("bigCategoryList")
     public Object bigCategoryList(){
@@ -36,6 +38,11 @@ public class HeaderControllerAdvice {
         UserVO user = (UserVO) session.getAttribute("user");
 
         if (user != null) {
+            UserVO latestUser = userDao.selectUser(user.getUser_id());
+            if (latestUser != null) {
+                user = latestUser;
+                session.setAttribute("user", latestUser);
+            }
             cartCount = cartdao.cartCount(user.getUser_id());
         }
 

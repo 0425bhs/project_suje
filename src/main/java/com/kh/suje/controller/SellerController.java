@@ -58,7 +58,7 @@ public class SellerController {
 
         SellerVO seller = sellerdao.selectSeller(user.getUser_id());
 
-        if (seller == null){
+        if (seller == null || !"APPROVED".equalsIgnoreCase(seller.getStatus())){
             return null;
         }
 

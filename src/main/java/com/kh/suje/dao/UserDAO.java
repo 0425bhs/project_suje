@@ -51,6 +51,9 @@ public interface UserDAO {
 
     int updateSeller(int user_id); // 일반=>판매자 신청
 
+    int updateUserRole(@Param("user_id") int user_id,
+                       @Param("role") String role);
+
     int withdraw(int user_id); //회원 탈퇴하기
 
 

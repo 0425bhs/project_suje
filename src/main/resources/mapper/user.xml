@@ -192,6 +192,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     </update>
 
+    <update id="updateUserRole">
+        UPDATE users
+        SET role = #{role}
+        WHERE user_id = #{user_id}
+    </update>
+
 
 <!--회원탈퇴시 아이디와 메일에 withdrawn붙이기(새로가입시 아이디 쓸수있도록)-->
     <update id="withdraw" parameterType="int">

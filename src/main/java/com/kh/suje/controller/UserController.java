@@ -211,6 +211,7 @@ public class UserController {
     @PostMapping("/joinSeller.do")
     public String joinSeller(UserVO vo, SellerVO svo) throws Exception {
 
+        vo.setRole("USER");
         String securePwd = pwdSecurity.pwdEncoding(vo.getPassword());
         vo.setPassword(securePwd);
         String savePath = uploadPath + File.separator;
@@ -596,7 +597,14 @@ public class UserController {
         // 로그인한 사람의 정보 꺼내기
         UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-        if (sessionUser.getRole().equalsIgnoreCase("SELLER")) {
+        SellerVO seller = sellerDao.selectSeller(sessionUser.getUser_id());
+
+        if (seller != null && "PENDING".equalsIgnoreCase(seller.getStatus())) {
+            session.setAttribute("flashMsg", "판매자 승인 대기 중입니다.");
+            return "redirect:/myshop";
+        }
+
+        if (seller != null && "APPROVED".equalsIgnoreCase(seller.getStatus())) {
             session.setAttribute("flashMsg", "이미 판매자입니다.");
             return "redirect:/myshop";
         }
@@ -621,12 +629,19 @@ public class UserController {
 
         user_id = sessionUser.getUser_id();
 
-        userDao.updateSeller(user_id);
         vo.setUser_id(user_id);
-        sellerDao.insertSeller(vo);
 
-        UserVO updatedUser = userDao.selectUser(user_id);
-        session.setAttribute("user", updatedUser);
+        SellerVO savedSeller = sellerDao.selectSeller(user_id);
+        if (savedSeller == null) {
+            sellerDao.insertSeller(vo);
+        } else {
+            sellerDao.sellerModify(vo);
+            sellerDao.updateAdminSellerStatus(savedSeller.getSeller_id(), "PENDING");
+        }
+
+        userDao.updateUserRole(user_id, "USER");
+        session.setAttribute("user", userDao.selectUser(user_id));
+        session.setAttribute("flashMsg", "판매자 신청이 완료되었습니다. 관리자 승인을 기다려 주세요.");
 
         return "redirect:/myshop";
     }

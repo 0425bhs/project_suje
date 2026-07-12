@@ -65,7 +65,9 @@ public class ProductController {
         }
 
         SellerVO seller = sellerdao.selectSeller(user.getUser_id());
-        return seller == null ? null : seller.getSeller_id();
+        return seller == null || !"APPROVED".equalsIgnoreCase(seller.getStatus())
+                ? null
+                : seller.getSeller_id();
     }
 
     // 할인 설정값 정리
@@ -876,7 +878,11 @@ public class ProductController {
 
     
     @GetMapping("/seller_product_insert.do")
-    public String seller_product_insert_form(Model model){
+    public String seller_product_insert_form(Model model, HttpSession session){
+        if (getLoginSellerId(session) == null) {
+            return "redirect:/myshop";
+        }
+
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         return "/seller/seller_product_insert_form";
     }
@@ -905,9 +911,9 @@ public class ProductController {
 
         SellerVO seller = sellerdao.selectSeller(loginUser.getUser_id());
 
-        if (seller == null) {
+        if (seller == null || !"APPROVED".equalsIgnoreCase(seller.getStatus())) {
             map.put("result", 0);
-            map.put("message", "판매자 정보가 없습니다.");
+            map.put("message", "승인된 판매자만 상품을 등록할 수 있습니다.");
             return map;
         }
 
@@ -1280,8 +1286,8 @@ public class ProductController {
 
         SellerVO seller = sellerdao.selectSeller(loginUser.getUser_id());
 
-        if (seller == null) {
-            return "redirect:/login.do";
+        if (seller == null || !"APPROVED".equalsIgnoreCase(seller.getStatus())) {
+            return "redirect:/myshop";
         }
 
         int seller_id = seller.getSeller_id();
