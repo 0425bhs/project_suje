@@ -15,7 +15,6 @@
                             <p>신청한 교환/환불 건의 진행 상태를 확인할 수 있습니다.</p>
                         </div>
 
-                        <a href="/myshop/claim">전체보기</a>
                     </div>
 
                     <c:choose>

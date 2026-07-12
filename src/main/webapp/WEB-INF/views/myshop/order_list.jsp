@@ -50,7 +50,6 @@
             <p>주문한 작품의 결제 상태와 배송 상태를 확인할 수 있습니다.</p>
         </div>
 
-        <a href="/myshop/orders">전체보기</a>
     </div>
 
     <c:choose>
