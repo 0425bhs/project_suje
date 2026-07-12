@@ -349,6 +349,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             image_l = #{image_l},
             updated_at = CURRENT_TIMESTAMP
         WHERE product_id = #{product_id}
+          AND seller_id = #{seller_id}
     </update>
 
     <!-- 승인된 상품 개수 -->
@@ -1352,6 +1353,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         UPDATE products 
         SET status = #{status} 
         WHERE product_id = #{product_id}
+          AND seller_id = #{seller_id}
     </update>
 
     <delete id="seller_product_delete" parameterType="int">

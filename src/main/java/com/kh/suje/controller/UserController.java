@@ -614,6 +614,13 @@ public class UserController {
     @PostMapping("/update_seller.do")
     public String updateSeller(int user_id, SellerVO vo) throws Exception {
 
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
+        if (sessionUser == null) {
+            return "redirect:/login.do";
+        }
+
+        user_id = sessionUser.getUser_id();
+
         userDao.updateSeller(user_id);
         vo.setUser_id(user_id);
         sellerDao.insertSeller(vo);

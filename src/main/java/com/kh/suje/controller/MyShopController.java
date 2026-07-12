@@ -195,6 +195,13 @@ public class MyShopController {
     @PostMapping("/deleteAddress.do")
     private String deleteAddress(int address_id){
 
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
+        AddressVO address = addressDao.selectOne(address_id);
+
+        if (sessionUser == null || address == null || address.getUser_id() != sessionUser.getUser_id()) {
+            return "redirect:/addressList.do";
+        }
+
         int res = addressDao.deleteAddress(address_id);
 
         return "redirect:/addressList.do";
@@ -204,7 +211,12 @@ public class MyShopController {
     @GetMapping("/modifyAddress.do")
     private String modifyAddress(Model model, int address_id){
 
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
         AddressVO vo = addressDao.selectOne(address_id);
+
+        if (sessionUser == null || vo == null || vo.getUser_id() != sessionUser.getUser_id()) {
+            return "redirect:/addressList.do";
+        }
 
         model.addAttribute("vo", vo);
         model.addAttribute("activeMenu", "addressList.do");

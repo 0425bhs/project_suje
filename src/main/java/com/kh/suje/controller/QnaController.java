@@ -60,15 +60,28 @@ public class QnaController {
     }
 
     @GetMapping("qna_update_form.do")
-    public String qnaUpdateForm(Model model, int qna_id) {
+    public String qnaUpdateForm(Model model, int qna_id, HttpSession session) {
+        UserVO user = (UserVO) session.getAttribute("user");
         QnaVO qna = qnaDAO.getQnaById(qna_id);
+
+        if (user == null || qna == null || qna.getUser_id() != user.getUser_id()) {
+            return "redirect:/myshop/qnas";
+        }
         model.addAttribute("qna", qna);
 
         return "/qna/qna_update_form";
     }
 
     @PostMapping("qna_update_form.do")
-    public String qnaUpdateFormFin(QnaVO qna) {
+    public String qnaUpdateFormFin(QnaVO qna, HttpSession session) {
+        UserVO user = (UserVO) session.getAttribute("user");
+        QnaVO savedQna = qnaDAO.getQnaById(qna.getQna_id());
+
+        if (user == null || savedQna == null || savedQna.getUser_id() != user.getUser_id()) {
+            return "redirect:/myshop/qnas";
+        }
+
+        qna.setUser_id(user.getUser_id());
         if (qna.getQna_type() == null || qna.getQna_type().trim().isEmpty()) {
             qna.setQna_type("PRODUCT");
         }
@@ -79,7 +92,14 @@ public class QnaController {
 }
 
     @PostMapping("qna_delete.do")
-    public String qnaDelete(int qna_id) {
+    public String qnaDelete(int qna_id, HttpSession session) {
+        UserVO user = (UserVO) session.getAttribute("user");
+        QnaVO qna = qnaDAO.getQnaById(qna_id);
+
+        if (user == null || qna == null || qna.getUser_id() != user.getUser_id()) {
+            return "redirect:/myshop/qnas";
+        }
+
         qnaDAO.deleteQna(qna_id);
 
         return "redirect:/myshop/qnas";
@@ -124,8 +144,18 @@ public class QnaController {
     }
 
     @GetMapping("qna_detail.do")
-    public String qnaDetail(Model model, int qna_id) {
+    public String qnaDetail(Model model, int qna_id, HttpSession session) {
         QnaVO qna = qnaDAO.getQnaById(qna_id);
+
+        if (qna == null) {
+            return "redirect:/myshop/qnas";
+        }
+
+        UserVO user = (UserVO) session.getAttribute("user");
+        if (qna.getIs_private() == 1 && (user == null || qna.getUser_id() != user.getUser_id())) {
+            return "redirect:/product_detail.do?product_id=" + qna.getProduct_id();
+        }
+
         model.addAttribute("qna", qna);
 
         return "/qna/qna_detail";

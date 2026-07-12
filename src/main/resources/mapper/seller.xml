@@ -609,6 +609,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         AND status IN ('RETURN_REQUEST', 'EXCHANGE_REQUEST')
     </update>
 
+    <select id="ownsOrderItem" resultType="int">
+        SELECT COUNT(*)
+        FROM order_items oi
+        JOIN products p ON p.product_id = oi.product_id
+        WHERE oi.order_item_id = #{order_item_id}
+          AND p.seller_id = #{seller_id}
+    </select>
+
+    <select id="ownsClaim" resultType="int">
+        SELECT COUNT(*)
+        FROM order_item_claims c
+        JOIN order_items oi ON oi.order_item_id = c.order_item_id
+        JOIN products p ON p.product_id = oi.product_id
+        WHERE c.claim_id = #{claim_id}
+          AND p.seller_id = #{seller_id}
+    </select>
+
     <insert id="insertSellerDirectClaimDone">
         INSERT INTO order_item_claims (
             order_item_id,

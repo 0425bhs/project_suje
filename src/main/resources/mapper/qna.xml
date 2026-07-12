@@ -34,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         UPDATE qnas
         SET qna_type = #{qna_type},is_private = #{is_private},title = #{title}, content = #{content}
         WHERE qna_id = #{qna_id}
+          AND user_id = #{user_id}
     </update>
 
     <delete id="deleteQna"
