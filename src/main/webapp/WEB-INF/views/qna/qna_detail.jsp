@@ -461,12 +461,14 @@
                 <span>문의 상품</span>
 
                 <div class="side-actions">
-                    <button type="button" class="btn primary full" onclick="location.href='qna_update_form.do?qna_id=${qna.qna_id}'">수정</button>
-                    <form action="/qna_delete.do" method="post" style="display: contents;"
-                          onsubmit="return confirm('삭제하시겠습니까?');">
-                        <input type="hidden" name="qna_id" value="${qna.qna_id}">
-                        <button type="submit" class="btn dark full">삭제</button>
-                    </form>
+                    <c:if test="${not empty sessionScope.user and sessionScope.user.user_id eq qna.user_id}">
+                        <button type="button" class="btn primary full" onclick="location.href='qna_update_form.do?qna_id=${qna.qna_id}'">수정</button>
+                        <form action="/qna_delete.do" method="post" style="display: contents;"
+                              onsubmit="return confirm('삭제하시겠습니까?');">
+                            <input type="hidden" name="qna_id" value="${qna.qna_id}">
+                            <button type="submit" class="btn dark full">삭제</button>
+                        </form>
+                    </c:if>
                     <button type="button" class="btn report full" onclick="openReportModal()">문의 신고</button>
                     <button type="button" class="btn light full" onclick="history.back()">이전 화면</button>
                 </div>
