@@ -245,6 +245,187 @@
     font-weight: 500;
 }
 
+.dashboard-writable-reviews {
+    padding: 22px 24px;
+}
+
+.dashboard-review-list .dashboard-review-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 88px;
+    gap: 14px;
+    padding: 14px 0;
+}
+
+.dashboard-review-product {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.compact-prod-list .dashboard-review-thumb {
+    flex: 0 0 58px;
+    width: 58px;
+    height: 58px;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid #f0e4dc;
+    border-radius: 11px;
+    background: #fafafa;
+}
+
+.compact-prod-list .dashboard-review-thumb img {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.dashboard-review-product:hover .dashboard-review-thumb img {
+    transform: scale(1.05);
+}
+
+.compact-prod-list .dashboard-review-info {
+    min-width: 0;
+    margin: 0;
+}
+
+.dashboard-review-info strong,
+.dashboard-review-info small,
+.dashboard-review-info em {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-review-info strong {
+    color: #29231f;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.dashboard-review-info small {
+    margin-top: 4px;
+    color: #8b817b;
+    font-size: 11px;
+}
+
+.dashboard-review-info em {
+    margin-top: 5px;
+    color: #ff6f4f;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.dashboard-review-btn {
+    align-self: center;
+    height: 38px;
+    padding: 0 13px;
+    border: 1px solid #ff6f4f;
+    border-radius: 9px;
+    background: #ff6f4f;
+    color: #fff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.14s ease, border-color 0.14s ease,
+                transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.dashboard-review-btn:hover {
+    border-color: #f05c3d;
+    background: #f05c3d;
+    box-shadow: 0 4px 10px rgba(240, 92, 61, 0.2);
+    transform: translateY(-1px);
+}
+
+.dashboard-review-btn:focus-visible {
+    outline: 3px solid rgba(255, 111, 79, 0.25);
+    outline-offset: 2px;
+}
+
+.dashboard-empty-state {
+    padding: 26px 16px 22px;
+    border: 1px dashed #ead8cf;
+    border-radius: 12px;
+    background: #fffaf7;
+    text-align: center;
+}
+
+.dashboard-empty-icon {
+    width: 34px;
+    height: 34px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #ffe9e1;
+    color: #ff6f4f;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.dashboard-empty-state strong {
+    display: block;
+    color: #403832;
+    font-size: 14px;
+}
+
+.dashboard-empty-state p {
+    margin: 6px 0 0;
+    color: #918780;
+    font-size: 12px;
+}
+
+.dashboard-recent-empty,
+.dashboard-qna-empty {
+    padding-top: 22px;
+    padding-bottom: 20px;
+}
+
+.dashboard-order-empty {
+    padding: 54px 24px;
+}
+
+.dashboard-empty-action {
+    height: 38px;
+    margin-top: 18px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ff6f4f;
+    border-radius: 9px;
+    background: #ff6f4f;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+    transition: background-color 0.14s ease, border-color 0.14s ease,
+                transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.dashboard-empty-action:hover {
+    border-color: #f05c3d;
+    background: #f05c3d;
+    box-shadow: 0 4px 10px rgba(240, 92, 61, 0.2);
+    transform: translateY(-1px);
+}
+
+.dashboard-empty-action:focus-visible {
+    outline: 3px solid rgba(255, 111, 79, 0.25);
+    outline-offset: 2px;
+}
+
 .compact-prod-list .info .action {
     color: #ff6f4f;
     font-size: 12px;
@@ -405,5 +586,19 @@
         flex-direction: row;
         justify-content: flex-start;
     }
+
+    .dashboard-writable-reviews {
+        padding: 20px;
+    }
 }
 
+@media (max-width: 480px) {
+    .dashboard-review-list .dashboard-review-item {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .dashboard-review-btn {
+        width: 100%;
+    }
+}

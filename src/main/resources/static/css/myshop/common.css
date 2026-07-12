@@ -29,11 +29,91 @@
 
 .myshop-side-home {
     display: block;
-    padding: 28px 22px;
+    padding: 26px 22px 18px;
     color: #ff6f4f;
     font-size: 21px;
     font-weight: 950;
     text-decoration: none;
+}
+
+.myshop-side-profile {
+    margin: 0 16px 18px;
+    padding: 14px 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 12px;
+    background: #faf8f6;
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.myshop-side-profile:hover {
+    background: #fff1eb;
+    transform: translateY(-1px);
+}
+
+.myshop-side-profile:focus-visible {
+    outline: 3px solid rgba(255, 111, 79, 0.25);
+    outline-offset: 2px;
+}
+
+.myshop-side-profile-avatar {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #f2e9e4;
+}
+
+.myshop-side-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.myshop-side-profile-avatar svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: #ff6f4f;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.myshop-side-profile-info {
+    min-width: 0;
+}
+
+.myshop-side-profile-info > strong,
+.myshop-side-profile-info > span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.myshop-side-profile-info > strong {
+    color: #27221f;
+    font-size: 14px;
+    font-weight: 900;
+    transition: color 0.15s ease;
+}
+
+.myshop-side-profile:hover .myshop-side-profile-info > strong {
+    color: #ff6f4f;
+}
+
+.myshop-side-profile-info > span {
+    max-width: 138px;
+    margin-top: 4px;
+    color: #8b817b;
+    font-size: 11px;
 }
 
 .myshop-side-group {

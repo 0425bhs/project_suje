@@ -3,12 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<!-- 회원 요약 카드 -->
-<jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
-    <jsp:param name="label" value="MY SHOP" />
-    <jsp:param name="count" value="${totalCount}" />
-</jsp:include>
-
 <!-- 종합 현황 카드 영역 -->
 <section class="myshop-quick-card dashboard-status-cards">
     
@@ -67,8 +61,13 @@
 
             <c:choose>
                 <c:when test="${empty orderList}">
-                    <div class="myshop-empty-order">
-                        최근 주문 내역이 없습니다.
+                    <div class="dashboard-empty-state dashboard-order-empty">
+                        <span class="dashboard-empty-icon" aria-hidden="true">⌑</span>
+                        <strong>최근 주문 내역이 없어요</strong>
+                        <p>마음에 드는 상품을 주문하면 이곳에서 배송 현황을 확인할 수 있어요.</p>
+                        <a href="/all_list.do?sort=new" class="dashboard-empty-action">
+                            상품 둘러보기
+                        </a>
                     </div>
                 </c:when>
 
@@ -165,14 +164,6 @@
                                                 </a>
                                             </c:if>
 
-                                            <c:if test="${order.status eq 'DELIVERED' and not empty mainItem}">
-                                                <button type="button"
-                                                        class="review"
-                                                        onclick="location.href='/review_form.do?order_item_id=${mainItem.order_item_id}'">
-                                                    리뷰쓰기
-                                                </button>
-                                            </c:if>
-
                                             <c:if test="${itemCount eq 1 and not empty mainItem}">
                                                 <button type="button"
                                                         class="qna"
@@ -233,70 +224,117 @@
                 <h3>최근 본 상품</h3>
                 <a href="/myshop/recent" class="view-all-btn">더보기 &gt;</a>
             </div>
-            <div class="recent-prod-grid">
-                <c:forEach var="product" items="${productRecentList}" varStatus="status">
-                    <c:if test="${status.index lt 5}">
-                        <a href="/product_detail.do?product_id=${product.product_id}">
-                            <div class="prod-item">
-                                <c:choose>
-                                    <c:when test="${not empty product.image_l and product.image_l ne 'no_file'}">
-                                        <img src="/upload/${product.image_l}" alt="${product.name}">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <img src="/images/no_image.png" alt="이미지 없음">
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                        </a>
-                    </c:if>
-                </c:forEach>
-            </div>
+            <c:choose>
+                <c:when test="${empty productRecentList}">
+                    <div class="dashboard-empty-state dashboard-recent-empty">
+                        <span class="dashboard-empty-icon" aria-hidden="true">♡</span>
+                        <strong>최근 본 상품이 없어요</strong>
+                        <p>관심 있는 상품을 둘러보면 여기에 표시됩니다.</p>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="recent-prod-grid">
+                        <c:forEach var="product" items="${productRecentList}" varStatus="status">
+                            <c:if test="${status.index lt 5}">
+                                <a href="/product_detail.do?product_id=${product.product_id}">
+                                    <div class="prod-item">
+                                        <c:choose>
+                                            <c:when test="${not empty product.image_l and product.image_l ne 'no_file'}">
+                                                <img src="/upload/${product.image_l}" alt="${product.name}">
+                                            </c:when>
+                                            <c:otherwise>
+                                                <img src="/images/no_image.png" alt="이미지 없음">
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </a>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </section>
 
         <%-- 2. 작성 가능한 리뷰 (워딩 변경) --%>
-        <section class="dashboard-section">
+        <section class="dashboard-section dashboard-writable-reviews">
             <div class="dashboard-section-head">
-                <h3>작성 가능한 리뷰</h3>
-                <a href="/mypage/review" class="view-all-btn">더보기 &gt;</a>
+                <h3>작성 가능한 리뷰 <span>${writableReviewCount}</span></h3>
+                <a href="/myshop/reviews?tab=writable" class="view-all-btn">전체보기 &gt;</a>
             </div>
-            <ul class="compact-prod-list">
-                <c:forEach var="review" items="${writableReviews}">
-                <li>
-                    <img src="/upload/${review.image_l}" alt="">
-                    <div class="info">
-                        <span>${review.product_name}</span>
-                        <button type="button"
-                                class="review"
-                                onclick="location.href='/review_form.do?order_item_id=${review.order_item_id}'">
-                            리뷰쓰기
-                        </button>
-                        <!-- <div>리뷰 쓰고 100원 받기</div> -->
+            <c:choose>
+                <c:when test="${empty writableReviews}">
+                    <div class="dashboard-empty-state dashboard-review-empty">
+                        <span class="dashboard-empty-icon" aria-hidden="true">✓</span>
+                        <strong>작성할 리뷰가 없어요</strong>
+                        <p>배송이 완료되면 이곳에서 리뷰를 작성할 수 있어요.</p>
                     </div>
-                </li>
-                </c:forEach>
-                
-            </ul>
+                </c:when>
+                <c:otherwise>
+                    <ul class="compact-prod-list dashboard-review-list">
+                        <c:forEach var="review" items="${writableReviews}" varStatus="status">
+                            <c:if test="${status.index lt 3}">
+                                <li class="dashboard-review-item">
+                                    <a href="/product_detail.do?product_id=${review.product_id}"
+                                       class="dashboard-review-product">
+                                        <span class="dashboard-review-thumb">
+                                            <c:choose>
+                                                <c:when test="${not empty review.image_l and review.image_l ne 'no_file'}">
+                                                    <img src="/upload/${review.image_l}" alt="${review.product_name}">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <img src="/images/no_image.png" alt="이미지 없음">
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </span>
+                                        <span class="dashboard-review-info">
+                                            <strong>${review.product_name}</strong>
+                                            <c:if test="${not empty review.option_name}">
+                                                <small>${review.option_name}</small>
+                                            </c:if>
+                                            <em>배송 완료 · 리뷰 작성 가능</em>
+                                        </span>
+                                    </a>
+                                    <button type="button"
+                                            class="dashboard-review-btn"
+                                            onclick="location.href='/review_form.do?order_item_id=${review.order_item_id}'">
+                                        리뷰쓰기
+                                    </button>
+                                </li>
+                            </c:if>
+                        </c:forEach>
+                    </ul>
+                </c:otherwise>
+            </c:choose>
         </section>
 
         <%-- 3. 최근 내 문의 --%>
         <section class="dashboard-section">
             <div class="dashboard-section-head">
                 <h3>최근 내 문의</h3>
-                <a href="/mypage/qna" class="view-all-btn">더보기 &gt;</a>
+                <a href="/myshop/qnas" class="view-all-btn">전체보기 &gt;</a>
             </div>
-            <div class="compact-inquiry">
-                <c:forEach var="qna" items="${qnaList}">
-                <p>
-                    <a href="/qna_detail.do?qna_id=${qna.qna_id}">
-                        ${qna.title}
-                    </a>
-                    <span class="status">${qna.status}</span>
-                    <span class="type">${qna.created_at}</span>
-                </p>
-
-                </c:forEach>
-
-            </div>
+            <c:choose>
+                <c:when test="${empty qnaList}">
+                    <div class="dashboard-empty-state dashboard-qna-empty">
+                        <span class="dashboard-empty-icon" aria-hidden="true">?</span>
+                        <strong>최근 문의 내역이 없어요</strong>
+                        <p>상품에 궁금한 점이 생기면 문의를 남겨보세요.</p>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="compact-inquiry">
+                        <c:forEach var="qna" items="${qnaList}">
+                            <p>
+                                <a href="/qna_detail.do?qna_id=${qna.qna_id}">
+                                    ${qna.title}
+                                </a>
+                                <span class="status">${qna.status}</span>
+                                <span class="type">${qna.created_at}</span>
+                            </p>
+                        </c:forEach>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </section>
 
     </aside>
