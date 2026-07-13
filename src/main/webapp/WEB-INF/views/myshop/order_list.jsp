@@ -705,9 +705,9 @@
     </div>
 </div>
 
-<footer class="site-footer">
+<!-- <footer class="site-footer">
     <div class="footer-inner">
         <strong>HANDMADE</strong>
         <p>주문한 상품의 결제 상태와 배송 상태를 확인할 수 있습니다.</p>
     </div>
-</footer>
+</footer> -->
