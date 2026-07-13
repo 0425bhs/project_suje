@@ -985,7 +985,7 @@
                 <div class="cs-form-row">
                     <label for="sellerDirectSellerAnswer">판매자 처리 안내</label>
 
-                    <textarea id="sellerDirectSellerAnswer" name="seller_answer" placeholder="구매자에게 보여줄 처리 안내를 입력해주세요."></textarea>
+                    <textarea id="sellerDirectSellerAnswer" name="seller_answer" placeholder="처리 안내를 입력해주세요."></textarea>
                 </div>
 
                 <div class="seller-claim-guide-box">
@@ -1080,7 +1080,7 @@
                     <label for="buyerRequestSellerAnswer">판매자 처리 안내</label>
                     <textarea id="buyerRequestSellerAnswer"
                               name="seller_answer"
-                              placeholder="구매자에게 보여줄 처리 안내를 입력해주세요."></textarea>
+                              placeholder="처리 안내를 입력해주세요."></textarea>
                 </div>
 
                 <div class="seller-claim-guide-box">
