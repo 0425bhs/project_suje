@@ -62,11 +62,10 @@ qr코드로 로그인
             </svg>
         </button>
         <button type="button" class="btn-naver" onclick="naverLogin()" title="네이버">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M16.47 2H22v12.35L7.53 22H2v-12.35L16.47 2zM2 2h5.53l6.06 8.52V2H19.1v14.33l-6.06-8.52V22H2V2z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+                <path d="M16.273 12.845 7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727z"/>
             </svg>
         </button>
-        
     </div>
 </div>
 <script src="${pageContext.request.contextPath}/js/login.js"></script>
