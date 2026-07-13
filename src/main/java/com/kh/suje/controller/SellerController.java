@@ -58,7 +58,7 @@ public class SellerController {
 
         SellerVO seller = sellerdao.selectSeller(user.getUser_id());
 
-        if (seller == null){
+        if (seller == null || !"APPROVED".equalsIgnoreCase(seller.getStatus())){
             return null;
         }
 
@@ -479,6 +479,14 @@ public class SellerController {
             @RequestParam(value = "seller_answer", required = false) String seller_answer,
             @RequestParam(value = "selectedStatus", required = false) String selectedStatus) {
 
+        Integer seller_id = getLoginSellerId();
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
+        if (sellerdao.ownsOrderItem(seller_id, order_item_id) == 0) {
+            return "redirect:/seller_order_list.do";
+        }
+
         sellerdao.insertSellerDirectClaimDone(
                 order_item_id,
                 status,
@@ -505,6 +513,10 @@ public class SellerController {
 
         if (seller_id == null) {
             return "redirect:/login.do";
+        }
+
+        if (sellerdao.ownsClaim(seller_id, claim_id) == 0) {
+            return "redirect:/seller_order_list.do?status=RETURN_EXCHANGE";
         }
 
         if (!"RETURN_DONE".equals(status)

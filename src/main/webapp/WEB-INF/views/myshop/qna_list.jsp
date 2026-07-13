@@ -1,12 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<!-- 회원 요약 카드 -->
-<jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
-    <jsp:param name="label" value="MY QNA" />
-    <jsp:param name="count" value="${totalCount}" />
-</jsp:include>
-
 <!-- 빠른 메뉴 -->
 <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
@@ -135,10 +129,11 @@
                                 수정
                             </a>
 
-                            <button type="button"
-                                    onclick="if (confirm('삭제하시겠습니까?')) location.href='/qna_delete.do?qna_id=${qna.qna_id}';">
-                                삭제
-                            </button>
+                            <form action="/qna_delete.do" method="post" style="display: contents;"
+                                  onsubmit="return confirm('삭제하시겠습니까?');">
+                                <input type="hidden" name="qna_id" value="${qna.qna_id}">
+                                <button type="submit">삭제</button>
+                            </form>
                         </div>
 
                     </article>

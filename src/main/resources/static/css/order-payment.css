@@ -30,11 +30,6 @@ select {
    Header 영역
 ========================================================= */
 
-.site-header {
-    border-bottom: 1px solid #f0e5dc;
-    background: #fff;
-}
-
 .header-inner {
     max-width: 1280px;
     height: 74px;

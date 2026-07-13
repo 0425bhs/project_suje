@@ -237,6 +237,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SET content = #{content},
             rating = #{rating}
         WHERE review_id = #{review_id}
+          AND user_id = #{user_id}
     </update>
 
     <update id="updateReviewStatus">

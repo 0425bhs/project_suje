@@ -25,6 +25,7 @@ import com.kh.suje.vo.ImageVO;
 import com.kh.suje.vo.ProductVO;
 import com.kh.suje.vo.ReviewVO;
 import com.kh.suje.vo.UserVO;
+import com.kh.suje.vo.order.OrderItemVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -41,9 +42,23 @@ public class ReviewController {
     private String savePath;
 
     @GetMapping("/review_form.do")
-    public String reviewForm(Model model, int order_item_id) {
+    public String reviewForm(Model model, int order_item_id, HttpSession session) {
 
-        Integer product_id = orderDAO.getProductId(order_item_id);
+        UserVO user = (UserVO) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login.do";
+        }
+
+        Map<String, Object> itemMap = new java.util.HashMap<>();
+        itemMap.put("order_item_id", order_item_id);
+        itemMap.put("user_id", user.getUser_id());
+        OrderItemVO orderItem = orderDAO.selectOrderItemById(itemMap);
+
+        if (orderItem == null) {
+            return "redirect:/myshop/reviews?tab=writable";
+        }
+
+        Integer product_id = orderItem.getProduct_id();
         ProductVO product = productDAO.product_one(product_id);
 
         model.addAttribute("product", product);
@@ -64,7 +79,16 @@ public class ReviewController {
         }
 
         int user_id = user.getUser_id();
-        Integer product_id = orderDAO.getProductId(order_item_id);
+        Map<String, Object> itemMap = new java.util.HashMap<>();
+        itemMap.put("order_item_id", order_item_id);
+        itemMap.put("user_id", user_id);
+        OrderItemVO orderItem = orderDAO.selectOrderItemById(itemMap);
+
+        if (orderItem == null) {
+            return "redirect:/myshop/reviews?tab=writable";
+        }
+
+        Integer product_id = orderItem.getProduct_id();
 
         review.setUser_id(user_id);
         review.setOrder_item_id(order_item_id);
@@ -206,8 +230,13 @@ public class ReviewController {
     }
 
     @GetMapping("/review_update_form.do")
-    public String reviewUpdateForm(Model model, int review_id) {
+    public String reviewUpdateForm(Model model, int review_id, HttpSession session) {
+        UserVO user = (UserVO) session.getAttribute("user");
         ReviewVO review = reviewDAO.getReviewById(review_id);
+
+        if (user == null || review == null || review.getUser_id() != user.getUser_id()) {
+            return "redirect:/myshop/reviews";
+        }
 
         List<ImageVO> images = imageDAO.getImagesByReviewId(review.getReview_id());
         review.setImageList(images);
@@ -218,14 +247,29 @@ public class ReviewController {
     }
 
     @PostMapping("/review_update_form.do")
-    public String reviewUpdateFormFin(ReviewVO review) {
+    public String reviewUpdateFormFin(ReviewVO review, HttpSession session) {
+        UserVO user = (UserVO) session.getAttribute("user");
+        ReviewVO savedReview = reviewDAO.getReviewById(review.getReview_id());
+
+        if (user == null || savedReview == null || savedReview.getUser_id() != user.getUser_id()) {
+            return "redirect:/myshop/reviews";
+        }
+
+        review.setUser_id(user.getUser_id());
         reviewDAO.updateReview(review);
 
         return "redirect:/myshop/reviews";
     }
 
-    @GetMapping("/review_delete.do")
-    public String reviewDelete(int review_id) {
+    @PostMapping("/review_delete.do")
+    public String reviewDelete(int review_id, HttpSession session) {
+        UserVO user = (UserVO) session.getAttribute("user");
+        ReviewVO review = reviewDAO.getReviewById(review_id);
+
+        if (user == null || review == null || review.getUser_id() != user.getUser_id()) {
+            return "redirect:/myshop/reviews";
+        }
+
         reviewDAO.deleteReview(review_id);
 
         return "redirect:/myshop/reviews";

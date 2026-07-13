@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -141,6 +142,7 @@ public class AdminController {
 
     @PostMapping("/admin/sellers/status")
     @ResponseBody
+    @Transactional
     public Map<String, Object> updateSellerStatus(int seller_id, String status, String memo) {
 
         Map<String, Object> map = new HashMap<>();
@@ -152,9 +154,22 @@ public class AdminController {
         }
 
         SellerVO seller = sellerDao.getSellerById(seller_id);
+        if (seller == null) {
+            map.put("success", false);
+            map.put("message", "판매자 정보를 찾을 수 없습니다.");
+            return map;
+        }
+
         String beforeStatus = seller == null ? null : seller.getStatus();
 
-        sellerDao.updateAdminSellerStatus(seller_id, status);
+        int sellerResult = sellerDao.updateAdminSellerStatus(seller_id, status);
+        String userRole = "APPROVED".equals(status) ? "SELLER" : "USER";
+        int userResult = userDao.updateUserRole(seller.getUser_id(), userRole);
+
+        if (sellerResult == 0 || userResult == 0) {
+            throw new IllegalStateException("판매자 승인 상태와 회원 역할 변경에 실패했습니다.");
+        }
+
         addActionLog("SELLER", seller_id, "STATUS_CHANGE", beforeStatus, status, cleanMemo(memo, "판매자 상태 변경"));
 
         map.put("success", true);

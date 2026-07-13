@@ -7,7 +7,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>문의 상세</title>
+    <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/order-payment.css">
+    <script src="/js/product_main.js" defer></script>
 
     <style>
         .community-page {
@@ -309,14 +311,6 @@
     </style>
 
     <script>
-        function del(qna_id) {
-            if (!confirm("삭제하시겠습니까?")) {
-                return;
-            }
-
-            location.href = "qna_delete.do?qna_id=" + qna_id;
-        }
-
         function openReportModal() {
             const modal = document.getElementById("reportModal");
             if (modal == null) {
@@ -369,23 +363,7 @@
 </head>
 
 <body>
-<header class="site-header">
-    <div class="header-inner">
-        <a class="brand" href="/main.do">HAND<span>MADE</span></a>
-
-        <nav class="main-nav">
-            <a href="/product/main.do">상품보기</a>
-            <a href="/live_review_list.do">후기</a>
-            <a href="/mypage/qna">문의</a>
-            <a href="/notice_list.do">공지사항</a>
-        </nav>
-
-        <div class="header-actions">
-            <a href="/mypage/qna">내 문의</a>
-            <a href="/myshop/orders">주문내역</a>
-        </div>
-    </div>
-</header>
+<jsp:include page="/WEB-INF/views/product/product_header.jsp" />
 
 <main class="page-block soft community-page">
     <div class="block-inner">
@@ -483,8 +461,14 @@
                 <span>문의 상품</span>
 
                 <div class="side-actions">
-                    <button type="button" class="btn primary full" onclick="location.href='qna_update_form.do?qna_id=${qna.qna_id}'">수정</button>
-                    <button type="button" class="btn dark full" onclick="del('${qna.qna_id}')">삭제</button>
+                    <c:if test="${not empty sessionScope.user and sessionScope.user.user_id eq qna.user_id}">
+                        <button type="button" class="btn primary full" onclick="location.href='qna_update_form.do?qna_id=${qna.qna_id}'">수정</button>
+                        <form action="/qna_delete.do" method="post" style="display: contents;"
+                              onsubmit="return confirm('삭제하시겠습니까?');">
+                            <input type="hidden" name="qna_id" value="${qna.qna_id}">
+                            <button type="submit" class="btn dark full">삭제</button>
+                        </form>
+                    </c:if>
                     <button type="button" class="btn report full" onclick="openReportModal()">문의 신고</button>
                     <button type="button" class="btn light full" onclick="history.back()">이전 화면</button>
                 </div>

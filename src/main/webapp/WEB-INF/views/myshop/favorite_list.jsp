@@ -5,12 +5,6 @@
 
 <c:set var="tab" value="${empty selectedTab ? 'all' : selectedTab}" />
 
-<!-- 회원 요약 카드 -->
-<jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
-    <jsp:param name="label" value="MY FAVORITE" />
-    <jsp:param name="count" value="${totalCount}" />
-</jsp:include>
-
 <!-- 빠른 메뉴 -->
 <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 

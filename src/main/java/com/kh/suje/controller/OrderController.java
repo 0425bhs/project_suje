@@ -744,6 +744,9 @@ public class OrderController {
         }
 
         OrderVO order = orderDAO.selectOrderById(order_id);
+        if (order == null || order.getUser_id() != loginUser.getUser_id()) {
+            return "redirect:/myshop/orders";
+        }
         List<OrderItemVO> orderItemList = orderDAO.selectOrderItemList(order_id);
         PaymentVO payment = paymentDAO.selectPaymentByOrderId(order_id);
 
@@ -768,6 +771,9 @@ public class OrderController {
         }
 
         OrderVO order = orderDAO.selectOrderById(order_id);
+        if (order == null || order.getUser_id() != loginUser.getUser_id()) {
+            return "redirect:/myshop/orders";
+        }
         List<OrderItemVO> orderItemList = orderDAO.selectOrderItemList(order_id);
         PaymentVO payment = paymentDAO.selectPaymentByOrderId(order_id);
 
@@ -792,6 +798,9 @@ public class OrderController {
         }
 
         OrderVO order = orderDAO.selectOrderById(order_id);
+        if (order == null || order.getUser_id() != loginUser.getUser_id()) {
+            return "redirect:/myshop/orders";
+        }
 
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("order", order);
@@ -812,7 +821,7 @@ public class OrderController {
 
         OrderVO order = orderDAO.selectOrderById(order_id);
 
-        if (order == null) {
+        if (order == null || order.getUser_id() != loginUser.getUser_id()) {
             return "redirect:/myshop/orders";
         }
 
@@ -1023,11 +1032,24 @@ public String orderCartForm(
     @ResponseBody
     public Map<String, Object> exchangeRequest( HttpSession session, OrderItemClaimVO orderitemclaim, Model model ) 
     {
-        //int order_item_id = orderDAO.getOrder_item_id();
+        Map<String, Object> map = new HashMap<>();
+        UserVO loginUser = getLoginUser(session);
+
+        if (loginUser == null) {
+            map.put("result", "login");
+            return map;
+        }
+
+        Map<String, Object> itemMap = new HashMap<>();
+        itemMap.put("order_item_id", orderitemclaim.getOrder_item_id());
+        itemMap.put("user_id", loginUser.getUser_id());
+
+        if (orderDAO.selectOrderItemById(itemMap) == null) {
+            map.put("result", "fail");
+            return map;
+        }
 
         int res = orderItemClaimDao.insertClaim(orderitemclaim);
-
-        Map<String, Object> map = new HashMap<>();
 
         if(res == 1){
             if("EXCHANGE_REQUEST".equals(orderitemclaim.getStatus())){

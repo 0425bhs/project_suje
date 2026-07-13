@@ -9,15 +9,6 @@
     <title>공지사항 상세</title>
     <link rel="stylesheet" href="/css/product/product_main.css">
     <link rel="stylesheet" href="/css/notice/notice.css">
-    <script>
-        function del(notice_id) {
-            if (!confirm("삭제하시겠습니까?")) {
-                return;
-            }
-
-            location.href = "notice_delete.do?notice_id=" + notice_id;
-        }
-    </script>
 </head>
 
 <body>
@@ -56,7 +47,11 @@
                 <a class="notice-btn" href="/notice_list.do">목록으로</a>
                 <c:if test="${not empty sessionScope.user and sessionScope.user.role eq 'ADMIN'}">
                     <button type="button" class="notice-btn primary" onclick="location.href='notice_update_form.do?notice_id=${notice.notice_id}'">수정</button>
-                    <button type="button" class="notice-btn dark" onclick="del('${notice.notice_id}')">삭제</button>
+                    <form action="/notice_delete.do" method="post" style="display: contents;"
+                          onsubmit="return confirm('삭제하시겠습니까?');">
+                        <input type="hidden" name="notice_id" value="${notice.notice_id}">
+                        <button type="submit" class="notice-btn dark">삭제</button>
+                    </form>
                 </c:if>
             </div>
         </article>

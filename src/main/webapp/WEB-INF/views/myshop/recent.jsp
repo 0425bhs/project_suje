@@ -3,11 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
-    <jsp:param name="label" value="RECENT VIEW" />
-    <jsp:param name="count" value="${fn:length(recentList)}" />
-</jsp:include>
-
 <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
 <section class="myshop-recent-section">

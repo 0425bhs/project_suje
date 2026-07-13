@@ -211,6 +211,7 @@ public class UserController {
     @PostMapping("/joinSeller.do")
     public String joinSeller(UserVO vo, SellerVO svo) throws Exception {
 
+        vo.setRole("USER");
         String securePwd = pwdSecurity.pwdEncoding(vo.getPassword());
         vo.setPassword(securePwd);
         String savePath = uploadPath + File.separator;
@@ -454,7 +455,7 @@ public class UserController {
 
         // JSP 화면
         model.addAttribute("dto", dto); // "user" 대신 "dto"로 변경
-        model.addAttribute("activeMenu", "myinfo");
+        model.addAttribute("activeMenu", "user_modify.do");
         model.addAttribute("contentPage", "/user/user_edit");
 
         return "myshop/myshop_main"; // myshop_main을 통해서 열기
@@ -465,6 +466,16 @@ public class UserController {
     @ResponseBody
     public Map<String, Integer> user_modify(UserVO vo, String ori_photo_name, String del_photo_name, SellerVO svo)
             throws Exception {
+
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
+        if (sessionUser == null) {
+            Map<String, Integer> map = new HashMap<>();
+            map.put("result", 0);
+            return map;
+        }
+
+        vo.setUser_id(sessionUser.getUser_id());
+        vo.setRole(sessionUser.getRole());
 
         if (vo.getPassword() != null && !vo.getPassword().trim().isEmpty()) {
             // 수정에 사용한 비밀번호 암호화
@@ -507,9 +518,14 @@ public class UserController {
         vo.setPhoto_name(photo_name);
 
         int res = userDao.userModify(vo);
-        if (vo.getRole().equalsIgnoreCase("SELLER")) {
+        if (sessionUser.getRole().equalsIgnoreCase("SELLER")) {
             svo.setUser_id(vo.getUser_id());
             int sres = sellerDao.sellerModify(svo);
+        }
+
+        if (res == 1) {
+            UserVO updatedUser = userDao.selectUser(sessionUser.getUser_id());
+            session.setAttribute("user", updatedUser);
         }
 
         // 업데이트 후 필요없어진 이미지가 있다면 삭제
@@ -581,7 +597,14 @@ public class UserController {
         // 로그인한 사람의 정보 꺼내기
         UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-        if (sessionUser.getRole().equalsIgnoreCase("SELLER")) {
+        SellerVO seller = sellerDao.selectSeller(sessionUser.getUser_id());
+
+        if (seller != null && "PENDING".equalsIgnoreCase(seller.getStatus())) {
+            session.setAttribute("flashMsg", "판매자 승인 대기 중입니다.");
+            return "redirect:/myshop";
+        }
+
+        if (seller != null && "APPROVED".equalsIgnoreCase(seller.getStatus())) {
             session.setAttribute("flashMsg", "이미 판매자입니다.");
             return "redirect:/myshop";
         }
@@ -599,12 +622,26 @@ public class UserController {
     @PostMapping("/update_seller.do")
     public String updateSeller(int user_id, SellerVO vo) throws Exception {
 
-        userDao.updateSeller(user_id);
-        vo.setUser_id(user_id);
-        sellerDao.insertSeller(vo);
+        UserVO sessionUser = (UserVO) session.getAttribute("user");
+        if (sessionUser == null) {
+            return "redirect:/login.do";
+        }
 
-        UserVO updatedUser = userDao.selectUser(user_id);
-        session.setAttribute("user", updatedUser);
+        user_id = sessionUser.getUser_id();
+
+        vo.setUser_id(user_id);
+
+        SellerVO savedSeller = sellerDao.selectSeller(user_id);
+        if (savedSeller == null) {
+            sellerDao.insertSeller(vo);
+        } else {
+            sellerDao.sellerModify(vo);
+            sellerDao.updateAdminSellerStatus(savedSeller.getSeller_id(), "PENDING");
+        }
+
+        userDao.updateUserRole(user_id, "USER");
+        session.setAttribute("user", userDao.selectUser(user_id));
+        session.setAttribute("flashMsg", "판매자 신청이 완료되었습니다. 관리자 승인을 기다려 주세요.");
 
         return "redirect:/myshop";
     }

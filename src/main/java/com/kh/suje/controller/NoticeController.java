@@ -89,7 +89,7 @@ public class NoticeController {
         return "/notice/notice_detail";
     }
 
-    @GetMapping("/notice_delete.do")
+    @PostMapping("/notice_delete.do")
     private String noticeDelete(Model model, int notice_id, HttpSession session) {
         if (!isAdmin(session)) {
             return "redirect:/notice_detail.do?notice_id=" + notice_id;

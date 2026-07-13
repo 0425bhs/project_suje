@@ -63,6 +63,7 @@ UPDATE addresses SET address_name = #{address_name}, recipient_name =#{recipient
 phone = #{phone}, zipcode = #{zipcode}, address = #{address},
  detail_address = #{detail_address} , is_default = #{is_default}
         WHERE address_id = #{address_id}
+          AND user_id = #{user_id}
 </update>
 
 

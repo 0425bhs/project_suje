@@ -58,6 +58,18 @@ public class ProductController {
     @Value("${file.upload.path}")
     private String uploadPath;
 
+    private Integer getLoginSellerId(HttpSession session) {
+        UserVO user = (UserVO) session.getAttribute("user");
+        if (user == null) {
+            return null;
+        }
+
+        SellerVO seller = sellerdao.selectSeller(user.getUser_id());
+        return seller == null || !"APPROVED".equalsIgnoreCase(seller.getStatus())
+                ? null
+                : seller.getSeller_id();
+    }
+
     // 할인 설정값 정리
     private void applySaleSetting(ProductVO vo){
 
@@ -866,7 +878,11 @@ public class ProductController {
 
     
     @GetMapping("/seller_product_insert.do")
-    public String seller_product_insert_form(Model model){
+    public String seller_product_insert_form(Model model, HttpSession session){
+        if (getLoginSellerId(session) == null) {
+            return "redirect:/myshop";
+        }
+
         model.addAttribute("bigCategoryList", categorydao.big_category_list());
         return "/seller/seller_product_insert_form";
     }
@@ -895,9 +911,9 @@ public class ProductController {
 
         SellerVO seller = sellerdao.selectSeller(loginUser.getUser_id());
 
-        if (seller == null) {
+        if (seller == null || !"APPROVED".equalsIgnoreCase(seller.getStatus())) {
             map.put("result", 0);
-            map.put("message", "판매자 정보가 없습니다.");
+            map.put("message", "승인된 판매자만 상품을 등록할 수 있습니다.");
             return map;
         }
 
@@ -1045,9 +1061,17 @@ public class ProductController {
 
 
     @GetMapping("/seller_product_modify.do")
-    public String seller_product_modify_form(int product_id, Model model){
+    public String seller_product_modify_form(int product_id, Model model, HttpSession session){
         
         ProductVO vo=productdao.product_one(product_id);
+
+        Integer seller_id = getLoginSellerId(session);
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
+        if (vo == null || vo.getSeller_id() != seller_id) {
+            return "redirect:/seller_product_list.do";
+        }
 
         List<ImageVO> productImageList = imagedao.getImagesByProductId(product_id);
         vo.setImageList(productImageList);
@@ -1080,7 +1104,17 @@ public class ProductController {
     public Map<String,Object> seller_product_modify(ProductVO vo,String ori_image_l,String del_image_l,
         @RequestParam(value = "option_name", required = false) List<String> optionNameList,
         @RequestParam(value = "option_price", required = false) List<String> optionPriceList,
-        @RequestParam(value = "option_stock", required = false) List<String> optionStockList)throws Exception{
+        @RequestParam(value = "option_stock", required = false) List<String> optionStockList,
+        HttpSession session)throws Exception{
+
+        Integer seller_id = getLoginSellerId(session);
+        ProductVO savedProduct = productdao.product_one(vo.getProduct_id());
+        if (seller_id == null || savedProduct == null || savedProduct.getSeller_id() != seller_id) {
+            Map<String, Object> denied = new HashMap<>();
+            denied.put("result", 0);
+            return denied;
+        }
+        vo.setSeller_id(seller_id);
         
         // ✅ 파일 업로드 경로 설정
         // ⚠️ 주의: seller_product_insert와 동일한 경로 필수
@@ -1252,8 +1286,8 @@ public class ProductController {
 
         SellerVO seller = sellerdao.selectSeller(loginUser.getUser_id());
 
-        if (seller == null) {
-            return "redirect:/login.do";
+        if (seller == null || !"APPROVED".equalsIgnoreCase(seller.getStatus())) {
+            return "redirect:/myshop";
         }
 
         int seller_id = seller.getSeller_id();
@@ -1298,9 +1332,17 @@ public class ProductController {
         
     @PostMapping("/seller_product_toggle.do")
     @ResponseBody
-    public Map<String,Object> seller_product_toggle(ProductVO vo){
+    public Map<String,Object> seller_product_toggle(ProductVO vo, HttpSession session){
 
     Map<String,Object> map=new HashMap<>();
+
+    Integer seller_id = getLoginSellerId(session);
+    ProductVO savedProduct = productdao.product_one(vo.getProduct_id());
+    if (seller_id == null || savedProduct == null || savedProduct.getSeller_id() != seller_id) {
+        map.put("result", 0);
+        return map;
+    }
+    vo.setSeller_id(seller_id);
 
     int result=productdao.seller_product_toggle(vo);
 
@@ -1312,9 +1354,16 @@ public class ProductController {
 
     @PostMapping("/seller_product_delete.do")
     @ResponseBody
-    public Map<String, Object> sellerProductDelete(int product_id){
+    public Map<String, Object> sellerProductDelete(int product_id, HttpSession session){
 
         Map<String,Object> map = new HashMap<>();
+
+        Integer seller_id = getLoginSellerId(session);
+        ProductVO product = productdao.product_one(product_id);
+        if (seller_id == null || product == null || product.getSeller_id() != seller_id) {
+            map.put("result", 0);
+            return map;
+        }
 
         int result = productdao.seller_product_delete(product_id);
 
@@ -1325,7 +1374,19 @@ public class ProductController {
 
     // 체크된 상품 여러 개 삭제
     @PostMapping("/seller_product_delete_selected.do")
-    public String sellerProductDeleteSelected(int[] product_id){
+    public String sellerProductDeleteSelected(int[] product_id, HttpSession session){
+
+        Integer seller_id = getLoginSellerId(session);
+        if (seller_id == null) {
+            return "redirect:/login.do";
+        }
+
+        for (int id : product_id) {
+            ProductVO product = productdao.product_one(id);
+            if (product == null || product.getSeller_id() != seller_id) {
+                return "redirect:/seller_product_list.do";
+            }
+        }
 
         productdao.sellerProductDeleteSelected(product_id);
 

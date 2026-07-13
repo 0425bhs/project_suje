@@ -22,11 +22,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.kh.suje.dao.OrderDAO;
 import com.kh.suje.dao.PaymentDAO;
 import com.kh.suje.dao.ProductDAO;
+import com.kh.suje.vo.UserVO;
 import com.kh.suje.vo.order.OrderItemVO;
 import com.kh.suje.vo.order.OrderVO;
 import com.kh.suje.vo.payment.PaymentVO;
 
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequiredArgsConstructor
@@ -45,13 +47,19 @@ public class PaymentController {
     @GetMapping("/payment/ready")
     public String paymentReady(
             @RequestParam("order_id") int order_id,
-            Model model
+            Model model,
+            HttpSession session
     ) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
         OrderVO order = orderDAO.selectOrderById(order_id);
         List<OrderItemVO> orderItemList = orderDAO.selectOrderItemList(order_id);
         PaymentVO payment = paymentDAO.selectPaymentByOrderId(order_id);
 
-        if (order == null || payment == null) {
+        if (order == null || order.getUser_id() != loginUser.getUser_id() || payment == null) {
             model.addAttribute("order_id", order_id);
             model.addAttribute("message", "주문 또는 결제 정보를 찾을 수 없습니다.");
             return "payment/payment_fail";
@@ -115,8 +123,13 @@ public class PaymentController {
             @RequestParam("paymentKey") String paymentKey,
             @RequestParam("orderId") String tossOrderId,
             @RequestParam("amount") int amount,
-            Model model
+            Model model,
+            HttpSession session
     ) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
         System.out.println("[TOSS] success callback 진입");
         System.out.println("[TOSS] orderId = " + tossOrderId);
         System.out.println("[TOSS] paymentKey = " + paymentKey);
@@ -131,6 +144,11 @@ public class PaymentController {
         }
 
         int order_id = parsedOrderId;
+
+        OrderVO order = orderDAO.selectOrderById(order_id);
+        if (order == null || order.getUser_id() != loginUser.getUser_id()) {
+            return "redirect:/myshop/orders";
+        }
 
         PaymentVO dbPayment = paymentDAO.selectPaymentByOrderId(order_id);
 
@@ -249,11 +267,22 @@ public class PaymentController {
     public String tossFail(
             @RequestParam(value = "orderId", required = false) String tossOrderId,
             @RequestParam(value = "message", required = false) String message,
-            Model model
+            Model model,
+            HttpSession session
     ) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
         Integer parsedOrderId = extractOrderId(tossOrderId);
 
         if (parsedOrderId != null) {
+            OrderVO order = orderDAO.selectOrderById(parsedOrderId);
+            if (order == null || order.getUser_id() != loginUser.getUser_id()) {
+                return "redirect:/myshop/orders";
+            }
+
             PaymentVO paymentVO = new PaymentVO();
             paymentVO.setOrder_id(parsedOrderId);
 
@@ -271,12 +300,18 @@ public class PaymentController {
     public String tossCancel(
             @RequestParam("order_id") int order_id,
             @RequestParam(value = "cancel_reason", required = false, defaultValue = "사용자 요청") String cancel_reason,
-            Model model
+            Model model,
+            HttpSession session
     ) {
+        UserVO loginUser = (UserVO) session.getAttribute("user");
+        if (loginUser == null) {
+            return "redirect:/login.do";
+        }
+
         OrderVO order = orderDAO.selectOrderById(order_id);
         PaymentVO payment = paymentDAO.selectPaymentByOrderId(order_id);
 
-        if (order == null) {
+        if (order == null || order.getUser_id() != loginUser.getUser_id()) {
             model.addAttribute("order_id", order_id);
             model.addAttribute("message", "주문 정보를 찾을 수 없습니다.");
             return "payment/payment_fail";

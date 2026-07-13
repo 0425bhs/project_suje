@@ -1,10 +1,44 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <aside class="myshop-sidebar">
     <div class="myshop-side-card">
 
         <a href="/myshop" class="myshop-side-home">
             마이쇼핑
+        </a>
+
+        <a href="/user_modify.do" class="myshop-side-profile" aria-label="회원 정보 수정">
+            <div class="myshop-side-profile-avatar">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user.photo_name and sessionScope.user.photo_name ne 'no_file'}">
+                        <img src="/upload/${sessionScope.user.photo_name}"
+                             alt="${sessionScope.user.nick_name} 프로필">
+                    </c:when>
+                    <c:otherwise>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0"/>
+                        </svg>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+
+            <div class="myshop-side-profile-info">
+                <strong>
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.user.nick_name}">
+                            ${sessionScope.user.nick_name}님
+                        </c:when>
+                        <c:when test="${not empty sessionScope.user.name}">
+                            ${sessionScope.user.name}님
+                        </c:when>
+                        <c:otherwise>회원님</c:otherwise>
+                    </c:choose>
+                </strong>
+                <c:if test="${not empty sessionScope.user.email}">
+                    <span>${sessionScope.user.email}</span>
+                </c:if>
+            </div>
         </a>
 
         <div class="myshop-side-group">

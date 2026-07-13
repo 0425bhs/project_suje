@@ -11,7 +11,7 @@
     <title>마이쇼핑 - HANDMADE</title>
 
     <link rel="stylesheet" href="/css/product/product_main.css">
-    <link rel="stylesheet" href="/css/myshop/common.css?v=1">
+    <link rel="stylesheet" href="/css/myshop/common.css?v=8">
     <link rel="stylesheet" href="/css/myshop/card.css?v=1">
 
     <c:if test="${contentPage eq '/myshop/dashboard'}">
@@ -25,7 +25,7 @@
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/review_list'}">
-        <link rel="stylesheet" href="/css/myshop/review.css?v=1">
+        <link rel="stylesheet" href="/css/myshop/review.css?v=2">
     </c:if>
 
     <c:if test="${contentPage eq '/myshop/favorite_list'}">
@@ -48,7 +48,16 @@
 
     <c:if test="${contentPage eq '/user/user_edit'}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    <link rel="stylesheet" href="/css/user/user_edit.css?v=1">
+    <link rel="stylesheet" href="/css/user/user_edit.css?v=2">
+    </c:if>
+
+    <c:if test="${contentPage eq '/user/update_seller'}">
+        <link rel="stylesheet" href="/css/user/update_seller.css?v=2">
+        <link rel="stylesheet" href="/css/user/user_edit.css?v=2">
+    </c:if>
+
+    <c:if test="${contentPage eq '/user/withdraw'}">
+        <link rel="stylesheet" href="/css/user/withdraw.css?v=1">
     </c:if>
 
     
@@ -58,7 +67,7 @@
 </c:if>
 
 
-<c:if test="${contentPage eq '/myshop/address_form' or contentPage eq '/myshop/insertAddress' or contentPage eq '/myshop/modifyAddress'}">
+<c:if test="${contentPage eq '/myshop/address_form' or contentPage eq '/myshop/address_modiForm'}">
     <link rel="stylesheet" href="/css/myshop/address_form.css">
 </c:if>
 

@@ -74,5 +74,11 @@ public interface SellerDAO {
                                     @Param("reason") String reason,
                                     @Param("detail_reason") String detail_reason,
                                     @Param("seller_answer") String seller_answer);
+
+    int ownsOrderItem(@Param("seller_id") int seller_id,
+                      @Param("order_item_id") int order_item_id);
+
+    int ownsClaim(@Param("seller_id") int seller_id,
+                  @Param("claim_id") int claim_id);
                                     
 }

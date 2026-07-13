@@ -3,12 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<!-- 회원 요약 카드 -->
-<jsp:include page="/WEB-INF/views/myshop/common/myshop_user_card.jsp">
-    <jsp:param name="label" value="MY ORDER" />
-    <jsp:param name="count" value="${totalCount}" />
-</jsp:include>
-
 <!-- 빠른 메뉴 -->
 <jsp:include page="/WEB-INF/views/myshop/common/myshop_quick_card.jsp" />
 
@@ -56,7 +50,6 @@
             <p>주문한 작품의 결제 상태와 배송 상태를 확인할 수 있습니다.</p>
         </div>
 
-        <a href="/myshop/orders">전체보기</a>
     </div>
 
     <c:choose>
@@ -712,9 +705,9 @@
     </div>
 </div>
 
-<footer class="site-footer">
+<!-- <footer class="site-footer">
     <div class="footer-inner">
         <strong>HANDMADE</strong>
         <p>주문한 상품의 결제 상태와 배송 상태를 확인할 수 있습니다.</p>
     </div>
-</footer>
+</footer> -->
